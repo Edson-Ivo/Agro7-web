@@ -7,11 +7,6 @@ export default function Home() {
       <Head>
         <title>Agro7</title>
       </Head>
-
-      <main>
-        <h1>Hello,</h1>
-        <p>world!</p>
-      </main>
     </>
   );
 }
