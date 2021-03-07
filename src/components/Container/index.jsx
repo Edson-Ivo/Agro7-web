@@ -1,11 +1,11 @@
 import React from 'react';
-import styled from 'styled-components';
+import { useSelector } from 'react-redux';
+import styled, { css } from 'styled-components';
 
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  max-width: 2000px;
   margin: 0 auto;
 
   @media screen and (max-width: ${props => props.theme.breakpoints.tablet}px) {
@@ -17,6 +17,15 @@ const Wrapper = styled.div`
 const Content = styled.div`
   display: flex;
   min-height: 100vh;
+
+  ${props =>
+    props.navOpen &&
+    css`
+      @media screen and (max-width: ${props.theme.breakpoints.mobile}px) {
+        height: 0;
+        overflow: hidden;
+      }
+    `};
 
   @media screen and (max-width: ${props => props.theme.breakpoints.tablet}px) {
     display: block;
@@ -30,7 +39,6 @@ export const CenterContainer = styled.div`
   align-items: center;
   height: 100vh;
   width: 100%;
-  background-color: ${props => props.theme.colors.background_nav};
 
   .CenterContainer__content {
     background-color: ${props => props.theme.colors.background};
@@ -42,7 +50,8 @@ export const CenterContainer = styled.div`
     padding-bottom: 30px;
     text-align: center;
     box-shadow: 0px 16px 24px rgba(0, 0, 0, 0.05);
-    width: 30%;
+    width: 40%;
+    max-width: ${props => props.theme.margins.center_width};
 
     .logoContainer {
       margin-top: 16px;
@@ -54,7 +63,7 @@ export const CenterContainer = styled.div`
     }
 
     .loginButton {
-      margin: 20px 0 20px;
+      margin: 10px 0 20px;
     }
 
     @media (max-width: ${props => props.theme.breakpoints.tablet}px) {
@@ -70,10 +79,14 @@ export const CenterContainer = styled.div`
   }
 `;
 
-const Container = ({ children }) => (
-  <Wrapper>
-    <Content>{children}</Content>
-  </Wrapper>
-);
+const Container = ({ children }) => {
+  const navOpen = useSelector(state => state.nav.open);
+
+  return (
+    <Wrapper>
+      <Content navOpen={navOpen}>{children}</Content>
+    </Wrapper>
+  );
+};
 
 export default Container;

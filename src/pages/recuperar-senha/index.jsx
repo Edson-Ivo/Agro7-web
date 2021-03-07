@@ -1,33 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import Head from 'next/head';
 import Image from 'next/image';
 import Link from 'next/link';
 import Router from 'next/router';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSignInAlt } from '@fortawesome/free-solid-svg-icons';
+import { faKey } from '@fortawesome/free-solid-svg-icons';
 
 import Container, { CenterContainer } from '../../components/Container';
 import Input from '../../components/Input';
 import Button from '../../components/Button';
 import { Alert } from '../../components/Alert';
 
-import { AuthAction } from '../../store/modules/Auth/actions';
-
 export default function Login() {
-  const authData = useSelector(state => state.auth);
-
   const [formData, setFormData] = useState({ username: null, password: null });
   const [alertMsg, setAlertMsg] = useState('');
-
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    if (authData.isLoggedIn) {
-      Router.push('/producer-notebook');
-    }
-  }, []);
 
   const handleChange = e =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -36,14 +23,7 @@ export default function Login() {
     const { username, password } = formData;
 
     if (username && password) {
-      dispatch(
-        AuthAction({
-          token: 'aa',
-          user: { id: 1, name: 'aaa', email: 'aaa', rules: '1' }
-        })
-      );
-
-      Router.push('/producer-notebook');
+      // Router.push('/');
     } else {
       setAlertMsg('Preencha todos os campos!');
     }
@@ -61,7 +41,7 @@ export default function Login() {
         <CenterContainer>
           <div className="CenterContainer__content">
             <div className="logoContainer">
-              <Image src="/logo/logo.png" width="250" height="100" />
+              <Image src="/logo/logo.png" width="210" height="90" />
             </div>
             {alertMsg && <Alert>{alertMsg}</Alert>}
             <form method="post" onSubmit={e => handleSubmit(e)}>
@@ -76,12 +56,14 @@ export default function Login() {
                 required
               />
 
-              <Button className="active loginButton" type="submit">
-                <FontAwesomeIcon icon={faSignInAlt} className="loginIcon" />{' '}
-                Acessar o Sistema
+              <Button className="primary loginButton" type="submit">
+                <FontAwesomeIcon icon={faKey} className="loginIcon" /> Recuperar
+                senha
               </Button>
             </form>
-            <Link href="/forgot">Esqueceu sua senha?</Link>
+            <p className="text">
+              <Link href="/login">Voltar ao Login?</Link>
+            </p>
           </div>
         </CenterContainer>
       </Container>

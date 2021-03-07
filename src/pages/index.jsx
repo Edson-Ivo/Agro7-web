@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Head from 'next/head';
+import { privateRoute } from '../components/PrivateRoute';
 
-export default function Home() {
+function Home() {
   return (
     <>
       <Head>
@@ -10,3 +11,7 @@ export default function Home() {
     </>
   );
 }
+
+// export default privateRoute()(Home);
+
+export default Home;
