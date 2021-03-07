@@ -2,6 +2,7 @@ const theme = {
   colors: {
     background: '#FCFDFD',
     background_nav: '#FAFAFA',
+    background_darker: '#FAFAFA',
     border: '#EEEDEA',
     black: '#26302E',
     gray: '#F4F5F5',
@@ -19,6 +20,10 @@ const theme = {
     mobile: 800,
     middle: 970,
     tablet: 1150
+  },
+  margins: {
+    center_width: '900px',
+    content_width: '1048px'
   }
 };
 

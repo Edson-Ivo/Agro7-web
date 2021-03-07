@@ -5,7 +5,7 @@ export const Card = styled.div`
   display: flex;
   flex-direction: row;
   width: 100%;
-  height: 140px;
+  min-height: 140px;
   background: linear-gradient(
     180deg,
     rgba(255, 172, 56, 0.7) 0%,
@@ -20,6 +20,14 @@ export const Card = styled.div`
 
   .card-info {
     width: 70%;
+
+    h4 {
+      margin-bottom: 10px;
+    }
+
+    p {
+      font-size: 16px;
+    }
   }
 
   .card-image {

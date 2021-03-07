@@ -1,54 +1,56 @@
-import React, { useState, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useState } from 'react';
 import Head from 'next/head';
 import Image from 'next/image';
 import Link from 'next/link';
-import Router from 'next/router';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSignInAlt } from '@fortawesome/free-solid-svg-icons';
 
+import Router from 'next/router';
 import Container, { CenterContainer } from '../../components/Container';
 import Input from '../../components/Input';
 import Button from '../../components/Button';
 import { Alert } from '../../components/Alert';
 
-import { AuthAction } from '../../store/modules/Auth/actions';
+import AuthService from '../../services/AuthService';
 
 export default function Login() {
-  const authData = useSelector(state => state.auth);
-
   const [formData, setFormData] = useState({ username: null, password: null });
   const [alertMsg, setAlertMsg] = useState('');
-
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    if (authData.isLoggedIn) {
-      Router.push('/producer-notebook');
-    }
-  }, []);
+  const [loading, setLoading] = useState(false);
 
   const handleChange = e =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
 
-  const handleSubmit = e => {
-    const { username, password } = formData;
+  const handleSubmit = async e => {
+    e.preventDefault();
+    let { username, password } = formData;
+
+    // username = 'rabelojunior105@gmail.com';
+    username = 'teste2@teste.com';
 
     if (username && password) {
-      dispatch(
-        AuthAction({
-          token: 'aa',
-          user: { id: 1, name: 'aaa', email: 'aaa', rules: '1' }
-        })
-      );
+      setLoading(true);
 
-      Router.push('/producer-notebook');
+      await AuthService.login(username, password).then(
+        () => {
+          Router.push('/');
+        },
+        error => {
+          const resMessage =
+            (error.response &&
+              error.response.data &&
+              error.response.data.message) ||
+            error.message ||
+            error.toString();
+
+          setLoading(false);
+          setAlertMsg(resMessage);
+        }
+      );
     } else {
       setAlertMsg('Preencha todos os campos!');
     }
-
-    e.preventDefault();
   };
 
   return (
@@ -61,7 +63,7 @@ export default function Login() {
         <CenterContainer>
           <div className="CenterContainer__content">
             <div className="logoContainer">
-              <Image src="/logo/logo.png" width="250" height="100" />
+              <Image src="/logo/logo.png" width="210" height="90" />
             </div>
             {alertMsg && <Alert>{alertMsg}</Alert>}
             <form method="post" onSubmit={e => handleSubmit(e)}>
@@ -84,12 +86,14 @@ export default function Login() {
                 handleChange={e => handleChange(e)}
                 required
               />
-              <Button className="active loginButton" type="submit">
+              <Button className="primary loginButton" type="submit">
                 <FontAwesomeIcon icon={faSignInAlt} className="loginIcon" />{' '}
                 Acessar o Sistema
               </Button>
             </form>
-            <Link href="/forgot">Esqueceu sua senha?</Link>
+            <p className="text">
+              <Link href="/recuperar-senha">Esqueceu sua senha?</Link>
+            </p>
           </div>
         </CenterContainer>
       </Container>
