@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Router from 'next/router';
+import Link from 'next/link';
 import Image from 'next/image';
 import { useSelector, useDispatch } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -63,10 +64,14 @@ const Navbar = () => {
               <Tooltip opened={open} clickAction={handleClick}>
                 <ul>
                   <li>
-                    <span>
-                      <FontAwesomeIcon icon={faCog} className="icon" />{' '}
-                      Configurações
-                    </span>
+                    <Link href="/configuracoes">
+                      <a>
+                        <span>
+                          <FontAwesomeIcon icon={faCog} className="icon" />{' '}
+                          Configurações
+                        </span>
+                      </a>
+                    </Link>
                   </li>
                   <li onClick={() => handleLogout()}>
                     <span>

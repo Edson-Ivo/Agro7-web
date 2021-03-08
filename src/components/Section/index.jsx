@@ -25,6 +25,11 @@ export const SectionHeader = styled.div`
     max-width: ${props => props.theme.margins.content_width};
     width: 100%;
 
+    p {
+      text-align: left;
+      margin-top: 10px;
+    }
+
     @media screen and (max-width: ${props =>
         props.theme.breakpoints.mobile}px) {
       text-align: center;

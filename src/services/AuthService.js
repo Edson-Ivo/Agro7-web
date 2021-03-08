@@ -33,10 +33,13 @@ class AuthService {
   static getCurrentUser() {
     const authCookie = getCookie(AUTH_COOKIE_NAME);
 
-    if (authCookie) {
-      return JSON.parse(decodeURIComponent(Base64.decode(authCookie)));
-    }
+    return this.decodeUserData(authCookie);
+  }
 
+  static decodeUserData(data) {
+    if (data) {
+      return JSON.parse(decodeURIComponent(Base64.decode(data)));
+    }
     return {
       id: 0,
       name: '',

@@ -76,9 +76,9 @@ export const NavbarContainer = styled.div`
   }
 
   & .navbar_button:hover {
-    background-color: ${props => props.theme.colors.white};
-    border: 1px solid ${props => props.theme.colors.gray};
-    color: ${props => props.theme.colors.black};
+    background-color: ${props => props.theme.colors.white}!important;
+    border: 1px solid ${props => props.theme.colors.gray}!important;
+    color: ${props => props.theme.colors.black}!important;
   }
 
   @media screen and (max-width: ${props => props.theme.breakpoints.mobile}px) {

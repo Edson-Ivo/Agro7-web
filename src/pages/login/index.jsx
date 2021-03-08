@@ -13,6 +13,7 @@ import Button from '../../components/Button';
 import { Alert } from '../../components/Alert';
 
 import AuthService from '../../services/AuthService';
+import errorMessage from '../../helpers/errorMessage';
 
 export default function Login() {
   const [formData, setFormData] = useState({ username: null, password: null });
@@ -26,23 +27,17 @@ export default function Login() {
     e.preventDefault();
     let { username, password } = formData;
 
-    // username = 'rabelojunior105@gmail.com';
-    username = 'teste2@teste.com';
+    username = 'teste@teste.com';
 
     if (username && password) {
       setLoading(true);
 
       await AuthService.login(username, password).then(
         () => {
-          Router.push('/');
+          Router.push('/caderno-produtor');
         },
         error => {
-          const resMessage =
-            (error.response &&
-              error.response.data &&
-              error.response.data.message) ||
-            error.message ||
-            error.toString();
+          const resMessage = errorMessage(error);
 
           setLoading(false);
           setAlertMsg(resMessage);

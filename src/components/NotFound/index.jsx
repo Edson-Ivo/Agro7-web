@@ -9,7 +9,7 @@ import Container, { CenterContainer } from '../Container';
 
 import Button from '../Button';
 
-export default function Error() {
+export default function NotFound() {
   return (
     <>
       <Container>
@@ -18,9 +18,12 @@ export default function Error() {
             <div className="logoContainer">
               <Image src="/logo/logo.png" width="210" height="90" />
             </div>
-            <h3 style={{ marginBottom: '20px' }}>Algo deu errado...</h3>
+            <h3 style={{ marginBottom: '20px' }}>
+              Não encontramos essa página...
+            </h3>
             <p className="text">
-              Aconteceu algum erro, vamos tentar novamente.
+              Desculpe, essa página que você tentou acessar não existe ou está
+              bloqueada, aconselhamos você voltar para a página principal.
             </p>
             <div style={{ marginTop: '20px' }}>
               <Link href="/">

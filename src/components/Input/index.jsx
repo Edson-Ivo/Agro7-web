@@ -3,14 +3,23 @@ import { masks } from './masks';
 
 import { InputContainer, StyledInput, Label } from './styles';
 
-const Input = ({ handleChange, label, name, mask, ...otherProps }) => {
-  const [value, setValue] = useState('');
+const Input = ({
+  handleChange,
+  label,
+  name,
+  mask,
+  disabled,
+  initialValue = '',
+  ...otherProps
+}) => {
+  const [value, setValue] = useState(initialValue);
   const [hasText, setHasText] = useState(!!value);
 
   const maskInput = e => {
     if (mask === 'cpf') setValue(masks.cpf(e.target.value));
     if (mask === 'cnpj') setValue(masks.cnpj(e.target.value));
     if (mask === 'cpf_cnpj') setValue(masks.cpf_cnpj(e.target.value));
+    if (mask === 'phone') setValue(masks.phone(e.target.value));
   };
 
   const changeAction = e => {
@@ -29,6 +38,7 @@ const Input = ({ handleChange, label, name, mask, ...otherProps }) => {
         onChange={e => changeAction(e)}
         name={name}
         value={value}
+        disabled={disabled}
         {...otherProps}
       />
       {label && (

@@ -108,10 +108,17 @@ const Nav = () => {
             </Button>
           </Link>
           <Button className="navlist_button active">
-            <FontAwesomeIcon icon={faBook} className="navlist_button__icon" />
-            <span className="navlist_button__description">
-              Caderno do Produtor
-            </span>
+            <Link href="/caderno-produtor">
+              <a>
+                <FontAwesomeIcon
+                  icon={faBook}
+                  className="navlist_button__icon"
+                />
+                <span className="navlist_button__description">
+                  Caderno do Produtor
+                </span>
+              </a>
+            </Link>
           </Button>
           <Button className="navlist_button">
             <FontAwesomeIcon icon={faBook} className="navlist_button__icon" />
