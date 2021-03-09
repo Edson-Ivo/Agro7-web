@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'react';
 import Head from 'next/head';
 import * as yup from 'yup';
-import { MultiStepForm as MultiStep, Step } from 'react-multi-form';
+import { MultiStepForm as MultiStep, Step } from '@/components/Multiform';
 
 import Container from '@/components/Container';
 import Nav from '@/components/Nav';
@@ -88,6 +88,7 @@ function Properties() {
   const formRef = useRef(null);
   const [alert, setAlert] = useState({ type: '', message: '' });
   const [disableButton, setDisableButton] = useState(false);
+  const [activeStep, setActiveStep] = useState(1);
 
   const getData = () => {
     if (formRef.current === undefined) {
@@ -123,12 +124,6 @@ function Properties() {
       number: null,
       complements: null
     });
-  };
-
-  const handleClearData = e => {
-    e?.preventDefault();
-    setAlert({ type: '', message: '' });
-    Router.reload(window.location.pathname);
   };
 
   const handleSubmit = async e => {
@@ -202,8 +197,10 @@ function Properties() {
                   method="post"
                   onSubmit={event => handleSubmit(event)}
                 >
-                  <MultiStep activeStep={1}>
-                    <Step label="Dados">
+                  <MultiStep activeStep={activeStep}>
+                    <Step label="Dados" onClick={() => setActiveStep(1)}>
+                      <h4 className="step-title">Dados da Propriedade</h4>
+
                       <div className="form-group">
                         <div>
                           <Input
@@ -305,7 +302,9 @@ function Properties() {
                         </div>
                       </div>
                     </Step>
-                    <Step label="Selecionar">
+                    <Step label="Selecionar" onClick={() => setActiveStep(2)}>
+                      <h4 className="step-title">Selecionar Propriedade</h4>
+
                       <div className="form-group">
                         <div>
                           <Input
@@ -328,17 +327,35 @@ function Properties() {
                   </MultiStep>
 
                   <div className="form-group buttons">
+                    {activeStep !== 1 && (
+                      <div>
+                        <Button
+                          type="button"
+                          onClick={() => setActiveStep(activeStep - 1)}
+                        >
+                          Voltar
+                        </Button>
+                      </div>
+                    )}
                     <div>
-                      <Button
-                        disabled={disableButton}
-                        className="primary"
-                        type="submit"
-                      >
-                        Cadastrar propriedade
-                      </Button>
-                    </div>
-                    <div>
-                      <Button onClick={handleClearData}>Limpar dados</Button>
+                      {activeStep !== 2 && (
+                        <Button
+                          type="button"
+                          onClick={() => setActiveStep(activeStep + 1)}
+                        >
+                          Continuar
+                        </Button>
+                      )}
+
+                      {activeStep === 2 && (
+                        <Button
+                          disabled={disableButton}
+                          className="primary"
+                          type="submit"
+                        >
+                          Cadastrar propriedade
+                        </Button>
+                      )}
                     </div>
                   </div>
                 </form>
