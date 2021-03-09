@@ -32,8 +32,8 @@ function ProducerNotebook() {
   const [activeDate, setActiveDate] = useState(0);
   const [daysList, setDaysList] = useState([]);
 
-  // const router = useRouter();
-  // const limit = router.query.limit || 1;
+  const router = useRouter();
+  const limit = router.query.limit || 1;
 
   const { data, error } = useFetch('/coordinates/find/all');
 

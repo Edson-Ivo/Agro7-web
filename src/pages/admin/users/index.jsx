@@ -22,7 +22,6 @@ import { useFetch } from '../../../hooks/useFetch';
 import ActionButton from '../../../components/ActionButton';
 
 function AdminUsers({ permission }) {
-  if (!permission) return <NotFound />;
   const { data, error } = useFetch(`/users/find/all`);
 
   if (!permission) return <NotFound />;
@@ -76,7 +75,7 @@ function AdminUsers({ permission }) {
                               <td>
                                 <ActionButton
                                   id={user.id}
-                                  path="/users"
+                                  path="/admin/users"
                                   onDelete={() => console.log('teste')}
                                 />
                               </td>
