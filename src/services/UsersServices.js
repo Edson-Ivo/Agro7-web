@@ -26,15 +26,6 @@ class UsersService {
     }
   }
 
-  static async createProperties(data) {
-    try {
-      const response = await api.post(`/properties/create`, { ...data });
-      return response;
-    } catch (error) {
-      return error.response;
-    }
-  }
-
   static async updateByAdmin(id, data) {
     try {
       const response = await api.put(

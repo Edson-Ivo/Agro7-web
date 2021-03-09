@@ -37,6 +37,8 @@
     "react/jsx-filename-extension": ["warn", { "extensions": [".jsx", ".js"] }],
     "react/jsx-props-no-spreading": "off",
     "react/prop-types": "off",
-    "space-before-function-paren": "off"
+    "space-before-function-paren": "off",
+    "no-use-before-define": "off",
+    "no-plusplus": "off"
   }
 }
