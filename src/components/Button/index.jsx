@@ -22,6 +22,11 @@ const Button = styled.button`
     color: ${props => props.theme.colors.white}!important;
   }
 
+  &.red {
+    background: ${props => props.theme.colors.red}!important;
+    color: ${props => props.theme.colors.white}!important;
+  }
+
   &:hover {
     border: 1px solid ${props => props.theme.colors.primary};
     opacity: 1;

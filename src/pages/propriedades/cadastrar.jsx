@@ -1,5 +1,7 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import Head from 'next/head';
+import * as yup from 'yup';
+import { MultiStepForm as MultiStep, Step } from 'react-multi-form';
 
 import Container from '@/components/Container';
 import Nav from '@/components/Nav';
@@ -13,7 +15,6 @@ import { CardContainer } from '@/components/CardContainer';
 
 import { privateRoute } from '@/components/PrivateRoute';
 import getFormData from '@/helpers/getFormData';
-import * as yup from 'yup';
 import { Alert } from '@/components/Alert/index';
 
 import errorMessage from '@/helpers/errorMessage';
@@ -60,12 +61,12 @@ const schema = yup.object().shape({
   postcode: yup
     .string()
     .min(
-      9,
-      'Você tem que digitar no mínimo e no máximo 9 caracteres, para o CEP. Ex: 00000-000'
+      8,
+      'Você tem que digitar no mínimo e no máximo 9 caracteres, para o CEP. Ex: 00000000'
     )
     .max(
-      9,
-      'Você tem que digitar no mínimo e no máximo 9 caracteres para o CEP. Ex: 00000-000'
+      8,
+      'Você tem que digitar no mínimo e no máximo 9 caracteres para o CEP. Ex: 00000000'
     )
     .required('Você precisa informar o CEP da propriedade'),
   street: yup
@@ -87,14 +88,6 @@ function Properties() {
   const formRef = useRef(null);
   const [alert, setAlert] = useState({ type: '', message: '' });
   const [disableButton, setDisableButton] = useState(false);
-
-  useEffect(
-    () => () => {
-      setAlert({ type: '', message: '' });
-      setDisableButton(false);
-    },
-    []
-  );
 
   const getData = () => {
     if (formRef.current === undefined) {
@@ -135,7 +128,6 @@ function Properties() {
   const handleClearData = e => {
     e?.preventDefault();
     setAlert({ type: '', message: '' });
-    // na gambiarra por enquanto
     Router.reload(window.location.pathname);
   };
 
@@ -147,9 +139,9 @@ function Properties() {
       .then(async data => {
         setAlert({
           type: 'success',
-          message:
-            'Os dados foram validados com sucesso! Enviando para o servidor...'
+          message: 'Enviando...'
         });
+
         await PropertiesService.create(data).then(res => {
           if (res.status !== 201 || res?.statusCode) {
             setAlert({ type: 'error', message: errorMessage(res) });
@@ -163,7 +155,7 @@ function Properties() {
             });
 
             setTimeout(() => {
-              handleClearData();
+              Router.push('/propriedades');
               setDisableButton(false);
             }, 1000);
           }
@@ -203,144 +195,150 @@ function Properties() {
                 {alert.message !== '' && (
                   <Alert type={alert.type}>{alert.message}</Alert>
                 )}
+
                 <form
                   id="registerForm"
                   ref={formRef}
                   method="post"
                   onSubmit={event => handleSubmit(event)}
                 >
-                  <div className="form-group">
-                    <div>
-                      <Input
-                        type="text"
-                        label="Nome da propriedade"
-                        name="name"
-                        initialValue=""
-                      />
-                    </div>
-                    <div>
-                      <Select
-                        options={[
-                          { value: 'proprietario', label: 'Proprietário' }
-                        ]}
-                        label="Quem é você para esta propriedade?"
-                        value="proprietario"
-                        name="type_owner"
-                      />
-                    </div>
-                  </div>
-                  <div className="form-group">
-                    <div>
-                      <Input
-                        type="number"
-                        label="Área"
-                        name="area"
-                        initialValue=""
-                      />
-                    </div>
-                    <div>
-                      <Select
-                        options={[{ value: 'm', label: 'Metros' }]}
-                        label="Unidade de medida"
-                        value="m"
-                        name="type_dimension"
-                      />
-                    </div>
-                  </div>
-                  <div className="form-group">
-                    <div>
-                      <Input
-                        type="number"
-                        label="Latitude"
-                        name="latitude"
-                        initialValue=""
-                      />
-                    </div>
-                    <div>
-                      <Input
-                        type="number"
-                        label="Longitude"
-                        name="longitude"
-                        initialValue=""
-                      />
-                    </div>
-                  </div>
-                  <div className="form-group">
-                    <div>
-                      <Input
-                        type="text"
-                        label="Estado"
-                        name="state"
-                        initialValue=""
-                      />
-                    </div>
-                    <div>
-                      <Input
-                        type="text"
-                        label="Cidade"
-                        name="city"
-                        initialValue=""
-                      />
-                    </div>
-                    <div>
-                      <Input
-                        type="text"
-                        label="CEP"
-                        name="postcode"
-                        initialValue=""
-                      />
-                    </div>
-                  </div>
-
-                  <div className="form-group">
-                    <div>
-                      <Input
-                        type="text"
-                        label="Bairro"
-                        name="neighborhood"
-                        initialValue=""
-                      />
-                    </div>
-                    <div>
-                      <Input
-                        type="text"
-                        label="Rua"
-                        name="street"
-                        initialValue=""
-                      />
-                    </div>
-                  </div>
-                  <div className="form-group">
-                    <div>
-                      <Input
-                        type="text"
-                        label="Número"
-                        name="number"
-                        initialValue=""
-                      />
-                    </div>
-                    <div>
-                      <Input
-                        type="text"
-                        label="Complementos"
-                        name="complements"
-                        initialValue=""
-                      />
-                    </div>
-                  </div>
+                  <MultiStep activeStep={1}>
+                    <Step label="Dados">
+                      <div className="form-group">
+                        <div>
+                          <Input
+                            type="text"
+                            label="Nome da propriedade"
+                            name="name"
+                            initialValue=""
+                          />
+                        </div>
+                        <div>
+                          <Select
+                            options={[
+                              { value: 'proprietario', label: 'Proprietário' }
+                            ]}
+                            label="Quem é você para esta propriedade?"
+                            value="proprietario"
+                            name="type_owner"
+                          />
+                        </div>
+                      </div>
+                      <div className="form-group">
+                        <div>
+                          <Input
+                            type="number"
+                            label="Área"
+                            name="area"
+                            initialValue=""
+                          />
+                        </div>
+                        <div>
+                          <Select
+                            options={[{ value: 'm', label: 'Metros' }]}
+                            label="Unidade de medida"
+                            value="m"
+                            name="type_dimension"
+                          />
+                        </div>
+                      </div>
+                      <div className="form-group">
+                        <div>
+                          <Input
+                            type="text"
+                            label="Estado"
+                            name="state"
+                            initialValue=""
+                          />
+                        </div>
+                        <div>
+                          <Input
+                            type="text"
+                            label="Cidade"
+                            name="city"
+                            initialValue=""
+                          />
+                        </div>
+                        <div>
+                          <Input
+                            type="text"
+                            label="CEP"
+                            name="postcode"
+                            initialValue=""
+                          />
+                        </div>
+                      </div>
+                      <div className="form-group">
+                        <div>
+                          <Input
+                            type="text"
+                            label="Bairro"
+                            name="neighborhood"
+                            initialValue=""
+                          />
+                        </div>
+                        <div>
+                          <Input
+                            type="text"
+                            label="Rua"
+                            name="street"
+                            initialValue=""
+                          />
+                        </div>
+                      </div>
+                      <div className="form-group">
+                        <div>
+                          <Input
+                            type="text"
+                            label="Número"
+                            name="number"
+                            initialValue=""
+                          />
+                        </div>
+                        <div>
+                          <Input
+                            type="text"
+                            label="Complementos"
+                            name="complements"
+                            initialValue=""
+                          />
+                        </div>
+                      </div>
+                    </Step>
+                    <Step label="Selecionar">
+                      <div className="form-group">
+                        <div>
+                          <Input
+                            type="number"
+                            label="Latitude"
+                            name="latitude"
+                            initialValue=""
+                          />
+                        </div>
+                        <div>
+                          <Input
+                            type="number"
+                            label="Longitude"
+                            name="longitude"
+                            initialValue=""
+                          />
+                        </div>
+                      </div>
+                    </Step>
+                  </MultiStep>
 
                   <div className="form-group buttons">
-                    <div>
-                      <Button onClick={handleClearData}>Limpar dados</Button>
-                    </div>
                     <div>
                       <Button
                         disabled={disableButton}
                         className="primary"
                         type="submit"
                       >
-                        Cadastrar usuário
+                        Cadastrar propriedade
                       </Button>
+                    </div>
+                    <div>
+                      <Button onClick={handleClearData}>Limpar dados</Button>
                     </div>
                   </div>
                 </form>
@@ -353,4 +351,4 @@ function Properties() {
   );
 }
 
-export default privateRoute(['administrator'])(Properties);
+export default privateRoute()(Properties);

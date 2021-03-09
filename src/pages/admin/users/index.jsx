@@ -1,10 +1,11 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import Head from 'next/head';
 
 import Container from '../../../components/Container';
 import Nav from '../../../components/Nav';
 import Navbar from '../../../components/Navbar';
 import Breadcrumb from '../../../components/Breadcrumb';
+import { Alert } from '../../../components/Alert';
 import {
   Section,
   SectionHeader,
@@ -22,12 +23,40 @@ import { useFetch } from '../../../hooks/useFetch';
 import ActionButton from '../../../components/ActionButton';
 import { useModal } from '../../../hooks/useModal';
 
+import UsersServices from '../../../services/UsersServices';
+import errorMessage from '../../../helpers/errorMessage';
+
 function AdminUsers({ permission }) {
-  const { data, error } = useFetch(`/users/find/all`);
+  const [alertMsg, setAlertMsg] = useState({ type: '', message: '' });
+  const [loading, setLoading] = useState(false);
+  const [page, setPage] = useState(1);
+
+  const { data, error } = useFetch(`/users/find/all?page=${page}`);
   const { addModal, removeModal } = useModal();
 
   if (!permission) return <NotFound />;
   if (error) return <Error />;
+
+  const handleDelete = useCallback(
+    async id => {
+      removeModal();
+      setLoading(true);
+
+      await UsersServices.deleteByAdmin(id).then(res => {
+        if (res.status !== 200 || res?.statusCode) {
+          setAlertMsg(errorMessage(res));
+        } else {
+          setAlertMsg({
+            type: 'success',
+            message: 'Dados alterados com sucesso!'
+          });
+        }
+      });
+
+      setLoading(false);
+    },
+    [addModal, removeModal]
+  );
 
   const handleDeleteModal = useCallback(
     id => {
@@ -35,7 +64,7 @@ function AdminUsers({ permission }) {
         title: 'Deletar Usuário',
         text: 'Deseja realmente deletar este usuário?',
         confirm: true,
-        onConfirm: () => console.log(id),
+        onConfirm: () => handleDelete(id),
         onCancel: removeModal
       });
     },
@@ -67,7 +96,10 @@ function AdminUsers({ permission }) {
           <SectionBody>
             <div className="SectionBody__content">
               <CardContainer>
-                {(data && (
+                {alertMsg.message && (
+                  <Alert type={alertMsg.type}>{alertMsg.message}</Alert>
+                )}
+                {((data || loading) && (
                   <div className="table-responsive">
                     <Table>
                       <thead>
@@ -113,5 +145,5 @@ function AdminUsers({ permission }) {
   );
 }
 
+// export default privateRoute(['administrator'])(AdminUsers);
 export default privateRoute()(AdminUsers);
-// export default privateRoute(['adminstrator'])(AdminUsers);

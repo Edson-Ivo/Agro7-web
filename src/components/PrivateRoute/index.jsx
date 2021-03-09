@@ -26,7 +26,7 @@ export function privateRoute(types) {
             user = AuthService.decodeUserData(user);
             let perm = true;
 
-            if (!types.includes(user.types) || user.types === 'adminstrator') {
+            if (!types.includes(user.types)) {
               perm = false;
             }
 

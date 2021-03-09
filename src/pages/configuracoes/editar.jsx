@@ -8,7 +8,6 @@ import Nav from '../../components/Nav';
 import Navbar from '../../components/Navbar';
 import Breadcrumb from '../../components/Breadcrumb';
 import Input from '../../components/Input';
-import Select from '../../components/Select';
 import Button from '../../components/Button';
 import { Alert } from '../../components/Alert';
 import { Section, SectionHeader, SectionBody } from '../../components/Section';
@@ -42,8 +41,6 @@ function ConfiguracoesEdit() {
 
     if (formData.name && formData.phone) {
       setLoading(true);
-
-      console.log(formData);
 
       await UsersServices.updateByOwner(formData).then(res => {
         if (res.status !== 200 || res?.statusCode) {

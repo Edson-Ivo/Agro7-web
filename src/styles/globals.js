@@ -94,6 +94,9 @@ export default createGlobalStyle`
 
     > div {
       width: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
       
       &:not(:last-child) {
         margin-right: 10px;

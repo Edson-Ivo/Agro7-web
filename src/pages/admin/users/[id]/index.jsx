@@ -1,11 +1,14 @@
 import React from 'react';
 import Head from 'next/head';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 
 import Container from '../../../../components/Container';
 import Nav from '../../../../components/Nav';
 import Navbar from '../../../../components/Navbar';
 import Breadcrumb from '../../../../components/Breadcrumb';
+import Input from '../../../../components/Input';
+import Button from '../../../../components/Button';
 import {
   Section,
   SectionHeader,
@@ -15,12 +18,10 @@ import {
 import { CardContainer } from '../../../../components/CardContainer';
 import { privateRoute } from '../../../../components/PrivateRoute';
 import NotFound from '../../../../components/NotFound';
-import Table from '../../../../components/Table';
 
 import Loader from '../../../../components/Loader';
 import Error from '../../../../components/Error';
 import { useFetch } from '../../../../hooks/useFetch';
-import ActionButton from '../../../../components/ActionButton';
 
 function AdminUsers({ permission }) {
   const router = useRouter();
@@ -56,7 +57,51 @@ function AdminUsers({ permission }) {
           <SectionBody>
             <div className="SectionBody__content">
               <CardContainer>
-                {(data && <div>{data.name}</div>) || <Loader />}
+                {(data && (
+                  <>
+                    <Input
+                      type="text"
+                      label="Nome"
+                      name="name"
+                      initialValue={data.name}
+                      disabled
+                    />
+                    <div className="form-group">
+                      <div>
+                        <Input
+                          type="text"
+                          label="Número Telefone"
+                          name="phone"
+                          mask="phone"
+                          maxLength={15}
+                          initialValue={data.phone}
+                          disabled
+                        />
+                      </div>
+                      <div>
+                        <Input
+                          type="text"
+                          label="Número Whatsapp"
+                          name="phone_whatsapp"
+                          mask="phone"
+                          maxLength={15}
+                          initialValue={data.phone_whatsapp}
+                          disabled
+                        />
+                      </div>
+                    </div>
+                    <div className="form-group buttons">
+                      <div>
+                        <Link href={`/admin/users/edit/${id}`}>
+                          <Button>Editar Dados</Button>
+                        </Link>
+                      </div>
+                      <div>
+                        <Button className="red">Excluir</Button>
+                      </div>
+                    </div>
+                  </>
+                )) || <Loader />}
               </CardContainer>
             </div>
           </SectionBody>
@@ -66,5 +111,5 @@ function AdminUsers({ permission }) {
   );
 }
 
-export default privateRoute()(AdminUsers);
-// export default privateRoute(['adminstrator'])(AdminUsers);
+export default privateRoute(['administrator'])(AdminUsers);
+// export default privateRoute()(AdminUsers);
