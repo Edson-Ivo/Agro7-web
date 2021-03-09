@@ -39,5 +39,8 @@ export const masks = {
     }
 
     return v;
-  }
+  },
+
+  cep: v =>
+    v.replace(/^([\d]{2})\.*([\d]{3})-*([\d]{3})/, '$1$2-$3').substring(0, 9)
 };

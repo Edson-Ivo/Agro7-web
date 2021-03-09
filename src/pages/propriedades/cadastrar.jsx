@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Head from 'next/head';
 import * as yup from 'yup';
 import { MultiStepForm as MultiStep, Step } from '@/components/Multiform';
@@ -21,6 +21,7 @@ import errorMessage from '@/helpers/errorMessage';
 
 import PropertiesService from '@/services/PropertiesService';
 import Router from 'next/router';
+import AddressesService from '@/services/AddressesService';
 
 const schema = yup.object().shape({
   name: yup
@@ -89,6 +90,23 @@ function Properties() {
   const [alert, setAlert] = useState({ type: '', message: '' });
   const [disableButton, setDisableButton] = useState(false);
   const [activeStep, setActiveStep] = useState(1);
+  const [loadingAddresses, setLoadingAddresses] = useState(false);
+
+  const stateRef = useRef(null);
+  const cityRef = useRef(null);
+  const neighborhoodRef = useRef(null);
+  const streetRef = useRef(null);
+  const postalcodeRef = useRef(null);
+
+  useEffect(
+    () => () => {
+      setAlert({ type: '', message: '' });
+      setDisableButton(false);
+      setActiveStep(1);
+      setLoadingAddresses(false);
+    },
+    []
+  );
 
   const getData = () => {
     if (formRef.current === undefined) {
@@ -124,6 +142,31 @@ function Properties() {
       number: null,
       complements: null
     });
+  };
+
+  const handleChangeCep = e => {
+    const { value } = e.target;
+    if (value.length === 9) {
+      setLoadingAddresses(true);
+      AddressesService.getCep(value.replace('-', '')).then(res => {
+        if (res.data !== '') {
+          const { state, city, neighborhood, street } = res.data;
+          if (!stateRef.current.value) {
+            stateRef.current.setValue(state);
+          }
+          if (!cityRef.current.value) {
+            cityRef.current.setValue(city);
+          }
+          if (!neighborhoodRef.current.value) {
+            neighborhoodRef.current.setValue(neighborhood);
+          }
+          if (!streetRef.current.value) {
+            streetRef.current.setValue(street);
+          }
+        }
+        setLoadingAddresses(false);
+      });
+    }
   };
 
   const handleSubmit = async e => {
@@ -246,6 +289,7 @@ function Properties() {
                             label="Estado"
                             name="state"
                             initialValue=""
+                            ref={stateRef}
                           />
                         </div>
                         <div>
@@ -254,6 +298,7 @@ function Properties() {
                             label="Cidade"
                             name="city"
                             initialValue=""
+                            ref={cityRef}
                           />
                         </div>
                         <div>
@@ -262,6 +307,10 @@ function Properties() {
                             label="CEP"
                             name="postcode"
                             initialValue=""
+                            mask="cep"
+                            disabled={loadingAddresses}
+                            ref={postalcodeRef}
+                            handleChange={handleChangeCep}
                           />
                         </div>
                       </div>
@@ -272,6 +321,7 @@ function Properties() {
                             label="Bairro"
                             name="neighborhood"
                             initialValue=""
+                            ref={neighborhoodRef}
                           />
                         </div>
                         <div>
@@ -280,6 +330,7 @@ function Properties() {
                             label="Rua"
                             name="street"
                             initialValue=""
+                            ref={streetRef}
                           />
                         </div>
                       </div>
