@@ -27,7 +27,8 @@
     "redux-thunk": "^2.3.0",
     "styled-components": "^5.2.1",
     "swr": "^0.4.2",
-    "use-debounce": "^5.2.0"
+    "use-debounce": "^5.2.0",
+    "yup": "^0.32.9"
   },
   "devDependencies": {
     "babel-eslint": "^10.1.0",
