@@ -12,22 +12,22 @@ import { ActionButtonContainer } from './styles';
 
 const ActionButton = ({ id, path, onDelete }) => (
   <ActionButtonContainer>
-    <div>
-      <Link href={`${path}/${id}`}>
-        <a>
+    <Link href={`${path}/${id}`}>
+      <a>
+        <div>
           <FontAwesomeIcon icon={faInfoCircle} />
-        </a>
-      </Link>
-    </div>
-    <div>
-      <Link href={`${path}/edit/${id}`}>
-        <a>
+        </div>
+      </a>
+    </Link>
+    <Link href={`${path}/edit/${id}`}>
+      <a>
+        <div>
           <FontAwesomeIcon icon={faEdit} />
-        </a>
-      </Link>
-    </div>
-    <div>
-      <div onClick={() => onDelete()}>
+        </div>
+      </a>
+    </Link>
+    <div onClick={() => onDelete()}>
+      <div>
         <FontAwesomeIcon icon={faTrash} />
       </div>
     </div>

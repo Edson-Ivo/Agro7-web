@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 
+import Select from '@/components/Select/index';
 import Container from '../../components/Container';
 import Nav from '../../components/Nav';
 import Navbar from '../../components/Navbar';
@@ -93,6 +94,15 @@ function ProducerNotebook() {
                   />
 
                   <Button onClick={handleClick}>teste</Button>
+
+                  <Select
+                    options={[
+                      { value: 'chocolate', label: 'Chocolate' },
+                      { value: 'strawberry', label: 'Strawberry' },
+                      { value: 'vanilla', label: 'Vanilla' }
+                    ]}
+                    label="Teste"
+                  />
 
                   {/* {posts.map(post => (
                     <Card key={post.id}>

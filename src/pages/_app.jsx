@@ -10,6 +10,7 @@ import GlobalStyle from '../styles/globals';
 import theme from '../styles/theme';
 
 import store from '../store';
+import { ModalProvider } from '../hooks/useModal';
 
 config.autoAddCss = false;
 
@@ -24,7 +25,9 @@ const MyApp = ({ Component, pageProps }) => (
     </Head>
     <Provider store={store}>
       <ThemeProvider theme={theme}>
-        <Component {...pageProps} />
+        <ModalProvider>
+          <Component {...pageProps} />
+        </ModalProvider>
         <GlobalStyle />
       </ThemeProvider>
     </Provider>

@@ -8,6 +8,7 @@ import Nav from '../../components/Nav';
 import Navbar from '../../components/Navbar';
 import Breadcrumb from '../../components/Breadcrumb';
 import Input from '../../components/Input';
+import Select from '../../components/Select';
 import Button from '../../components/Button';
 import { Alert } from '../../components/Alert';
 import { Section, SectionHeader, SectionBody } from '../../components/Section';

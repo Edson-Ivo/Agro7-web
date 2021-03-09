@@ -5,7 +5,8 @@ export const ActionButtonContainer = styled.div`
   flex-direction: row;
   width: 100%;
 
-  > div {
+  > div,
+  > a {
     cursor: pointer;
     padding: 10px;
     margin-right: 10px;
@@ -14,9 +15,6 @@ export const ActionButtonContainer = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-
-    a {
-      color: ${props => props.theme.colors.black};
-    }
+    color: ${props => props.theme.colors.black};
   }
 `;
