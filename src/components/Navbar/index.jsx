@@ -63,16 +63,14 @@ const Navbar = () => {
               </h5>
               <Tooltip opened={open} clickAction={handleClick}>
                 <ul>
-                  <li>
-                    <Link href="/configuracoes">
-                      <a>
-                        <span>
-                          <FontAwesomeIcon icon={faCog} className="icon" />{' '}
-                          Configurações
-                        </span>
-                      </a>
-                    </Link>
-                  </li>
+                  <Link href="/configuracoes">
+                    <li>
+                      <span style={{ width: '100%' }}>
+                        <FontAwesomeIcon icon={faCog} className="icon" />{' '}
+                        Configurações
+                      </span>
+                    </li>
+                  </Link>
                   <li onClick={() => handleLogout()}>
                     <span>
                       <FontAwesomeIcon icon={faSignOutAlt} className="icon" />{' '}

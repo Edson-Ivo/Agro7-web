@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import Head from 'next/head';
 
 import Container from '../../../components/Container';
@@ -20,12 +20,27 @@ import Loader from '../../../components/Loader';
 import Error from '../../../components/Error';
 import { useFetch } from '../../../hooks/useFetch';
 import ActionButton from '../../../components/ActionButton';
+import { useModal } from '../../../hooks/useModal';
 
 function AdminUsers({ permission }) {
   const { data, error } = useFetch(`/users/find/all`);
+  const { addModal, removeModal } = useModal();
 
   if (!permission) return <NotFound />;
   if (error) return <Error />;
+
+  const handleDeleteModal = useCallback(
+    id => {
+      addModal({
+        title: 'Deletar Usuário',
+        text: 'Deseja realmente deletar este usuário?',
+        confirm: true,
+        onConfirm: () => console.log(id),
+        onCancel: removeModal
+      });
+    },
+    [addModal, removeModal]
+  );
 
   return (
     <>
@@ -76,7 +91,7 @@ function AdminUsers({ permission }) {
                                 <ActionButton
                                   id={user.id}
                                   path="/admin/users"
-                                  onDelete={() => console.log('teste')}
+                                  onDelete={() => handleDeleteModal(user.id)}
                                 />
                               </td>
                             </tr>
