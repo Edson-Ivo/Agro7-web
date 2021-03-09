@@ -1,5 +1,4 @@
-const getFormData = (event, initialData = {}) => {
-  const form = event.target;
+const getFormData = (form, initialData = {}) => {
   const dataForm = new FormData(form);
   let formData = initialData;
 

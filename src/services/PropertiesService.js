@@ -15,11 +15,7 @@ class PropertiesService {
 
   static async create(data) {
     try {
-      const response = await api.create(
-        `/properties/create`,
-        JSON.stringify({ data })
-      );
-
+      const response = await api.post(`/properties/create`, { ...data });
       return response;
     } catch (error) {
       return error.response;
