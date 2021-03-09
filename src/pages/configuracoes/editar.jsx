@@ -43,6 +43,8 @@ function ConfiguracoesEdit() {
     if (formData.name && formData.phone) {
       setLoading(true);
 
+      console.log(formData);
+
       await UsersServices.updateByOwner(formData).then(res => {
         if (res.status !== 200 || res?.statusCode) {
           setAlertMsg(errorMessage(res));

@@ -29,6 +29,16 @@ export const StyledInput = styled.input`
   &:focus + .input-label {
     ${ShrinkedLabel}
   }
+
+  &::-webkit-outer-spin-button,
+  &::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  &[type='number'] {
+    -moz-appearance: textfield;
+  }
 `;
 
 export const Label = styled.label`

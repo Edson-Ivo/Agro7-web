@@ -101,7 +101,10 @@ function ProducerNotebook() {
                       { value: 'strawberry', label: 'Strawberry' },
                       { value: 'vanilla', label: 'Vanilla' }
                     ]}
-                    label="Teste"
+                    label="teste"
+                    value="vanilla"
+                    name="teste"
+                    disabled
                   />
 
                   {/* {posts.map(post => (

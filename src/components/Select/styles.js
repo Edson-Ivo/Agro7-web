@@ -46,6 +46,10 @@ export const InputContainer = styled.div`
     &::placeholder {
       color: ${props => props.theme.colors.inputPlaceholder};
     }
+
+    .select__single-value {
+      color: ${props => props.theme.colors.primary}!important;
+    }
   }
 `;
 
@@ -58,4 +62,5 @@ export const Label = styled.label`
   font-weight: 800;
   text-align: left;
   transition: ease 0.2s;
+  margin-left: 10px;
 `;
