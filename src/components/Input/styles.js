@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 import { ShrinkedLabel } from './mixins';
 
@@ -11,7 +11,7 @@ export const StyledInput = styled.input`
   border: 1px solid ${props => props.theme.colors.gray};
   color: ${props => props.theme.colors.black};
   font-size: 1em;
-  height: 50px;
+  height: ${props => (props.type !== 'checkbox' ? `50px;` : '')};
   line-height: 50px;
   padding: 16px 20px 0;
   ${props => (props.type !== 'checkbox' ? `display: block;` : '')};
@@ -19,6 +19,12 @@ export const StyledInput = styled.input`
   border-radius: 10px;
   ${props => (props.type !== 'checkbox' ? `margin: 5px 0px 15px` : '')};
   transition: background 0.3s;
+  ${props =>
+    props.type === 'checkbox' &&
+    css`
+      margin-left: 3px;
+      margin-top: 3px;
+    `}
 
   &:hover,
   &:focus {
@@ -26,9 +32,13 @@ export const StyledInput = styled.input`
     border: 1px solid ${props => props.theme.colors.border};
   }
 
-  &:focus + .input-label {
-    ${ShrinkedLabel}
-  }
+  ${props =>
+    props.type !== 'checkbox' &&
+    css`
+      &:focus + .input-label {
+        ${ShrinkedLabel}
+      }
+    `}
 
   &::-webkit-outer-spin-button,
   &::-webkit-inner-spin-button {

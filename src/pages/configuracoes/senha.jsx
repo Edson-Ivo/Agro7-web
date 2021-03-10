@@ -118,14 +118,14 @@ function ConfiguracoesSenha() {
                   {(!loading && (
                     <div className="form-group buttons">
                       <div>
-                        <Button className="primary" type="submit">
-                          Salvar
-                        </Button>
-                      </div>
-                      <div>
                         <Link href="/configuracoes">
                           <Button>Cancelar</Button>
                         </Link>
+                      </div>
+                      <div>
+                        <Button className="primary" type="submit">
+                          Salvar
+                        </Button>
                       </div>
                     </div>
                   )) || <Loader />}

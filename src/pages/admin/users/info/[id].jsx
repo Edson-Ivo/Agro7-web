@@ -1,27 +1,33 @@
 import React from 'react';
 import Head from 'next/head';
-
-import Container from '@/components/Container';
-import MapActionGetLatLng from '@/components/MapApp';
-import Nav from '@/components/Nav';
-import Navbar from '@/components/Navbar';
-import Loader from '@/components/Loader';
-import Input from '@/components/Input';
-import Button from '@/components/Button';
-import NotFound from '@/components/NotFound';
-import Select from '@/components/Select';
-import { Section, SectionHeader, SectionBody } from '@/components/Section';
-import { CardContainer } from '@/components/CardContainer';
-import { useFetch } from '@/hooks/useFetch';
-import { privateRoute } from '@/components/PrivateRoute';
 import { useRouter } from 'next/router';
-import Breadcrumb from '@/components/Breadcrumb';
 
-function PropertieInfo({ permission }) {
+import Container from '../../../../components/Container';
+import Nav from '../../../../components/Nav';
+import Navbar from '../../../../components/Navbar';
+import Breadcrumb from '../../../../components/Breadcrumb';
+import Input from '../../../../components/Input';
+import Select from '../../../../components/Select';
+import Button from '../../../../components/Button';
+import {
+  Section,
+  SectionHeader,
+  SectionBody
+} from '../../../../components/Section';
+
+import { CardContainer } from '../../../../components/CardContainer';
+import { privateRoute } from '../../../../components/PrivateRoute';
+import NotFound from '../../../../components/NotFound';
+
+import Loader from '../../../../components/Loader';
+import Error from '../../../../components/Error';
+import { useFetch } from '../../../../hooks/useFetch';
+
+function AdminUsers({ permission }) {
   const router = useRouter();
   const { id } = router.query;
 
-  const { data, error } = useFetch(`/properties/find/by/id/${id}`);
+  const { data, error } = useFetch(`/users/find/by/id/${id}`);
 
   if (!permission) return <NotFound />;
 
@@ -29,7 +35,7 @@ function PropertieInfo({ permission }) {
     <>
       {error && router.back()}
       <Head>
-        <title>Painel do Administrativo | Propriedade - Agro7</title>
+        <title>Painel Adminstrativo | Gerenciar Usuários - Agro7</title>
       </Head>
 
       <Navbar />
@@ -42,16 +48,12 @@ function PropertieInfo({ permission }) {
                 path={[
                   { route: '/', name: 'Home' },
                   { route: '/admin', name: 'Painel Adminstrativo' },
-                  {
-                    route: '/admin/propriedades',
-                    name: 'Gerenciar Propriedades'
-                  }
+                  { route: '/admin/users', name: 'Gerenciar Usuários' }
                 ]}
               />
-              <h2>Informações da propriedade {data && `(${data.name})`}</h2>
+              <h2>Informações do Usuário {data && `(${data.name})`}</h2>
               <p>
-                Aqui você irá ver informações detalhadas da propriedade em
-                questão
+                Aqui você irá ver informações detalhadas do usuário em questão
               </p>
             </div>
           </SectionHeader>
@@ -60,48 +62,60 @@ function PropertieInfo({ permission }) {
               <CardContainer>
                 {(data && (
                   <>
+                    <Input
+                      type="text"
+                      label="Nome"
+                      name="name"
+                      initialValue={data.name}
+                      disabled
+                    />
+                    <Input
+                      type="text"
+                      label="E-mail"
+                      name="email"
+                      initialValue={data.email}
+                      disabled
+                    />
+                    <Input
+                      type="text"
+                      label="Documento"
+                      name="documents"
+                      initialValue={data.documents}
+                      disabled
+                    />
                     <div className="form-group">
                       <div>
                         <Input
                           type="text"
-                          label="Nome da propriedade"
-                          name="name"
-                          initialValue={data.name}
+                          label="Número Telefone"
+                          name="phone"
+                          mask="phone"
+                          maxLength={15}
+                          initialValue={data.phone}
                           disabled
                         />
                       </div>
-                      <div>
-                        <Select
-                          options={[
-                            { value: 'proprietario', label: 'Proprietário' }
-                          ]}
-                          label="Quem é você para esta propriedade?"
-                          value={data.type_owner}
-                          name="type_owner"
-                          disabled
-                        />
-                      </div>
-                    </div>
-                    <div className="form-group">
                       <div>
                         <Input
-                          type="number"
-                          label="Área"
-                          name="area"
-                          initialValue={data.area}
-                          disabled
-                        />
-                      </div>
-                      <div>
-                        <Select
-                          options={[{ value: 'm', label: 'Metros' }]}
-                          label="Unidade de medida"
-                          value={data.type_dimension}
-                          name="type_dimension"
+                          type="text"
+                          label="Número Whatsapp"
+                          name="phone_whatsapp"
+                          mask="phone"
+                          maxLength={15}
+                          initialValue={data.phone_whatsapp}
                           disabled
                         />
                       </div>
                     </div>
+                    <Select
+                      options={[
+                        { value: 'administrator', label: 'Administrador' }
+                      ]}
+                      label="Tipo de Usuário"
+                      value={data.types}
+                      name="types"
+                      disabled
+                    />
                     <div className="form-group">
                       <div>
                         <Input
@@ -172,49 +186,18 @@ function PropertieInfo({ permission }) {
                         />
                       </div>
                     </div>
-
-                    <div className="form-group">
-                      <div>
-                        <Input
-                          type="number"
-                          label="Latitude"
-                          name="latitude"
-                          initialValue={data.coordinates.latitude}
-                          disabled
-                        />
-                      </div>
-                      <div>
-                        <Input
-                          type="number"
-                          label="Longitude"
-                          name="longitude"
-                          initialValue={data.coordinates.longitude}
-                          disabled
-                        />
-                      </div>
-                    </div>
-                    <div style={{ marginBottom: '20px' }}>
-                      <MapActionGetLatLng
-                        positions={[
-                          data.coordinates.latitude,
-                          data.coordinates.longitude
-                        ]}
-                      />
-                    </div>
                   </>
                 )) || <Loader />}
                 <div className="form-group buttons">
                   <div>
-                    <Button onClick={() => router.push('/admin/propriedades')}>
+                    <Button onClick={() => router.push('/admin/users')}>
                       Voltar
                     </Button>
                   </div>
                   <div>
                     <Button
                       className="primary"
-                      onClick={() =>
-                        router.push(`/admin/propriedades/edit/${id}`)
-                      }
+                      onClick={() => router.push(`/admin/users/edit/${id}`)}
                     >
                       Editar
                     </Button>
@@ -229,4 +212,4 @@ function PropertieInfo({ permission }) {
   );
 }
 
-export default privateRoute(['administrator'])(PropertieInfo);
+export default privateRoute(['administrator'])(AdminUsers);

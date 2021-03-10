@@ -1,6 +1,10 @@
 import React, { useCallback, useState } from 'react';
 import Head from 'next/head';
+import Link from 'next/link';
 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPlus } from '@fortawesome/free-solid-svg-icons';
+import Button from '@/components/Button';
 import Container from '../../../components/Container';
 import Nav from '../../../components/Nav';
 import Navbar from '../../../components/Navbar';
@@ -91,6 +95,11 @@ function AdminUsers({ permission }) {
                 ]}
               />
               <h2>Gerenciar Usuários</h2>
+              <Link href="/admin/users/cadastrar">
+                <Button className="primary">
+                  <FontAwesomeIcon icon={faPlus} /> Novo Usuário
+                </Button>
+              </Link>
             </div>
           </SectionHeader>
           <SectionBody>
@@ -123,6 +132,8 @@ function AdminUsers({ permission }) {
                                 <ActionButton
                                   id={user.id}
                                   path="/admin/users"
+                                  info="/info"
+                                  edit="/edit"
                                   onDelete={() => handleDeleteModal(user.id)}
                                 />
                               </td>
@@ -145,5 +156,4 @@ function AdminUsers({ permission }) {
   );
 }
 
-// export default privateRoute(['administrator'])(AdminUsers);
-export default privateRoute()(AdminUsers);
+export default privateRoute(['administrator'])(AdminUsers);

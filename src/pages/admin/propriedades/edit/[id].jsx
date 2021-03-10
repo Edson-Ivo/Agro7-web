@@ -340,6 +340,18 @@ function PropertiesEdit({ permission }) {
                           <div>
                             <Input
                               type="text"
+                              label="CEP"
+                              name="postcode"
+                              initialValue={data.addresses.postcode}
+                              mask="cep"
+                              disabled={loadingAddresses}
+                              ref={postalcodeRef}
+                              handleChange={handleChangeCep}
+                            />
+                          </div>
+                          <div>
+                            <Input
+                              type="text"
                               label="Estado"
                               name="state"
                               initialValue={data.addresses.state}
@@ -353,18 +365,6 @@ function PropertiesEdit({ permission }) {
                               name="city"
                               initialValue={data.addresses.city}
                               ref={cityRef}
-                            />
-                          </div>
-                          <div>
-                            <Input
-                              type="text"
-                              label="CEP"
-                              name="postcode"
-                              initialValue={data.addresses.postcode}
-                              mask="cep"
-                              disabled={loadingAddresses}
-                              ref={postalcodeRef}
-                              handleChange={handleChangeCep}
                             />
                           </div>
                         </div>

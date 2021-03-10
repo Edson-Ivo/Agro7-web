@@ -1,18 +1,14 @@
 import styled from 'styled-components';
 
 export const Card = styled.div`
-  color: ${props => props.theme.colors.white};
+  color: ${props => props.fontColor || props.theme.colors.white};
   display: flex;
   flex-direction: row;
   width: 100%;
-  min-height: 140px;
-  background: linear-gradient(
-    180deg,
-    rgba(255, 172, 56, 0.7) 0%,
-    rgba(255, 172, 56, 0.7) 0.01%,
-    rgba(236, 150, 28, 0.7) 103.09%
-  );
-  box-shadow: 0px 16px 24px rgba(0, 0, 0, 0.05);
+  min-height: ${props => props.height || '140px'};
+  border: 1px solid ${props => props.theme.colors.border};
+  background: ${props => props.color || props.theme.colors.white};
+  /* box-shadow: 0px 16px 24px rgba(0, 0, 0, 0.05); */
   border-radius: 10px;
   padding: 15px 0px 15px 25px;
   overflow: hidden;
@@ -32,7 +28,9 @@ export const Card = styled.div`
 
   .card-image {
     align-self: center;
-    direction: rtl;
     width: 30%;
+    display: flex;
+    justify-content: flex-end;
+    padding-right: 24px;
   }
 `;
