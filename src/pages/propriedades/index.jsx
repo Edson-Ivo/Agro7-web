@@ -1,0 +1,156 @@
+import React, { useState, useCallback } from 'react';
+import Head from 'next/head';
+
+import Container from '@/components/Container';
+import Nav from '@/components/Nav';
+import Navbar from '@/components/Navbar';
+import Breadcrumb from '@/components/Breadcrumb';
+import { Section, SectionHeader, SectionBody } from '@/components/Section';
+
+import { CardContainer } from '@/components/CardContainer';
+import { privateRoute } from '@/components/PrivateRoute';
+import NotFound from '@/components/NotFound';
+import Table from '@/components/Table';
+
+import Loader from '@/components/Loader';
+import Error from '@/components/Error';
+import { useFetch } from '@/hooks/useFetch';
+import ActionButton from '@/components/ActionButton';
+import { useModal } from '@/hooks/useModal';
+import { useSelector } from 'react-redux';
+
+import { useRouter } from 'next/router';
+import errorMessage from '@/helpers/errorMessage';
+import PropertiesService from '@/services/PropertiesService';
+import { Alert } from '@/components/Alert/index';
+
+function Properties({ permission }) {
+  const { id } = useSelector(state => state.user);
+  const [alertMsg, setAlertMsg] = useState({ type: '', message: '' });
+  const [loading, setLoading] = useState(false);
+
+  const router = useRouter();
+
+  const { page = 1 } = router.query;
+
+  const { addModal, removeModal } = useModal();
+
+  const { data, error } = useFetch(
+    `/properties/find/by/user/${id}?page=${page}`
+  );
+
+  const handleDelete = useCallback(
+    async identifier => {
+      removeModal();
+      setLoading(true);
+
+      await PropertiesService.delete(identifier).then(res => {
+        // if (res.status > 400 || res?.statusCode) {
+        //   setAlertMsg(errorMessage(res));
+        // } else {
+        //   setAlertMsg({
+        //     type: 'success',
+        //     message: 'Dados alterados com sucesso!'
+        //   });
+        // }
+
+        setAlertMsg({
+          type: 'success',
+          message: 'A propriedade foi deletada com sucesso!'
+        });
+      });
+
+      setLoading(false);
+    },
+    [addModal, removeModal]
+  );
+
+  const handleDeleteModal = useCallback(
+    identifier => {
+      addModal({
+        title: 'Deletar Usuário',
+        text: 'Deseja realmente deletar este usuário?',
+        confirm: true,
+        onConfirm: () => handleDelete(identifier),
+        onCancel: removeModal
+      });
+    },
+    [addModal, removeModal]
+  );
+  if (!permission) return <NotFound />;
+  if (error) return <Error />;
+  return (
+    <>
+      <Head>
+        <title>Painel do Usuário | Suas propriedades - Agro7</title>
+      </Head>
+
+      <Navbar />
+      <Container>
+        <Nav />
+        <Section>
+          <SectionHeader>
+            <div className="SectionHeader__content">
+              <Breadcrumb
+                path={[
+                  { route: '/', name: 'Home' },
+                  { route: '/propriedades', name: 'Propriedades' }
+                ]}
+              />
+              <h2>Suas propriedades</h2>
+            </div>
+          </SectionHeader>
+          <SectionBody>
+            <div className="SectionBody__content">
+              <CardContainer>
+                {alertMsg.message && (
+                  <Alert type={alertMsg.type}>{alertMsg.message}</Alert>
+                )}
+                {((data || loading) && (
+                  <div className="table-responsive">
+                    <Table>
+                      <thead>
+                        <tr>
+                          <th>Nome da propriedade</th>
+                          <th>Estado</th>
+                          <th>Cidade</th>
+                          <th>Ações</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {(data?.properties &&
+                          data.properties.map(p => (
+                            <tr key={p.id}>
+                              <td>{p.name}</td>
+                              <td>{p.state}</td>
+                              <td>{p.city}</td>
+                              <td>
+                                <ActionButton
+                                  id={p.id}
+                                  path="/propriedades"
+                                  info="/info"
+                                  edit="/edit"
+                                  onDelete={() => handleDeleteModal(p.id)}
+                                />
+                              </td>
+                            </tr>
+                          ))) || (
+                          <tr>
+                            <td colSpan="4">Não há propriedades cadastradas</td>
+                          </tr>
+                        )}
+                      </tbody>
+                    </Table>
+                  </div>
+                )) || <Loader />}
+              </CardContainer>
+            </div>
+          </SectionBody>
+        </Section>
+      </Container>
+    </>
+  );
+}
+
+// export default privateRoute(['administrator'])(AdminUsers);
+export default privateRoute()(Properties);

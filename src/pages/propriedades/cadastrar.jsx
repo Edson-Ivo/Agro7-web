@@ -32,8 +32,7 @@ const schema = yup.object().shape({
     .number()
     .transform(value => (Number.isNaN(value) ? undefined : value))
     .required('A área precisa ser definida')
-    .positive('A área precisa ter um valor positivo')
-    .integer('A área precisar ser um inteiro'),
+    .positive('A área precisa ter um valor positivo'),
   type_dimension: yup.string().min(1).max(1).required(),
   type_owner: yup.string().min(1).required(),
   latitude: yup
@@ -62,11 +61,11 @@ const schema = yup.object().shape({
   postcode: yup
     .string()
     .min(
-      8,
+      9,
       'Você tem que digitar no mínimo e no máximo 9 caracteres, para o CEP. Ex: 00000000'
     )
     .max(
-      8,
+      9,
       'Você tem que digitar no mínimo e no máximo 9 caracteres para o CEP. Ex: 00000000'
     )
     .required('Você precisa informar o CEP da propriedade'),
@@ -85,7 +84,7 @@ const schema = yup.object().shape({
     .nullable()
 });
 
-function Properties() {
+function PropertiesRegister() {
   const formRef = useRef(null);
   const [alert, setAlert] = useState({ type: '', message: '' });
   const [disableButton, setDisableButton] = useState(false);
@@ -419,4 +418,4 @@ function Properties() {
   );
 }
 
-export default privateRoute()(Properties);
+export default privateRoute()(PropertiesRegister);
