@@ -39,6 +39,7 @@
     "react/prop-types": "off",
     "space-before-function-paren": "off",
     "no-use-before-define": "off",
-    "no-plusplus": "off"
+    "no-plusplus": "off",
+    "jsx-a11y/label-has-associated-control": "off"
   }
 }
