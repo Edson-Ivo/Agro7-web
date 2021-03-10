@@ -22,12 +22,24 @@ class PropertiesService {
     }
   }
 
+  static async delete(data) {
+    try {
+      // const response = await api.post(`/properties/create`, { ...data });
+      const response = { status: 404 };
+      return response;
+    } catch (error) {
+      return error.response;
+    }
+  }
+
   static async update(id, data) {
     try {
-      const response = await api.put(
-        `/properties/update/${id}`,
-        JSON.stringify({ data })
-      );
+      const response = await api.put(`/properties/update/${id}`, {
+        name: data.name,
+        area: data.area,
+        type_dimension: data.type_dimension,
+        type_owner: data.type_owner
+      });
       return response;
     } catch (error) {
       return error.response;

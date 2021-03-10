@@ -11,10 +11,10 @@ class CoordinatesService {
 
   static async update(id, data) {
     try {
-      const response = await api.put(
-        `/coordinates/update/${id}`,
-        JSON.stringify({ data })
-      );
+      const response = await api.put(`/coordinates/update/${id}`, {
+        latitude: data.latitude,
+        longitude: data.longitude
+      });
       return response;
     } catch (error) {
       return error.response;

@@ -15,10 +15,14 @@ class AddressesService {
 
   static async update(id, data) {
     try {
-      const response = await api.put(
-        `/addresses/${id}`,
-        JSON.stringify({ data })
-      );
+      const response = await api.put(`/addresses/${id}`, {
+        state: data.state,
+        strett: data.street,
+        city: data.city,
+        neighborhood: data.neighborhood,
+        number: data.number,
+        complements: data.complements
+      });
       return response;
     } catch (error) {
       return error.response;
