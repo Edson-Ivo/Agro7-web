@@ -8,6 +8,7 @@ import Nav from '@/components/Nav';
 import Navbar from '@/components/Navbar';
 import Breadcrumb from '@/components/Breadcrumb';
 import Input from '@/components/Input';
+import NotFound from '@/components/NotFound';
 import Button from '@/components/Button';
 import Select from '@/components/Select';
 import { Section, SectionHeader, SectionBody } from '@/components/Section';
@@ -88,7 +89,7 @@ const schema = yup.object().shape({
     .nullable()
 });
 
-function PropertiesEdit() {
+function PropertiesEdit({ permission }) {
   const router = useRouter();
   const { id } = router.query;
 
@@ -186,7 +187,7 @@ function PropertiesEdit() {
 
   const handleCancelEdit = e => {
     e.preventDefault();
-    router.push(`/propriedades/`);
+    router.push(`/admin/propriedades/`);
   };
 
   const handleSubmit = async e => {
@@ -232,7 +233,7 @@ function PropertiesEdit() {
                         });
 
                         setTimeout(() => {
-                          router.push(`/propriedades/info/${id}`);
+                          router.push(`/admin/propriedades/info/${id}`);
                           setDisableButton(false);
                         }, 1000);
                       }
@@ -250,11 +251,13 @@ function PropertiesEdit() {
       });
   };
 
+  if (!permission) return <NotFound />;
+
   return (
     <>
       {error && router.back()}
       <Head>
-        <title>Editando propriedade - Agro7</title>
+        <title>Painel do Administrativo | Editar Propriedade - Agro7</title>
       </Head>
 
       <Navbar />
@@ -266,7 +269,11 @@ function PropertiesEdit() {
               <Breadcrumb
                 path={[
                   { route: '/', name: 'Home' },
-                  { route: '/propriedades', name: 'Propriedades' }
+                  { route: '/admin', name: 'Painel Adminstrativo' },
+                  {
+                    route: '/admin/propriedades',
+                    name: 'Gerenciar Propriedades'
+                  }
                 ]}
               />
               <h2>Editar propriedade {`(${data && data.name})`}</h2>
@@ -486,4 +493,4 @@ function PropertiesEdit() {
   );
 }
 
-export default privateRoute()(PropertiesEdit);
+export default privateRoute(['administrator'])(PropertiesEdit);

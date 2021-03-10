@@ -29,7 +29,7 @@ function Configuracoes() {
   return (
     <>
       <Head>
-        <title>Seus Dados - Agro7</title>
+        <title>Meus Dados - Agro7</title>
       </Head>
 
       <Navbar />
@@ -44,7 +44,7 @@ function Configuracoes() {
                   { route: '/configuracoes', name: 'Configurações' }
                 ]}
               />
-              <h2>Seus dados</h2>
+              <h2>Meus Dados</h2>
               <p>
                 Esses são os dados de sua conta, aqui você pode os editar ou
                 alterar sua senha.

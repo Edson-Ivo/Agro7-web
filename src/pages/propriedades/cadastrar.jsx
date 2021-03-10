@@ -3,6 +3,8 @@ import Head from 'next/head';
 import * as yup from 'yup';
 import { MultiStepForm as MultiStep, Step } from '@/components/Multiform';
 
+import MapActionGetLatLng from '@/components/MapApp';
+
 import Container from '@/components/Container';
 import Nav from '@/components/Nav';
 import Navbar from '@/components/Navbar';
@@ -38,7 +40,7 @@ const schema = yup.object().shape({
   latitude: yup
     .number()
     .transform(value => (Number.isNaN(value) ? undefined : value))
-    .required('A latidute é obrigatória'),
+    .required('A latitute é obrigatória'),
   longitude: yup
     .number()
     .transform(value => (Number.isNaN(value) ? undefined : value))
@@ -62,11 +64,11 @@ const schema = yup.object().shape({
     .string()
     .min(
       9,
-      'Você tem que digitar no mínimo e no máximo 9 caracteres, para o CEP. Ex: 00000000'
+      'Você tem que digitar no mínimo e no máximo 9 caracteres, para o CEP. Ex: 00000-000'
     )
     .max(
       9,
-      'Você tem que digitar no mínimo e no máximo 9 caracteres para o CEP. Ex: 00000000'
+      'Você tem que digitar no mínimo e no máximo 9 caracteres para o CEP. Ex: 00000-000'
     )
     .required('Você precisa informar o CEP da propriedade'),
   street: yup
@@ -84,7 +86,7 @@ const schema = yup.object().shape({
     .nullable()
 });
 
-function PropertiesRegister() {
+function Properties() {
   const formRef = useRef(null);
   const [alert, setAlert] = useState({ type: '', message: '' });
   const [disableButton, setDisableButton] = useState(false);
@@ -96,6 +98,8 @@ function PropertiesRegister() {
   const neighborhoodRef = useRef(null);
   const streetRef = useRef(null);
   const postalcodeRef = useRef(null);
+  const latitudeRef = useRef(null);
+  const longitudeRef = useRef(null);
 
   useEffect(
     () => () => {
@@ -168,6 +172,11 @@ function PropertiesRegister() {
     }
   };
 
+  const handleLatLng = positions => {
+    latitudeRef.current.setValue(positions[0]);
+    longitudeRef.current.setValue(positions[1]);
+  };
+
   const handleSubmit = async e => {
     e.preventDefault();
     setDisableButton(true);
@@ -219,7 +228,7 @@ function PropertiesRegister() {
               <Breadcrumb
                 path={[
                   { route: '/', name: 'Home' },
-                  { route: '/properties', name: 'Propriedades' }
+                  { route: '/propriedades', name: 'Propriedades' }
                 ]}
               />
               <h2>Cadastre uma propriedade</h2>
@@ -232,7 +241,6 @@ function PropertiesRegister() {
                 {alert.message !== '' && (
                   <Alert type={alert.type}>{alert.message}</Alert>
                 )}
-
                 <form
                   id="registerForm"
                   ref={formRef}
@@ -285,6 +293,18 @@ function PropertiesRegister() {
                         <div>
                           <Input
                             type="text"
+                            label="CEP"
+                            name="postcode"
+                            initialValue=""
+                            mask="cep"
+                            disabled={loadingAddresses}
+                            ref={postalcodeRef}
+                            handleChange={handleChangeCep}
+                          />
+                        </div>
+                        <div>
+                          <Input
+                            type="text"
                             label="Estado"
                             name="state"
                             initialValue=""
@@ -298,18 +318,6 @@ function PropertiesRegister() {
                             name="city"
                             initialValue=""
                             ref={cityRef}
-                          />
-                        </div>
-                        <div>
-                          <Input
-                            type="text"
-                            label="CEP"
-                            name="postcode"
-                            initialValue=""
-                            mask="cep"
-                            disabled={loadingAddresses}
-                            ref={postalcodeRef}
-                            handleChange={handleChangeCep}
                           />
                         </div>
                       </div>
@@ -353,7 +361,7 @@ function PropertiesRegister() {
                       </div>
                     </Step>
                     <Step label="Selecionar" onClick={() => setActiveStep(2)}>
-                      <h4 className="step-title">Selecionar Propriedade</h4>
+                      <h4 className="step-title">Selecionar Localização</h4>
 
                       <div className="form-group">
                         <div>
@@ -362,6 +370,7 @@ function PropertiesRegister() {
                             label="Latitude"
                             name="latitude"
                             initialValue=""
+                            ref={latitudeRef}
                           />
                         </div>
                         <div>
@@ -370,8 +379,13 @@ function PropertiesRegister() {
                             label="Longitude"
                             name="longitude"
                             initialValue=""
+                            ref={longitudeRef}
                           />
                         </div>
+                      </div>
+
+                      <div style={{ marginBottom: '20px' }}>
+                        <MapActionGetLatLng onClick={handleLatLng} />
                       </div>
                     </Step>
                   </MultiStep>
@@ -418,4 +432,4 @@ function PropertiesRegister() {
   );
 }
 
-export default privateRoute()(PropertiesRegister);
+export default privateRoute()(Properties);

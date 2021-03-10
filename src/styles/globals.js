@@ -86,6 +86,7 @@ export default createGlobalStyle`
   .form-group {
     display: flex;
     flex-direction: row;
+    position: relative;
     width: 100%;
 
     &.buttons {

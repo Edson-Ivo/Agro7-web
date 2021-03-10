@@ -31,7 +31,7 @@ function AdminUsers({ permission }) {
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
 
-  const { data, error } = useFetch(`/users/find/all?page=${page}`);
+  const { data, error } = useFetch(`/users/find/all?perPage=10&page=${page}`);
   const { addModal, removeModal } = useModal();
 
   if (!permission) return <NotFound />;

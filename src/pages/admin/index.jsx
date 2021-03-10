@@ -60,5 +60,5 @@ function AdminHome({ permission }) {
   );
 }
 
-// export default privateRoute(['administrator'])(AdminHome);
-export default privateRoute()(AdminHome);
+export default privateRoute(['administrator'])(AdminHome);
+// export default privateRoute()(AdminHome);

@@ -66,8 +66,8 @@ const Navbar = () => {
                   <Link href="/configuracoes">
                     <li>
                       <span style={{ width: '100%' }}>
-                        <FontAwesomeIcon icon={faCog} className="icon" />{' '}
-                        Configurações
+                        <FontAwesomeIcon icon={faCog} className="icon" /> Meus
+                        Dados
                       </span>
                     </li>
                   </Link>

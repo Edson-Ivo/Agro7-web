@@ -1,9 +1,5 @@
 import React, { useState, useCallback } from 'react';
 import Head from 'next/head';
-import Link from 'next/link';
-
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus } from '@fortawesome/free-solid-svg-icons';
 
 import Container from '@/components/Container';
 import Nav from '@/components/Nav';
@@ -22,15 +18,13 @@ import Error from '@/components/Error';
 import { useFetch } from '@/hooks/useFetch';
 import ActionButton from '@/components/ActionButton';
 import { useModal } from '@/hooks/useModal';
-import { useSelector } from 'react-redux';
 
 import { useRouter } from 'next/router';
 import errorMessage from '@/helpers/errorMessage';
 import PropertiesService from '@/services/PropertiesService';
 import { Alert } from '@/components/Alert/index';
 
-function Properties() {
-  const { id } = useSelector(state => state.user);
+function Properties({ permission }) {
   const [alertMsg, setAlertMsg] = useState({ type: '', message: '' });
   const [loading, setLoading] = useState(false);
 
@@ -41,7 +35,7 @@ function Properties() {
   const { addModal, removeModal } = useModal();
 
   const { data, error } = useFetch(
-    `/properties/find/by/user/${id}?perPage=10&page=${page}`
+    `/properties/find/all?perPage=10&page=${page}`
   );
 
   const handleDelete = useCallback(
@@ -78,12 +72,13 @@ function Properties() {
     [addModal, removeModal]
   );
 
+  if (!permission) return <NotFound />;
   if (error) return <Error />;
 
   return (
     <>
       <Head>
-        <title>Painel do Usuário | Suas propriedades - Agro7</title>
+        <title>Painel do Administrativo | Propriedades - Agro7</title>
       </Head>
 
       <Navbar />
@@ -95,15 +90,14 @@ function Properties() {
               <Breadcrumb
                 path={[
                   { route: '/', name: 'Home' },
-                  { route: '/propriedades', name: 'Propriedades' }
+                  { route: '/admin', name: 'Painel Adminstrativo' },
+                  {
+                    route: '/admin/propriedades',
+                    name: 'Gerenciar Propriedades'
+                  }
                 ]}
               />
-              <h2>Suas propriedades</h2>
-              <Link href="/propriedades/cadastrar">
-                <Button className="primary">
-                  <FontAwesomeIcon icon={faPlus} /> Nova Propriedade
-                </Button>
-              </Link>
+              <h2>Gerenciar propriedades</h2>
             </div>
           </SectionHeader>
           <SectionBody>
@@ -133,7 +127,7 @@ function Properties() {
                               <td>
                                 <ActionButton
                                   id={p.id}
-                                  path="/propriedades"
+                                  path="/admin/propriedades"
                                   info="/info"
                                   edit="/edit"
                                   onDelete={() => handleDeleteModal(p.id)}
@@ -158,4 +152,4 @@ function Properties() {
   );
 }
 
-export default privateRoute()(Properties);
+export default privateRoute(['administrator'])(Properties);

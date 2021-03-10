@@ -64,6 +64,10 @@ const NavList = styled.div`
     align-items: center;
     padding: 12px 16px;
 
+    a {
+      color: ${props => props.theme.colors.black};
+    }
+
     .navlist_button__icon {
       font-size: 1.2em;
       align-items: flex-start;
@@ -77,7 +81,9 @@ const NavList = styled.div`
     }
 
     &.active {
-      color: ${props => props.theme.colors.green};
+      a {
+        color: ${props => props.theme.colors.green};
+      }
     }
 
     @media screen and (max-width: ${props =>

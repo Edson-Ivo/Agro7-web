@@ -5,28 +5,31 @@ import Container from '@/components/Container';
 import MapActionGetLatLng from '@/components/MapApp';
 import Nav from '@/components/Nav';
 import Navbar from '@/components/Navbar';
-import Breadcrumb from '@/components/Breadcrumb';
 import Loader from '@/components/Loader';
 import Input from '@/components/Input';
 import Button from '@/components/Button';
+import NotFound from '@/components/NotFound';
 import Select from '@/components/Select';
 import { Section, SectionHeader, SectionBody } from '@/components/Section';
 import { CardContainer } from '@/components/CardContainer';
 import { useFetch } from '@/hooks/useFetch';
 import { privateRoute } from '@/components/PrivateRoute';
 import { useRouter } from 'next/router';
+import Breadcrumb from '@/components/Breadcrumb';
 
-function PropertieInfo() {
+function PropertieInfo({ permission }) {
   const router = useRouter();
   const { id } = router.query;
 
   const { data, error } = useFetch(`/properties/find/by/id/${id}`);
 
+  if (!permission) return <NotFound />;
+
   return (
     <>
       {error && router.back()}
       <Head>
-        <title>Propriedade - Agro7</title>
+        <title>Painel do Administrativo | Propriedade - Agro7</title>
       </Head>
 
       <Navbar />
@@ -38,7 +41,11 @@ function PropertieInfo() {
               <Breadcrumb
                 path={[
                   { route: '/', name: 'Home' },
-                  { route: '/propriedades', name: 'Propriedades' }
+                  { route: '/admin', name: 'Painel Adminstrativo' },
+                  {
+                    route: '/admin/propriedades',
+                    name: 'Gerenciar Propriedades'
+                  }
                 ]}
               />
               <h2>Informações da propriedade {data && `(${data.name})`}</h2>
@@ -198,14 +205,16 @@ function PropertieInfo() {
                 )) || <Loader />}
                 <div className="form-group buttons">
                   <div>
-                    <Button onClick={() => router.push('/propriedades')}>
+                    <Button onClick={() => router.push('/admin/propriedades')}>
                       Voltar
                     </Button>
                   </div>
                   <div>
                     <Button
                       className="primary"
-                      onClick={() => router.push(`/propriedades/edit/${id}`)}
+                      onClick={() =>
+                        router.push(`/admin/propriedades/edit/${id}`)
+                      }
                     >
                       Editar
                     </Button>
@@ -220,4 +229,4 @@ function PropertieInfo() {
   );
 }
 
-export default privateRoute()(PropertieInfo);
+export default privateRoute(['administrator'])(PropertieInfo);

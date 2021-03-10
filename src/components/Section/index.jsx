@@ -30,10 +30,23 @@ export const SectionHeader = styled.div`
       margin-top: 10px;
     }
 
+    button {
+      max-width: 200px;
+      margin: 0;
+      margin-top: 10px;
+      align-self: flex-end;
+    }
+
     @media screen and (max-width: ${props =>
         props.theme.breakpoints.mobile}px) {
       text-align: center;
       align-items: center;
+
+      button {
+        margin: 0 auto;
+        max-width: 100%;
+        margin-top: 16px;
+      }
     }
   }
 `;
