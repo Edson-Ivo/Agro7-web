@@ -45,6 +45,14 @@ const FileInput = (
     getInput: () => inputRef.current
   }));
 
+  const handleValidateExtensions = files =>
+    [...files].filter(
+      file =>
+        extensions.filter(
+          ext => ext.slice(1, ext.length) === /[^.]+$/.exec(file.name)
+        ).length > 0
+    ).length === files.length;
+
   const handleChange = e => {
     if (e.target.files.length === 0) {
       setSelected({ selected: false, count: 0 });
@@ -154,6 +162,11 @@ const FileInput = (
         onDrop={e => {
           e.preventDefault();
           e.stopPropagation();
+
+          if (e.dataTransfer.types[0] !== 'Files') return;
+
+          if (!handleValidateExtensions(e.dataTransfer.files)) return;
+
           inputRef.current.files = e.dataTransfer.files;
           handleChange({
             preventDefault: () => null,
