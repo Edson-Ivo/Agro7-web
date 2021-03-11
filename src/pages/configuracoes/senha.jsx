@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
 
@@ -22,15 +22,28 @@ import getFormData from '../../helpers/getFormData';
 function ConfiguracoesSenha() {
   const [alertMsg, setAlertMsg] = useState({ type: '', message: '' });
   const [loading, setLoading] = useState(false);
+  const formRef = useRef(null);
+
+  const getData = () => {
+    if (formRef.current === undefined) {
+      return {
+        old_password: null,
+        password: null,
+        repeat_password: null
+      };
+    }
+
+    return getFormData(formRef.current, {
+      name: null,
+      phone: null,
+      phone_whatsapp: null
+    });
+  };
 
   const handleSubmit = async event => {
     event.preventDefault();
 
-    const formData = getFormData(event, {
-      old_password: null,
-      password: null,
-      repeat_password: null
-    });
+    const formData = getData();
 
     if (
       formData.old_password &&
@@ -40,18 +53,22 @@ function ConfiguracoesSenha() {
       if (formData.password === formData.repeat_password) {
         setLoading(true);
 
-        await UsersServices.updatePasswordByOwner(formData).then(res => {
-          if (res.status !== 200 || res?.statusCode) {
-            setAlertMsg(errorMessage(res));
-          } else {
-            setAlertMsg({
-              type: 'success',
-              message: 'Senha alterada com sucesso!'
-            });
-          }
+        await UsersServices.updatePasswordByOwner(formData)
+          .then(res => {
+            if (res.status !== 200 || res?.statusCode) {
+              setAlertMsg(errorMessage(res));
+            } else {
+              setAlertMsg({
+                type: 'success',
+                message: 'Senha alterada com sucesso!'
+              });
+            }
 
-          setLoading(false);
-        });
+            setLoading(false);
+          })
+          .catch(err => {
+            setAlertMsg({ type: 'error', message: err.errors[0] });
+          });
       } else {
         setAlertMsg({
           type: 'error',
@@ -96,7 +113,11 @@ function ConfiguracoesSenha() {
                   <Alert type={alertMsg.type}>{alertMsg.message}</Alert>
                 )}
 
-                <form method="post" onSubmit={event => handleSubmit(event)}>
+                <form
+                  method="post"
+                  ref={formRef}
+                  onSubmit={event => handleSubmit(event)}
+                >
                   <Input
                     type="password"
                     label="Senha atual"

@@ -82,7 +82,7 @@ function Configuracoes() {
                           name="phone_whatsapp"
                           mask="phone"
                           maxLength={15}
-                          initialValue={data.phone_whatsapp}
+                          initialValue={data?.phone_whatsapp || ''}
                           disabled
                         />
                       </div>

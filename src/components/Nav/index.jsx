@@ -1,10 +1,17 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import Link from 'next/link';
 import styled from 'styled-components';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHome, faBook } from '@fortawesome/free-solid-svg-icons';
+import {
+  faHome,
+  faUser,
+  faBook,
+  faMapMarkerAlt
+} from '@fortawesome/free-solid-svg-icons';
+
+import { useRouter } from 'next/router';
 
 import Button from '../Button';
 
@@ -98,42 +105,55 @@ const NavList = styled.div`
   }
 `;
 
+const NavButton = ({ link, icon, text }) => {
+  const router = useRouter();
+  let active = '';
+  const path = router.pathname === '/' || router.pathname.split('/')[1];
+
+  if (`/${path}` === link) {
+    active = 'active';
+  }
+
+  return (
+    <Link href={link}>
+      <Button className={`navlist_button ${active}`}>
+        <a>
+          <FontAwesomeIcon icon={icon} className="navlist_button__icon" />
+          <span className="navlist_button__description">{text}</span>
+        </a>
+      </Button>
+    </Link>
+  );
+};
 const Nav = () => {
   const navOpen = useSelector(state => state.nav.open);
+  const { types } = useSelector(state => state.user);
 
   return (
     <NavContainer className={navOpen ? 'open' : ''}>
       <NavContent>
         <NavList>
-          <Link href="/">
-            <Button className="navlist_button">
-              <FontAwesomeIcon icon={faHome} className="navlist_button__icon" />
-              <span className="navlist_button__description">
-                Página Inicial
-              </span>
-            </Button>
-          </Link>
-          <Button className="navlist_button active">
-            <Link href="/caderno-produtor">
-              <a>
-                <FontAwesomeIcon
-                  icon={faBook}
-                  className="navlist_button__icon"
-                />
-                <span className="navlist_button__description">
-                  Caderno do Produtor
-                </span>
-              </a>
-            </Link>
-          </Button>
-          <Button className="navlist_button">
-            <FontAwesomeIcon icon={faBook} className="navlist_button__icon" />
-            <span className="navlist_button__description">Outro Elemento</span>
-          </Button>
-          <Button className="navlist_button">
-            <FontAwesomeIcon icon={faBook} className="navlist_button__icon" />
-            <span className="navlist_button__description">Outro Elemento</span>
-          </Button>
+          {types === 'administrator' && (
+            <>
+              <NavButton
+                link="/admin"
+                icon={faUser}
+                text="Painel Administrativo"
+              />
+              <hr />
+            </>
+          )}
+          <NavButton link="/" icon={faHome} text="Página Inicial" />
+          <NavButton
+            link="/propriedades"
+            icon={faMapMarkerAlt}
+            text="Propriedades"
+          />
+          <NavButton
+            link="/caderno-produtor"
+            icon={faBook}
+            text="Caderno Produtor"
+          />
         </NavList>
       </NavContent>
     </NavContainer>

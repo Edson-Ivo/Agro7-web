@@ -78,6 +78,14 @@ export default createGlobalStyle`
     line-height: 1em;
   }
 
+  hr {
+    width: 90%;
+    height: 1px;
+    margin: 5px auto;
+    background: ${props => props.theme.colors.border};
+    border: 0;
+  }
+
   p.text {
     font-size: calc(1.15em - 0.1px);
     line-height: 1.6em;

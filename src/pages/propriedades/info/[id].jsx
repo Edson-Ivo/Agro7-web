@@ -99,6 +99,16 @@ function PropertieInfo() {
                       <div>
                         <Input
                           type="text"
+                          label="CEP"
+                          name="postcode"
+                          initialValue={data.addresses.postcode}
+                          mask="cep"
+                          disabled
+                        />
+                      </div>
+                      <div>
+                        <Input
+                          type="text"
                           label="Estado"
                           name="state"
                           initialValue={data.addresses.state}
@@ -111,16 +121,6 @@ function PropertieInfo() {
                           label="Cidade"
                           name="city"
                           initialValue={data.addresses.city}
-                          disabled
-                        />
-                      </div>
-                      <div>
-                        <Input
-                          type="text"
-                          label="CEP"
-                          name="postcode"
-                          initialValue={data.addresses.postcode}
-                          mask="cep"
                           disabled
                         />
                       </div>

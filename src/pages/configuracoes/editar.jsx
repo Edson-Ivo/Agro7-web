@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import Head from 'next/head';
 import { useSelector } from 'react-redux';
 import Link from 'next/link';
 
+import extractNumbers from '@/helpers/extractNumbers';
 import Container from '../../components/Container';
 import Nav from '../../components/Nav';
 import Navbar from '../../components/Navbar';
@@ -25,35 +26,57 @@ import getFormData from '../../helpers/getFormData';
 function ConfiguracoesEdit() {
   const [alertMsg, setAlertMsg] = useState({ type: '', message: '' });
   const [loading, setLoading] = useState(false);
+  const formRef = useRef(null);
+
   const { id } = useSelector(state => state.user);
 
   const { data, error } = useFetch(`/users/find/by/id/${id}`);
 
+  const getData = () => {
+    if (formRef.current === undefined) {
+      return {
+        name: null,
+        phone: null,
+        phone_whatsapp: null
+      };
+    }
+
+    return getFormData(formRef.current, {
+      name: null,
+      phone: null,
+      phone_whatsapp: null
+    });
+  };
+
   const handleSubmit = async event => {
     event.preventDefault();
 
-    const formData = getFormData(event, {
-      name: null,
-      phone: null,
-      phone_whatsapp: null,
-      types: data?.types
-    });
+    const formData = getData();
 
     if (formData.name && formData.phone) {
       setLoading(true);
 
-      await UsersServices.updateByOwner(formData).then(res => {
-        if (res.status !== 200 || res?.statusCode) {
-          setAlertMsg(errorMessage(res));
-        } else {
-          setAlertMsg({
-            type: 'success',
-            message: 'Dados alterados com sucesso!'
-          });
-        }
+      formData.phone = extractNumbers(formData.phone);
+      formData.phone_whatsapp = extractNumbers(formData.phone_whatsapp);
 
-        setLoading(false);
-      });
+      if (!formData.phone_whatsapp) delete formData.phone_whatsapp;
+
+      await UsersServices.updateByOwner(formData)
+        .then(res => {
+          if (res.status !== 200 || res?.statusCode) {
+            setAlertMsg(errorMessage(res));
+          } else {
+            setAlertMsg({
+              type: 'success',
+              message: 'Dados alterados com sucesso!'
+            });
+          }
+
+          setLoading(false);
+        })
+        .catch(err => {
+          setAlertMsg({ type: 'error', message: err.errors[0] });
+        });
     } else {
       setAlertMsg({
         type: 'error',
@@ -94,7 +117,11 @@ function ConfiguracoesEdit() {
                   <Alert type={alertMsg.type}>{alertMsg.message}</Alert>
                 )}
                 {(data && (
-                  <form method="post" onSubmit={event => handleSubmit(event)}>
+                  <form
+                    method="post"
+                    ref={formRef}
+                    onSubmit={event => handleSubmit(event)}
+                  >
                     <Input
                       type="text"
                       label="Nome"
@@ -121,7 +148,7 @@ function ConfiguracoesEdit() {
                           name="phone_whatsapp"
                           mask="phone"
                           maxLength={15}
-                          initialValue={data.phone_whatsapp}
+                          initialValue={data?.phone_whatsapp || ''}
                         />
                       </div>
                     </div>

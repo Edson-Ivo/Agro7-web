@@ -2,6 +2,9 @@ import React from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faUser, faMapMarkerAlt } from '@fortawesome/free-solid-svg-icons';
+
 import { useSelector } from 'react-redux';
 
 import { Card } from '@/components/Card/index';
@@ -11,7 +14,6 @@ import Navbar from '../../components/Navbar';
 import Breadcrumb from '../../components/Breadcrumb';
 import { Section, SectionHeader, SectionBody } from '../../components/Section';
 
-import { CardContainer } from '../../components/CardContainer';
 import { privateRoute } from '../../components/PrivateRoute';
 import NotFound from '../../components/NotFound';
 
@@ -49,10 +51,32 @@ function AdminHome({ permission }) {
               <Link href="/admin/users">
                 <Card fontColor="black" height="90px">
                   <div className="card-info">
-                    <h4>Teste</h4>
-                    <p>teste</p>
+                    <h4>Gerenciar Usuários</h4>
+                    <p>
+                      Aqui você tem controle de todos os usuários da sua
+                      aplicação.
+                    </p>
                   </div>
-                  <div className="card-image" />
+                  <div className="card-image">
+                    <FontAwesomeIcon icon={faUser} className="card-icon" />
+                  </div>
+                </Card>
+              </Link>
+              <Link href="/admin/propriedades">
+                <Card fontColor="black" height="90px">
+                  <div className="card-info">
+                    <h4>Gerenciar Propriedades</h4>
+                    <p>
+                      Aqui você tem controle de todos as propriedades da sua
+                      aplicação.
+                    </p>
+                  </div>
+                  <div className="card-image">
+                    <FontAwesomeIcon
+                      icon={faMapMarkerAlt}
+                      className="card-icon"
+                    />
+                  </div>
                 </Card>
               </Link>
             </div>

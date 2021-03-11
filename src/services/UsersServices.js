@@ -15,10 +15,7 @@ class UsersService {
 
   static async create(data) {
     try {
-      const response = await api.create(
-        `/users/create`,
-        JSON.stringify({ data })
-      );
+      const response = await api.post(`/users/create`, { ...data });
 
       return response;
     } catch (error) {

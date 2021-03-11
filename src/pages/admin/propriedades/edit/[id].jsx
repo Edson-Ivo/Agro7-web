@@ -27,6 +27,8 @@ import CoordinatesService from '@/services/CoordinatesService';
 import { useRouter } from 'next/router';
 import { useFetch } from '@/hooks/useFetch';
 import AddressesService from '@/services/AddressesService';
+import Loader from '@/components/Loader';
+import { mutate } from 'swr';
 
 const schema = yup.object().shape({
   name: yup
@@ -293,7 +295,7 @@ function PropertiesEdit({ permission }) {
                   method="post"
                   onSubmit={event => handleSubmit(event)}
                 >
-                  {data && (
+                  {(data && (
                     <MultiStep activeStep={activeStep}>
                       <Step label="Dados" onClick={() => setActiveStep(1)}>
                         <h4 className="step-title">Dados da Propriedade</h4>
@@ -442,7 +444,7 @@ function PropertiesEdit({ permission }) {
                         </div>
                       </Step>
                     </MultiStep>
-                  )}
+                  )) || <Loader />}
 
                   <div className="form-group buttons">
                     {activeStep !== 1 && (

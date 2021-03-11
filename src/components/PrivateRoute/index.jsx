@@ -9,7 +9,7 @@ export function privateRoute(types) {
       static async getInitialProps(ctx) {
         const token = ServerCookie(ctx)[AUTH_COOKIE_TOKEN];
 
-        let initialProps = { token, permission: true };
+        let initialProps = { token, permission: true, type: 'independent' };
 
         if (!token) {
           ctx.res.writeHead(302, {
@@ -30,7 +30,11 @@ export function privateRoute(types) {
               perm = false;
             }
 
-            initialProps = { ...initialProps, permission: perm };
+            initialProps = {
+              ...initialProps,
+              permission: perm,
+              type: user.types
+            };
           } else {
             ctx.res.writeHead(302, {
               Location: '/login'
