@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import Button from '@/components/Button';
+import { useRouter } from 'next/router';
 import Container from '../../../components/Container';
 import Nav from '../../../components/Nav';
 import Navbar from '../../../components/Navbar';
@@ -33,9 +34,14 @@ import errorMessage from '../../../helpers/errorMessage';
 function AdminUsers({ permission }) {
   const [alertMsg, setAlertMsg] = useState({ type: '', message: '' });
   const [loading, setLoading] = useState(false);
-  const [page, setPage] = useState(1);
 
-  const { data, error } = useFetch(`/users/find/all?perPage=10&page=${page}`);
+  const router = useRouter();
+
+  const { page = 1 } = router.query;
+
+  const { data, error, mutate } = useFetch(
+    `/users/find/all?perPage=10&page=${page}`
+  );
   const { addModal, removeModal } = useModal();
 
   if (!permission) return <NotFound />;
@@ -50,9 +56,11 @@ function AdminUsers({ permission }) {
         if (res.status !== 200 || res?.statusCode) {
           setAlertMsg(errorMessage(res));
         } else {
+          mutate();
+
           setAlertMsg({
             type: 'success',
-            message: 'Dados alterados com sucesso!'
+            message: 'Usuário deletado com sucesso!'
           });
         }
       });

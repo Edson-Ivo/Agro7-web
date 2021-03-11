@@ -40,7 +40,7 @@ function Properties() {
 
   const { addModal, removeModal } = useModal();
 
-  const { data, error } = useFetch(
+  const { data, error, mutate } = useFetch(
     `/properties/find/by/user/${id}?perPage=10&page=${page}`
   );
 
@@ -53,6 +53,8 @@ function Properties() {
         if (res.status > 400 || res?.statusCode) {
           setAlertMsg(errorMessage(res));
         } else {
+          mutate();
+
           setAlertMsg({
             type: 'success',
             message: 'A propriedade foi deletada com sucesso!'

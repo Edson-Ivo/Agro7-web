@@ -51,7 +51,12 @@ class UsersService {
     try {
       const response = await api.put(
         `/users/update/`,
-        JSON.stringify({ data })
+        { ...data },
+        {
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }
       );
       return response;
     } catch (error) {
@@ -62,8 +67,13 @@ class UsersService {
   static async updatePasswordByOwner(data) {
     try {
       const response = await api.put(
-        `/users/update/password/`,
-        JSON.stringify({ data })
+        `/users/update/password`,
+        { ...data },
+        {
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }
       );
       return response;
     } catch (error) {

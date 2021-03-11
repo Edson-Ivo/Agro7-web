@@ -17,11 +17,12 @@ class AddressesService {
     try {
       const response = await api.put(`/addresses/${id}`, {
         state: data.state,
-        strett: data.street,
+        street: data.street,
         city: data.city,
         neighborhood: data.neighborhood,
         number: data.number,
-        complements: data.complements
+        complements: data.complements,
+        postcode: data.postcode
       });
       return response;
     } catch (error) {

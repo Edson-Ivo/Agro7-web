@@ -1,5 +1,7 @@
 import AuthService from '../../../services/AuthService';
 
+import { AUTHENTICATE, DEAUTHENTICATE } from './constants';
+
 let INITIAL_STATE = {
   id: 0,
   name: '',
@@ -17,6 +19,23 @@ if (typeof localStorage !== 'undefined') {
 
 const UserReducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
+    case AUTHENTICATE: {
+      const authObject = {
+        ...action.payload.user
+      };
+
+      return authObject;
+    }
+
+    case DEAUTHENTICATE: {
+      return {
+        id: 0,
+        name: '',
+        email: '',
+        types: ''
+      };
+    }
+
     default:
       return state;
   }

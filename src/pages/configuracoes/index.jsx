@@ -87,6 +87,76 @@ function Configuracoes() {
                         />
                       </div>
                     </div>
+                    <div className="form-group">
+                      <div>
+                        <Input
+                          type="text"
+                          label="CEP"
+                          name="postcode"
+                          initialValue={data.addresses.postcode}
+                          mask="cep"
+                          disabled
+                        />
+                      </div>
+                      <div>
+                        <Input
+                          type="text"
+                          label="Estado"
+                          name="state"
+                          initialValue={data.addresses.state}
+                          disabled
+                        />
+                      </div>
+                      <div>
+                        <Input
+                          type="text"
+                          label="Cidade"
+                          name="city"
+                          initialValue={data.addresses.city}
+                          disabled
+                        />
+                      </div>
+                    </div>
+                    <div className="form-group">
+                      <div>
+                        <Input
+                          type="text"
+                          label="Bairro"
+                          name="neighborhood"
+                          initialValue={data.addresses.neighborhood}
+                          disabled
+                        />
+                      </div>
+                      <div>
+                        <Input
+                          type="text"
+                          label="Rua"
+                          name="street"
+                          initialValue={data.addresses.street}
+                          disabled
+                        />
+                      </div>
+                    </div>
+                    <div className="form-group">
+                      <div>
+                        <Input
+                          type="text"
+                          label="Número"
+                          name="number"
+                          initialValue={data.addresses.number}
+                          disabled
+                        />
+                      </div>
+                      <div>
+                        <Input
+                          type="text"
+                          label="Complementos"
+                          name="complements"
+                          initialValue={data.addresses.complements || ''}
+                          disabled
+                        />
+                      </div>
+                    </div>
                     <div className="form-group buttons">
                       <div>
                         <Link href="configuracoes/editar">

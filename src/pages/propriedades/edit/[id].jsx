@@ -93,7 +93,7 @@ function PropertiesEdit() {
   const router = useRouter();
   const { id } = router.query;
 
-  const { data, error } = useFetch(`/properties/find/by/id/${id}`);
+  const { data, error, mutate } = useFetch(`/properties/find/by/id/${id}`);
 
   const formRef = useRef(null);
   const [alert, setAlert] = useState({ type: '', message: '' });
@@ -227,6 +227,8 @@ function PropertiesEdit() {
                           setDisableButton(false);
                         }, 1000);
                       } else {
+                        mutate();
+
                         setAlert({
                           type: 'success',
                           message: 'Propriedade atualizada com sucesso!'
@@ -334,6 +336,18 @@ function PropertiesEdit() {
                           <div>
                             <Input
                               type="text"
+                              label="CEP"
+                              name="postcode"
+                              initialValue={data.addresses.postcode}
+                              mask="cep"
+                              disabled={loadingAddresses}
+                              ref={postalcodeRef}
+                              handleChange={handleChangeCep}
+                            />
+                          </div>
+                          <div>
+                            <Input
+                              type="text"
                               label="Estado"
                               name="state"
                               initialValue={data.addresses.state}
@@ -347,18 +361,6 @@ function PropertiesEdit() {
                               name="city"
                               initialValue={data.addresses.city}
                               ref={cityRef}
-                            />
-                          </div>
-                          <div>
-                            <Input
-                              type="text"
-                              label="CEP"
-                              name="postcode"
-                              initialValue={data.addresses.postcode}
-                              mask="cep"
-                              disabled={loadingAddresses}
-                              ref={postalcodeRef}
-                              handleChange={handleChangeCep}
                             />
                           </div>
                         </div>

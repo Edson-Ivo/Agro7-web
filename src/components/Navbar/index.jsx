@@ -17,6 +17,7 @@ import {
 import { NavbarContainer } from './styles';
 
 import { NavToogleAction } from '../../store/modules/Nav/actions';
+import { UserDeAuthAction } from '../../store/modules/User/actions';
 import Tooltip from '../Tooltip';
 
 import AuthService from '../../services/AuthService';
@@ -26,14 +27,16 @@ const Navbar = () => {
   const [open, setOpen] = useState(false);
 
   const navOpen = useSelector(state => state.nav.open);
-  const { email } = useSelector(state => state.user);
+  const { name } = useSelector(state => state.user);
 
   const handleClick = () => {
     setOpen(!open);
   };
 
   const handleLogout = () => {
+    dispatch(UserDeAuthAction());
     AuthService.logout();
+
     Router.push('/login');
   };
 
@@ -55,7 +58,7 @@ const Navbar = () => {
                 <Image src="/user-placeholder.png" width={24} height={24} />
               </div>
               <h5>
-                <span className="navbar_button__text">{email}</span>
+                <span className="navbar_button__text">{name}</span>
                 <FontAwesomeIcon
                   icon={!open ? faChevronDown : faChevronUp}
                   className="navbar_button__icon"

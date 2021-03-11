@@ -34,9 +34,9 @@ function ConfiguracoesSenha() {
     }
 
     return getFormData(formRef.current, {
-      name: null,
-      phone: null,
-      phone_whatsapp: null
+      old_password: null,
+      password: null,
+      repeat_password: null
     });
   };
 
@@ -53,10 +53,12 @@ function ConfiguracoesSenha() {
       if (formData.password === formData.repeat_password) {
         setLoading(true);
 
+        delete formData.repeat_password;
+
         await UsersServices.updatePasswordByOwner(formData)
           .then(res => {
             if (res.status !== 200 || res?.statusCode) {
-              setAlertMsg(errorMessage(res));
+              setAlertMsg({ type: 'error', message: errorMessage(res) });
             } else {
               setAlertMsg({
                 type: 'success',

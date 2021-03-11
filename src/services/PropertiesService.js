@@ -16,16 +16,17 @@ class PropertiesService {
   static async create(data) {
     try {
       const response = await api.post(`/properties/create`, { ...data });
+
       return response;
     } catch (error) {
       return error.response;
     }
   }
 
-  static async delete(data) {
+  static async delete(id) {
     try {
-      // const response = await api.post(`/properties/create`, { ...data });
-      const response = { status: 404 };
+      const response = await api.delete(`/properties/${id}`);
+
       return response;
     } catch (error) {
       return error.response;

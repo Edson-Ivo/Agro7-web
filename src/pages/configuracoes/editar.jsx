@@ -30,7 +30,7 @@ function ConfiguracoesEdit() {
 
   const { id } = useSelector(state => state.user);
 
-  const { data, error } = useFetch(`/users/find/by/id/${id}`);
+  const { data, error, mutate } = useFetch(`/users/find/by/id/${id}`);
 
   const getData = () => {
     if (formRef.current === undefined) {
@@ -64,8 +64,9 @@ function ConfiguracoesEdit() {
       await UsersServices.updateByOwner(formData)
         .then(res => {
           if (res.status !== 200 || res?.statusCode) {
-            setAlertMsg(errorMessage(res));
+            setAlertMsg({ type: 'error', message: errorMessage(res) });
           } else {
+            mutate();
             setAlertMsg({
               type: 'success',
               message: 'Dados alterados com sucesso!'
@@ -156,7 +157,7 @@ function ConfiguracoesEdit() {
                       <div className="form-group buttons">
                         <div>
                           <Link href="/configuracoes">
-                            <Button>Cancelar</Button>
+                            <Button type="button">Cancelar</Button>
                           </Link>
                         </div>
                         <div>
