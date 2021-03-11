@@ -17,14 +17,18 @@ const FileInput = (
     extensions = [],
     onChange = () => null,
     multiple = false,
-    max = 1,
-    min = 1
+    max = -1,
+    min = -1
   },
   ref
 ) => {
+  const defaultError = {
+    error: 'FILE_NOT_LOADED',
+    message: 'Nenhum arquivo carregado'
+  };
   const [selected, setSelected] = useState({ selected: false, count: 0 });
   const [validated, setValidated] = useState(false);
-  const [error, setError] = useState({ error: false, message: '' });
+  const [error, setError] = useState(defaultError);
   const [dragged, setDragged] = useState(false);
   const inputRef = useRef(null);
 
@@ -32,7 +36,7 @@ const FileInput = (
     () => () => {
       setSelected({ selected: false, count: 0 });
       setValidated(false);
-      setError({ error: false, message: '' });
+      setError(defaultError);
     },
     []
   );
@@ -48,19 +52,43 @@ const FileInput = (
   const handleValidateExtensions = files =>
     [...files].filter(
       file =>
-        extensions.filter(
-          ext => ext.slice(1, ext.length) === /[^.]+$/.exec(file.name)
-        ).length > 0
+        extensions.filter(ext => {
+          const ext1 = ext.slice(1, ext.length);
+          const ext2 = /[^.]+$/.exec(file.name)[0];
+          return ext1 === ext2;
+        }).length > 0
     ).length === files.length;
 
   const handleChange = e => {
-    if (e.target.files.length === 0) {
-      setSelected({ selected: false, count: 0 });
-      setValidated(false);
+    if (!handleValidateExtensions(e.target.files)) {
+      e.preventDefault();
+      e.stopPropagation();
+      e.target.value = '';
+      setError({
+        error: 'EXTENSION_ERROR',
+        message: `Problema na extensão do arquivo`
+      });
+
       return;
     }
 
-    if (e.target.files.length < min) {
+    if (e.target.files.length === 0) {
+      setSelected({ selected: false, count: 0 });
+      setValidated(false);
+      e.preventDefault();
+      return;
+    }
+
+    if (e.target.files.length < min && min > -1) {
+      e.preventDefault();
+      setError({
+        error: 'MINIMUM_FILE_NOT_REACHED',
+        message: `Você não alcançou o mínimo de arquivos permitidos. Min: ${min}`
+      });
+      return;
+    }
+
+    if (e.target.files.length > max && max > 0) {
       e.preventDefault();
       setError({
         error: 'MAXIMUM_FILE_EXCEEDED',
@@ -69,19 +97,7 @@ const FileInput = (
       return;
     }
 
-    if (e.target.files.length > max) {
-      e.preventDefault();
-      setError({
-        error: 'MINIMUM_FILE_NOT_REACHED',
-        message: `Você não alcançou o mínimo de arquivos permitidos. Max: ${max}`
-      });
-      return;
-    }
-
-    setError({
-      error: false,
-      message: ''
-    });
+    setError(defaultError);
 
     if (e.target.files.length > 0) {
       setSelected({ selected: true, count: e.target.files.length });
@@ -90,7 +106,14 @@ const FileInput = (
     }
 
     if (multiple) {
-      if (e.target.files.length >= min && e.target.files.length <= max) {
+      // e.target.files.length = 3
+      // min = -1
+      // max = -1
+      if (
+        (e.target.files.length >= min && e.target.files.length <= max) ||
+        (e.target.files.length >= min && max < 1) ||
+        (e.target.files.length <= max && min < 0)
+      ) {
         setValidated(true);
       } else {
         setValidated(false);
@@ -109,8 +132,8 @@ const FileInput = (
           accept={extensions.join(',')}
           id={name}
           type="file"
-          name={`name${multiple && '[]'}`}
-          onChange={handleChange}
+          name={`${name}${multiple && '[]'}`}
+          onChangeCapture={handleChange}
           hidden
           multiple={multiple}
         />
@@ -119,8 +142,8 @@ const FileInput = (
           ref={inputRef}
           id={name}
           type="file"
-          name={`name${multiple && '[]'}`}
-          onChange={handleChange}
+          name={`${name}${multiple && '[]'}`}
+          onChangeCapture={handleChange}
           hidden
           multiple={multiple}
         />
@@ -165,7 +188,14 @@ const FileInput = (
 
           if (e.dataTransfer.types[0] !== 'Files') return;
 
-          if (!handleValidateExtensions(e.dataTransfer.files)) return;
+          if (!handleValidateExtensions(e.dataTransfer.files)) {
+            setError({
+              error: 'EXTENSION_ERROR',
+              message: `Problema na extensão do arquivo`
+            });
+
+            return;
+          }
 
           inputRef.current.files = e.dataTransfer.files;
           handleChange({

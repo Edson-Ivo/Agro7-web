@@ -4,10 +4,13 @@ import FileInput from '@/components/FileInput/index';
 import React, { useRef } from 'react';
 
 const Test = () => {
-  const ref = useRef(null);
+  const inputRef = useRef(null);
 
   const handleSubmit = e => {
     e.preventDefault();
+
+    const formData = new FormData(e.target);
+    [...formData.values()].forEach(x => console.log(x));
   };
 
   return (
@@ -20,10 +23,13 @@ const Test = () => {
         <h1>Teste de formulário</h1>
         <Input type="text" name="hii" initialValue="" label="Olá" />
         <FileInput
-          ref={ref}
+          ref={inputRef}
           name="fileinput"
           label="Selecione um arquivo"
           extensions={['.jpg']}
+          multiple
+          max={2}
+          min={1}
         />
         <Button className="primary" type="submit">
           Enviar
