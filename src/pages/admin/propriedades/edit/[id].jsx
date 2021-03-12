@@ -95,7 +95,7 @@ function PropertiesEdit({ permission }) {
   const router = useRouter();
   const { id } = router.query;
 
-  const { data, error } = useFetch(`/properties/find/by/id/${id}`);
+  const { data, error, mutate } = useFetch(`/properties/find/by/id/${id}`);
 
   const formRef = useRef(null);
   const [alert, setAlert] = useState({ type: '', message: '' });
@@ -229,6 +229,8 @@ function PropertiesEdit({ permission }) {
                           setDisableButton(false);
                         }, 1000);
                       } else {
+                        mutate();
+
                         setAlert({
                           type: 'success',
                           message: 'Propriedade atualizada com sucesso!'
