@@ -198,9 +198,7 @@ function PropertieInfo() {
                 )) || <Loader />}
                 <div className="form-group buttons">
                   <div>
-                    <Button onClick={() => router.push('/propriedades')}>
-                      Voltar
-                    </Button>
+                    <Button onClick={() => router.back()}>Voltar</Button>
                   </div>
                   <div>
                     <Button

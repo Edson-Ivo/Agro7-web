@@ -205,9 +205,7 @@ function PropertieInfo({ permission }) {
                 )) || <Loader />}
                 <div className="form-group buttons">
                   <div>
-                    <Button onClick={() => router.push('/admin/propriedades')}>
-                      Voltar
-                    </Button>
+                    <Button onClick={() => router.back()}>Voltar</Button>
                   </div>
                   <div>
                     <Button

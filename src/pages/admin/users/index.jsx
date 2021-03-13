@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import Button from '@/components/Button';
+import Pagination from '@/components/Pagination/index';
 import { useRouter } from 'next/router';
 import Container from '../../../components/Container';
 import Nav from '../../../components/Nav';
@@ -117,43 +118,51 @@ function AdminUsers({ permission }) {
                   <Alert type={alertMsg.type}>{alertMsg.message}</Alert>
                 )}
                 {((data || loading) && (
-                  <div className="table-responsive">
-                    <Table>
-                      <thead>
-                        <tr>
-                          <th>Nome</th>
-                          <th>E-mail</th>
-                          <th>Documento</th>
-                          <th>Telefone</th>
-                          <th>Ações</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {(data?.users &&
-                          data.users.map(user => (
-                            <tr key={user.id}>
-                              <td>{user.name}</td>
-                              <td>{user.email}</td>
-                              <td>{user.documents}</td>
-                              <td>{user.phone}</td>
-                              <td>
-                                <ActionButton
-                                  id={user.id}
-                                  path="/admin/users"
-                                  info="/info"
-                                  edit="/edit"
-                                  onDelete={() => handleDeleteModal(user.id)}
-                                />
-                              </td>
-                            </tr>
-                          ))) || (
+                  <>
+                    <div className="table-responsive">
+                      <Table>
+                        <thead>
                           <tr>
-                            <td colSpan="5">Não há usuários cadastrados</td>
+                            <th>Nome</th>
+                            <th>E-mail</th>
+                            <th>Documento</th>
+                            <th>Telefone</th>
+                            <th>Ações</th>
                           </tr>
-                        )}
-                      </tbody>
-                    </Table>
-                  </div>
+                        </thead>
+                        <tbody>
+                          {(data?.users &&
+                            data.users.map(user => (
+                              <tr key={user.id}>
+                                <td>{user.name}</td>
+                                <td>{user.email}</td>
+                                <td>{user.documents}</td>
+                                <td>{user.phone}</td>
+                                <td>
+                                  <ActionButton
+                                    id={user.id}
+                                    path="/admin/users"
+                                    info="/info"
+                                    edit="/edit"
+                                    onDelete={() => handleDeleteModal(user.id)}
+                                  />
+                                </td>
+                              </tr>
+                            ))) || (
+                            <tr>
+                              <td colSpan="5">Não há usuários cadastrados</td>
+                            </tr>
+                          )}
+                        </tbody>
+                      </Table>
+                    </div>
+                    <Pagination
+                      url="/admin/users"
+                      actual={page}
+                      maxRecords={10}
+                      evaluate={data.users}
+                    />
+                  </>
                 )) || <Loader />}
               </CardContainer>
             </div>

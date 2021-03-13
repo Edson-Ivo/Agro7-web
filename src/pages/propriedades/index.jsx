@@ -14,7 +14,6 @@ import { Section, SectionHeader, SectionBody } from '@/components/Section';
 
 import { CardContainer } from '@/components/CardContainer';
 import { privateRoute } from '@/components/PrivateRoute';
-import NotFound from '@/components/NotFound';
 import Table from '@/components/Table';
 
 import Loader from '@/components/Loader';
@@ -28,6 +27,7 @@ import { useRouter } from 'next/router';
 import errorMessage from '@/helpers/errorMessage';
 import PropertiesService from '@/services/PropertiesService';
 import { Alert } from '@/components/Alert/index';
+import Pagination from '@/components/Pagination/index';
 
 function Properties() {
   const { id } = useSelector(state => state.user);
@@ -37,11 +37,12 @@ function Properties() {
   const router = useRouter();
 
   const { page = 1 } = router.query;
+  const perPage = 10;
 
   const { addModal, removeModal } = useModal();
 
   const { data, error, mutate } = useFetch(
-    `/properties/find/by/user/${id}?perPage=10&page=${page}`
+    `/properties/find/by/user/${id}?perPage=${perPage}&page=${page}`
   );
 
   const handleDelete = useCallback(
@@ -115,41 +116,50 @@ function Properties() {
                   <Alert type={alertMsg.type}>{alertMsg.message}</Alert>
                 )}
                 {((data || loading) && (
-                  <div className="table-responsive">
-                    <Table>
-                      <thead>
-                        <tr>
-                          <th>Nome da propriedade</th>
-                          <th>Estado</th>
-                          <th>Cidade</th>
-                          <th>Ações</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {(data?.properties &&
-                          data.properties.map(p => (
-                            <tr key={p.id}>
-                              <td>{p.name}</td>
-                              <td>{p.addresses.state}</td>
-                              <td>{p.addresses.city}</td>
-                              <td>
-                                <ActionButton
-                                  id={p.id}
-                                  path="/propriedades"
-                                  info="/info"
-                                  edit="/edit"
-                                  onDelete={() => handleDeleteModal(p.id)}
-                                />
+                  <>
+                    <div className="table-responsive">
+                      <Table>
+                        <thead>
+                          <tr>
+                            <th>Nome da propriedade</th>
+                            <th>Estado</th>
+                            <th>Cidade</th>
+                            <th>Ações</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {(data?.properties.length > 0 &&
+                            data.properties.map(p => (
+                              <tr key={p.id}>
+                                <td>{p.name}</td>
+                                <td>{p.addresses.state}</td>
+                                <td>{p.addresses.city}</td>
+                                <td>
+                                  <ActionButton
+                                    id={p.id}
+                                    path="/propriedades"
+                                    info="/info"
+                                    edit="/edit"
+                                    onDelete={() => handleDeleteModal(p.id)}
+                                  />
+                                </td>
+                              </tr>
+                            ))) || (
+                            <tr>
+                              <td colSpan="4">
+                                Não há propriedades cadastradas
                               </td>
                             </tr>
-                          ))) || (
-                          <tr>
-                            <td colSpan="4">Não há propriedades cadastradas</td>
-                          </tr>
-                        )}
-                      </tbody>
-                    </Table>
-                  </div>
+                          )}
+                        </tbody>
+                      </Table>
+                    </div>
+                    <Pagination
+                      url="propriedades"
+                      actual={page}
+                      evaluate={data?.properties}
+                    />
+                  </>
                 )) || <Loader />}
               </CardContainer>
             </div>

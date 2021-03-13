@@ -364,10 +364,7 @@ function AdminUsers({ permission }) {
 
                   <div className="form-group buttons">
                     <div>
-                      <Button
-                        type="button"
-                        onClick={() => router.push('/admin/users/')}
-                      >
+                      <Button type="button" onClick={() => router.back()}>
                         Voltar
                       </Button>
                     </div>

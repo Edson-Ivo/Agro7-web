@@ -187,7 +187,7 @@ function PropertiesEdit() {
 
   const handleCancelEdit = e => {
     e.preventDefault();
-    router.push(`/propriedades/`);
+    router.back();
   };
 
   const handleSubmit = async e => {

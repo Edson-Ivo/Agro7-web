@@ -28,7 +28,6 @@ import { useRouter } from 'next/router';
 import { useFetch } from '@/hooks/useFetch';
 import AddressesService from '@/services/AddressesService';
 import Loader from '@/components/Loader';
-import { mutate } from 'swr';
 
 const schema = yup.object().shape({
   name: yup
@@ -189,7 +188,7 @@ function PropertiesEdit({ permission }) {
 
   const handleCancelEdit = e => {
     e.preventDefault();
-    router.push(`/admin/propriedades/`);
+    router.back();
   };
 
   const handleSubmit = async e => {
