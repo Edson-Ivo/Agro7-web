@@ -10,16 +10,22 @@ import {
 
 import { ActionButtonContainer } from './styles';
 
-const ActionButton = ({ id, path, onDelete, info = '', edit = '/edit' }) => (
+const ActionButton = ({
+  id,
+  path,
+  onDelete,
+  info = '/detalhes',
+  edit = '/editar'
+}) => (
   <ActionButtonContainer>
-    <Link href={`${path}${info}/${id}`}>
+    <Link href={`${path}/${id}${info}`}>
       <a>
         <div>
           <FontAwesomeIcon icon={faInfoCircle} />
         </div>
       </a>
     </Link>
-    <Link href={`${path}${edit}/${id}`}>
+    <Link href={`${path}/${id}${edit}`}>
       <a>
         <div>
           <FontAwesomeIcon icon={faEdit} />

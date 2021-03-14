@@ -26,10 +26,6 @@ const Test = () => {
           ref={inputRef}
           name="fileinput"
           label="Selecione um arquivo"
-          extensions={['.jpg']}
-          multiple
-          max={2}
-          min={1}
         />
         <Button className="primary" type="submit">
           Enviar

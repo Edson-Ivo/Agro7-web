@@ -1,6 +1,5 @@
 import React from 'react';
 import Image from 'next/image';
-import Link from 'next/link';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSignInAlt } from '@fortawesome/free-solid-svg-icons';
@@ -23,12 +22,12 @@ export default function Error() {
               Aconteceu algum erro, vamos tentar novamente.
             </p>
             <div style={{ marginTop: '20px' }}>
-              <Link href="/">
+              <a href="/">
                 <Button className="primary loginButton">
                   <FontAwesomeIcon icon={faSignInAlt} className="loginIcon" />{' '}
                   Voltar para página principal
                 </Button>
-              </Link>
+              </a>
             </div>
           </div>
         </CenterContainer>

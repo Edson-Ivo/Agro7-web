@@ -203,7 +203,7 @@ function PropertieInfo() {
                   <div>
                     <Button
                       className="primary"
-                      onClick={() => router.push(`/propriedades/edit/${id}`)}
+                      onClick={() => router.push(`/propriedades/${id}/editar`)}
                     >
                       Editar
                     </Button>

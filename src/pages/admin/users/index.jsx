@@ -142,8 +142,6 @@ function AdminUsers({ permission }) {
                                   <ActionButton
                                     id={user.id}
                                     path="/admin/users"
-                                    info="/info"
-                                    edit="/edit"
                                     onDelete={() => handleDeleteModal(user.id)}
                                   />
                                 </td>

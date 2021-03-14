@@ -49,15 +49,21 @@ const FileInput = (
     getInput: () => inputRef.current
   }));
 
-  const handleValidateExtensions = files =>
-    [...files].filter(
-      file =>
-        extensions.filter(ext => {
-          const ext1 = ext.slice(1, ext.length);
-          const ext2 = /[^.]+$/.exec(file.name)[0];
-          return ext1 === ext2;
-        }).length > 0
-    ).length === files.length;
+  const handleValidateExtensions = files => {
+    if (extensions.length > 0) {
+      return (
+        [...files].filter(
+          file =>
+            extensions.filter(ext => {
+              const ext1 = ext.slice(1, ext.length);
+              const ext2 = /[^.]+$/.exec(file.name)[0];
+              return ext1 === ext2;
+            }).length > 0
+        ).length === files.length
+      );
+    }
+    return true;
+  };
 
   const handleChange = e => {
     if (!handleValidateExtensions(e.target.files)) {
@@ -106,9 +112,6 @@ const FileInput = (
     }
 
     if (multiple) {
-      // e.target.files.length = 3
-      // min = -1
-      // max = -1
       if (
         (e.target.files.length >= min && e.target.files.length <= max) ||
         (e.target.files.length >= min && max < 1) ||
@@ -194,6 +197,16 @@ const FileInput = (
               message: `Problema na extensão do arquivo`
             });
 
+            setDragged(false);
+            return;
+          }
+
+          if (!multiple && e.dataTransfer.files.length > 1) {
+            setError({
+              error: 'MAXIMUM_FILE_EXCEEDED',
+              message: `Você ultrapassou o limite de arquivos (1)!`
+            });
+            setDragged(false);
             return;
           }
 

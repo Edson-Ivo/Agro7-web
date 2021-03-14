@@ -58,6 +58,7 @@ const NavList = styled.div`
   flex-direction: column;
   align-items: flex-start;
   width: 100%;
+  margin-bottom: 80px;
 
   .navlist_button {
     border: 0;
@@ -108,7 +109,11 @@ const NavList = styled.div`
 const NavButton = ({ link, icon, text }) => {
   const router = useRouter();
   let active = '';
-  const path = router.pathname === '/' || router.pathname.split('/')[1];
+  let path = '';
+
+  if (router.pathname !== '/') {
+    path = router.pathname.split('/')[1];
+  }
 
   if (`/${path}` === link) {
     active = 'active';

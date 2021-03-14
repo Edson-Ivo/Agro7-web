@@ -138,8 +138,6 @@ function Properties() {
                                   <ActionButton
                                     id={p.id}
                                     path="/propriedades"
-                                    info="/info"
-                                    edit="/edit"
                                     onDelete={() => handleDeleteModal(p.id)}
                                   />
                                 </td>

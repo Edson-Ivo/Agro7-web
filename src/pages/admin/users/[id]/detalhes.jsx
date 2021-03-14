@@ -2,26 +2,22 @@ import React from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 
-import Container from '../../../../components/Container';
-import Nav from '../../../../components/Nav';
-import Navbar from '../../../../components/Navbar';
-import Breadcrumb from '../../../../components/Breadcrumb';
-import Input from '../../../../components/Input';
-import Select from '../../../../components/Select';
-import Button from '../../../../components/Button';
-import {
-  Section,
-  SectionHeader,
-  SectionBody
-} from '../../../../components/Section';
+import Container from '@/components/Container';
+import Nav from '@/components/Nav';
+import Navbar from '@/components/Navbar';
+import Breadcrumb from '@/components/Breadcrumb';
+import Input from '@/components/Input';
+import Select from '@/components/Select';
+import Button from '@/components/Button';
+import { Section, SectionHeader, SectionBody } from '@/components/Section';
 
-import { CardContainer } from '../../../../components/CardContainer';
-import { privateRoute } from '../../../../components/PrivateRoute';
-import NotFound from '../../../../components/NotFound';
+import { CardContainer } from '@/components/CardContainer';
+import { privateRoute } from '@/components/PrivateRoute';
+import NotFound from '@/components/NotFound';
 
-import Loader from '../../../../components/Loader';
-import Error from '../../../../components/Error';
-import { useFetch } from '../../../../hooks/useFetch';
+import Loader from '@/components/Loader';
+import Error from '@/components/Error';
+import { useFetch } from '@/hooks/useFetch';
 
 function AdminUsers({ permission }) {
   const router = useRouter();
@@ -190,14 +186,12 @@ function AdminUsers({ permission }) {
                 )) || <Loader />}
                 <div className="form-group buttons">
                   <div>
-                    <Button onClick={() => router.push('/admin/users')}>
-                      Voltar
-                    </Button>
+                    <Button onClick={() => router.back()}>Voltar</Button>
                   </div>
                   <div>
                     <Button
                       className="primary"
-                      onClick={() => router.push(`/admin/users/edit/${id}`)}
+                      onClick={() => router.push(`/admin/users/${id}/editar`)}
                     >
                       Editar
                     </Button>

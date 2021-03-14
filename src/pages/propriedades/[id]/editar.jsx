@@ -235,7 +235,7 @@ function PropertiesEdit() {
                         });
 
                         setTimeout(() => {
-                          router.push(`/propriedades/info/${id}`);
+                          router.push(`/propriedades/${id}/detalhes`);
                           setDisableButton(false);
                         }, 1000);
                       }
@@ -403,8 +403,11 @@ function PropertiesEdit() {
                           </div>
                         </div>
                       </Step>
-                      <Step label="Selecionar" onClick={() => setActiveStep(2)}>
-                        <h4 className="step-title">Selecionar Propriedade</h4>
+                      <Step
+                        label="Localização"
+                        onClick={() => setActiveStep(2)}
+                      >
+                        <h4 className="step-title">Selecionar Localização</h4>
 
                         <div className="form-group">
                           <div>

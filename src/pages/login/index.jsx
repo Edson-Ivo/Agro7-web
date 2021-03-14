@@ -35,7 +35,7 @@ export default function Login() {
     e.preventDefault();
     let { username, password } = formData;
 
-    username = 'teste@teste.com';
+    username = 'teste1@teste.com';
 
     if (username && password) {
       setLoading(true);
@@ -48,7 +48,7 @@ export default function Login() {
             })
           );
 
-          Router.push('/caderno-produtor');
+          Router.push('/');
         },
         error => {
           const resMessage = errorMessage(error);
