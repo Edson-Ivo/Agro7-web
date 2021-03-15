@@ -28,6 +28,7 @@ import { weekDays } from '../../helpers/date';
 import { useFetch } from '../../hooks/useFetch';
 
 import CoordinatesService from '../../services/CoordinatesService';
+import SearchSelect from '@/components/SearchSelect';
 
 function ProducerNotebook() {
   const [activeDate, setActiveDate] = useState(0);
@@ -85,7 +86,7 @@ function ProducerNotebook() {
                       </DateContent>
                     </DateContainer>
                   </DateWrapper>
-
+                  <SearchSelect name="test" label="teste de pesquisa" />
                   <Input
                     type="text"
                     label="Pesquisar por nome"

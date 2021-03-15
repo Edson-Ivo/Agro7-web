@@ -49,7 +49,7 @@ const MapActionGetLatLng = ({ onClick, positions = [] }) => {
     }
   };
 
-  return <MyMapComponent onClick={e => handleClick(e)} position={position} />;
+  return <MyMapComponent onClick={handleClick} position={position} />;
 };
 
 export default MapActionGetLatLng;

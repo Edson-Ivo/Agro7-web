@@ -55,7 +55,11 @@ const Navbar = () => {
           <div className="navbar__content__right">
             <div className="navbar_button select" onClick={() => handleClick()}>
               <div className="navbar_button__image">
-                <Image src="/user-placeholder.png" width={24} height={24} />
+                <Image
+                  src="/assets/user-placeholder.png"
+                  width={24}
+                  height={24}
+                />
               </div>
               <h5>
                 <span className="navbar_button__text">{name}</span>
