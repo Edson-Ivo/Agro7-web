@@ -1,35 +1,17 @@
-import React, { useState, useEffect } from 'react';
-import { compose, withProps } from 'recompose';
-import {
-  withScriptjs,
-  withGoogleMap,
-  GoogleMap,
-  Marker
-} from 'react-google-maps';
+import React, { memo, useEffect, useState } from 'react';
+import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
 
-const MyMapComponent = compose(
-  withProps({
-    googleMapURL:
-      'https://maps.googleapis.com/maps/api/js?key=AIzaSyAfjeouEb4FznjXbL5UxsGSQi-QLxccFYA&v=3.exp&libraries=geometry,drawing,places',
-    loadingElement: <div style={{ height: `100%` }} />,
-    containerElement: <div style={{ height: `500px` }} />,
-    mapElement: <div style={{ height: `100%` }} />
-  }),
-  withScriptjs,
-  withGoogleMap
-)(props => (
-  <GoogleMap
-    onClick={e => props.onClick(e)}
-    defaultZoom={5}
-    defaultCenter={{ lat: -3.7397479, lng: -38.5095142 }}
-  >
-    {props.position.length > 1 && (
-      <Marker position={{ lat: props.position[0], lng: props.position[1] }} />
-    )}
-  </GoogleMap>
-));
+const containerStyle = {
+  width: '100%',
+  height: '500px'
+};
 
-const MapActionGetLatLng = ({ onClick, positions = [] }) => {
+const center = {
+  lat: -3.7397479,
+  lng: -38.5095142
+};
+
+function MapActionGetLatLng({ onClick, positions = [] }) {
   const [position, setPosition] = useState([]);
 
   useEffect(() => {
@@ -49,7 +31,20 @@ const MapActionGetLatLng = ({ onClick, positions = [] }) => {
     }
   };
 
-  return <MyMapComponent onClick={handleClick} position={position} />;
-};
+  return (
+    <LoadScript googleMapsApiKey="AIzaSyAfjeouEb4FznjXbL5UxsGSQi-QLxccFYA">
+      <GoogleMap
+        mapContainerStyle={containerStyle}
+        center={center}
+        zoom={5}
+        onClick={handleClick}
+      >
+        {position.length > 1 && (
+          <Marker position={{ lat: position[0], lng: position[1] }} />
+        )}
+      </GoogleMap>
+    </LoadScript>
+  );
+}
 
-export default MapActionGetLatLng;
+export default memo(MapActionGetLatLng);

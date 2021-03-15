@@ -1,6 +1,5 @@
 import styled from 'styled-components';
 import { animated } from 'react-spring';
-import { shade } from 'polished';
 
 export const Container = styled.div`
   top: 0;
@@ -100,7 +99,6 @@ export const Footer = styled.div`
 
     &:hover {
       background-color: initial;
-      color: ${props => shade(0.2, `${props.theme.colors.primary}`)};
     }
 
     & + button {
@@ -108,8 +106,7 @@ export const Footer = styled.div`
       color: #fff;
 
       &:hover {
-        background-color: ${props =>
-          shade(0.2, `${props.theme.colors.primary}`)};
+        background-color: ${props => props.theme.colors.primary};
         color: #fff;
         text-decoration: none;
       }
