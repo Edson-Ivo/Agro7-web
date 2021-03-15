@@ -107,6 +107,10 @@ const FileInput = (
 
     if (e.target.files.length > 0) {
       setSelected({ selected: true, count: e.target.files.length });
+      setError({
+        error: '',
+        message: ''
+      });
     } else {
       setSelected({ selected: false, count: 0 });
     }

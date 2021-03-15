@@ -5,7 +5,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faEdit,
   faInfoCircle,
-  faTrash
+  faTrash,
+  faFileDownload
 } from '@fortawesome/free-solid-svg-icons';
 
 import { ActionButtonContainer } from './styles';
@@ -15,24 +16,41 @@ const ActionButton = ({
   path,
   onDelete,
   info = '/detalhes',
+  noInfo = false,
+  download = '',
   edit = '/editar'
 }) => (
   <ActionButtonContainer>
-    <Link href={`${path}/${id}${info}`}>
-      <a>
+    {download && (
+      <a
+        href={download}
+        title="Baixar arquivo"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
         <div>
-          <FontAwesomeIcon icon={faInfoCircle} />
+          <FontAwesomeIcon icon={faFileDownload} />
         </div>
       </a>
-    </Link>
+    )}
+
+    {!noInfo && (
+      <Link href={`${path}/${id}${info}`}>
+        <a title="Informações">
+          <div>
+            <FontAwesomeIcon icon={faInfoCircle} />
+          </div>
+        </a>
+      </Link>
+    )}
     <Link href={`${path}/${id}${edit}`}>
-      <a>
+      <a title="Editar">
         <div>
           <FontAwesomeIcon icon={faEdit} />
         </div>
       </a>
     </Link>
-    <div onClick={() => onDelete()}>
+    <div onClick={() => onDelete()} title="Deletar">
       <div>
         <FontAwesomeIcon icon={faTrash} />
       </div>

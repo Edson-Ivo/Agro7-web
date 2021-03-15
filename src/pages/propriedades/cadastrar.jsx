@@ -201,7 +201,9 @@ function Properties() {
             });
 
             setTimeout(() => {
-              Router.push('/propriedades');
+              Router.push(
+                `/propriedades/${res.data.id}/documentos/cadastrar?createProperty=true`
+              );
               setDisableButton(false);
             }, 1000);
           }

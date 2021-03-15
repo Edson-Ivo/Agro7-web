@@ -81,6 +81,21 @@
   text-transform: uppercase;
 }
 
+@media screen and (max-width: 800px) {
+  .file {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .fileName {
+    text-align: center;
+  }
+
+  .fileExt {
+    margin-left: 0px;
+  }
+}
+
 .fileRemove {
   position: absolute;
   right: 10px;
@@ -159,5 +174,5 @@
 }
 
 .border {
-  border: 2px dotted red;
+  border: 2px dotted #27ab8f;
 }

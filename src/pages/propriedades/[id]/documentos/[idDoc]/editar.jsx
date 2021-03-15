@@ -11,25 +11,28 @@ import FileInput from '@/components/FileInput';
 import { Section, SectionHeader, SectionBody } from '@/components/Section';
 import { CardContainer } from '@/components/CardContainer';
 
-import { privateRoute } from '@/components/PrivateRoute';
 import { Alert } from '@/components/Alert';
-
-import errorMessage from '@/helpers/errorMessage';
+import Loader from '@/components/Loader';
+import { privateRoute } from '@/components/PrivateRoute';
 
 import { useFetch } from '@/hooks/useFetch';
 import DocumentsService from '@/services/DocumentsService';
 import { useRouter } from 'next/router';
 
-function DocumentosCreate() {
+function DocumentosEdit() {
   const formRef = useRef(null);
   const inputRef = useRef(null);
   const [alert, setAlert] = useState({ type: '', message: '' });
   const [disableButton, setDisableButton] = useState(false);
 
   const router = useRouter();
-  const { id, createProperty } = router.query;
+  const { id, idDoc } = router.query;
 
   const { data, error } = useFetch(`/properties/find/by/id/${id}`);
+  const docs = useFetch(`/documents/find/by/id/${idDoc}`);
+
+  const dataDocs = docs.data;
+  const errorDocs = docs.error;
 
   useEffect(
     () => () => {
@@ -39,19 +42,11 @@ function DocumentosCreate() {
     []
   );
 
-  const handleCancel = () => {
-    if (!createProperty) {
-      router.back();
-    } else {
-      //router cultura
-    }
-  };
-
   const handleSubmit = async e => {
     e.preventDefault();
     setDisableButton(true);
 
-    if (inputRef.current.error.message) {
+    if (e.target.file.files.length > 0 && inputRef.current.error.message) {
       setAlert({ type: 'error', message: inputRef.current.error.message });
     } else if (!e.target.name.value) {
       setAlert({
@@ -67,30 +62,20 @@ function DocumentosCreate() {
       });
 
       formData.append('name', e.target.name.value);
-      formData.append('file', e.target.file.files[0]);
 
-      await DocumentsService.create(id, formData)
-        .then(res => {
-          if (res.status !== 201 || res?.statusCode) {
-            setAlert({ type: 'error', message: errorMessage(res) });
-            setTimeout(() => {
-              setDisableButton(false);
-            }, 1000);
-          } else {
-            setAlert({
-              type: 'success',
-              message: 'Documento cadastrado com sucesso!'
-            });
+      if (e.target.file.files.length > 0) {
+        formData.append('file', e.target.file.files[0]);
+      }
 
-            if (!createProperty) {
-              setTimeout(() => {
-                router.push('/propriedades');
-                setDisableButton(false);
-              }, 1000);
-            } else {
-              //router cultura
-            }
-          }
+      await DocumentsService.update(idDoc, formData)
+        .then(() => {
+          setAlert({
+            type: 'success',
+            message: 'Documento editado com sucesso!'
+          });
+          setTimeout(() => {
+            router.push(`/propriedades/${id}/detalhes`);
+          }, 1000);
         })
         .catch(err => {
           setAlert({ type: 'error', message: err.errors[0] });
@@ -101,9 +86,9 @@ function DocumentosCreate() {
 
   return (
     <>
-      {error && router.back()}
+      {(error || errorDocs) && router.back()}
       <Head>
-        <title>Adicionar Documento - Agro7</title>
+        <title>Editar Documento - Agro7</title>
       </Head>
 
       <Navbar />
@@ -118,10 +103,10 @@ function DocumentosCreate() {
                   { route: '/propriedades', name: 'Propriedades' }
                 ]}
               />
-              <h2>Adicionar Documento {`(${data && data.name})`}</h2>
+              <h2>Editar Documento {dataDocs && dataDocs.name}</h2>
               <p>
-                Aqui você irá adicionar um documento para propriedade{' '}
-                {data && data.name}
+                Você está editando o documento {dataDocs && dataDocs.name} da
+                propriedade {data && data.name}.
               </p>
             </div>
           </SectionHeader>
@@ -137,29 +122,46 @@ function DocumentosCreate() {
                   method="post"
                   onSubmit={event => handleSubmit(event)}
                 >
-                  <Input type="text" name="name" label="Nome do documento" />
-                  <FileInput
-                    ref={inputRef}
-                    name="file"
-                    label="Selecione o arquivo"
-                    max={1}
-                  />
-                  <div className="form-group buttons">
-                    <div>
-                      <Button type="button" onClick={handleCancel}>
-                        {(createProperty && 'Não adicionar') || 'Cancelar'}
-                      </Button>
-                    </div>
-                    <div>
-                      <Button
-                        disabled={disableButton}
-                        className="primary"
-                        type="submit"
-                      >
-                        Adicionar Documento
-                      </Button>
-                    </div>
-                  </div>
+                  {(dataDocs && (
+                    <>
+                      <Input
+                        type="text"
+                        name="name"
+                        label="Nome do documento"
+                        initialValue={dataDocs.name}
+                      />
+                      <Input
+                        type="text"
+                        name="archive"
+                        label="Documento atual"
+                        initialValue={dataDocs.filename}
+                        disabled
+                      />
+                      <FileInput
+                        ref={inputRef}
+                        name="file"
+                        label="Selecione o arquivo"
+                        max={1}
+                        text="Clique aqui para substituir o documento atual ou apenas arraste-o."
+                      />
+                      <div className="form-group buttons">
+                        <div>
+                          <Button type="button" onClick={() => router.back()}>
+                            Cancelar
+                          </Button>
+                        </div>
+                        <div>
+                          <Button
+                            disabled={disableButton}
+                            className="primary"
+                            type="submit"
+                          >
+                            Editar Documento
+                          </Button>
+                        </div>
+                      </div>
+                    </>
+                  )) || <Loader />}
                 </form>
               </CardContainer>
             </div>
@@ -170,4 +172,4 @@ function DocumentosCreate() {
   );
 }
 
-export default privateRoute()(DocumentosCreate);
+export default privateRoute()(DocumentosEdit);

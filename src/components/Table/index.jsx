@@ -20,10 +20,12 @@ const Table = styled.table`
 
   th {
     vertical-align: middle;
-
     padding: 0.55rem;
-
     text-align: inherit;
+
+    &:last-of-type {
+      text-align: center;
+    }
   }
 
   td {
