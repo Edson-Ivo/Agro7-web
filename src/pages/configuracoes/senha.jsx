@@ -15,7 +15,7 @@ import { CardContainer } from '../../components/CardContainer';
 import { privateRoute } from '../../components/PrivateRoute';
 import Loader from '../../components/Loader';
 
-import UsersServices from '../../services/UsersServices';
+import UsersService from '../../services/UsersService';
 import errorMessage from '../../helpers/errorMessage';
 import getFormData from '../../helpers/getFormData';
 
@@ -55,7 +55,7 @@ function ConfiguracoesSenha() {
 
         delete formData.repeat_password;
 
-        await UsersServices.updatePasswordByOwner(formData)
+        await UsersService.updatePasswordByOwner(formData)
           .then(res => {
             if (res.status !== 200 || res?.statusCode) {
               setAlertMsg({ type: 'error', message: errorMessage(res) });

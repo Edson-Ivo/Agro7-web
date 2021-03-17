@@ -44,7 +44,7 @@ function Properties({ permission }) {
       setLoading(true);
 
       await PropertiesService.delete(identifier).then(res => {
-        if (res.status > 400 || res?.statusCode) {
+        if (res.status >= 400 || res?.statusCode) {
           setAlertMsg(errorMessage(res));
         } else {
           mutate();
@@ -120,8 +120,8 @@ function Properties({ permission }) {
                         </tr>
                       </thead>
                       <tbody>
-                        {(data?.properties &&
-                          data.properties.map(p => (
+                        {(data?.items &&
+                          data.items.map(p => (
                             <tr key={p.id}>
                               <td>{p.name}</td>
                               <td>{p.addresses.state}</td>

@@ -18,8 +18,8 @@ export const DateWrapper = styled.div`
     right: -1px;
     background: linear-gradient(
       to right,
-      rgba(255, 255, 255, 0) 0,
-      #fafafa 70%
+      rgba(252, 252, 253, 0) 0px,
+      rgb(252, 252, 253) 80%
     );
   }
 `;

@@ -202,7 +202,7 @@ function PropertiesEdit() {
         });
 
         await PropertiesService.update(id, d).then(async res => {
-          if (res.status > 400 || res?.statusCode) {
+          if (res.status >= 400 || res?.statusCode) {
             setAlert({ type: 'error', message: errorMessage(res) });
             setTimeout(() => {
               setDisableButton(false);
@@ -210,7 +210,7 @@ function PropertiesEdit() {
           } else {
             await AddressesService.update(data.addresses.id, d).then(
               async res2 => {
-                if (res2.status > 400 || res2?.statusCode) {
+                if (res2.status >= 400 || res2?.statusCode) {
                   setAlert({ type: 'error', message: errorMessage(res2) });
                   setTimeout(() => {
                     setDisableButton(false);
@@ -218,7 +218,7 @@ function PropertiesEdit() {
                 } else {
                   CoordinatesService.update(data.coordinates.id, d).then(
                     async res3 => {
-                      if (res3.status > 400 || res3?.statusCode) {
+                      if (res3.status >= 400 || res3?.statusCode) {
                         setAlert({
                           type: 'error',
                           message: errorMessage(res3)

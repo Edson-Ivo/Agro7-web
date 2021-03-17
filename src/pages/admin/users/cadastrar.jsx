@@ -18,7 +18,7 @@ import { privateRoute } from '@/components/PrivateRoute';
 import NotFound from '@/components/NotFound';
 import getFormData from '@/helpers/getFormData';
 import AddressesService from '@/services/AddressesService';
-import UsersServices from '@/services/UsersServices';
+import UsersService from '@/services/UsersService';
 import errorMessage from '@/helpers/errorMessage';
 import extractNumbers from '@/helpers/extractNumbers';
 
@@ -174,7 +174,7 @@ function AdminUsers({ permission }) {
 
         if (!data.phone_whatsapp) delete data.phone_whatsapp;
 
-        await UsersServices.create(data).then(res => {
+        await UsersService.create(data).then(res => {
           if (res.status !== 201 || res?.statusCode) {
             setAlert({ type: 'error', message: errorMessage(res) });
             setTimeout(() => {

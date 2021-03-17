@@ -29,7 +29,7 @@ import { useFetch } from '../../../hooks/useFetch';
 import ActionButton from '../../../components/ActionButton';
 import { useModal } from '../../../hooks/useModal';
 
-import UsersServices from '../../../services/UsersServices';
+import UsersService from '../../../services/UsersService';
 import errorMessage from '../../../helpers/errorMessage';
 
 function AdminUsers({ permission }) {
@@ -53,7 +53,7 @@ function AdminUsers({ permission }) {
       removeModal();
       setLoading(true);
 
-      await UsersServices.deleteByAdmin(id).then(res => {
+      await UsersService.deleteByAdmin(id).then(res => {
         if (res.status !== 200 || res?.statusCode) {
           setAlertMsg(errorMessage(res));
         } else {
@@ -131,8 +131,8 @@ function AdminUsers({ permission }) {
                           </tr>
                         </thead>
                         <tbody>
-                          {(data?.users &&
-                            data.users.map(user => (
+                          {(data?.items &&
+                            data.items.map(user => (
                               <tr key={user.id}>
                                 <td>{user.name}</td>
                                 <td>{user.email}</td>
@@ -158,7 +158,7 @@ function AdminUsers({ permission }) {
                       url="/admin/users"
                       actual={page}
                       maxRecords={10}
-                      evaluate={data.users}
+                      evaluate={data.items}
                     />
                   </>
                 )) || <Loader />}

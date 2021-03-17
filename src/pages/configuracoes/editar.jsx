@@ -22,7 +22,7 @@ import getFormData from '@/helpers/getFormData';
 import { useFetch } from '@/hooks/useFetch';
 
 import AddressesService from '@/services/AddressesService';
-import UsersServices from '@/services/UsersServices';
+import UsersService from '@/services/UsersService';
 import errorMessage from '@/helpers/errorMessage';
 import extractNumbers from '@/helpers/extractNumbers';
 
@@ -160,13 +160,14 @@ function ConfiguracoesEdit() {
 
         if (!dataReq.phone_whatsapp) delete dataReq.phone_whatsapp;
 
-        await UsersServices.updateByOwner(dataReq).then(async res => {
-          if (res.status > 400 || res?.statusCode) {
+        await UsersService.updateByOwner(dataReq).then(async res => {
+          if (res.status >= 400 || res?.statusCode) {
             setAlert({ type: 'error', message: errorMessage(res) });
           } else {
+            console.log(res);
             await AddressesService.update(data.addresses.id, dataReq).then(
               async res2 => {
-                if (res2.status > 400 || res2?.statusCode) {
+                if (res2.status >= 400 || res2?.statusCode) {
                   setAlert({ type: 'error', message: errorMessage(res2) });
                   setTimeout(() => {
                     setDisableButton(false);

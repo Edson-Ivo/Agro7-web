@@ -120,7 +120,7 @@ function ProducerNotebook() {
                     </Card>
                   ))} */}
 
-                  {data.coordinates.map(coordinate => (
+                  {data.items.map(coordinate => (
                     <div key={coordinate.id}>{coordinate.latitude}</div>
                   ))}
 

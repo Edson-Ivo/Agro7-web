@@ -51,7 +51,7 @@ function Properties() {
       setLoading(true);
 
       await PropertiesService.delete(identifier).then(res => {
-        if (res.status > 400 || res?.statusCode) {
+        if (res.status >= 400 || res?.statusCode) {
           setAlertMsg(errorMessage(res));
         } else {
           mutate();
@@ -128,8 +128,8 @@ function Properties() {
                           </tr>
                         </thead>
                         <tbody>
-                          {(data?.properties.length > 0 &&
-                            data.properties.map(p => (
+                          {(data?.items.length > 0 &&
+                            data.items.map(p => (
                               <tr key={p.id}>
                                 <td>{p.name}</td>
                                 <td>{p.addresses.state}</td>
@@ -155,7 +155,7 @@ function Properties() {
                     <Pagination
                       url="propriedades"
                       actual={page}
-                      evaluate={data?.properties}
+                      evaluate={data?.items}
                     />
                   </>
                 )) || <Loader />}

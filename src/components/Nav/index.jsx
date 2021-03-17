@@ -1,5 +1,5 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import Link from 'next/link';
 import styled from 'styled-components';
 
@@ -13,6 +13,7 @@ import {
 
 import { useRouter } from 'next/router';
 
+import { NavChangeAction } from '@/store/modules/Nav/actions';
 import Button from '../Button';
 
 const NavContainer = styled.div`
@@ -71,10 +72,7 @@ const NavList = styled.div`
     display: flex;
     align-items: center;
     padding: 12px 16px;
-
-    a {
-      color: ${props => props.theme.colors.black};
-    }
+    color: ${props => props.theme.colors.black};
 
     .navlist_button__icon {
       font-size: 1.2em;
@@ -89,9 +87,7 @@ const NavList = styled.div`
     }
 
     &.active {
-      a {
-        color: ${props => props.theme.colors.green};
-      }
+      color: ${props => props.theme.colors.green};
     }
 
     @media screen and (max-width: ${props =>
@@ -108,6 +104,8 @@ const NavList = styled.div`
 
 const NavButton = ({ link, icon, text }) => {
   const router = useRouter();
+  const dispatch = useDispatch();
+
   let active = '';
   let path = '';
 
@@ -119,13 +117,15 @@ const NavButton = ({ link, icon, text }) => {
     active = 'active';
   }
 
+  const handleClick = () => {
+    dispatch(NavChangeAction(false));
+  };
+
   return (
     <Link href={link}>
-      <Button className={`navlist_button ${active}`}>
-        <a>
-          <FontAwesomeIcon icon={icon} className="navlist_button__icon" />
-          <span className="navlist_button__description">{text}</span>
-        </a>
+      <Button className={`navlist_button ${active}`} onClick={handleClick}>
+        <FontAwesomeIcon icon={icon} className="navlist_button__icon" />
+        <span className="navlist_button__description">{text}</span>
       </Button>
     </Link>
   );

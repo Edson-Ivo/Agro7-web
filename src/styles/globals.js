@@ -130,4 +130,13 @@ export default createGlobalStyle`
     text-align: center;
     margin: 25px 0;
   }
+
+  input,
+  textarea,
+  button,
+  select,
+  div,
+  a {
+    -webkit-tap-highlight-color: transparent;
+  }
 `;

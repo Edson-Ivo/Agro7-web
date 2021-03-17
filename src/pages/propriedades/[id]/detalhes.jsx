@@ -51,7 +51,7 @@ function PropertieInfo() {
       setLoading(true);
 
       await DocumentsService.delete(identifier).then(res => {
-        if (res.status > 400 || res?.statusCode) {
+        if (res.status >= 400 || res?.statusCode) {
           setAlertMsg(errorMessage(res));
         } else {
           mutateDocs();
@@ -295,8 +295,8 @@ function PropertieInfo() {
                               </tr>
                             </thead>
                             <tbody>
-                              {(dataDocs?.length > 0 &&
-                                dataDocs.map(d => (
+                              {(dataDocs?.items.length > 0 &&
+                                dataDocs.items.map(d => (
                                   <tr key={d.id}>
                                     <td>{d.name}</td>
                                     <td>

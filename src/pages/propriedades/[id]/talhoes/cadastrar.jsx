@@ -17,10 +17,10 @@ import { Alert } from '@/components/Alert';
 import errorMessage from '@/helpers/errorMessage';
 
 import { useFetch } from '@/hooks/useFetch';
-import DocumentsService from '@/services/DocumentsService';
+import FieldsService from '@/services/FieldsService';
 import { useRouter } from 'next/router';
 
-function DocumentosCreate() {
+function TalhoesCreate() {
   const formRef = useRef(null);
   const inputRef = useRef(null);
   const [alert, setAlert] = useState({ type: '', message: '' });
@@ -84,7 +84,7 @@ function DocumentosCreate() {
 
             if (!createProperty) {
               setTimeout(() => {
-                router.push(`/propriedades/${id}/detalhes`);
+                router.push('/propriedades');
                 setDisableButton(false);
               }, 1000);
             } else {
@@ -103,7 +103,7 @@ function DocumentosCreate() {
     <>
       {error && router.back()}
       <Head>
-        <title>Adicionar Documento - Agro7</title>
+        <title>Adicionar Talhão - Agro7</title>
       </Head>
 
       <Navbar />
@@ -118,9 +118,9 @@ function DocumentosCreate() {
                   { route: '/propriedades', name: 'Propriedades' }
                 ]}
               />
-              <h2>Adicionar Documento {`(${data && data.name})`}</h2>
+              <h2>Adicionar Talhão {`(${data && data.name})`}</h2>
               <p>
-                Aqui você irá adicionar um documento para propriedade{' '}
+                Aqui você irá adicionar um talhão para propriedade{' '}
                 {data && data.name}
               </p>
             </div>
@@ -137,7 +137,7 @@ function DocumentosCreate() {
                   method="post"
                   onSubmit={event => handleSubmit(event)}
                 >
-                  <Input type="text" name="name" label="Nome do documento" />
+                  <Input type="text" name="name" label="Nome do talhão" />
                   <FileInput
                     ref={inputRef}
                     name="file"
@@ -170,4 +170,4 @@ function DocumentosCreate() {
   );
 }
 
-export default privateRoute()(DocumentosCreate);
+export default privateRoute()(TalhoesCreate);
