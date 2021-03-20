@@ -5,12 +5,10 @@ import { getCookie, setCookie, removeCookie } from '../helpers/cookies';
 import { api } from './api';
 
 class AuthService {
-  static async login(username, password) {
-    const email = username;
-
+  static async login(document, password) {
     return api
       .post(`/auth/login`, {
-        email,
+        document,
         password
       })
       .then(response => {

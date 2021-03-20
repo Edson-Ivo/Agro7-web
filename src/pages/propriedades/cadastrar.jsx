@@ -3,7 +3,7 @@ import Head from 'next/head';
 import * as yup from 'yup';
 import { MultiStepForm as MultiStep, Step } from '@/components/Multiform';
 
-import MapActionGetLatLng from '@/components/MapApp';
+import { MapActionGetLatLng } from '@/components/MapApp';
 
 import Container from '@/components/Container';
 import Nav from '@/components/Nav';
@@ -20,10 +20,13 @@ import getFormData from '@/helpers/getFormData';
 import { Alert } from '@/components/Alert/index';
 
 import errorMessage from '@/helpers/errorMessage';
+import capitalize from '@/helpers/capitalize';
 
 import PropertiesService from '@/services/PropertiesService';
-import Router from 'next/router';
+import { useRouter } from 'next/router';
 import AddressesService from '@/services/AddressesService';
+import { useFetch } from '@/hooks/useFetch';
+import Loader from '@/components/Loader/index';
 
 const schema = yup.object().shape({
   name: yup
@@ -35,7 +38,9 @@ const schema = yup.object().shape({
     .transform(value => (Number.isNaN(value) ? undefined : value))
     .required('A área precisa ser definida')
     .positive('A área precisa ter um valor positivo'),
-  type_dimension: yup.string().min(1).max(1).required(),
+  type_dimension: yup
+    .string()
+    .required('Unidade de medida precisa ser definida'),
   type_owner: yup.string().min(1).required(),
   latitude: yup
     .number()
@@ -92,6 +97,7 @@ function Properties() {
   const [disableButton, setDisableButton] = useState(false);
   const [activeStep, setActiveStep] = useState(1);
   const [loadingAddresses, setLoadingAddresses] = useState(false);
+  const router = useRouter();
 
   const stateRef = useRef(null);
   const cityRef = useRef(null);
@@ -100,6 +106,14 @@ function Properties() {
   const postalcodeRef = useRef(null);
   const latitudeRef = useRef(null);
   const longitudeRef = useRef(null);
+
+  const { data: dataTypeOwner, error: errorTypeOwner } = useFetch(
+    '/properties/find/all/types-owner'
+  );
+
+  const { data: dataTypeDimension, error: errorTypeDimension } = useFetch(
+    '/properties/find/all/types-dimension'
+  );
 
   useEffect(
     () => () => {
@@ -172,6 +186,11 @@ function Properties() {
     }
   };
 
+  const handleCancel = e => {
+    e.preventDefault();
+    router.back();
+  };
+
   const handleLatLng = positions => {
     latitudeRef.current.setValue(positions[0]);
     longitudeRef.current.setValue(positions[1]);
@@ -201,7 +220,7 @@ function Properties() {
             });
 
             setTimeout(() => {
-              Router.push(
+              router.replace(
                 `/propriedades/${res.data.id}/documentos/cadastrar?createProperty=true`
               );
               setDisableButton(false);
@@ -249,181 +268,201 @@ function Properties() {
                   method="post"
                   onSubmit={event => handleSubmit(event)}
                 >
-                  <MultiStep activeStep={activeStep}>
-                    <Step label="Dados" onClick={() => setActiveStep(1)}>
-                      <h4 className="step-title">Dados da Propriedade</h4>
+                  {(dataTypeDimension && dataTypeOwner && (
+                    <>
+                      <MultiStep activeStep={activeStep}>
+                        <Step label="Dados" onClick={() => setActiveStep(1)}>
+                          <h4 className="step-title">Dados da Propriedade</h4>
 
-                      <div className="form-group">
-                        <div>
-                          <Input
-                            type="text"
-                            label="Nome da propriedade"
-                            name="name"
-                            initialValue=""
-                          />
-                        </div>
-                        <div>
-                          <Select
-                            options={[
-                              { value: 'proprietario', label: 'Proprietário' }
-                            ]}
-                            label="Quem é você para esta propriedade?"
-                            value="proprietario"
-                            name="type_owner"
-                          />
-                        </div>
-                      </div>
-                      <div className="form-group">
-                        <div>
-                          <Input
-                            type="number"
-                            label="Área"
-                            name="area"
-                            initialValue=""
-                          />
-                        </div>
-                        <div>
-                          <Select
-                            options={[{ value: 'm', label: 'Metros' }]}
-                            label="Unidade de medida"
-                            value="m"
-                            name="type_dimension"
-                          />
-                        </div>
-                      </div>
-                      <div className="form-group">
-                        <div>
-                          <Input
-                            type="text"
-                            label="CEP"
-                            name="postcode"
-                            initialValue=""
-                            mask="cep"
-                            disabled={loadingAddresses}
-                            ref={postalcodeRef}
-                            handleChange={handleChangeCep}
-                          />
-                        </div>
-                        <div>
-                          <Input
-                            type="text"
-                            label="Estado"
-                            name="state"
-                            initialValue=""
-                            ref={stateRef}
-                          />
-                        </div>
-                        <div>
-                          <Input
-                            type="text"
-                            label="Cidade"
-                            name="city"
-                            initialValue=""
-                            ref={cityRef}
-                          />
-                        </div>
-                      </div>
-                      <div className="form-group">
-                        <div>
-                          <Input
-                            type="text"
-                            label="Bairro"
-                            name="neighborhood"
-                            initialValue=""
-                            ref={neighborhoodRef}
-                          />
-                        </div>
-                        <div>
-                          <Input
-                            type="text"
-                            label="Rua"
-                            name="street"
-                            initialValue=""
-                            ref={streetRef}
-                          />
-                        </div>
-                      </div>
-                      <div className="form-group">
-                        <div>
-                          <Input
-                            type="text"
-                            label="Número"
-                            name="number"
-                            initialValue=""
-                          />
-                        </div>
-                        <div>
-                          <Input
-                            type="text"
-                            label="Complementos"
-                            name="complements"
-                            initialValue=""
-                          />
-                        </div>
-                      </div>
-                    </Step>
-                    <Step label="Localização" onClick={() => setActiveStep(2)}>
-                      <h4 className="step-title">Selecionar Localização</h4>
-
-                      <div className="form-group">
-                        <div>
-                          <Input
-                            type="number"
-                            label="Latitude"
-                            name="latitude"
-                            initialValue=""
-                            ref={latitudeRef}
-                          />
-                        </div>
-                        <div>
-                          <Input
-                            type="number"
-                            label="Longitude"
-                            name="longitude"
-                            initialValue=""
-                            ref={longitudeRef}
-                          />
-                        </div>
-                      </div>
-
-                      <div style={{ marginBottom: '20px' }}>
-                        <MapActionGetLatLng onClick={handleLatLng} />
-                      </div>
-                    </Step>
-                  </MultiStep>
-
-                  <div className="form-group buttons">
-                    {activeStep !== 1 && (
-                      <div>
-                        <Button
-                          type="button"
-                          onClick={() => setActiveStep(activeStep - 1)}
+                          <div className="form-group">
+                            <div>
+                              <Input
+                                type="text"
+                                label="Nome da propriedade"
+                                name="name"
+                                initialValue=""
+                              />
+                            </div>
+                            <div>
+                              <Select
+                                options={dataTypeOwner?.typesOwner.map(
+                                  owner => ({
+                                    value: owner,
+                                    label: capitalize(owner)
+                                  })
+                                )}
+                                label="Quem é você para esta propriedade?"
+                                name="type_owner"
+                              />
+                            </div>
+                          </div>
+                          <div className="form-group">
+                            <div>
+                              <Input
+                                type="number"
+                                label="Área"
+                                name="area"
+                                initialValue=""
+                              />
+                            </div>
+                            <div>
+                              <Select
+                                options={dataTypeDimension?.typesDimension.map(
+                                  dimension => ({
+                                    value: dimension,
+                                    label: dimension
+                                  })
+                                )}
+                                label="Unidade de medida"
+                                name="type_dimension"
+                              />
+                            </div>
+                          </div>
+                          <div className="form-group">
+                            <div>
+                              <Input
+                                type="text"
+                                label="CEP"
+                                name="postcode"
+                                initialValue=""
+                                mask="cep"
+                                disabled={loadingAddresses}
+                                ref={postalcodeRef}
+                                handleChange={handleChangeCep}
+                              />
+                            </div>
+                            <div>
+                              <Input
+                                type="text"
+                                label="Estado"
+                                name="state"
+                                initialValue=""
+                                ref={stateRef}
+                              />
+                            </div>
+                            <div>
+                              <Input
+                                type="text"
+                                label="Cidade"
+                                name="city"
+                                initialValue=""
+                                ref={cityRef}
+                              />
+                            </div>
+                          </div>
+                          <div className="form-group">
+                            <div>
+                              <Input
+                                type="text"
+                                label="Bairro"
+                                name="neighborhood"
+                                initialValue=""
+                                ref={neighborhoodRef}
+                              />
+                            </div>
+                            <div>
+                              <Input
+                                type="text"
+                                label="Rua"
+                                name="street"
+                                initialValue=""
+                                ref={streetRef}
+                              />
+                            </div>
+                          </div>
+                          <div className="form-group">
+                            <div>
+                              <Input
+                                type="text"
+                                label="Número"
+                                name="number"
+                                initialValue=""
+                              />
+                            </div>
+                            <div>
+                              <Input
+                                type="text"
+                                label="Complementos"
+                                name="complements"
+                                initialValue=""
+                              />
+                            </div>
+                          </div>
+                        </Step>
+                        <Step
+                          label="Localização"
+                          onClick={() => setActiveStep(2)}
                         >
-                          Voltar
-                        </Button>
-                      </div>
-                    )}
-                    <div>
-                      {activeStep !== 2 && (
-                        <Button
-                          type="button"
-                          onClick={() => setActiveStep(activeStep + 1)}
-                        >
-                          Continuar
-                        </Button>
-                      )}
+                          <h4 className="step-title">Selecionar Localização</h4>
 
-                      {activeStep === 2 && (
-                        <Button
-                          disabled={disableButton}
-                          className="primary"
-                          type="submit"
-                        >
-                          Cadastrar propriedade
-                        </Button>
-                      )}
-                    </div>
-                  </div>
+                          <div className="form-group">
+                            <div>
+                              <Input
+                                type="number"
+                                label="Latitude"
+                                name="latitude"
+                                initialValue=""
+                                ref={latitudeRef}
+                              />
+                            </div>
+                            <div>
+                              <Input
+                                type="number"
+                                label="Longitude"
+                                name="longitude"
+                                initialValue=""
+                                ref={longitudeRef}
+                              />
+                            </div>
+                          </div>
+
+                          <div style={{ marginBottom: '20px' }}>
+                            <MapActionGetLatLng onClick={handleLatLng} />
+                          </div>
+                        </Step>
+                      </MultiStep>
+
+                      <div className="form-group buttons">
+                        {(activeStep !== 1 && (
+                          <div>
+                            <Button
+                              type="button"
+                              onClick={() => setActiveStep(activeStep - 1)}
+                            >
+                              Voltar
+                            </Button>
+                          </div>
+                        )) || (
+                          <div>
+                            <Button type="button" onClick={handleCancel}>
+                              Cancelar
+                            </Button>
+                          </div>
+                        )}
+                        <div>
+                          {activeStep !== 2 && (
+                            <Button
+                              type="button"
+                              onClick={() => setActiveStep(activeStep + 1)}
+                              className="primary"
+                            >
+                              Continuar
+                            </Button>
+                          )}
+
+                          {activeStep === 2 && (
+                            <Button
+                              disabled={disableButton}
+                              className="primary"
+                              type="submit"
+                            >
+                              Cadastrar propriedade
+                            </Button>
+                          )}
+                        </div>
+                      </div>
+                    </>
+                  )) || <Loader />}
                 </form>
               </CardContainer>
             </div>

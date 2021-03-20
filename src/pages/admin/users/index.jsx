@@ -38,10 +38,11 @@ function AdminUsers({ permission }) {
 
   const router = useRouter();
 
+  const perPage = 10;
   const { page = 1 } = router.query;
 
   const { data, error, mutate } = useFetch(
-    `/users/find/all?perPage=10&page=${page}`
+    `/users/find/all?limit=${perPage}&page=${page}`
   );
   const { addModal, removeModal } = useModal();
 
@@ -156,9 +157,9 @@ function AdminUsers({ permission }) {
                     </div>
                     <Pagination
                       url="/admin/users"
-                      actual={page}
-                      maxRecords={10}
-                      evaluate={data.items}
+                      currentPage={page}
+                      itemsPerPage={perPage}
+                      totalPages={data.meta.totalPages}
                     />
                   </>
                 )) || <Loader />}

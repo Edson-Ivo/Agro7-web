@@ -13,7 +13,7 @@ export const Card = styled.div`
   border-radius: 10px;
   padding: 15px 0px 15px 25px;
   overflow: hidden;
-  margin-bottom: 10px;
+  margin-top: 10px;
 
   .card-info {
     width: 70%;

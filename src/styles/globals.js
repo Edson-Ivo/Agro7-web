@@ -123,7 +123,7 @@ export default createGlobalStyle`
   }
 
   .table-responsive {
-    overflow-x:auto;
+    overflow-x: auto;
   }
 
   .step-title {

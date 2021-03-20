@@ -164,7 +164,6 @@ function ConfiguracoesEdit() {
           if (res.status >= 400 || res?.statusCode) {
             setAlert({ type: 'error', message: errorMessage(res) });
           } else {
-            console.log(res);
             await AddressesService.update(data.addresses.id, dataReq).then(
               async res2 => {
                 if (res2.status >= 400 || res2?.statusCode) {

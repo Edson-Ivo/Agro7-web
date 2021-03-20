@@ -35,7 +35,7 @@ function Properties({ permission }) {
   const { addModal, removeModal } = useModal();
 
   const { data, error, mutate } = useFetch(
-    `/properties/find/all?perPage=10&page=${page}`
+    `/properties/find/all?limit=10&page=${page}`
   );
 
   const handleDelete = useCallback(

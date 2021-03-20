@@ -43,7 +43,9 @@ function DocumentosCreate() {
     if (!createProperty) {
       router.back();
     } else {
-      //router cultura
+      router.replace(
+        `/propriedades/${id}/talhoes/cadastrar?createProperty=true`
+      );
     }
   };
 
@@ -88,7 +90,9 @@ function DocumentosCreate() {
                 setDisableButton(false);
               }, 1000);
             } else {
-              //router cultura
+              router.replace(
+                `/propriedades/${id}/talhoes/cadastrar?createProperty=true`
+              );
             }
           }
         })
@@ -147,7 +151,7 @@ function DocumentosCreate() {
                   <div className="form-group buttons">
                     <div>
                       <Button type="button" onClick={handleCancel}>
-                        {(createProperty && 'Não adicionar') || 'Cancelar'}
+                        {(createProperty && 'Adicionar depois') || 'Cancelar'}
                       </Button>
                     </div>
                     <div>

@@ -61,4 +61,11 @@ export const SectionBody = styled.div`
     max-width: ${props => props.theme.margins.content_width};
     width: 100%;
   }
+
+  @media screen and (max-width: ${props => props.theme.breakpoints.mobile}px) {
+    &,
+    .SectionBody__content {
+      padding: 0px;
+    }
+  }
 `;

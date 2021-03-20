@@ -42,7 +42,7 @@ function Properties() {
   const { addModal, removeModal } = useModal();
 
   const { data, error, mutate } = useFetch(
-    `/properties/find/by/user/${id}?perPage=${perPage}&page=${page}`
+    `/properties/find/by/user/${id}?limit=${perPage}&page=${page}`
   );
 
   const handleDelete = useCallback(
@@ -125,6 +125,7 @@ function Properties() {
                             <th>Estado</th>
                             <th>Cidade</th>
                             <th>Ações</th>
+                            <th>Ações</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -153,9 +154,10 @@ function Properties() {
                       </Table>
                     </div>
                     <Pagination
-                      url="propriedades"
-                      actual={page}
-                      evaluate={data?.items}
+                      url="/propriedades"
+                      currentPage={page}
+                      itemsPerPage={perPage}
+                      totalPages={data.meta.totalPages}
                     />
                   </>
                 )) || <Loader />}

@@ -2,7 +2,7 @@ import React from 'react';
 import Head from 'next/head';
 
 import Container from '@/components/Container';
-import MapActionGetLatLng from '@/components/MapApp';
+import { MapActionGetLatLng } from '@/components/MapApp';
 import Nav from '@/components/Nav';
 import Navbar from '@/components/Navbar';
 import Loader from '@/components/Loader';

@@ -2,21 +2,19 @@ import React, { Component } from 'react';
 import ServerCookie from 'next-cookies';
 import { AUTH_COOKIE_TOKEN, AUTH_COOKIE_NAME } from '../../services/constants';
 import AuthService from '../../services/AuthService';
+import { redirect } from '../../helpers/redirect';
 
 export function privateRoute(types) {
   return WrappedComponent =>
     class extends Component {
       static async getInitialProps(ctx) {
         const token = ServerCookie(ctx)[AUTH_COOKIE_TOKEN];
+        const userData = ServerCookie(ctx)[AUTH_COOKIE_NAME];
 
-        let initialProps = { token, permission: true, type: 'independent' };
+        let initialProps = { permission: true, type: 'independent' };
 
-        if (!token) {
-          ctx.res.writeHead(302, {
-            Location: '/login'
-          });
-
-          ctx.res.end();
+        if (!token || !userData) {
+          redirect('/login', ctx.res);
         }
 
         if (types) {
@@ -36,11 +34,7 @@ export function privateRoute(types) {
               type: user.types
             };
           } else {
-            ctx.res.writeHead(302, {
-              Location: '/login'
-            });
-
-            ctx.res.end();
+            redirect('/login', ctx.res);
           }
         }
 
@@ -52,11 +46,7 @@ export function privateRoute(types) {
 
       render() {
         return (
-          <WrappedComponent
-            token={this.token}
-            permission={this.permission}
-            {...this.props}
-          />
+          <WrappedComponent permission={this.permission} {...this.props} />
         );
       }
     };

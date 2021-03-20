@@ -50,7 +50,9 @@ const Navbar = () => {
               onClick={() => dispatch(NavToogleAction())}
               className="navbar_toggle__icon"
             />
-            <Image src="/logo/logo.png" width="100" height="40" />
+            <Link href="/">
+              <Image src="/logo/logo.png" width="100" height="40" />
+            </Link>
           </div>
           <div className="navbar__content__right">
             <div className="navbar_button select" onClick={() => handleClick()}>
@@ -62,7 +64,9 @@ const Navbar = () => {
                 />
               </div>
               <h5>
-                <span className="navbar_button__text">{name}</span>
+                <span className="navbar_button__text">
+                  {name.replace(/ .*/, '')}
+                </span>
                 <FontAwesomeIcon
                   icon={!open ? faChevronDown : faChevronUp}
                   className="navbar_button__icon"

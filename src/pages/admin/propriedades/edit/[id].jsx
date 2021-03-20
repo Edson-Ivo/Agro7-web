@@ -39,12 +39,14 @@ const schema = yup.object().shape({
     .transform(value => (Number.isNaN(value) ? undefined : value))
     .required('A área precisa ser definida')
     .positive('A área precisa ter um valor positivo'),
-  type_dimension: yup.string().min(1).max(1).required(),
+  type_dimension: yup
+    .string()
+    .required('Unidade de medida precisa ser definida'),
   type_owner: yup.string().min(1).required(),
   latitude: yup
     .number()
     .transform(value => (Number.isNaN(value) ? undefined : value))
-    .required('A latidute é obrigatória'),
+    .required('A latitude é obrigatória'),
   longitude: yup
     .number()
     .transform(value => (Number.isNaN(value) ? undefined : value))

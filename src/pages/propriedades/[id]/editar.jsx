@@ -13,10 +13,11 @@ import Select from '@/components/Select';
 import { Section, SectionHeader, SectionBody } from '@/components/Section';
 import { CardContainer } from '@/components/CardContainer';
 
-import MapActionGetLatLng from '@/components/MapApp';
+import { MapActionGetLatLng } from '@/components/MapApp';
 
 import { privateRoute } from '@/components/PrivateRoute';
 import getFormData from '@/helpers/getFormData';
+import capitalize from '@/helpers/capitalize';
 import { Alert } from '@/components/Alert/index';
 
 import errorMessage from '@/helpers/errorMessage';
@@ -38,12 +39,14 @@ const schema = yup.object().shape({
     .transform(value => (Number.isNaN(value) ? undefined : value))
     .required('A área precisa ser definida')
     .positive('A área precisa ter um valor positivo'),
-  type_dimension: yup.string().min(1).max(1).required(),
-  type_owner: yup.string().min(1).required(),
+  type_dimension: yup
+    .string()
+    .required('Unidade de medida precisa ser definida'),
+  type_owner: yup.string().required(),
   latitude: yup
     .number()
     .transform(value => (Number.isNaN(value) ? undefined : value))
-    .required('A latidute é obrigatória'),
+    .required('A latitude é obrigatória'),
   longitude: yup
     .number()
     .transform(value => (Number.isNaN(value) ? undefined : value))
@@ -94,6 +97,14 @@ function PropertiesEdit() {
   const { id } = router.query;
 
   const { data, error, mutate } = useFetch(`/properties/find/by/id/${id}`);
+
+  const { data: dataTypeOwner, error: errorTypeOwner } = useFetch(
+    '/properties/find/all/types-owner'
+  );
+
+  const { data: dataTypeDimension, error: errorTypeDimension } = useFetch(
+    '/properties/find/all/types-dimension'
+  );
 
   const formRef = useRef(null);
   const [alert, setAlert] = useState({ type: '', message: '' });
@@ -289,7 +300,7 @@ function PropertiesEdit() {
                   method="post"
                   onSubmit={event => handleSubmit(event)}
                 >
-                  {(data && (
+                  {(data && dataTypeOwner && dataTypeDimension && (
                     <MultiStep activeStep={activeStep}>
                       <Step label="Dados" onClick={() => setActiveStep(1)}>
                         <h4 className="step-title">Dados da Propriedade</h4>
@@ -305,9 +316,10 @@ function PropertiesEdit() {
                           </div>
                           <div>
                             <Select
-                              options={[
-                                { value: 'proprietario', label: 'Proprietário' }
-                              ]}
+                              options={dataTypeOwner?.typesOwner.map(owner => ({
+                                value: owner,
+                                label: capitalize(owner)
+                              }))}
                               label="Quem é você para esta propriedade?"
                               value={data.type_owner}
                               name="type_owner"
@@ -325,7 +337,12 @@ function PropertiesEdit() {
                           </div>
                           <div>
                             <Select
-                              options={[{ value: 'm', label: 'Metros' }]}
+                              options={dataTypeDimension?.typesDimension.map(
+                                dimension => ({
+                                  value: dimension,
+                                  label: dimension
+                                })
+                              )}
                               label="Unidade de medida"
                               value={data.type_dimension}
                               name="type_dimension"
@@ -444,7 +461,7 @@ function PropertiesEdit() {
                   )) || <Loader />}
 
                   <div className="form-group buttons">
-                    {activeStep !== 1 && (
+                    {(activeStep !== 1 && (
                       <div>
                         <Button
                           type="button"
@@ -453,8 +470,7 @@ function PropertiesEdit() {
                           Voltar
                         </Button>
                       </div>
-                    )}
-                    {activeStep === 1 && (
+                    )) || (
                       <div>
                         <Button type="button" onClick={handleCancelEdit}>
                           Cancelar
@@ -466,6 +482,7 @@ function PropertiesEdit() {
                         <Button
                           type="button"
                           onClick={() => setActiveStep(activeStep + 1)}
+                          className="primary"
                         >
                           Continuar
                         </Button>
