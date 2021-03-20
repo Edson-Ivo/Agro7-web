@@ -125,7 +125,6 @@ function Properties() {
                             <th>Estado</th>
                             <th>Cidade</th>
                             <th>Ações</th>
-                            <th>Ações</th>
                           </tr>
                         </thead>
                         <tbody>

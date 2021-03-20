@@ -327,7 +327,7 @@ function PropertieInfo() {
                         {alertMsg.message && (
                           <Alert type={alertMsg.type}>{alertMsg.message}</Alert>
                         )}
-                        {((data || dataDocs || loading) && (
+                        {(((data && dataDocs) || loading) && (
                           <>
                             <Table>
                               <thead>
@@ -401,7 +401,7 @@ function PropertieInfo() {
                         {alertMsg.message && (
                           <Alert type={alertMsg.type}>{alertMsg.message}</Alert>
                         )}
-                        {((data || dataFields || loading) && (
+                        {(((data && dataFields) || loading) && (
                           <>
                             <Table>
                               <thead>

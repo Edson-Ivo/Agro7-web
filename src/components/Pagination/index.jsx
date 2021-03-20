@@ -86,8 +86,6 @@ const Pagination = ({
   useEffect(() => {
     if (currentPage > totalPages) setActualPage(1);
     else setActualPage(currentPage);
-
-    console.log(totalPages);
   }, []);
 
   return (
