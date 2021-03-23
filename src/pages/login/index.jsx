@@ -9,14 +9,14 @@ import { faSignInAlt } from '@fortawesome/free-solid-svg-icons';
 
 import Router from 'next/router';
 import Loader from '@/components/Loader/index';
-import Container, { CenterContainer } from '../../components/Container';
-import Input from '../../components/Input';
-import Button from '../../components/Button';
-import { Alert } from '../../components/Alert';
+import Container, { CenterContainer } from '@/components/Container';
+import Input from '@/components/Input';
+import Button from '@/components/Button';
+import { Alert } from '@/components/Alert';
 
-import AuthService from '../../services/AuthService';
-import { UserAuthAction } from '../../store/modules/User/actions';
-import errorMessage from '../../helpers/errorMessage';
+import AuthService from '@/services/AuthService';
+import { UserAuthAction } from '@/store/modules/User/actions';
+import errorMessage from '@/helpers/errorMessage';
 
 export default function Login() {
   const [formData, setFormData] = useState({ document: null, password: null });

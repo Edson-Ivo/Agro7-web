@@ -3,21 +3,21 @@ import Head from 'next/head';
 import { useSelector } from 'react-redux';
 
 import Link from 'next/link';
-import Container from '../../components/Container';
-import Nav from '../../components/Nav';
-import Navbar from '../../components/Navbar';
-import Breadcrumb from '../../components/Breadcrumb';
-import Input from '../../components/Input';
-import Button from '../../components/Button';
-import { Section, SectionHeader, SectionBody } from '../../components/Section';
+import Container from '@/components/Container';
+import Nav from '@/components/Nav';
+import Navbar from '@/components/Navbar';
+import Breadcrumb from '@/components/Breadcrumb';
+import Input from '@/components/Input';
+import Button from '@/components/Button';
+import { Section, SectionHeader, SectionBody } from '@/components/Section';
 
-import Error from '../../components/Error';
-import { CardContainer } from '../../components/CardContainer';
+import Error from '@/components/Error';
+import { CardContainer } from '@/components/CardContainer';
 
-import { privateRoute } from '../../components/PrivateRoute';
-import Loader from '../../components/Loader';
+import { privateRoute } from '@/components/PrivateRoute';
+import Loader from '@/components/Loader';
 
-import { useFetch } from '../../hooks/useFetch';
+import { useFetch } from '@/hooks/useFetch';
 
 function Configuracoes() {
   const { id } = useSelector(state => state.user);

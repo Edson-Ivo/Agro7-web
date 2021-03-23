@@ -3,19 +3,23 @@ import Head from 'next/head';
 import Link from 'next/link';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUser, faMapMarkerAlt } from '@fortawesome/free-solid-svg-icons';
+import {
+  faUser,
+  faMapMarkerAlt,
+  faBox
+} from '@fortawesome/free-solid-svg-icons';
 
 import { useSelector } from 'react-redux';
 
 import { Card } from '@/components/Card/index';
-import Container from '../../components/Container';
-import Nav from '../../components/Nav';
-import Navbar from '../../components/Navbar';
-import Breadcrumb from '../../components/Breadcrumb';
-import { Section, SectionHeader, SectionBody } from '../../components/Section';
+import Container from '@/components/Container';
+import Nav from '@/components/Nav';
+import Navbar from '@/components/Navbar';
+import Breadcrumb from '@/components/Breadcrumb';
+import { Section, SectionHeader, SectionBody } from '@/components/Section';
 
-import { privateRoute } from '../../components/PrivateRoute';
-import NotFound from '../../components/NotFound';
+import { privateRoute } from '@/components/PrivateRoute';
+import NotFound from '@/components/NotFound';
 
 function AdminHome({ permission }) {
   if (!permission) return <NotFound />;
@@ -76,6 +80,20 @@ function AdminHome({ permission }) {
                       icon={faMapMarkerAlt}
                       className="card-icon"
                     />
+                  </div>
+                </Card>
+              </Link>
+              <Link href="/admin/produtos">
+                <Card fontColor="black" height="90px">
+                  <div className="card-info">
+                    <h4>Gerenciar Produtos</h4>
+                    <p>
+                      Aqui você tem controle de todos os produtos de sua
+                      aplicação.
+                    </p>
+                  </div>
+                  <div className="card-image">
+                    <FontAwesomeIcon icon={faBox} className="card-icon" />
                   </div>
                 </Card>
               </Link>

@@ -2,33 +2,31 @@ import React, { useState, useEffect } from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 
+import SearchSelect from '@/components/SearchSelect';
 import Select from '@/components/Select/index';
-import Container from '../../components/Container';
-import Nav from '../../components/Nav';
-import Navbar from '../../components/Navbar';
-import Breadcrumb from '../../components/Breadcrumb';
-import Input from '../../components/Input';
-import Button from '../../components/Button';
-import { Section, SectionHeader, SectionBody } from '../../components/Section';
-import { Card } from '../../components/Card';
-import Error from '../../components/Error';
-import { CardContainer } from '../../components/CardContainer';
+import Container from '@/components/Container';
+import Nav from '@/components/Nav';
+import Navbar from '@/components/Navbar';
+import Breadcrumb from '@/components/Breadcrumb';
+import Input from '@/components/Input';
+import Button from '@/components/Button';
+import { Section, SectionHeader, SectionBody } from '@/components/Section';
+import { Card } from '@/components/Card';
+import Error from '@/components/Error';
+import { CardContainer } from '@/components/CardContainer';
 import {
   DateWrapper,
   DateContainer,
   DateContent,
   DateCard
-} from '../../styles/pages/CadernoProdutor';
-import { privateRoute } from '../../components/PrivateRoute';
-import Loader from '../../components/Loader';
+} from '@/styles/pages/CadernoProdutor';
+import { privateRoute } from '@/components/PrivateRoute';
+import Loader from '@/components/Loader';
 
-import CardBack from '../../assets/card_back.svg';
+import CardBack from '@/assets/card_back.svg';
 
-import { weekDays } from '../../helpers/date';
-import { useFetch } from '../../hooks/useFetch';
-
-import CoordinatesService from '../../services/CoordinatesService';
-import SearchSelect from '@/components/SearchSelect';
+import { weekDays } from '@/helpers/date';
+import { useFetch } from '@/hooks/useFetch';
 
 function ProducerNotebook() {
   const [activeDate, setActiveDate] = useState(0);

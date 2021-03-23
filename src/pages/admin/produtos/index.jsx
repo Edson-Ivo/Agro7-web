@@ -1,19 +1,22 @@
-import React, { useState, useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
-
+import Button from '@/components/Button';
+import Pagination from '@/components/Pagination/index';
+import { useRouter } from 'next/router';
 import Container from '@/components/Container';
 import Nav from '@/components/Nav';
 import Navbar from '@/components/Navbar';
 import Breadcrumb from '@/components/Breadcrumb';
-import Button from '@/components/Button';
+import { Alert } from '@/components/Alert';
 import { Section, SectionHeader, SectionBody } from '@/components/Section';
 
 import { CardContainer } from '@/components/CardContainer';
 import { privateRoute } from '@/components/PrivateRoute';
+import NotFound from '@/components/NotFound';
 import Table from '@/components/Table';
 
 import Loader from '@/components/Loader';
@@ -21,44 +24,43 @@ import Error from '@/components/Error';
 import { useFetch } from '@/hooks/useFetch';
 import ActionButton from '@/components/ActionButton';
 import { useModal } from '@/hooks/useModal';
-import { useSelector } from 'react-redux';
 
-import { useRouter } from 'next/router';
+import ProductsService from '@/services/ProductsService';
 import errorMessage from '@/helpers/errorMessage';
-import PropertiesService from '@/services/PropertiesService';
-import { Alert } from '@/components/Alert/index';
-import Pagination from '@/components/Pagination/index';
+import truncate from '@/helpers/truncate';
+import { dateConversor } from '@/helpers/date';
 
-function Properties() {
-  const { id } = useSelector(state => state.user);
+function AdminProducts({ permission }) {
   const [alertMsg, setAlertMsg] = useState({ type: '', message: '' });
   const [loading, setLoading] = useState(false);
 
   const router = useRouter();
 
-  const { page = 1 } = router.query;
   const perPage = 10;
-
-  const { addModal, removeModal } = useModal();
+  const { page = 1 } = router.query;
 
   const { data, error, mutate } = useFetch(
-    `/properties/find/by/user/${id}?limit=${perPage}&page=${page}`
+    `/products/find/all?limit=${perPage}&page=${page}`
   );
+  const { addModal, removeModal } = useModal();
+
+  if (!permission) return <NotFound />;
+  if (error) return <Error />;
 
   const handleDelete = useCallback(
-    async identifier => {
+    async id => {
       removeModal();
       setLoading(true);
 
-      await PropertiesService.delete(identifier).then(res => {
-        if (res.status >= 400 || res?.statusCode) {
+      await ProductsService.delete(id).then(res => {
+        if (res.status !== 200 || res?.statusCode) {
           setAlertMsg(errorMessage(res));
         } else {
           mutate();
 
           setAlertMsg({
             type: 'success',
-            message: 'A propriedade foi deletada com sucesso!'
+            message: 'Produto deletado com sucesso!'
           });
         }
       });
@@ -69,24 +71,22 @@ function Properties() {
   );
 
   const handleDeleteModal = useCallback(
-    identifier => {
+    id => {
       addModal({
-        title: 'Deletar Propriedade',
-        text: 'Deseja realmente deletar esta propriedade?',
+        title: 'Deletar Produto',
+        text: 'Deseja realmente deletar este produto?',
         confirm: true,
-        onConfirm: () => handleDelete(identifier),
+        onConfirm: () => handleDelete(id),
         onCancel: removeModal
       });
     },
     [addModal, removeModal]
   );
 
-  if (error) return <Error />;
-
   return (
     <>
       <Head>
-        <title>Painel do Usuário | Suas propriedades - Agro7</title>
+        <title>Painel Adminstrativo | Gerenciar Produtos - Agro7</title>
       </Head>
 
       <Navbar />
@@ -98,13 +98,14 @@ function Properties() {
               <Breadcrumb
                 path={[
                   { route: '/', name: 'Home' },
-                  { route: '/propriedades', name: 'Propriedades' }
+                  { route: '/admin', name: 'Painel Adminstrativo' },
+                  { route: '/admin/produtos', name: 'Gerenciar Produtos' }
                 ]}
               />
-              <h2>Suas propriedades</h2>
-              <Link href="/propriedades/cadastrar">
+              <h2>Gerenciar Produtos</h2>
+              <Link href="/admin/produtos/cadastrar">
                 <Button className="primary">
-                  <FontAwesomeIcon icon={faPlus} /> Nova Propriedade
+                  <FontAwesomeIcon icon={faPlus} /> Novo Produto
                 </Button>
               </Link>
             </div>
@@ -121,44 +122,45 @@ function Properties() {
                       <Table>
                         <thead>
                           <tr>
-                            <th>Nome da propriedade</th>
-                            <th>Estado</th>
-                            <th>Cidade</th>
+                            <th>Nome</th>
+                            <th>Descrição</th>
+                            <th>Data de Criação</th>
                             <th>Ações</th>
                           </tr>
                         </thead>
                         <tbody>
-                          {(data?.items.length > 0 &&
-                            data.items.map(p => (
+                          {(data?.items &&
+                            data.items.map(d => (
                               <tr
-                                key={p.id}
+                                key={d.id}
                                 onClick={() =>
-                                  router.push(`/propriedades/${p.id}/detalhes`)
+                                  router.push(
+                                    `/admin/produtos/${d.id}/detalhes`
+                                  )
                                 }
                               >
-                                <td>{p.name}</td>
-                                <td>{p.addresses.state}</td>
-                                <td>{p.addresses.city}</td>
+                                <td>{d.name}</td>
+                                <td>{truncate(d.description, 40)}</td>
+                                <td>{dateConversor(d.created_at)}</td>
                                 <td onClick={e => e.stopPropagation()}>
                                   <ActionButton
-                                    id={p.id}
-                                    path="/propriedades"
-                                    onDelete={() => handleDeleteModal(p.id)}
+                                    id={d.id}
+                                    path="/admin/produtos"
+                                    download={d.url}
+                                    onDelete={() => handleDeleteModal(d.id)}
                                   />
                                 </td>
                               </tr>
                             ))) || (
                             <tr>
-                              <td colSpan="4">
-                                Não há propriedades cadastradas
-                              </td>
+                              <td colSpan="4">Não há produtos cadastrados</td>
                             </tr>
                           )}
                         </tbody>
                       </Table>
                     </div>
                     <Pagination
-                      url="/propriedades"
+                      url="/admin/produtos"
                       currentPage={page}
                       itemsPerPage={perPage}
                       totalPages={data.meta.totalPages}
@@ -174,4 +176,4 @@ function Properties() {
   );
 }
 
-export default privateRoute()(Properties);
+export default privateRoute(['administrator'])(AdminProducts);

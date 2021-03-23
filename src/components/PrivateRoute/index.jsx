@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import ServerCookie from 'next-cookies';
-import { AUTH_COOKIE_TOKEN, AUTH_COOKIE_NAME } from '../../services/constants';
-import AuthService from '../../services/AuthService';
-import { redirect } from '../../helpers/redirect';
+import { AUTH_COOKIE_TOKEN, AUTH_COOKIE_NAME } from '@/services/constants';
+import AuthService from '@/services/AuthService';
+import { redirect } from '@/helpers/redirect';
 
 export function privateRoute(types) {
   return WrappedComponent =>

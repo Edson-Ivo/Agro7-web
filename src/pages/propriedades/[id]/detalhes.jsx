@@ -1,6 +1,8 @@
 import React, { useState, useCallback } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faThumbtack } from '@fortawesome/free-solid-svg-icons';
 
 import Container from '@/components/Container';
 import { MapActionGetLatLng } from '@/components/MapApp';
@@ -25,8 +27,6 @@ import ActionButton from '@/components/ActionButton/index';
 import errorMessage from '@/helpers/errorMessage';
 import capitalize from '@/helpers/capitalize';
 import DocumentsService from '@/services/DocumentsService';
-import isEmpty from '@/helpers/isEmpty';
-import FieldsService from '@/services/FieldsService';
 import Pagination from '@/components/Pagination/index';
 
 function PropertieInfo() {
@@ -36,9 +36,8 @@ function PropertieInfo() {
   const { id } = router.query;
 
   const perPageDocs = 20;
-  const perPageFields = 10;
 
-  const { pageDocs = 1, pageFields = 1 } = router.query;
+  const { pageDocs = 1 } = router.query;
 
   const [alertMsg, setAlertMsg] = useState({ type: '', message: '' });
   const { addModal, removeModal } = useModal();
@@ -57,46 +56,23 @@ function PropertieInfo() {
     '/properties/find/all/types-dimension'
   );
 
-  const {
-    data: dataFields,
-    error: errorFields,
-    mutate: mutateFields
-  } = useFetch(
-    `/fields/find/by/property/${id}?limit=${perPageFields}&page=${pageFields}`
-  );
-
   const handleDelete = useCallback(
-    async (type, identifier) => {
+    async identifier => {
       removeModal();
       setLoading(true);
 
-      if (type === 'documento') {
-        await DocumentsService.delete(identifier).then(res => {
-          if (res.status >= 400 || res?.statusCode) {
-            setAlertMsg(errorMessage(res));
-          } else {
-            mutateDocs();
+      await DocumentsService.delete(identifier).then(res => {
+        if (res.status >= 400 || res?.statusCode) {
+          setAlertMsg(errorMessage(res));
+        } else {
+          mutateDocs();
 
-            setAlertMsg({
-              type: 'success',
-              message: 'O documento foi deletado com sucesso!'
-            });
-          }
-        });
-      } else if (type === 'talhão') {
-        await FieldsService.delete(identifier).then(res => {
-          if (res.status >= 400 || res?.statusCode) {
-            setAlertMsg(errorMessage(res));
-          } else {
-            mutateFields();
-
-            setAlertMsg({
-              type: 'success',
-              message: 'O talhão foi deletado com sucesso!'
-            });
-          }
-        });
-      }
+          setAlertMsg({
+            type: 'success',
+            message: 'O documento foi deletado com sucesso!'
+          });
+        }
+      });
 
       setLoading(false);
     },
@@ -104,12 +80,12 @@ function PropertieInfo() {
   );
 
   const handleDeleteModal = useCallback(
-    (type, identifier) => {
+    identifier => {
       addModal({
-        title: `Deletar esse ${capitalize(type)}?`,
-        text: `Deseja realmente deletar esse ${type}?`,
+        title: `Deletar esse Documento?`,
+        text: `Deseja realmente deletar esse documento?`,
         confirm: true,
-        onConfirm: () => handleDelete(type, identifier),
+        onConfirm: () => handleDelete(identifier),
         onCancel: removeModal
       });
     },
@@ -140,6 +116,11 @@ function PropertieInfo() {
                 Aqui você irá ver informações detalhadas da propriedade em
                 questão
               </p>
+              <Link href={`/propriedades/${id}/talhoes/`}>
+                <Button className="primary">
+                  <FontAwesomeIcon icon={faThumbtack} /> Ver Talhões
+                </Button>
+              </Link>
             </div>
           </SectionHeader>
           <SectionBody>
@@ -331,7 +312,7 @@ function PropertieInfo() {
                           <>
                             <Table>
                               <thead>
-                                <tr>
+                                <tr onClick={() => router.push('/')}>
                                   <th>Nome do Documento</th>
                                   <th>Ações</th>
                                 </tr>
@@ -347,7 +328,7 @@ function PropertieInfo() {
                                           download={d.url}
                                           path={`/propriedades/${id}/documentos`}
                                           onDelete={() =>
-                                            handleDeleteModal('documento', d.id)
+                                            handleDeleteModal(d.id)
                                           }
                                           noInfo
                                         />
@@ -387,80 +368,6 @@ function PropertieInfo() {
                               }
                             >
                               Adicionar Documento
-                            </Button>
-                          </div>
-                        </div>
-                      </Step>
-                      <Step label="Talhões" onClick={() => setActiveStep(3)}>
-                        {errorFields && (
-                          <Alert type="error">
-                            Houve um erro ao tentar carregar os talhões dessa
-                            propriedade.
-                          </Alert>
-                        )}
-                        {alertMsg.message && (
-                          <Alert type={alertMsg.type}>{alertMsg.message}</Alert>
-                        )}
-                        {(((data && dataFields) || loading) && (
-                          <>
-                            <Table>
-                              <thead>
-                                <tr>
-                                  <th>Nome do Talhão</th>
-                                  <th>Área</th>
-                                  <th>Ações</th>
-                                </tr>
-                              </thead>
-                              <tbody>
-                                {(!isEmpty(dataFields?.items) &&
-                                  dataFields.items.map(d => (
-                                    <tr key={d.id}>
-                                      <td>{d.name}</td>
-                                      <td>{`${d.area}${d.type_dimension}`}</td>
-                                      <td>
-                                        <ActionButton
-                                          id={d.id}
-                                          path={`/propriedades/${id}/talhoes`}
-                                          onDelete={() =>
-                                            handleDeleteModal('talhão', d.id)
-                                          }
-                                        />
-                                      </td>
-                                    </tr>
-                                  ))) || (
-                                  <tr>
-                                    <td colSpan="2">
-                                      Não há talhões para essa propriedade
-                                    </td>
-                                  </tr>
-                                )}
-                              </tbody>
-                            </Table>
-                            <Pagination
-                              url={`/propriedades/${id}/detalhes`}
-                              currentPage={pageFields}
-                              itemsPerPage={perPageFields}
-                              totalPages={dataFields.totalPages}
-                              page="pageFields"
-                            />
-                          </>
-                        )) || <Loader />}
-                        <div className="form-group buttons">
-                          <div>
-                            <Button onClick={() => router.back()}>
-                              Voltar
-                            </Button>
-                          </div>
-                          <div>
-                            <Button
-                              className="primary"
-                              onClick={() =>
-                                router.push(
-                                  `/propriedades/${id}/talhoes/cadastrar`
-                                )
-                              }
-                            >
-                              Adicionar Talhão
                             </Button>
                           </div>
                         </div>

@@ -7,30 +7,26 @@ import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import Button from '@/components/Button';
 import Pagination from '@/components/Pagination/index';
 import { useRouter } from 'next/router';
-import Container from '../../../components/Container';
-import Nav from '../../../components/Nav';
-import Navbar from '../../../components/Navbar';
-import Breadcrumb from '../../../components/Breadcrumb';
-import { Alert } from '../../../components/Alert';
-import {
-  Section,
-  SectionHeader,
-  SectionBody
-} from '../../../components/Section';
+import Container from '@/components/Container';
+import Nav from '@/components/Nav';
+import Navbar from '@/components/Navbar';
+import Breadcrumb from '@/components/Breadcrumb';
+import { Alert } from '@/components/Alert';
+import { Section, SectionHeader, SectionBody } from '@/components/Section';
 
-import { CardContainer } from '../../../components/CardContainer';
-import { privateRoute } from '../../../components/PrivateRoute';
-import NotFound from '../../../components/NotFound';
-import Table from '../../../components/Table';
+import { CardContainer } from '@/components/CardContainer';
+import { privateRoute } from '@/components/PrivateRoute';
+import NotFound from '@/components/NotFound';
+import Table from '@/components/Table';
 
-import Loader from '../../../components/Loader';
-import Error from '../../../components/Error';
-import { useFetch } from '../../../hooks/useFetch';
-import ActionButton from '../../../components/ActionButton';
-import { useModal } from '../../../hooks/useModal';
+import Loader from '@/components/Loader';
+import Error from '@/components/Error';
+import { useFetch } from '@/hooks/useFetch';
+import ActionButton from '@/components/ActionButton';
+import { useModal } from '@/hooks/useModal';
 
-import UsersService from '../../../services/UsersService';
-import errorMessage from '../../../helpers/errorMessage';
+import UsersService from '@/services/UsersService';
+import errorMessage from '@/helpers/errorMessage';
 
 function AdminUsers({ permission }) {
   const [alertMsg, setAlertMsg] = useState({ type: '', message: '' });

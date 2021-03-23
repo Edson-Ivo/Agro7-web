@@ -21,3 +21,11 @@ export const weekDays = () => {
 
   return week;
 };
+
+export const dateConversor = date => {
+  const tz = new Date(date).toLocaleString('pt-BR', {
+    timeZone: 'America/Fortaleza'
+  });
+
+  return tz;
+};

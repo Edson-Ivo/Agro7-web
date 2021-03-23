@@ -21,7 +21,11 @@ const options = {
   zIndex: 1
 };
 
-function MapActionPlotArea({ onClick, initialPosition = [] }) {
+function MapActionPlotArea({
+  onClick,
+  initialPosition = [],
+  initialPath = []
+}) {
   const [center, setCenter] = useState([]);
   const [path, setPath] = useState([]);
 
@@ -33,6 +37,22 @@ function MapActionPlotArea({ onClick, initialPosition = [] }) {
       };
 
       initialPosition = [centerObj.lat, centerObj.lng];
+
+      const keysMap = {
+        latitude: 'lat',
+        longitude: 'lng'
+      };
+
+      const initialPathProps = [];
+
+      initialPath.map(pathEl => {
+        delete pathEl.id;
+        pathEl.latitude = Number(pathEl.latitude);
+        pathEl.longitude = Number(pathEl.longitude);
+        initialPathProps.push(renameKeys(keysMap, pathEl));
+      });
+
+      setPath(initialPathProps);
 
       setCenter(centerObj);
     }

@@ -6,10 +6,10 @@ import Link from 'next/link';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faKey } from '@fortawesome/free-solid-svg-icons';
 
-import Container, { CenterContainer } from '../../components/Container';
-import Input from '../../components/Input';
-import Button from '../../components/Button';
-import { Alert } from '../../components/Alert';
+import Container, { CenterContainer } from '@/components/Container';
+import Input from '@/components/Input';
+import Button from '@/components/Button';
+import { Alert } from '@/components/Alert';
 
 export default function Login() {
   const [formData, setFormData] = useState({ username: null, password: null });

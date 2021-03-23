@@ -2,22 +2,22 @@ import React, { useState, useRef } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
 
-import Container from '../../components/Container';
-import Nav from '../../components/Nav';
-import Navbar from '../../components/Navbar';
-import Breadcrumb from '../../components/Breadcrumb';
-import Input from '../../components/Input';
-import Button from '../../components/Button';
-import { Alert } from '../../components/Alert';
-import { Section, SectionHeader, SectionBody } from '../../components/Section';
+import Container from '@/components/Container';
+import Nav from '@/components/Nav';
+import Navbar from '@/components/Navbar';
+import Breadcrumb from '@/components/Breadcrumb';
+import Input from '@/components/Input';
+import Button from '@/components/Button';
+import { Alert } from '@/components/Alert';
+import { Section, SectionHeader, SectionBody } from '@/components/Section';
 
-import { CardContainer } from '../../components/CardContainer';
-import { privateRoute } from '../../components/PrivateRoute';
-import Loader from '../../components/Loader';
+import { CardContainer } from '@/components/CardContainer';
+import { privateRoute } from '@/components/PrivateRoute';
+import Loader from '@/components/Loader';
 
-import UsersService from '../../services/UsersService';
-import errorMessage from '../../helpers/errorMessage';
-import getFormData from '../../helpers/getFormData';
+import UsersService from '@/services/UsersService';
+import errorMessage from '@/helpers/errorMessage';
+import getFormData from '@/helpers/getFormData';
 
 function ConfiguracoesSenha() {
   const [alertMsg, setAlertMsg] = useState({ type: '', message: '' });

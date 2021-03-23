@@ -15,14 +15,14 @@ import { Section, SectionHeader, SectionBody } from '@/components/Section';
 import { CardContainer } from '@/components/CardContainer';
 import { privateRoute } from '@/components/PrivateRoute';
 import { Alert } from '@/components/Alert';
-import { MapActionPlotArea } from '@/components/MapApp';
-import Loader from '@/components/Loader';
 
 import errorMessage from '@/helpers/errorMessage';
 import { useFetch } from '@/hooks/useFetch';
 import FieldsService from '@/services/FieldsService';
 import getFormData from '@/helpers/getFormData';
+import { MapActionPlotArea } from '@/components/MapApp';
 import isEmpty from '@/helpers/isEmpty';
+import Loader from '@/components/Loader';
 
 const schema = yup.object().shape({
   name: yup
@@ -39,7 +39,7 @@ const schema = yup.object().shape({
     .required('Unidade de medida precisa ser definida')
 });
 
-function TalhoesEdit() {
+function TalhoesCreate() {
   const formRef = useRef(null);
   const [alert, setAlert] = useState({ type: '', message: '' });
   const [disableButton, setDisableButton] = useState(false);
@@ -47,9 +47,14 @@ function TalhoesEdit() {
   const [activeStep, setActiveStep] = useState(1);
 
   const router = useRouter();
-  const { id, createProperty } = router.query;
+  const { id, idField } = router.query;
 
   const { data, error } = useFetch(`/properties/find/by/id/${id}`);
+
+  const { data: dataFields, error: errorFields } = useFetch(
+    `/fields/find/by/id/${idField}`
+  );
+
   const { data: dataTypeDimension, error: errorTypeDimension } = useFetch(
     '/fields/find/all/types-dimension'
   );
@@ -63,11 +68,7 @@ function TalhoesEdit() {
   );
 
   const handleCancel = () => {
-    if (createProperty) {
-      router.push(`/propriedades/${id}/detalhes`);
-    } else {
-      router.back();
-    }
+    router.back();
   };
 
   const handleCoordinates = path => {
@@ -99,46 +100,33 @@ function TalhoesEdit() {
     schema
       .validate(getData())
       .then(async d => {
-        if (!isEmpty(coordinates)) {
-          setAlert({
-            type: 'success',
-            message: 'Enviando...'
-          });
+        setAlert({
+          type: 'success',
+          message: 'Enviando...'
+        });
 
-          d.properties = Number(id);
-          d.coordinates = coordinates;
+        d.coordinates = !isEmpty(coordinates)
+          ? coordinates
+          : dataFields.coordinates;
 
-          await FieldsService.create(d).then(res => {
-            if (res.status !== 201 || res?.statusCode) {
-              setAlert({ type: 'error', message: errorMessage(res) });
-              setTimeout(() => {
-                setDisableButton(false);
-              }, 1000);
-            } else {
-              setAlert({
-                type: 'success',
-                message: 'Talhão cadastrado com sucesso!'
-              });
+        await FieldsService.update(idField, d).then(res => {
+          if (res.status !== 200 || res?.statusCode) {
+            setAlert({ type: 'error', message: errorMessage(res) });
+            setTimeout(() => {
+              setDisableButton(false);
+            }, 1000);
+          } else {
+            setAlert({
+              type: 'success',
+              message: 'Talhão editado com sucesso!'
+            });
 
-              if (createProperty) {
-                setTimeout(() => {
-                  router.push(`/propriedades/${id}/detalhes`);
-                  setDisableButton(false);
-                }, 1000);
-              } else {
-                router.push(
-                  `/propriedades/${id}/talhoes/${res.data.id}/detalhes`
-                );
-              }
-            }
-          });
-        } else {
-          setAlert({
-            type: 'error',
-            message: 'Por favor, desenhe o talhão no mapa'
-          });
-          setDisableButton(false);
-        }
+            setTimeout(() => {
+              router.push(`/propriedades/${id}/talhoes/${idField}/detalhes`);
+              setDisableButton(false);
+            }, 1000);
+          }
+        });
       })
       .catch(err => {
         setAlert({ type: 'error', message: err.errors[0] });
@@ -148,9 +136,9 @@ function TalhoesEdit() {
 
   return (
     <>
-      {error && router.back()}
+      {(error || errorFields) && router.back()}
       <Head>
-        <title>Adicionar Talhão - Agro7</title>
+        <title>Editar Talhão - Agro7</title>
       </Head>
 
       <Navbar />
@@ -165,10 +153,10 @@ function TalhoesEdit() {
                   { route: '/propriedades', name: 'Propriedades' }
                 ]}
               />
-              <h2>Adicionar Talhão {`(${data && data.name})`}</h2>
+              <h2>Editar Talhão {`(${dataFields && dataFields.name})`}</h2>
               <p>
-                Aqui você irá adicionar um talhão para propriedade{' '}
-                {data && data.name}
+                Você está editando o talhão {dataFields && dataFields.name} da
+                propriedade {data && data.name}.
               </p>
             </div>
           </SectionHeader>
@@ -184,7 +172,7 @@ function TalhoesEdit() {
                   method="post"
                   onSubmit={event => handleSubmit(event)}
                 >
-                  {(data && dataTypeDimension && (
+                  {(data && dataTypeDimension && dataFields && (
                     <>
                       <MultiStep activeStep={activeStep}>
                         <Step label="Dados" onClick={() => setActiveStep(1)}>
@@ -194,10 +182,16 @@ function TalhoesEdit() {
                             type="text"
                             name="name"
                             label="Nome do talhão"
+                            initialValue={dataFields.name}
                           />
                           <div className="form-group">
                             <div>
-                              <Input type="number" label="Área" name="area" />
+                              <Input
+                                type="number"
+                                label="Área"
+                                name="area"
+                                initialValue={dataFields.area}
+                              />
                             </div>
                             <div>
                               <Select
@@ -209,6 +203,7 @@ function TalhoesEdit() {
                                 )}
                                 label="Unidade de medida"
                                 name="type_dimension"
+                                value={dataFields.type_dimension}
                               />
                             </div>
                           </div>
@@ -226,6 +221,7 @@ function TalhoesEdit() {
                               data.coordinates.longitude
                             ]}
                             onClick={handleCoordinates}
+                            initialPath={dataFields.coordinates}
                           />
                         </Step>
                       </MultiStep>
@@ -242,8 +238,7 @@ function TalhoesEdit() {
                         )) || (
                           <div>
                             <Button type="button" onClick={handleCancel}>
-                              {(createProperty && 'Adicionar depois') ||
-                                'Cancelar'}
+                              Cancelar
                             </Button>
                           </div>
                         )}
@@ -264,7 +259,7 @@ function TalhoesEdit() {
                               className="primary"
                               type="submit"
                             >
-                              Adicionar Talhão
+                              Salvar
                             </Button>
                           )}
                         </div>
@@ -281,4 +276,4 @@ function TalhoesEdit() {
   );
 }
 
-export default privateRoute()(TalhoesEdit);
+export default privateRoute()(TalhoesCreate);

@@ -3,7 +3,15 @@ import ReactSelect from 'react-select';
 
 import { InputContainer, Label } from './styles';
 
-const Select = ({ name, options, label, value, disabled, ...rest }) => {
+const Select = ({
+  name,
+  options,
+  label,
+  value,
+  disabled,
+  searchable = false,
+  ...rest
+}) => {
   const [valueChange, setValueChange] = useState(value);
 
   const handleChange = e => {
@@ -20,6 +28,8 @@ const Select = ({ name, options, label, value, disabled, ...rest }) => {
         defaultValue={options.filter(option => option.value === value)}
         onChange={e => handleChange(e)}
         isDisabled={disabled}
+        noOptionsMessage={() => 'Não há dados'}
+        isSearchable={searchable}
         {...rest}
         theme={theme => ({
           ...theme,

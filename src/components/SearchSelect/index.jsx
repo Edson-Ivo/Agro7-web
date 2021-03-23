@@ -12,21 +12,24 @@ const SearchSelect = ({ name, options, label, value, disabled, ...rest }) => {
   };
 
   const loadOptions = async (inputText, callback) => {
-    const json = await api.get();
+    const json = await api.get(`/users/find/all?limit=20&name=${inputText}`);
 
-    callback(json.map(i => ({ label: i.name, value: i.id })));
+    if (json?.data)
+      callback(json.data.items.map(i => ({ label: i.name, value: i.id })));
   };
 
   return (
     <InputContainer>
       {label && <Label className="input-label">{label}</Label>}
       <AsyncSelect
+        defaultOptions
         loadOptions={loadOptions}
         classNamePrefix="select"
         cacheOptions
         placeholder={label}
         // defaultValue={options.filter(option => option.value === value)}
         onChange={e => handleChange(e)}
+        noOptionsMessage={() => 'Não há dados'}
         isDisabled={disabled}
         {...rest}
         theme={theme => ({

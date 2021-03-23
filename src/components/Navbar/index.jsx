@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Router from 'next/router';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -14,13 +14,12 @@ import {
   faTimes
 } from '@fortawesome/free-solid-svg-icons';
 
+import { NavToogleAction } from '@/store/modules/Nav/actions';
+import { UserDeAuthAction } from '@/store/modules/User/actions';
+import AuthService from '@/services/AuthService';
 import { NavbarContainer } from './styles';
 
-import { NavToogleAction } from '../../store/modules/Nav/actions';
-import { UserDeAuthAction } from '../../store/modules/User/actions';
 import Tooltip from '../Tooltip';
-
-import AuthService from '../../services/AuthService';
 
 const Navbar = () => {
   const dispatch = useDispatch();
@@ -51,7 +50,9 @@ const Navbar = () => {
               className="navbar_toggle__icon"
             />
             <Link href="/">
-              <Image src="/logo/logo.png" width="100" height="40" />
+              <a>
+                <Image src="/logo/logo.png" width="100" height="40" />
+              </a>
             </Link>
           </div>
           <div className="navbar__content__right">
