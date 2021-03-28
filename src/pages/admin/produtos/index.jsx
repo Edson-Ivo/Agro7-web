@@ -44,9 +44,6 @@ function AdminProducts({ permission }) {
   );
   const { addModal, removeModal } = useModal();
 
-  if (!permission) return <NotFound />;
-  if (error) return <Error />;
-
   const handleDelete = useCallback(
     async id => {
       removeModal();
@@ -82,6 +79,9 @@ function AdminProducts({ permission }) {
     },
     [addModal, removeModal]
   );
+
+  if (!permission) return <NotFound />;
+  if (error) return <Error />;
 
   return (
     <>

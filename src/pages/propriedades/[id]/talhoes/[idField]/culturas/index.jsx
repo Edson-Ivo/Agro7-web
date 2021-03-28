@@ -1,0 +1,182 @@
+import React, { useState, useCallback } from 'react';
+import Head from 'next/head';
+import Link from 'next/link';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPlus } from '@fortawesome/free-solid-svg-icons';
+
+import Container from '@/components/Container';
+import Nav from '@/components/Nav';
+import Navbar from '@/components/Navbar';
+import Breadcrumb from '@/components/Breadcrumb';
+import Loader from '@/components/Loader';
+import Button from '@/components/Button';
+import Table from '@/components/Table';
+import { Alert } from '@/components/Alert';
+import { useModal } from '@/hooks/useModal';
+
+import { Section, SectionHeader, SectionBody } from '@/components/Section';
+import { CardContainer } from '@/components/CardContainer';
+import { useFetch } from '@/hooks/useFetch';
+import { privateRoute } from '@/components/PrivateRoute';
+import { useRouter } from 'next/router';
+import ActionButton from '@/components/ActionButton/index';
+import errorMessage from '@/helpers/errorMessage';
+import isEmpty from '@/helpers/isEmpty';
+import Pagination from '@/components/Pagination/index';
+import CulturesService from '@/services/CulturesService';
+
+function Culturas() {
+  const router = useRouter();
+  const { id, idField } = router.query;
+
+  const perPage = 10;
+
+  const { page = 1 } = router.query;
+
+  const [alertMsg, setAlertMsg] = useState({ type: '', message: '' });
+  const { addModal, removeModal } = useModal();
+  const [loading, setLoading] = useState(false);
+
+  const { data, error } = useFetch(`/fields/find/by/id/${idField}`);
+
+  const [baseUrl] = useState(`/propriedades/${id}/talhoes/${idField}/culturas`);
+
+  const {
+    data: dataCultures,
+    error: errorCultures,
+    mutate: mutateCultures
+  } = useFetch(
+    `/cultures/find/by/field/${idField}?limit=${perPage}&page=${page}`
+  );
+
+  const handleDelete = useCallback(
+    async identifier => {
+      removeModal();
+      setLoading(true);
+
+      await CulturesService.delete(identifier).then(res => {
+        if (res.status >= 400 || res?.statusCode) {
+          setAlertMsg(errorMessage(res));
+        } else {
+          mutateCultures();
+
+          setAlertMsg({
+            type: 'success',
+            message: 'A cultura foi deletada com sucesso!'
+          });
+        }
+      });
+
+      setLoading(false);
+    },
+    [addModal, removeModal]
+  );
+
+  const handleDeleteModal = useCallback(
+    identifier => {
+      addModal({
+        title: `Deletar essa Cultura?`,
+        text: `Deseja realmente deletar essa cultura?`,
+        confirm: true,
+        onConfirm: () => handleDelete(identifier),
+        onCancel: removeModal
+      });
+    },
+    [addModal, removeModal]
+  );
+
+  return (
+    <>
+      {(error || errorCultures) && router.back()}
+      {data && id !== data?.properties.id.toString() && router.back()}
+      <Head>
+        <title>Culturas do Talhão {data && data.name} - Agro7</title>
+      </Head>
+
+      <Navbar />
+      <Container>
+        <Nav />
+        <Section>
+          <SectionHeader>
+            <div className="SectionHeader__content">
+              <Breadcrumb
+                path={[
+                  { route: '/', name: 'Home' },
+                  { route: '/propriedades', name: 'Propriedades' }
+                ]}
+              />
+              <h2>Culturas do Talhão {data && `(${data.name})`}</h2>
+              <p>
+                Aqui você irá ver as culturas do talhão{' '}
+                {data && `${data.name} da propriedade ${data.properties.name}`}.
+              </p>
+              <Link href={`${baseUrl}/cadastrar`}>
+                <Button className="primary">
+                  <FontAwesomeIcon icon={faPlus} /> Nova Cultura
+                </Button>
+              </Link>
+            </div>
+          </SectionHeader>
+          <SectionBody>
+            <div className="SectionBody__content">
+              <CardContainer>
+                <>
+                  {alertMsg.message && (
+                    <Alert type={alertMsg.type}>{alertMsg.message}</Alert>
+                  )}
+                  {(((data && dataCultures) || loading) && (
+                    <>
+                      <Table>
+                        <thead>
+                          <tr>
+                            <th>Cultura</th>
+                            <th>Área</th>
+                            <th>Ações</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {(!isEmpty(dataCultures?.items) &&
+                            dataCultures.items.map(d => (
+                              <tr
+                                key={d.id}
+                                onClick={() =>
+                                  router.push(`${baseUrl}/${d.id}/detalhes`)
+                                }
+                              >
+                                <td>{d?.products?.name}</td>
+                                <td>{`${d.area}${d.type_dimension}`}</td>
+                                <td onClick={e => e.stopPropagation()}>
+                                  <ActionButton
+                                    id={d.id}
+                                    path={baseUrl}
+                                    onDelete={() => handleDeleteModal(d.id)}
+                                  />
+                                </td>
+                              </tr>
+                            ))) || (
+                            <tr>
+                              <td colSpan="3">Não há culturas nesse talhão</td>
+                            </tr>
+                          )}
+                        </tbody>
+                      </Table>
+                      <Pagination
+                        url={`${baseUrl}`}
+                        currentPage={page}
+                        itemsPerPage={perPage}
+                        totalPages={dataCultures.totalPages}
+                        page="page"
+                      />
+                    </>
+                  )) || <Loader />}
+                </>
+              </CardContainer>
+            </div>
+          </SectionBody>
+        </Section>
+      </Container>
+    </>
+  );
+}
+
+export default privateRoute()(Culturas);

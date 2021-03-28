@@ -19,7 +19,7 @@ export const Content = styled(animated.div)`
   margin: auto;
   z-index: 101;
   background: #fff;
-  box-shadow: 0px 16px 24px rgb(0 0 0 / 5%);
+  box-shadow: 0px 16px 24px rgb(0 0 0 / 10%);
   border-radius: 0.25em;
   height: auto !important;
 

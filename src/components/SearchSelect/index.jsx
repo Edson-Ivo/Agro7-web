@@ -4,7 +4,16 @@ import AsyncSelect from 'react-select/async';
 import { InputContainer, Label } from '@/components/Select/styles';
 import { api } from '@/services/api';
 
-const SearchSelect = ({ name, options, label, value, disabled, ...rest }) => {
+const SearchSelect = ({
+  name,
+  options = [],
+  label,
+  value,
+  disabled,
+  url,
+  searchField = 'name',
+  ...rest
+}) => {
   const [valueChange, setValueChange] = useState(value);
 
   const handleChange = e => {
@@ -12,7 +21,7 @@ const SearchSelect = ({ name, options, label, value, disabled, ...rest }) => {
   };
 
   const loadOptions = async (inputText, callback) => {
-    const json = await api.get(`/users/find/all?limit=20&name=${inputText}`);
+    const json = await api.get(`${url}?limit=20&${searchField}=${inputText}`);
 
     if (json?.data)
       callback(json.data.items.map(i => ({ label: i.name, value: i.id })));
@@ -22,14 +31,15 @@ const SearchSelect = ({ name, options, label, value, disabled, ...rest }) => {
     <InputContainer>
       {label && <Label className="input-label">{label}</Label>}
       <AsyncSelect
-        defaultOptions
+        defaultOptions={options}
         loadOptions={loadOptions}
         classNamePrefix="select"
         cacheOptions
         placeholder={label}
-        // defaultValue={options.filter(option => option.value === value)}
+        defaultValue={options.filter(option => option.value === value)}
         onChange={e => handleChange(e)}
-        noOptionsMessage={() => 'Não há dados'}
+        noOptionsMessage={() => 'Não há dados relacionados a sua pesquisa'}
+        loadingMessage={() => 'Buscando...'}
         isDisabled={disabled}
         {...rest}
         theme={theme => ({

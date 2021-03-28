@@ -149,7 +149,7 @@ function Talhoes() {
                               </tr>
                             ))) || (
                             <tr>
-                              <td colSpan="2">
+                              <td colSpan="3">
                                 Não há talhões para essa propriedade
                               </td>
                             </tr>
@@ -157,7 +157,7 @@ function Talhoes() {
                         </tbody>
                       </Table>
                       <Pagination
-                        url={`/propriedades/${id}/detalhes`}
+                        url={`${baseUrl}`}
                         currentPage={page}
                         itemsPerPage={perPage}
                         totalPages={dataFields.totalPages}

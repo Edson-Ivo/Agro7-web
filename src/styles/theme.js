@@ -24,6 +24,10 @@ const theme = {
   margins: {
     center_width: '900px',
     content_width: '1048px'
+  },
+  fonts: {
+    latoFamily: '"Lato", sans-serif, "Segoe UI", Verdana, Arial',
+    montserratFamily: '"Montserrat", sans-serif, "Segoe UI", Verdana, Arial'
   }
 };
 

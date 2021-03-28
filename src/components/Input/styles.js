@@ -10,14 +10,15 @@ export const StyledInput = styled.input`
   background-color: ${props => props.theme.colors.gray};
   border: 1px solid ${props => props.theme.colors.gray};
   color: ${props => props.theme.colors.black};
+  font-family: ${props => props.theme.fonts.latoFamily};
   font-size: 1em;
   height: ${props => (props.type !== 'checkbox' ? `50px;` : '')};
   line-height: 50px;
-  padding: 16px 20px 0;
+  padding: ${props => (props.type !== 'date' ? `16px 20px 0` : '0 20px')};
   ${props => (props.type !== 'checkbox' ? `display: block;` : '')};
   ${props => (props.type !== 'checkbox' ? `width: 100%;` : '')};
-  border-radius: 10px;
   ${props => (props.type !== 'checkbox' ? `margin: 5px 0px 15px` : '')};
+  border-radius: 10px;
   transition: background 0.3s;
   ${props =>
     props.type === 'checkbox' &&
@@ -33,7 +34,7 @@ export const StyledInput = styled.input`
   }
 
   ${props =>
-    props.type !== 'checkbox' &&
+    !['checkbox', 'date'].includes(props.type) &&
     css`
       &:focus + .input-label {
         ${ShrinkedLabel}
@@ -48,6 +49,21 @@ export const StyledInput = styled.input`
 
   &[type='number'] {
     -moz-appearance: textfield;
+  }
+
+  &[type='date']::-webkit-calendar-picker-indicator {
+    background: transparent;
+    bottom: 0;
+    color: transparent;
+    cursor: pointer;
+    height: auto;
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: auto;
+    outline: 0 !important;
+    border: none !important;
   }
 `;
 
@@ -67,4 +83,14 @@ export const Label = styled.label`
   &.label_active {
     ${ShrinkedLabel}
   }
+`;
+
+export const UpperLabel = styled.label`
+  color: ${props => props.theme.colors.black_50};
+  cursor: text;
+  font-size: 1em;
+  font-weight: 800;
+  text-align: left;
+  transition: ease 0.2s;
+  margin-left: 10px;
 `;

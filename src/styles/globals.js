@@ -11,7 +11,7 @@ export default createGlobalStyle`
   body {
     background: ${props => props.theme.colors.background};
     color: ${props => props.theme.colors.black};
-    font-family: 'Lato', sans-serif, 'Segoe UI', Verdana, Arial; 
+    font-family: ${props => props.theme.fonts.latoFamily}; 
     font-size: 14px;
     font-weight: 400;
     -webkit-font-smoothing: antialiased;
@@ -36,7 +36,7 @@ export default createGlobalStyle`
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Montserrat', sans-serif, 'Segoe UI', Verdana, Arial;
+    font-family: ${props => props.theme.fonts.montserratFamily}; 
   }
 
   h1, h2, h3, h4 {

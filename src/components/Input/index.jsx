@@ -1,7 +1,7 @@
 import React, { useState, forwardRef, useImperativeHandle } from 'react';
 import { masks } from './masks';
 
-import { InputContainer, StyledInput, Label } from './styles';
+import { InputContainer, StyledInput, Label, UpperLabel } from './styles';
 
 const Input = (
   {
@@ -11,6 +11,7 @@ const Input = (
     mask,
     disabled,
     initialValue = '',
+    type = '',
     ...otherProps
   },
   ref
@@ -63,15 +64,19 @@ const Input = (
 
   return (
     <InputContainer>
+      {label && type === 'date' && (
+        <UpperLabel className="input-label">{label}</UpperLabel>
+      )}
       <StyledInput
         onChange={e => changeAction(e)}
         name={name}
         value={value}
         disabled={disabled}
-        {...otherProps}
+        type={type}
         ref={ref}
+        {...otherProps}
       />
-      {label && (
+      {label && type !== 'date' && (
         <Label className={`input-label ${hasText ? 'label_active' : ''}`}>
           {label}
         </Label>

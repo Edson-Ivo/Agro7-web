@@ -59,21 +59,25 @@ function MapActionPlotArea({
   }, []);
 
   const handleClick = e => {
-    const pos = { lat: e.latLng.lat(), lng: e.latLng.lng() };
-    const keysMap = {
-      lat: 'latitude',
-      lng: 'longitude'
-    };
+    if (onClick !== undefined) {
+      const pos = { lat: e.latLng.lat(), lng: e.latLng.lng() };
+      const keysMap = {
+        lat: 'latitude',
+        lng: 'longitude'
+      };
 
-    setPath(prevPath => [...prevPath, pos]);
+      setPath(prevPath => [...prevPath, pos]);
 
-    if (onClick !== undefined) onClick(renameKeys(keysMap, pos));
+      onClick(renameKeys(keysMap, pos));
+    }
   };
 
   const reset = () => {
-    setPath([]);
+    if (onClick !== undefined) {
+      setPath([]);
 
-    if (onClick !== undefined) onClick([]);
+      onClick([]);
+    }
   };
 
   return (
@@ -94,9 +98,11 @@ function MapActionPlotArea({
           {path.length > 0 && <Polygon paths={path} options={options} />}
         </GoogleMap>
       </LoadScript>
-      <Button type="button" className="primary" onClick={() => reset()}>
-        Limpar desenho
-      </Button>
+      {onClick !== undefined && (
+        <Button type="button" className="primary" onClick={() => reset()}>
+          Limpar desenho
+        </Button>
+      )}
     </>
   );
 }

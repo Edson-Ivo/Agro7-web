@@ -10,6 +10,7 @@ import Button from '@/components/Button';
 import FileInput from '@/components/FileInput';
 import { Section, SectionHeader, SectionBody } from '@/components/Section';
 import { CardContainer } from '@/components/CardContainer';
+import NotFound from '@/components/NotFound';
 
 import { privateRoute } from '@/components/PrivateRoute';
 import { Alert } from '@/components/Alert';
@@ -20,7 +21,7 @@ import ProductsService from '@/services/ProductsService';
 import { useRouter } from 'next/router';
 import TextArea from '@/components/TextArea/index';
 
-function AdminProductsCreate() {
+function AdminProductsCreate({ permission }) {
   const formRef = useRef(null);
   const inputRef = useRef(null);
   const [alert, setAlert] = useState({ type: '', message: '' });
@@ -90,6 +91,8 @@ function AdminProductsCreate() {
         });
     }
   };
+
+  if (!permission) return <NotFound />;
 
   return (
     <>

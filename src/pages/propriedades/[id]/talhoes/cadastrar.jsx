@@ -39,7 +39,7 @@ const schema = yup.object().shape({
     .required('Unidade de medida precisa ser definida')
 });
 
-function TalhoesEdit() {
+function TalhoesCadastrar() {
   const formRef = useRef(null);
   const [alert, setAlert] = useState({ type: '', message: '' });
   const [disableButton, setDisableButton] = useState(false);
@@ -281,4 +281,4 @@ function TalhoesEdit() {
   );
 }
 
-export default privateRoute()(TalhoesEdit);
+export default privateRoute()(TalhoesCadastrar);

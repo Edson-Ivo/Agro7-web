@@ -13,9 +13,9 @@ export const InputContainer = styled.div`
     font-size: 1em;
     height: 50px;
     padding: 0 10px;
-    ${props => (props.type !== 'checkbox' ? `width: 100%;` : '')};
+    width: 100%;
     border-radius: 10px;
-    ${props => (props.type !== 'checkbox' ? `margin: 5px 0px 15px` : '')};
+    margin: 5px 0px 15px;
     transition: background 0.3s;
 
     &:hover,

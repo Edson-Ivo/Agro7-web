@@ -48,11 +48,9 @@ function PropertieInfo() {
   const { data: dataDocs, error: errorDocs, mutate: mutateDocs } = useFetch(
     `/documents/find/property/${id}?limit=${perPageDocs}&page=${pageDocs}`
   );
-  const { data: dataTypeOwner, error: errorTypeOwner } = useFetch(
-    '/properties/find/all/types-owner'
-  );
+  const { data: dataTypeOwner } = useFetch('/properties/find/all/types-owner');
 
-  const { data: dataTypeDimension, error: errorTypeDimension } = useFetch(
+  const { data: dataTypeDimension } = useFetch(
     '/properties/find/all/types-dimension'
   );
 

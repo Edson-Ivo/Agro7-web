@@ -19,5 +19,12 @@ export const ActionButtonContainer = styled.div`
     align-items: center;
     color: ${props => props.theme.colors.black};
     font-size: 16px;
+    border-radius: 50%;
+    transition: all ease-in 0.2s;
+
+    &:hover {
+      background: ${props => props.theme.colors.black_10};
+      color: ${props => props.theme.colors.primary};
+    }
   }
 `;
