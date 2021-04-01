@@ -6,22 +6,22 @@ export const Container = styled.div`
   left: 0;
   width: 100%;
   height: 100%;
-  z-index: 100;
-
+  z-index: 999999;
   position: fixed;
+  background: rgba(38, 48, 46, 0.25);
 `;
 
 export const Content = styled(animated.div)`
   position: absolute;
-  top: 25%;
+  top: 33%;
   left: 0;
   right: 0;
   margin: auto;
   z-index: 101;
   background: #fff;
-  box-shadow: 0px 16px 24px rgb(0 0 0 / 10%);
-  border-radius: 0.25em;
+  border-radius: 10px;
   height: auto !important;
+  overflow: hidden;
 
   max-width: 400px;
 
@@ -39,6 +39,10 @@ export const Content = styled(animated.div)`
     &:hover {
       color: #353b41;
     }
+  }
+
+  @media (max-width: ${props => props.theme.breakpoints.mobile}px) {
+    max-width: 90%;
   }
 `;
 

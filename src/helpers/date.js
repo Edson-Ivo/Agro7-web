@@ -1,11 +1,12 @@
 const weekDayName = ['DOM.', 'SEG.', 'TER.', 'QUA.', 'QUI.', 'SEX.', 'SÁB.'];
 
-export const getTimezone = (date, local = 'en-US') => {
+export const getTimezone = (date, local = 'en-US', withTime = true) => {
   const dateObj = date ? new Date(date) : new Date();
-
-  return dateObj.toLocaleString(local, {
+  const dateString = dateObj.toLocaleString(local, {
     timeZone: 'America/Fortaleza'
   });
+
+  return withTime ? dateString : dateString.split(' ')[0];
 };
 
 export const getCurrentDate = date => {
@@ -33,7 +34,8 @@ export const weekDays = () => {
   return week;
 };
 
-export const dateConversor = date => getTimezone(date, 'pt-BR');
+export const dateConversor = (date, withTime = true) =>
+  getTimezone(date, 'pt-BR', withTime);
 
 export const dateToInput = date =>
   dateConversor(date).split(' ')[0].split('/').reverse().join('-');

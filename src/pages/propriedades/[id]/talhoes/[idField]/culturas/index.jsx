@@ -27,11 +27,9 @@ import CulturesService from '@/services/CulturesService';
 
 function Culturas() {
   const router = useRouter();
-  const { id, idField } = router.query;
+  const { id, idField, page = 1 } = router.query;
 
   const perPage = 10;
-
-  const { page = 1 } = router.query;
 
   const [alertMsg, setAlertMsg] = useState({ type: '', message: '' });
   const { addModal, removeModal } = useModal();
@@ -126,40 +124,44 @@ function Culturas() {
                   )}
                   {(((data && dataCultures) || loading) && (
                     <>
-                      <Table>
-                        <thead>
-                          <tr>
-                            <th>Cultura</th>
-                            <th>Área</th>
-                            <th>Ações</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {(!isEmpty(dataCultures?.items) &&
-                            dataCultures.items.map(d => (
-                              <tr
-                                key={d.id}
-                                onClick={() =>
-                                  router.push(`${baseUrl}/${d.id}/detalhes`)
-                                }
-                              >
-                                <td>{d?.products?.name}</td>
-                                <td>{`${d.area}${d.type_dimension}`}</td>
-                                <td onClick={e => e.stopPropagation()}>
-                                  <ActionButton
-                                    id={d.id}
-                                    path={baseUrl}
-                                    onDelete={() => handleDeleteModal(d.id)}
-                                  />
+                      <div className="table-responsive">
+                        <Table>
+                          <thead>
+                            <tr>
+                              <th>Cultura</th>
+                              <th>Área</th>
+                              <th>Ações</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {(!isEmpty(dataCultures?.items) &&
+                              dataCultures.items.map(d => (
+                                <tr
+                                  key={d.id}
+                                  onClick={() =>
+                                    router.push(`${baseUrl}/${d.id}/detalhes`)
+                                  }
+                                >
+                                  <td>{d?.products?.name}</td>
+                                  <td>{`${d.area}${d.type_dimension}`}</td>
+                                  <td onClick={e => e.stopPropagation()}>
+                                    <ActionButton
+                                      id={d.id}
+                                      path={baseUrl}
+                                      onDelete={() => handleDeleteModal(d.id)}
+                                    />
+                                  </td>
+                                </tr>
+                              ))) || (
+                              <tr>
+                                <td colSpan="3">
+                                  Não há culturas nesse talhão
                                 </td>
                               </tr>
-                            ))) || (
-                            <tr>
-                              <td colSpan="3">Não há culturas nesse talhão</td>
-                            </tr>
-                          )}
-                        </tbody>
-                      </Table>
+                            )}
+                          </tbody>
+                        </Table>
+                      </div>
                       <Pagination
                         url={`${baseUrl}`}
                         currentPage={page}
