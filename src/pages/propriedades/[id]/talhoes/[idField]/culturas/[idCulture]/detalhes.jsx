@@ -1,6 +1,10 @@
 import React from 'react';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
+import Link from 'next/link';
+
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faFileAlt } from '@fortawesome/free-solid-svg-icons';
 
 import Container from '@/components/Container';
 import Nav from '@/components/Nav';
@@ -54,6 +58,22 @@ function CulturasInfo() {
                 {dataCultures?.products.name} no talhão{' '}
                 {`${data?.name} da propriedade ${data?.properties.name}`}.
               </p>
+              <div className="buttons__container">
+                <Link
+                  href={`/propriedades/${id}/talhoes/${idField}/culturas/${idCulture}/colheitas`}
+                >
+                  <Button className="primary">
+                    <FontAwesomeIcon icon={faFileAlt} /> Ver Colheitas
+                  </Button>
+                </Link>
+                <Link
+                  href={`/propriedades/${id}/talhoes/${idField}/culturas/${idCulture}/relatorios`}
+                >
+                  <Button className="primary">
+                    <FontAwesomeIcon icon={faFileAlt} /> Ver Relatórios Técnicos
+                  </Button>
+                </Link>
+              </div>
             </div>
           </SectionHeader>
           <SectionBody>

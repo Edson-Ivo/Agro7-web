@@ -11,10 +11,23 @@ const Table = styled.table`
   tbody {
     tr {
       cursor: pointer;
-      transition: background 0.3s;
+      transition: background 0.8s;
+      background-position: center;
 
       &:hover {
-        background-color: ${props => props.theme.colors.gray};
+        background: ${props => props.theme.colors.gray}
+          radial-gradient(
+            circle,
+            transparent 1%,
+            ${props => props.theme.colors.gray} 1%
+          )
+          center/15000%;
+      }
+
+      &:active {
+        background-color: ${props => props.theme.colors.black_10};
+        background-size: 100%;
+        transition: background 0s;
       }
     }
   }

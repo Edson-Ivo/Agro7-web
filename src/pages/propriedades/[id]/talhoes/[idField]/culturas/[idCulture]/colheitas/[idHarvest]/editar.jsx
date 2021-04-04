@@ -134,9 +134,9 @@ function ColheitasEdit() {
   return (
     <>
       {(error || errorCultures || errorHarvests) && router.back()}
-      {data && id !== data?.properties.id.toString() && router.back()}
+      {data && id !== data?.properties?.id.toString() && router.back()}
       {dataCultures &&
-        idField !== dataCultures?.fields.id.toString() &&
+        idField !== dataCultures?.fields?.id.toString() &&
         router.back()}
       <Head>
         <title>Editar Colheita - Agro7</title>

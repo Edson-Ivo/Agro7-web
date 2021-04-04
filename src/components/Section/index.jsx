@@ -37,6 +37,26 @@ export const SectionHeader = styled.div`
       align-self: flex-end;
     }
 
+    .buttons__container {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 10px;
+      width: 100%;
+
+      @media screen and (max-width: ${props =>
+          props.theme.breakpoints.mobile}px) {
+        flex-direction: column;
+        margin-top: 16px;
+      }
+
+      button {
+        &:first-child {
+          margin-top: 0;
+          margin-right: 16px;
+        }
+      }
+    }
+
     @media screen and (max-width: ${props =>
         props.theme.breakpoints.mobile}px) {
       text-align: center;

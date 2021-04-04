@@ -23,10 +23,9 @@ import ActionButton from '@/components/ActionButton';
 import errorMessage from '@/helpers/errorMessage';
 import isEmpty from '@/helpers/isEmpty';
 import Pagination from '@/components/Pagination';
-import HarvestsService from '@/services/HarvestsService';
-import { dateConversor } from '@/helpers/date';
+import TechnicianActionsService from '@/services/TechnicianActionsService';
 
-function Colheitas() {
+function Relatorios() {
   const router = useRouter();
   const { id, idField, idCulture, page = 1 } = router.query;
 
@@ -37,7 +36,7 @@ function Colheitas() {
   const [loading, setLoading] = useState(false);
 
   const [baseUrl] = useState(
-    `/propriedades/${id}/talhoes/${idField}/culturas/${idCulture}/colheitas`
+    `/propriedades/${id}/talhoes/${idField}/culturas/${idCulture}/relatorios`
   );
 
   const { data, error } = useFetch(`/fields/find/by/id/${idField}`);
@@ -47,11 +46,11 @@ function Colheitas() {
   );
 
   const {
-    data: dataHarvests,
-    error: errorHarvests,
-    mutate: mutateHarvests
+    data: dataTechActions,
+    error: errorTechActions,
+    mutate: mutateTechActions
   } = useFetch(
-    `/harvests/find/by/culture/${idCulture}?limit=${perPage}&page=${page}`
+    `/technician-actions/find/by/culture/${idCulture}?limit=${perPage}&page=${page}`
   );
 
   const handleDelete = useCallback(
@@ -59,15 +58,15 @@ function Colheitas() {
       removeModal();
       setLoading(true);
 
-      await HarvestsService.delete(identifier).then(res => {
+      await TechnicianActionsService.delete(identifier).then(res => {
         if (res.status >= 400 || res?.statusCode) {
           setAlertMsg(errorMessage(res));
         } else {
-          mutateHarvests();
+          mutateTechActions();
 
           setAlertMsg({
             type: 'success',
-            message: 'A colheita foi deletada com sucesso!'
+            message: 'O relatório técnico foi deletado com sucesso!'
           });
         }
       });
@@ -80,8 +79,8 @@ function Colheitas() {
   const handleDeleteModal = useCallback(
     identifier => {
       addModal({
-        title: `Deletar essa Colheita?`,
-        text: `Deseja realmente deletar essa colheita?`,
+        title: `Deletar esse Relatório?`,
+        text: `Deseja realmente deletar esse relatório?`,
         confirm: true,
         onConfirm: () => handleDelete(identifier),
         onCancel: removeModal
@@ -92,15 +91,15 @@ function Colheitas() {
 
   return (
     <>
-      {(error || errorCultures || errorHarvests) && router.back()}
+      {(error || errorCultures || errorTechActions) && router.back()}
       {data && id !== data?.properties?.id.toString() && router.back()}
       {dataCultures &&
         idField !== dataCultures?.fields?.id.toString() &&
         router.back()}
       <Head>
         <title>
-          Colheitas da Cultura de {dataCultures?.products.name} do Talhão{' '}
-          {data && data.name} - Agro7
+          Relatório Técnico da Cultura de {dataCultures?.products.name} do
+          Talhão {data && data.name} - Agro7
         </title>
       </Head>
 
@@ -117,17 +116,17 @@ function Colheitas() {
                 ]}
               />
               <h2>
-                Colheitas da Cultura de {dataCultures?.products.name} do Talhão{' '}
-                {data && data.name}
+                Relatório Técnico da Cultura de {dataCultures?.products.name} do
+                Talhão {data && data.name}
               </h2>
               <p>
-                Aqui você irá ver as colheitas da cultura de{' '}
+                Aqui você irá ver os relatórios do técnico da cultura de{' '}
                 {dataCultures?.products.name} do talhão{' '}
                 {`${data?.name} da propriedade ${data?.properties.name}`}.
               </p>
               <Link href={`${baseUrl}/cadastrar`}>
                 <Button className="primary">
-                  <FontAwesomeIcon icon={faPlus} /> Registrar Colheita
+                  <FontAwesomeIcon icon={faPlus} /> Adicionar Relatório
                 </Button>
               </Link>
             </div>
@@ -139,40 +138,46 @@ function Colheitas() {
                   {alertMsg.message && (
                     <Alert type={alertMsg.type}>{alertMsg.message}</Alert>
                   )}
-                  {(((data && dataCultures && dataHarvests) || loading) && (
+                  {(((data && dataCultures && dataTechActions) || loading) && (
                     <>
                       <div className="table-responsive">
                         <Table>
                           <thead>
                             <tr>
-                              <th>Data</th>
-                              <th>Quantidade</th>
-                              <th>Previsão</th>
-                              <th>Quantidade Prevista</th>
+                              <th>Diagnóstico</th>
+                              <th>#adultery</th>
+                              <th>Cultivação</th>
+                              <th>Fertilizando</th>
+                              <th>Fitossanidade</th>
                               <th>Ações</th>
                             </tr>
                           </thead>
                           <tbody>
-                            {(!isEmpty(dataHarvests?.items) &&
-                              dataHarvests.items.map(d => (
-                                <tr key={d.id}>
-                                  <td>{dateConversor(d?.date, false)}</td>
-                                  <td>{`${d?.quantity}kg`}</td>
-                                  <td>{dateConversor(d?.forecast, false)}</td>
-                                  <td>{`${d?.quantity_forecast}kg`}</td>
-                                  <td>
+                            {(!isEmpty(dataTechActions?.items) &&
+                              dataTechActions.items.map(d => (
+                                <tr
+                                  key={d.id}
+                                  onClick={() =>
+                                    router.push(`${baseUrl}/${d.id}/detalhes`)
+                                  }
+                                >
+                                  <td>{d?.diagnostics}</td>
+                                  <td>{d?.adultery}</td>
+                                  <td>{d?.cultivation}</td>
+                                  <td>{d?.fertilizing ? 'Sim' : 'Não'}</td>
+                                  <td>{d?.cultivation}</td>
+                                  <td onClick={e => e.stopPropagation()}>
                                     <ActionButton
                                       id={d.id}
                                       path={baseUrl}
-                                      noInfo
                                       onDelete={() => handleDeleteModal(d.id)}
                                     />
                                   </td>
                                 </tr>
                               ))) || (
                               <tr>
-                                <td colSpan="5">
-                                  Não há colheitas registradas nessa cultura
+                                <td colSpan="6">
+                                  Não há relatórios registrados nessa cultura
                                 </td>
                               </tr>
                             )}
@@ -183,7 +188,7 @@ function Colheitas() {
                         url={`${baseUrl}`}
                         currentPage={page}
                         itemsPerPage={perPage}
-                        totalPages={dataHarvests.totalPages}
+                        totalPages={dataTechActions.totalPages}
                         page="page"
                       />
                     </>
@@ -198,4 +203,4 @@ function Colheitas() {
   );
 }
 
-export default privateRoute()(Colheitas);
+export default privateRoute()(Relatorios);
