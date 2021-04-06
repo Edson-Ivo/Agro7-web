@@ -12,6 +12,7 @@ const Table = styled.table`
     tr {
       cursor: pointer;
       transition: background 0.8s;
+      transition: transform ease-in-out 0.25s;
       background-position: center;
 
       &:hover {

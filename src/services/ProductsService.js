@@ -37,6 +37,18 @@ class ProductsService {
     }
   }
 
+  static async updateNutritional(idNutritional, data) {
+    try {
+      const response = await api.put(
+        `/nutritional/update/${idNutritional}`,
+        data
+      );
+      return response;
+    } catch (error) {
+      return error.response;
+    }
+  }
+
   static async delete(id) {
     try {
       const response = await api.delete(`/products/${id}`);
