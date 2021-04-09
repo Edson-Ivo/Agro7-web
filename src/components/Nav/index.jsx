@@ -110,7 +110,7 @@ const NavButton = ({ link, icon, text }) => {
   let path = '';
 
   if (router.pathname !== '/') {
-    path = router.pathname.split('/')[1];
+    [, path] = router.pathname.split('/');
   }
 
   if (`/${path}` === link) {

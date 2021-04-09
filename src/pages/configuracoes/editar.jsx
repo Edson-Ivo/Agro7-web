@@ -3,7 +3,6 @@ import Head from 'next/head';
 import Link from 'next/link';
 import * as yup from 'yup';
 import { useSelector } from 'react-redux';
-import { useRouter } from 'next/router';
 
 import { Alert } from '@/components/Alert';
 import Container from '@/components/Container';
@@ -79,7 +78,6 @@ function ConfiguracoesEdit() {
   const [disableButton, setDisableButton] = useState(false);
   const [loading, setLoading] = useState(false);
   const [loadingAddresses, setLoadingAddresses] = useState(false);
-  const router = useRouter();
   const formRef = useRef(null);
 
   const { id } = useSelector(state => state.user);
@@ -343,7 +341,11 @@ function ConfiguracoesEdit() {
                           </Link>
                         </div>
                         <div>
-                          <Button className="primary" type="submit">
+                          <Button
+                            disabled={disableButton}
+                            className="primary"
+                            type="submit"
+                          >
                             Salvar
                           </Button>
                         </div>

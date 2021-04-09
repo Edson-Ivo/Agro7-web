@@ -47,6 +47,9 @@ export const PaginationWrapper = styled.div`
       font-size: 1em;
       line-height: 1.25em;
       vertical-align: middle;
+      display: inline-block;
+      min-width: 32px;
+      min-height: 32px;
 
       &:hover {
         opacity: 0.9;
@@ -70,11 +73,11 @@ export const PaginationWrapper = styled.div`
 const Pagination = ({
   url,
   currentPage = 1,
-  itemsPerPage = 10,
   totalPages = 1,
-  totalItems = 0,
-  itemCount = 0,
   page = 'page'
+  // itemsPerPage = 10,
+  // totalItems = 0,
+  // itemCount = 0,
 }) => {
   const router = useRouter();
   const [actualPage, setActualPage] = useState(1);

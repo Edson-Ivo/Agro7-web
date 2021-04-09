@@ -16,7 +16,6 @@ import { privateRoute } from '@/components/PrivateRoute';
 import NotFound from '@/components/NotFound';
 
 import Loader from '@/components/Loader';
-import Error from '@/components/Error';
 import { useFetch } from '@/hooks/useFetch';
 
 function AdminUsers({ permission }) {

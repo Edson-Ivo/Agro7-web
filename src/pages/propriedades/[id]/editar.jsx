@@ -98,11 +98,9 @@ function PropertiesEdit() {
 
   const { data, error, mutate } = useFetch(`/properties/find/by/id/${id}`);
 
-  const { data: dataTypeOwner, error: errorTypeOwner } = useFetch(
-    '/properties/find/all/types-owner'
-  );
+  const { data: dataTypeOwner } = useFetch('/properties/find/all/types-owner');
 
-  const { data: dataTypeDimension, error: errorTypeDimension } = useFetch(
+  const { data: dataTypeDimension } = useFetch(
     '/properties/find/all/types-dimension'
   );
 

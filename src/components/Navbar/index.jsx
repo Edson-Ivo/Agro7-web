@@ -56,7 +56,13 @@ const Navbar = () => {
             </Link>
           </div>
           <div className="navbar__content__right">
-            <div className="navbar_button select" onClick={() => handleClick()}>
+            <div
+              className="navbar_button select"
+              onClick={() => handleClick()}
+              onKeyPress={() => handleClick()}
+              role="button"
+              tabIndex="0"
+            >
               <div className="navbar_button__image">
                 <Image
                   src="/assets/user-placeholder.png"

@@ -16,11 +16,10 @@ const Pill = styled.div`
         position: absolute;
         content: '${props.label}';
         width: max-content;
-        color: ${props =>
-          props.active || props.complete
-            ? props.accentColor || '#24a19c'
-            : '#999'};
-        font-weight: ${props => (props.active ? 600 : 400)};
+        color: ${props.active || props.complete
+          ? props.accentColor || '#24a19c'
+          : '#999'};
+        font-weight: ${props.active ? 600 : 400};
         text-transform: uppercase;
         font-size: 11px;
         bottom: -20px;

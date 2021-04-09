@@ -231,35 +231,30 @@ function AdminProductsCreate({ permission }) {
             message: 'Enviando...'
           });
 
-          for (var d in data) {
-            formData.append(d, data[d]);
-          }
+          Object.keys(data).forEach(key => {
+            formData.append(key, data[key]);
+          });
 
           formData.append('file', e.target.file.files[0]);
 
-          await ProductsService.create(formData)
-            .then(res => {
-              if (res.status !== 200 || res?.statusCode) {
-                setAlert({ type: 'error', message: errorMessage(res) });
-                setTimeout(() => {
-                  setDisableButton(false);
-                }, 1000);
-              } else {
-                setAlert({
-                  type: 'success',
-                  message: 'Produto cadastrado com sucesso!'
-                });
+          await ProductsService.create(formData).then(res => {
+            if (res.status !== 201 || res?.statusCode) {
+              setAlert({ type: 'error', message: errorMessage(res) });
+              setTimeout(() => {
+                setDisableButton(false);
+              }, 1000);
+            } else {
+              setAlert({
+                type: 'success',
+                message: 'Produto cadastrado com sucesso!'
+              });
 
-                setTimeout(() => {
-                  router.push(`/admin/produtos/${res.data.id}/detalhes`);
-                  setDisableButton(false);
-                }, 1000);
-              }
-            })
-            .catch(err => {
-              setAlert({ type: 'error', message: err.errors[0] });
-              setDisableButton(false);
-            });
+              setTimeout(() => {
+                router.push(`/admin/produtos/${res.data.id}/detalhes`);
+                setDisableButton(false);
+              }, 1000);
+            }
+          });
         }
       })
       .catch(err => {

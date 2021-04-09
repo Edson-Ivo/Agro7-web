@@ -107,11 +107,9 @@ function Properties() {
   const latitudeRef = useRef(null);
   const longitudeRef = useRef(null);
 
-  const { data: dataTypeOwner, error: errorTypeOwner } = useFetch(
-    '/properties/find/all/types-owner'
-  );
+  const { data: dataTypeOwner } = useFetch('/properties/find/all/types-owner');
 
-  const { data: dataTypeDimension, error: errorTypeDimension } = useFetch(
+  const { data: dataTypeDimension } = useFetch(
     '/properties/find/all/types-dimension'
   );
 

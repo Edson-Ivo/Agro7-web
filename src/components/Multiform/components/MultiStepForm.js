@@ -2,19 +2,19 @@ import React, { Children, Fragment, cloneElement } from 'react';
 import Pill from './Pill';
 import Line from './Line';
 
-export default function MultiStepForm(props) {
+export default function MultiStepForm({ children, activeStep, accentColor }) {
   return (
     <div style={styles.container}>
       <div style={styles.stepperContainer}>
-        {React.Children.map(props.children, (child, i) => {
-          if (i === Children.count(props.children) - 1)
+        {React.Children.map(children, (child, i) => {
+          if (i === Children.count(children) - 1)
             return (
               <>
                 <Pill
-                  active={props.activeStep === i + 1}
+                  active={activeStep === i + 1}
                   label={child.props.label}
-                  complete={props.activeStep > i + 1}
-                  accentColor={props.accentColor}
+                  complete={activeStep > i + 1}
+                  accentColor={accentColor}
                   onClick={child.props.onClick}
                 />
               </>
@@ -23,22 +23,22 @@ export default function MultiStepForm(props) {
           return (
             <>
               <Pill
-                active={props.activeStep === i + 1}
-                complete={props.activeStep > 1 && i + 1 < props.activeStep}
+                active={activeStep === i + 1}
+                complete={activeStep > 1 && i + 1 < activeStep}
                 label={child.props.label}
-                accentColor={props.accentColor}
+                accentColor={accentColor}
                 onClick={child.props.onClick}
               />
               <Line
-                complete={props.activeStep > 1 && i + 1 < props.activeStep}
-                accentColor={props.accentColor}
+                complete={activeStep > 1 && i + 1 < activeStep}
+                accentColor={accentColor}
               />
             </>
           );
         })}
       </div>
-      {React.Children.map(props.children, (child, i) => {
-        if (i + 1 === props.activeStep) return child;
+      {React.Children.map(children, (child, i) => {
+        if (i + 1 === activeStep) return child;
         return cloneElement(child, { hidden: true });
       })}
     </div>

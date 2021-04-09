@@ -76,7 +76,10 @@ function ProducerNotebook() {
                     <DateContainer style={{ marginBottom: '20px' }}>
                       <DateContent style={{ width: `${71 * 7}px` }}>
                         {daysList.map(({ date, day }, i) => (
-                          <DateCard key={i} active={!!(activeDate === i)}>
+                          <DateCard
+                            key={i.toString()}
+                            active={!!(activeDate === i)}
+                          >
                             <h3>{date}</h3>
                             <span>{day}</span>
                           </DateCard>

@@ -241,43 +241,38 @@ function AdminProductsEdit({ permission }) {
             formData.append('file', e.target.file.files[0]);
           }
 
-          await ProductsService.update(id, formData)
-            .then(async res => {
-              if (res.status !== 200 || res?.statusCode) {
-                setAlert({ type: 'error', message: errorMessage(res) });
-                setTimeout(() => {
-                  setDisableButton(false);
-                }, 1000);
-              } else {
-                await ProductsService.updateNutritional(
-                  data?.nutritional.id,
-                  dataEdit
-                ).then(res2 => {
-                  if (res2.status !== 200 || res2?.statusCode) {
-                    setAlert({ type: 'error', message: errorMessage(res2) });
-                    setTimeout(() => {
-                      setDisableButton(false);
-                    }, 1000);
-                  } else {
-                    mutate();
+          await ProductsService.update(id, formData).then(async res => {
+            if (res.status !== 200 || res?.statusCode) {
+              setAlert({ type: 'error', message: errorMessage(res) });
+              setTimeout(() => {
+                setDisableButton(false);
+              }, 1000);
+            } else {
+              await ProductsService.updateNutritional(
+                data?.nutritional.id,
+                dataEdit
+              ).then(res2 => {
+                if (res2.status !== 200 || res2?.statusCode) {
+                  setAlert({ type: 'error', message: errorMessage(res2) });
+                  setTimeout(() => {
+                    setDisableButton(false);
+                  }, 1000);
+                } else {
+                  mutate();
 
-                    setAlert({
-                      type: 'success',
-                      message: 'Produto editado com sucesso!'
-                    });
+                  setAlert({
+                    type: 'success',
+                    message: 'Produto editado com sucesso!'
+                  });
 
-                    setTimeout(() => {
-                      router.push(`/admin/produtos/${id}/detalhes`);
-                      setDisableButton(false);
-                    }, 1000);
-                  }
-                });
-              }
-            })
-            .catch(err => {
-              setAlert({ type: 'error', message: err.errors[0] });
-              setDisableButton(false);
-            });
+                  setTimeout(() => {
+                    router.push(`/admin/produtos/${id}/detalhes`);
+                    setDisableButton(false);
+                  }, 1000);
+                }
+              });
+            }
+          });
         }
       })
       .catch(err => {

@@ -13,9 +13,9 @@ class AuthService {
       })
       .then(response => {
         if (response.data.access_token) {
-          const { access_token, user } = response.data;
+          const { access_token: accessToken, user } = response.data;
 
-          setCookie(AUTH_COOKIE_TOKEN, access_token);
+          setCookie(AUTH_COOKIE_TOKEN, accessToken);
           setCookie(AUTH_COOKIE_NAME, Base64.encode(JSON.stringify(user)));
         }
 

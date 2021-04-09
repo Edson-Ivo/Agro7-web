@@ -5,6 +5,6 @@ const Container = styled.div`
   display: ${props => (props.hidden ? 'none' : 'block')};
 `;
 
-export default function Step(props) {
-  return <Container {...props}>{props.children}</Container>;
+export default function Step({ children, ...rest }) {
+  return <Container {...rest}>{children}</Container>;
 }

@@ -55,7 +55,7 @@ function TalhoesEdit() {
     `/fields/find/by/id/${idField}`
   );
 
-  const { data: dataTypeDimension, error: errorTypeDimension } = useFetch(
+  const { data: dataTypeDimension } = useFetch(
     '/fields/find/all/types-dimension'
   );
 

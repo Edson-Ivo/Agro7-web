@@ -50,7 +50,7 @@ function TalhoesCadastrar() {
   const { id, createProperty } = router.query;
 
   const { data, error } = useFetch(`/properties/find/by/id/${id}`);
-  const { data: dataTypeDimension, error: errorTypeDimension } = useFetch(
+  const { data: dataTypeDimension } = useFetch(
     '/fields/find/all/types-dimension'
   );
 

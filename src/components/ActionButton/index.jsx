@@ -50,7 +50,13 @@ const ActionButton = ({
         </div>
       </a>
     </Link>
-    <div onClick={() => onDelete()} title="Deletar">
+    <div
+      onClick={() => onDelete()}
+      onKeyPress={() => onDelete()}
+      title="Deletar"
+      role="button"
+      tabIndex="0"
+    >
       <div>
         <FontAwesomeIcon icon={faTrash} />
       </div>

@@ -45,7 +45,7 @@ function MapActionPlotArea({
 
       const initialPathProps = [];
 
-      initialPath.map(pathEl => {
+      initialPath.forEach(pathEl => {
         delete pathEl.id;
         pathEl.latitude = Number(pathEl.latitude);
         pathEl.longitude = Number(pathEl.longitude);

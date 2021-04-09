@@ -21,7 +21,7 @@ import { useFetch } from '@/hooks/useFetch';
 import getFormData from '@/helpers/getFormData';
 import CulturesService from '@/services/CulturesService';
 import SearchSelect from '@/components/SearchSelect/index';
-import { dateConversor, dateToInput, dateToISOString } from '@/helpers/date';
+import { dateToInput, dateToISOString } from '@/helpers/date';
 
 const schema = yup.object().shape({
   date_start: yup.string().required('O campo data inicial é obrigatório!'),
