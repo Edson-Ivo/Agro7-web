@@ -278,7 +278,8 @@ function PropertiesEdit() {
               <Breadcrumb
                 path={[
                   { route: '/', name: 'Home' },
-                  { route: '/propriedades', name: 'Propriedades' }
+                  { route: '/propriedades', name: 'Propriedades' },
+                  { route: `/propriedades/${id}/editar`, name: 'Editar' }
                 ]}
               />
               <h2>Editar propriedade {`(${data && data.name})`}</h2>

@@ -142,12 +142,34 @@ function CulturasCreate() {
         <Section>
           <SectionHeader>
             <div className="SectionHeader__content">
-              <Breadcrumb
-                path={[
-                  { route: '/', name: 'Home' },
-                  { route: '/propriedades', name: 'Propriedades' }
-                ]}
-              />
+              {data && (
+                <Breadcrumb
+                  path={[
+                    { route: '/', name: 'Home' },
+                    { route: '/propriedades', name: 'Propriedades' },
+                    {
+                      route: `/propriedades/${id}/detalhes`,
+                      name: `${data?.properties.name}`
+                    },
+                    {
+                      route: `/propriedades/${id}/talhoes`,
+                      name: `Talhões`
+                    },
+                    {
+                      route: `/propriedades/${id}/talhoes/${idField}/detalhes`,
+                      name: `${data?.name}`
+                    },
+                    {
+                      route: `/propriedades/${id}/talhoes/${idField}/culturas`,
+                      name: `Culturas`
+                    },
+                    {
+                      route: `/propriedades/${id}/talhoes/${idField}/culturas/cadastrar`,
+                      name: `Cadastrar`
+                    }
+                  ]}
+                />
+              )}
               <h2>Adicionar Cultura {data && `(${data.name})`}</h2>
               <p>
                 Aqui você irá adicionar uma cultura para o talhão{' '}

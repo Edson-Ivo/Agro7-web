@@ -145,12 +145,42 @@ function RelatoriosEdit() {
         <Section>
           <SectionHeader>
             <div className="SectionHeader__content">
-              <Breadcrumb
-                path={[
-                  { route: '/', name: 'Home' },
-                  { route: '/propriedades', name: 'Propriedades' }
-                ]}
-              />
+              {data && dataCultures && (
+                <Breadcrumb
+                  path={[
+                    { route: '/', name: 'Home' },
+                    { route: '/propriedades', name: 'Propriedades' },
+                    {
+                      route: `/propriedades/${id}/detalhes`,
+                      name: `${data?.properties.name}`
+                    },
+                    {
+                      route: `/propriedades/${id}/talhoes`,
+                      name: `Talhões`
+                    },
+                    {
+                      route: `/propriedades/${id}/talhoes/${idField}/detalhes`,
+                      name: `${data?.name}`
+                    },
+                    {
+                      route: `/propriedades/${id}/talhoes/${idField}/culturas`,
+                      name: `Culturas`
+                    },
+                    {
+                      route: `/propriedades/${id}/talhoes/${idField}/culturas/${idCulture}/detalhes`,
+                      name: `${dataCultures?.products.name}`
+                    },
+                    {
+                      route: `/propriedades/${id}/talhoes/${idField}/culturas/${idCulture}/relatorios`,
+                      name: `Relatórios`
+                    },
+                    {
+                      route: `/propriedades/${id}/talhoes/${idField}/culturas/${idCulture}/relatorios/${idAction}/editar`,
+                      name: `Editar`
+                    }
+                  ]}
+                />
+              )}
               <h2>
                 Editar Relatório na Cultura de {dataCultures?.products.name}
               </h2>

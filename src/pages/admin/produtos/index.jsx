@@ -99,7 +99,7 @@ function AdminProducts({ permission }) {
                 path={[
                   { route: '/', name: 'Home' },
                   { route: '/admin', name: 'Painel Adminstrativo' },
-                  { route: '/admin/produtos', name: 'Gerenciar Produtos' }
+                  { route: '/admin/produtos', name: 'Produtos' }
                 ]}
               />
               <h2>Gerenciar Produtos</h2>

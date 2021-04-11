@@ -217,10 +217,10 @@ function AdminUsers({ permission }) {
                 path={[
                   { route: '/', name: 'Home' },
                   { route: '/admin', name: 'Painel Adminstrativo' },
-                  { route: '/admin/users', name: 'Gerenciar Usuários' },
+                  { route: '/admin/users', name: 'Usuários' },
                   {
                     route: '/admin/users/cadastrar',
-                    name: 'Cadastrar Usuários'
+                    name: 'Cadastrar'
                   }
                 ]}
               />

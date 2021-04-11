@@ -12,6 +12,10 @@ const Button = styled.button`
   opacity: 0.9;
   border: 1px solid ${props => props.theme.colors.black_25};
 
+  > svg {
+    margin-right: 4px;
+  }
+
   &.primary {
     background: ${props => props.theme.colors.primary}!important;
     color: ${props => props.theme.colors.white}!important;

@@ -97,7 +97,7 @@ function AdminUsers({ permission }) {
                 path={[
                   { route: '/', name: 'Home' },
                   { route: '/admin', name: 'Painel Adminstrativo' },
-                  { route: '/admin/users', name: 'Gerenciar Usuários' }
+                  { route: '/admin/users', name: 'Usuários' }
                 ]}
               />
               <h2>Gerenciar Usuários</h2>
@@ -130,12 +130,19 @@ function AdminUsers({ permission }) {
                         <tbody>
                           {(data?.items &&
                             data.items.map(user => (
-                              <tr key={user.id}>
+                              <tr
+                                key={user.id}
+                                onClick={() =>
+                                  router.push(
+                                    `/admin/users/${user.id}/detalhes`
+                                  )
+                                }
+                              >
                                 <td>{user.name}</td>
                                 <td>{user.email}</td>
                                 <td>{user.documents}</td>
                                 <td>{user.phone}</td>
-                                <td>
+                                <td onClick={e => e.stopPropagation()}>
                                   <ActionButton
                                     id={user.id}
                                     path="/admin/users"

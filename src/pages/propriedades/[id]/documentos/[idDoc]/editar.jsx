@@ -100,7 +100,15 @@ function DocumentosEdit() {
               <Breadcrumb
                 path={[
                   { route: '/', name: 'Home' },
-                  { route: '/propriedades', name: 'Propriedades' }
+                  { route: '/propriedades', name: 'Propriedades' },
+                  {
+                    route: `/propriedades/${id}/detalhes`,
+                    name: `${data?.name}`
+                  },
+                  {
+                    route: `/propriedades/${id}/documentos/${idDoc}/cadastrar`,
+                    name: 'Editar Documento'
+                  }
                 ]}
               />
               <h2>Editar Documento {dataDocs && dataDocs.name}</h2>

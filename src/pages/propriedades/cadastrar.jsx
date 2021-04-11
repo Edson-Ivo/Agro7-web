@@ -247,7 +247,8 @@ function Properties() {
               <Breadcrumb
                 path={[
                   { route: '/', name: 'Home' },
-                  { route: '/propriedades', name: 'Propriedades' }
+                  { route: '/propriedades', name: 'Propriedades' },
+                  { route: '/propriedades/cadastrar', name: 'Cadastrar' }
                 ]}
               />
               <h2>Cadastre uma propriedade</h2>

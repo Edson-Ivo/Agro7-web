@@ -119,7 +119,15 @@ function DocumentosCreate() {
               <Breadcrumb
                 path={[
                   { route: '/', name: 'Home' },
-                  { route: '/propriedades', name: 'Propriedades' }
+                  { route: '/propriedades', name: 'Propriedades' },
+                  {
+                    route: `/propriedades/${id}/detalhes`,
+                    name: `${data?.name}`
+                  },
+                  {
+                    route: `/propriedades/${id}/documentos/cadastrar`,
+                    name: 'Adicionar Documento'
+                  }
                 ]}
               />
               <h2>Adicionar Documento {`(${data && data.name})`}</h2>

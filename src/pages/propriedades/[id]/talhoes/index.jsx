@@ -96,12 +96,22 @@ function Talhoes() {
         <Section>
           <SectionHeader>
             <div className="SectionHeader__content">
-              <Breadcrumb
-                path={[
-                  { route: '/', name: 'Home' },
-                  { route: '/propriedades', name: 'Propriedades' }
-                ]}
-              />
+              {data && (
+                <Breadcrumb
+                  path={[
+                    { route: '/', name: 'Home' },
+                    { route: '/propriedades', name: 'Propriedades' },
+                    {
+                      route: `/propriedades/${id}/detalhes`,
+                      name: `${data?.name}`
+                    },
+                    {
+                      route: `/propriedades/${id}/talhoes`,
+                      name: `Talhões`
+                    }
+                  ]}
+                />
+              )}
               <h2>Talhões da propriedade {data && `(${data.name})`}</h2>
               <p>Aqui você irá ver o talhões da propriedade em questão</p>
               <Link href={`${baseUrl}/cadastrar`}>

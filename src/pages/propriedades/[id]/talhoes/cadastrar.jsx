@@ -159,12 +159,26 @@ function TalhoesCadastrar() {
         <Section>
           <SectionHeader>
             <div className="SectionHeader__content">
-              <Breadcrumb
-                path={[
-                  { route: '/', name: 'Home' },
-                  { route: '/propriedades', name: 'Propriedades' }
-                ]}
-              />
+              {data && (
+                <Breadcrumb
+                  path={[
+                    { route: '/', name: 'Home' },
+                    { route: '/propriedades', name: 'Propriedades' },
+                    {
+                      route: `/propriedades/${id}/detalhes`,
+                      name: `${data?.name}`
+                    },
+                    {
+                      route: `/propriedades/${id}/talhoes`,
+                      name: `Talhões`
+                    },
+                    {
+                      route: `/propriedades/${id}/talhoes/cadastrar`,
+                      name: `Cadastrar`
+                    }
+                  ]}
+                />
+              )}
               <h2>Adicionar Talhão {`(${data && data.name})`}</h2>
               <p>
                 Aqui você irá adicionar um talhão para propriedade{' '}

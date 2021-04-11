@@ -39,13 +39,19 @@ function AdminUsers({ permission }) {
         <Section>
           <SectionHeader>
             <div className="SectionHeader__content">
-              <Breadcrumb
-                path={[
-                  { route: '/', name: 'Home' },
-                  { route: '/admin', name: 'Painel Adminstrativo' },
-                  { route: '/admin/users', name: 'Gerenciar Usuários' }
-                ]}
-              />
+              {data && (
+                <Breadcrumb
+                  path={[
+                    { route: '/', name: 'Home' },
+                    { route: '/admin', name: 'Painel Adminstrativo' },
+                    { route: '/admin/users', name: 'Usuários' },
+                    {
+                      route: `/admin/users/${id}/detalhes`,
+                      name: `${data?.name}`
+                    }
+                  ]}
+                />
+              )}
               <h2>Informações do Usuário {data && `(${data.name})`}</h2>
               <p>
                 Aqui você irá ver informações detalhadas do usuário em questão

@@ -4,7 +4,7 @@ import Head from 'next/head';
 import Link from 'next/link';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSeedling } from '@fortawesome/free-solid-svg-icons';
+import { faLeaf } from '@fortawesome/free-solid-svg-icons';
 
 import Container from '@/components/Container';
 import Nav from '@/components/Nav';
@@ -46,12 +46,26 @@ function TalhoesInfo() {
         <Section>
           <SectionHeader>
             <div className="SectionHeader__content">
-              <Breadcrumb
-                path={[
-                  { route: '/', name: 'Home' },
-                  { route: '/propriedades', name: 'Propriedades' }
-                ]}
-              />
+              {data && dataFields && (
+                <Breadcrumb
+                  path={[
+                    { route: '/', name: 'Home' },
+                    { route: '/propriedades', name: 'Propriedades' },
+                    {
+                      route: `/propriedades/${id}/detalhes`,
+                      name: `${data?.name}`
+                    },
+                    {
+                      route: `/propriedades/${id}/talhoes`,
+                      name: `Talhões`
+                    },
+                    {
+                      route: `/propriedades/${id}/talhoes/${idField}/detalhes`,
+                      name: `${dataFields?.name}`
+                    }
+                  ]}
+                />
+              )}
               <h2>
                 Informações do Talhão {`(${dataFields && dataFields.name})`}
               </h2>
@@ -62,7 +76,7 @@ function TalhoesInfo() {
               </p>
               <Link href={`/propriedades/${id}/talhoes/${idField}/culturas`}>
                 <Button className="primary">
-                  <FontAwesomeIcon icon={faSeedling} /> Ver Culturas
+                  <FontAwesomeIcon icon={faLeaf} /> Ver Culturas
                 </Button>
               </Link>
             </div>

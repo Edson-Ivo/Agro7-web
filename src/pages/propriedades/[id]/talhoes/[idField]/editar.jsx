@@ -147,12 +147,26 @@ function TalhoesEdit() {
         <Section>
           <SectionHeader>
             <div className="SectionHeader__content">
-              <Breadcrumb
-                path={[
-                  { route: '/', name: 'Home' },
-                  { route: '/propriedades', name: 'Propriedades' }
-                ]}
-              />
+              {data && (
+                <Breadcrumb
+                  path={[
+                    { route: '/', name: 'Home' },
+                    { route: '/propriedades', name: 'Propriedades' },
+                    {
+                      route: `/propriedades/${id}/detalhes`,
+                      name: `${data?.name}`
+                    },
+                    {
+                      route: `/propriedades/${id}/talhoes`,
+                      name: `Talhões`
+                    },
+                    {
+                      route: `/propriedades/${id}/talhoes/${idField}/editar`,
+                      name: `Editar`
+                    }
+                  ]}
+                />
+              )}
               <h2>Editar Talhão {`(${dataFields && dataFields.name})`}</h2>
               <p>
                 Você está editando o talhão {dataFields && dataFields.name} da

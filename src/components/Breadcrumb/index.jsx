@@ -11,7 +11,7 @@ const Breadcrumb = ({ path }) => (
   <>
     <BreadcrumbContainer>
       {path.map(({ route, name }, i) => (
-        <h5 key={name}>
+        <h5 key={i.toString()}>
           <Link href={route}>{name}</Link>
           {path.length - 1 === i || (
             <span>

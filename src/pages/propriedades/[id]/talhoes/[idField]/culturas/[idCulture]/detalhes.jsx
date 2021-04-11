@@ -4,7 +4,7 @@ import Head from 'next/head';
 import Link from 'next/link';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faFileAlt } from '@fortawesome/free-solid-svg-icons';
+import { faFileAlt, faSeedling } from '@fortawesome/free-solid-svg-icons';
 
 import Container from '@/components/Container';
 import Nav from '@/components/Nav';
@@ -46,12 +46,34 @@ function CulturasInfo() {
         <Section>
           <SectionHeader>
             <div className="SectionHeader__content">
-              <Breadcrumb
-                path={[
-                  { route: '/', name: 'Home' },
-                  { route: '/propriedades', name: 'Propriedades' }
-                ]}
-              />
+              {data && dataCultures && (
+                <Breadcrumb
+                  path={[
+                    { route: '/', name: 'Home' },
+                    { route: '/propriedades', name: 'Propriedades' },
+                    {
+                      route: `/propriedades/${id}/detalhes`,
+                      name: `${data?.properties.name}`
+                    },
+                    {
+                      route: `/propriedades/${id}/talhoes`,
+                      name: `Talhões`
+                    },
+                    {
+                      route: `/propriedades/${id}/talhoes/${idField}/detalhes`,
+                      name: `${data?.name}`
+                    },
+                    {
+                      route: `/propriedades/${id}/talhoes/${idField}/culturas`,
+                      name: `Culturas`
+                    },
+                    {
+                      route: `/propriedades/${id}/talhoes/${idField}/culturas/${idCulture}/detalhes`,
+                      name: `${dataCultures?.products.name}`
+                    }
+                  ]}
+                />
+              )}
               <h2>Informações Cultura {`(${dataCultures?.products.name})`}</h2>
               <p>
                 Você está vendo informações detalhadas da cultura de{' '}
@@ -63,7 +85,7 @@ function CulturasInfo() {
                   href={`/propriedades/${id}/talhoes/${idField}/culturas/${idCulture}/colheitas`}
                 >
                   <Button className="primary">
-                    <FontAwesomeIcon icon={faFileAlt} /> Ver Colheitas
+                    <FontAwesomeIcon icon={faSeedling} /> Ver Colheitas
                   </Button>
                 </Link>
                 <Link

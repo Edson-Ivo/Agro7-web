@@ -103,12 +103,18 @@ function PropertieInfo() {
         <Section>
           <SectionHeader>
             <div className="SectionHeader__content">
-              <Breadcrumb
-                path={[
-                  { route: '/', name: 'Home' },
-                  { route: '/propriedades', name: 'Propriedades' }
-                ]}
-              />
+              {data && (
+                <Breadcrumb
+                  path={[
+                    { route: '/', name: 'Home' },
+                    { route: '/propriedades', name: 'Propriedades' },
+                    {
+                      route: `/propriedades/${id}/detalhes`,
+                      name: `${data?.name}`
+                    }
+                  ]}
+                />
+              )}
               <h2>Informações da propriedade {data && `(${data.name})`}</h2>
               <p>
                 Aqui você irá ver informações detalhadas da propriedade em

@@ -43,13 +43,19 @@ function AdminProductsDetails({ permission }) {
         <Section>
           <SectionHeader>
             <div className="SectionHeader__content">
-              <Breadcrumb
-                path={[
-                  { route: '/', name: 'Home' },
-                  { route: '/admin', name: 'Painel Adminstrativo' },
-                  { route: '/admin/produtos', name: 'Gerenciar Produtos' }
-                ]}
-              />
+              {data && (
+                <Breadcrumb
+                  path={[
+                    { route: '/', name: 'Home' },
+                    { route: '/admin', name: 'Painel Adminstrativo' },
+                    { route: '/admin/produtos', name: 'Produtos' },
+                    {
+                      route: `/admin/produtos/${id}/detalhes`,
+                      name: `${data?.name}`
+                    }
+                  ]}
+                />
+              )}
               <h2>Informações do Produto {data && `(${data.name})`}</h2>
               <p>Aqui você irá ver informações do produto em questão</p>
             </div>
