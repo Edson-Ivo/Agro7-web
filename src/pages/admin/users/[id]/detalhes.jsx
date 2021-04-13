@@ -17,12 +17,14 @@ import NotFound from '@/components/NotFound';
 
 import Loader from '@/components/Loader';
 import { useFetch } from '@/hooks/useFetch';
+import capitalize from '@/helpers/capitalize';
 
 function AdminUsers({ permission }) {
   const router = useRouter();
   const { id } = router.query;
 
   const { data, error } = useFetch(`/users/find/by/id/${id}`);
+  const { data: dataTypes } = useFetch('/users/find/all/types');
 
   if (!permission) return <NotFound />;
 
@@ -61,7 +63,7 @@ function AdminUsers({ permission }) {
           <SectionBody>
             <div className="SectionBody__content">
               <CardContainer>
-                {(data && (
+                {(data && dataTypes && (
                   <>
                     <Input
                       type="text"
@@ -109,9 +111,10 @@ function AdminUsers({ permission }) {
                       </div>
                     </div>
                     <Select
-                      options={[
-                        { value: 'administrator', label: 'Administrador' }
-                      ]}
+                      options={dataTypes?.typesUser.map(userType => ({
+                        value: userType,
+                        label: capitalize(userType)
+                      }))}
                       label="Tipo de Usuário"
                       value={data.types}
                       name="types"

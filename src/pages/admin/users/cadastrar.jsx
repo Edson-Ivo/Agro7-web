@@ -21,6 +21,9 @@ import AddressesService from '@/services/AddressesService';
 import UsersService from '@/services/UsersService';
 import errorMessage from '@/helpers/errorMessage';
 import extractNumbers from '@/helpers/extractNumbers';
+import { useFetch } from '@/hooks/useFetch';
+import capitalize from '@/helpers/capitalize';
+import Loader from '@/components/Loader/index';
 
 const schema = yup.object().shape({
   name: yup
@@ -83,6 +86,8 @@ function AdminUsers({ permission }) {
   const [loadingAddresses, setLoadingAddresses] = useState(false);
   const router = useRouter();
   const formRef = useRef(null);
+
+  const { data: dataTypes } = useFetch('/users/find/all/types');
 
   const stateRef = useRef(null);
   const cityRef = useRef(null);
@@ -240,144 +245,149 @@ function AdminUsers({ permission }) {
                   method="post"
                   onSubmit={event => handleSubmit(event)}
                 >
-                  <Input type="text" label="Nome" name="name" required />
-                  <Input type="text" label="E-mail" name="email" required />
-                  <Input
-                    type="password"
-                    label="Senha"
-                    name="password"
-                    required
-                  />
-                  <Input
-                    type="text"
-                    label="Documento (CPF ou CNPJ)"
-                    name="documents"
-                    mask="cpf_cnpj"
-                    maxLength="18"
-                    required
-                  />
-                  <div className="form-group">
-                    <div>
+                  {(dataTypes && (
+                    <>
+                      <Input type="text" label="Nome" name="name" required />
+                      <Input type="text" label="E-mail" name="email" required />
                       <Input
-                        type="text"
-                        label="Número Telefone"
-                        name="phone"
-                        mask="phone"
-                        maxLength={15}
+                        type="password"
+                        label="Senha"
+                        name="password"
                         required
                       />
-                    </div>
-                    <div>
                       <Input
                         type="text"
-                        label="Número Whatsapp"
-                        name="phone_whatsapp"
-                        mask="phone"
-                        maxLength={15}
-                      />
-                    </div>
-                  </div>
-                  <Select
-                    options={[
-                      { value: 'administrator', label: 'Administrador' }
-                    ]}
-                    label="Tipo de Usuário"
-                    name="types"
-                    required
-                  />
-                  <div className="form-group">
-                    <div>
-                      <Input
-                        type="text"
-                        label="CEP"
-                        name="postcode"
-                        initialValue=""
-                        mask="cep"
-                        disabled={loadingAddresses}
-                        ref={postalcodeRef}
-                        handleChange={handleChangeCep}
+                        label="Documento (CPF ou CNPJ)"
+                        name="documents"
+                        mask="cpf_cnpj"
+                        maxLength="18"
                         required
                       />
-                    </div>
-                    <div>
-                      <Input
-                        type="text"
-                        label="Estado"
-                        name="state"
-                        initialValue=""
-                        ref={stateRef}
+                      <div className="form-group">
+                        <div>
+                          <Input
+                            type="text"
+                            label="Número Telefone"
+                            name="phone"
+                            mask="phone"
+                            maxLength={15}
+                            required
+                          />
+                        </div>
+                        <div>
+                          <Input
+                            type="text"
+                            label="Número Whatsapp"
+                            name="phone_whatsapp"
+                            mask="phone"
+                            maxLength={15}
+                          />
+                        </div>
+                      </div>
+                      <Select
+                        options={dataTypes?.typesUser.map(userType => ({
+                          value: userType,
+                          label: capitalize(userType)
+                        }))}
+                        label="Tipo de Usuário"
+                        name="types"
                         required
                       />
-                    </div>
-                    <div>
-                      <Input
-                        type="text"
-                        label="Cidade"
-                        name="city"
-                        initialValue=""
-                        ref={cityRef}
-                        required
-                      />
-                    </div>
-                  </div>
-                  <div className="form-group">
-                    <div>
-                      <Input
-                        type="text"
-                        label="Bairro"
-                        name="neighborhood"
-                        initialValue=""
-                        ref={neighborhoodRef}
-                        required
-                      />
-                    </div>
-                    <div>
-                      <Input
-                        type="text"
-                        label="Rua"
-                        name="street"
-                        initialValue=""
-                        ref={streetRef}
-                        required
-                      />
-                    </div>
-                  </div>
-                  <div className="form-group">
-                    <div>
-                      <Input
-                        type="text"
-                        label="Número"
-                        name="number"
-                        initialValue=""
-                        required
-                      />
-                    </div>
-                    <div>
-                      <Input
-                        type="text"
-                        label="Complementos"
-                        name="complements"
-                        initialValue=""
-                      />
-                    </div>
-                  </div>
+                      <div className="form-group">
+                        <div>
+                          <Input
+                            type="text"
+                            label="CEP"
+                            name="postcode"
+                            initialValue=""
+                            mask="cep"
+                            disabled={loadingAddresses}
+                            ref={postalcodeRef}
+                            handleChange={handleChangeCep}
+                            required
+                          />
+                        </div>
+                        <div>
+                          <Input
+                            type="text"
+                            label="Estado"
+                            name="state"
+                            initialValue=""
+                            ref={stateRef}
+                            required
+                          />
+                        </div>
+                        <div>
+                          <Input
+                            type="text"
+                            label="Cidade"
+                            name="city"
+                            initialValue=""
+                            ref={cityRef}
+                            required
+                          />
+                        </div>
+                      </div>
+                      <div className="form-group">
+                        <div>
+                          <Input
+                            type="text"
+                            label="Bairro"
+                            name="neighborhood"
+                            initialValue=""
+                            ref={neighborhoodRef}
+                            required
+                          />
+                        </div>
+                        <div>
+                          <Input
+                            type="text"
+                            label="Rua"
+                            name="street"
+                            initialValue=""
+                            ref={streetRef}
+                            required
+                          />
+                        </div>
+                      </div>
+                      <div className="form-group">
+                        <div>
+                          <Input
+                            type="text"
+                            label="Número"
+                            name="number"
+                            initialValue=""
+                            required
+                          />
+                        </div>
+                        <div>
+                          <Input
+                            type="text"
+                            label="Complementos"
+                            name="complements"
+                            initialValue=""
+                          />
+                        </div>
+                      </div>
 
-                  <div className="form-group buttons">
-                    <div>
-                      <Button type="button" onClick={() => router.back()}>
-                        Voltar
-                      </Button>
-                    </div>
-                    <div>
-                      <Button
-                        disabled={disableButton}
-                        className="primary"
-                        type="submit"
-                      >
-                        Cadastrar Usuário
-                      </Button>
-                    </div>
-                  </div>
+                      <div className="form-group buttons">
+                        <div>
+                          <Button type="button" onClick={() => router.back()}>
+                            Voltar
+                          </Button>
+                        </div>
+                        <div>
+                          <Button
+                            disabled={disableButton}
+                            className="primary"
+                            type="submit"
+                          >
+                            Cadastrar Usuário
+                          </Button>
+                        </div>
+                      </div>
+                    </>
+                  )) || <Loader />}
                 </form>
               </CardContainer>
             </div>

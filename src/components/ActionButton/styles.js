@@ -22,7 +22,8 @@ export const ActionButtonContainer = styled.div`
     border-radius: 50%;
     transition: all ease-in 0.2s;
 
-    &:hover {
+    &:hover,
+    &:focus {
       background: ${props => props.theme.colors.black_10};
       color: ${props => props.theme.colors.primary};
     }
