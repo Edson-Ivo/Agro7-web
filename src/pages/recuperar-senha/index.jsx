@@ -40,7 +40,12 @@ export default function Login() {
         <CenterContainer>
           <div className="CenterContainer__content">
             <div className="logoContainer">
-              <Image src="/logo/logo.png" width="210" height="90" />
+              <Image
+                src="/logo/logo.png"
+                width="210"
+                height="90"
+                alt="Logotipo Agro7"
+              />
             </div>
             {alertMsg && <Alert>{alertMsg}</Alert>}
             <form method="post" onSubmit={e => handleSubmit(e)}>

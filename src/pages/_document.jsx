@@ -33,35 +33,53 @@ export default class MyDocument extends Document {
       <Html lang="pt">
         <Head>
           <meta charSet="utf-8" />
+          <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
+          <meta name="application-name" content="Agro7" />
+          <meta
+            name="description"
+            content="Aplicação do sistema de gerenciamento da Agro7"
+          />
+          <meta name="apple-mobile-web-app-capable" content="yes" />
+          <meta
+            name="apple-mobile-web-app-status-bar-style"
+            content="default"
+          />
+          <meta name="apple-mobile-web-app-title" content="Agro7" />
+          <meta name="format-detection" content="telephone=no" />
+          <meta name="mobile-web-app-capable" content="yes" />
+          <meta name="theme-color" content="#23424E" />
 
           <link
-            href="https://fonts.googleapis.com/css?family=Lato:400,700"
+            href="https://fonts.googleapis.com/css?family=Lato:400,700&display=swap"
             rel="stylesheet"
           />
+
           <link
-            href="https://fonts.googleapis.com/css?family=Montserrat:400,700,800"
+            href="https://fonts.googleapis.com/css?family=Montserrat:400,700,800&display=swap"
             rel="stylesheet"
           />
 
           <link
             rel="apple-touch-icon"
             sizes="180x180"
-            href="/assets/apple-touch-icon.png"
+            href="/assets/icons/apple-touch-icon.png"
           />
+
           <link
             rel="icon"
             type="image/png"
             sizes="32x32"
-            href="/assets/favicon-32x32.png"
+            href="/assets/icons/favicon-32x32.png"
           />
+
           <link
             rel="icon"
             type="image/png"
             sizes="16x16"
-            href="/assets/favicon-16x16.png"
+            href="/assets/icons/favicon-16x16.png"
           />
 
-          <meta name="theme-color" content="#ffffff" />
+          <link rel="manifest" href="/manifest.json" />
         </Head>
         <body>
           <Main />

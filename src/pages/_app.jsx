@@ -17,11 +17,11 @@ config.autoAddCss = false;
 const MyApp = ({ Component, pageProps }) => (
   <>
     <Head>
-      <title>Agro7</title>
       <meta
         name="viewport"
         content="minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no"
       />
+      <title>Agro7</title>
     </Head>
     <Provider store={store}>
       <ThemeProvider theme={theme}>

@@ -51,7 +51,12 @@ const Navbar = () => {
             />
             <Link href="/">
               <a>
-                <Image src="/logo/logo.png" width="100" height="40" />
+                <Image
+                  src="/logo/logo.png"
+                  width="100"
+                  height="40"
+                  alt="Logotipo Agro7"
+                />
               </a>
             </Link>
           </div>
@@ -68,6 +73,7 @@ const Navbar = () => {
                   src="/assets/user-placeholder.png"
                   width={24}
                   height={24}
+                  alt="Imagem de Usuário"
                 />
               </div>
               <h5>

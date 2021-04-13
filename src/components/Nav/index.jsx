@@ -130,6 +130,7 @@ const NavButton = ({ link, icon, text }) => {
     </Link>
   );
 };
+
 const Nav = () => {
   const navOpen = useSelector(state => state.nav.open);
   const { types } = useSelector(state => state.user);

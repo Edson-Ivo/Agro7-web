@@ -16,7 +16,12 @@ export default function NotFound() {
         <CenterContainer>
           <div className="CenterContainer__content">
             <div className="logoContainer">
-              <Image src="/logo/logo.png" width="210" height="90" />
+              <Image
+                src="/logo/logo.png"
+                width="210"
+                height="90"
+                alt="Logotipo Agro7"
+              />
             </div>
             <h3 style={{ marginBottom: '20px' }}>
               Não encontramos essa página...
