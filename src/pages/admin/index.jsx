@@ -6,7 +6,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faUser,
   faMapMarkerAlt,
-  faBox
+  faBox,
+  faPaintRoller
 } from '@fortawesome/free-solid-svg-icons';
 
 import { useSelector } from 'react-redux';
@@ -94,6 +95,23 @@ function AdminHome({ permission }) {
                   </div>
                   <div className="card-image">
                     <FontAwesomeIcon icon={faBox} className="card-icon" />
+                  </div>
+                </Card>
+              </Link>
+              <Link href="/admin/cores">
+                <Card fontColor="black" height="90px">
+                  <div className="card-info">
+                    <h4>Gerenciar Cores</h4>
+                    <p>
+                      Aqui você tem controle de todas as cores para categorias
+                      de sua aplicação
+                    </p>
+                  </div>
+                  <div className="card-image">
+                    <FontAwesomeIcon
+                      icon={faPaintRoller}
+                      className="card-icon"
+                    />
                   </div>
                 </Card>
               </Link>

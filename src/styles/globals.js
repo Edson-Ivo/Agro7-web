@@ -139,4 +139,20 @@ export default createGlobalStyle`
   a {
     -webkit-tap-highlight-color: transparent;
   }
+
+  .color-picker .react-colorful {
+    width: auto;
+  }
+
+  .color-picker .react-colorful__saturation-pointer,
+  .color-picker .react-colorful__hue-pointer,
+  .color-picker .react-colorful__alpha-pointer {
+    width: 20px;
+    height: 20px;
+  }
+
+  .color-picker .react-colorful__alpha, 
+  .color-picker .react-colorful__hue {
+    height: 20px;
+  }
 `;

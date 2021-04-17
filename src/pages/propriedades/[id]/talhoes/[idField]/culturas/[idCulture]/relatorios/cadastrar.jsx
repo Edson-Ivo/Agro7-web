@@ -23,7 +23,7 @@ import Select from '@/components/Select';
 
 const schema = yup.object().shape({
   diagnostics: yup.string().required('O campo diagnóstico é obrigatório!'),
-  adultery: yup.string().required('O campo #adultery é obrigatório!'),
+  adultery: yup.string().required('O campo Tratos Culturais é obrigatório!'),
   cultivation: yup.string().required('O campo tratos culturais é obrigatório!'),
   plant_health: yup.string().required('O campo fitossanidade é obrigatório!'),
   fertilizing: yup
@@ -202,7 +202,7 @@ function RelatoriosCreate() {
                         name="diagnostics"
                         label="Diagnóstico da Cultura"
                       />
-                      <TextArea name="adultery" label="#adultery da Cultura" />
+                      <TextArea name="adultery" label="Tratos Culturais" />
                       <TextArea name="cultivation" label="Tratos Culturais" />
                       <Select
                         options={[

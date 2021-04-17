@@ -108,7 +108,7 @@ function RelatoriosEdit() {
                     />
                     <TextArea
                       name="adultery"
-                      label="#adultery da Cultura"
+                      label="Tratos Culturais"
                       initialValue={dataActions?.adultery}
                       disabled
                     />

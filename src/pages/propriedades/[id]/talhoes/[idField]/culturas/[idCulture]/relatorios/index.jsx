@@ -171,7 +171,7 @@ function Relatorios() {
                           <thead>
                             <tr>
                               <th>Diagnóstico</th>
-                              <th>#adultery</th>
+                              <th>Tratos Culturais</th>
                               <th>Cultivação</th>
                               <th>Fertilizando</th>
                               <th>Fitossanidade</th>
