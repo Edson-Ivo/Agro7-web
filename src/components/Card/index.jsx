@@ -14,7 +14,7 @@ export const Card = styled.div`
   padding: 15px 0px 15px 25px;
   overflow: hidden;
   margin-top: 10px;
-  transition: all 0.3s;
+  transition: transform 0.3s cubic-bezier(0.215, 0.61, 0.355, 1);
 
   .card-info {
     width: 70%;
@@ -44,5 +44,9 @@ export const Card = styled.div`
     filter: brightness(1.1);
     box-shadow: 0px 6px 13px rgba(0, 0, 0, 0.05);
     /* transform: scale(1.025); */
+  }
+
+  &:active {
+    transform: scale(0.9725);
   }
 `;

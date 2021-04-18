@@ -140,19 +140,31 @@ export default createGlobalStyle`
     -webkit-tap-highlight-color: transparent;
   }
 
-  .color-picker .react-colorful {
-    width: auto;
-  }
+  .color-picker {
 
-  .color-picker .react-colorful__saturation-pointer,
-  .color-picker .react-colorful__hue-pointer,
-  .color-picker .react-colorful__alpha-pointer {
-    width: 20px;
-    height: 20px;
-  }
+    .react-colorful {
+      width: auto;
+    }
 
-  .color-picker .react-colorful__alpha, 
-  .color-picker .react-colorful__hue {
-    height: 20px;
+    .react-colorful__saturation {
+      border-radius: 10px 10px 0 0;
+    }
+
+    .react-colorful__last-control {
+      border-radius: 0 0 8px 8px;
+    }
+
+    .react-colorful__saturation-pointer,
+    .react-colorful__hue-pointer,
+    .react-colorful__alpha-pointer {
+      width: 20px;
+      height: 20px;
+    }
+
+    .react-colorful__alpha, 
+    .react-colorful__hue {
+      height: 20px;
+    }
+
   }
 `;

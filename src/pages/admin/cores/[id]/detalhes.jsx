@@ -15,6 +15,7 @@ import { privateRoute } from '@/components/PrivateRoute';
 import NotFound from '@/components/NotFound';
 import { useFetch } from '@/hooks/useFetch';
 import Loader from '@/components/Loader/index';
+import { ColorViewer } from '@/components/ColorsContainer/index';
 
 function AdminCoresDetails({ permission }) {
   const [disableButton] = useState(false);
@@ -67,13 +68,13 @@ function AdminCoresDetails({ permission }) {
                       initialValue={dataColor.name}
                       disabled
                     />
-                    <Input
-                      type="color"
-                      label="Selecionar Cor"
-                      name="hexadecimal"
-                      initialValue={`#${dataColor.hexadecimal}`}
-                      disabled
-                    />
+
+                    <ColorViewer
+                      fillColor={dataColor.hexadecimal}
+                      isLight={false}
+                    >
+                      {`#${dataColor.hexadecimal}`}
+                    </ColorViewer>
 
                     <div className="form-group buttons">
                       <div>
