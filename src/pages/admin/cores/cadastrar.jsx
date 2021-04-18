@@ -24,7 +24,7 @@ const schema = yup.object().shape({
   name: yup.string().required('O campo nome é obrigatório!'),
   hexadecimal: yup
     .string()
-    .required('O campo e-mail é obrigatório!')
+    .required('O campo escolha a cor é obrigatório!')
     .matches(
       '^#([a-fA-F0-9]{6}|[a-fA-F0-9]{3})',
       'Código hexadecimal da cor inválido'

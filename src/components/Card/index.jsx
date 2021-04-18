@@ -22,10 +22,6 @@ export const Card = styled.div`
     h4 {
       margin-bottom: 10px;
     }
-
-    p {
-      font-size: 16px;
-    }
   }
 
   .card-image {

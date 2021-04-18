@@ -71,10 +71,11 @@ export const PaginationWrapper = styled.div`
 `;
 
 const Pagination = ({
-  url,
+  url = null,
   currentPage = 1,
   totalPages = 1,
-  page = 'page'
+  page = 'page',
+  setPage = null
   // itemsPerPage = 10,
   // totalItems = 0,
   // itemCount = 0,
@@ -83,7 +84,11 @@ const Pagination = ({
   const [actualPage, setActualPage] = useState(1);
 
   const handlePageClick = data => {
-    router.push(`${url}?${page}=${Number(data.selected) + 1}`);
+    if (setPage === null) {
+      router.push(`${url}?${page}=${Number(data.selected) + 1}`);
+    } else {
+      setPage(Number(data.selected) + 1);
+    }
   };
 
   useEffect(() => {

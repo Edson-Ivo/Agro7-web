@@ -8,7 +8,8 @@ import {
   faMapMarkerAlt,
   faBox,
   faPaintRoller,
-  faStickyNote
+  faStickyNote,
+  faListUl
 } from '@fortawesome/free-solid-svg-icons';
 
 import { useSelector } from 'react-redux';
@@ -99,13 +100,27 @@ function AdminHome({ permission }) {
                   </div>
                 </Card>
               </Link>
+              <Link href="/admin/categorias">
+                <Card fontColor="black" height="90px">
+                  <div className="card-info">
+                    <h4>Gerenciar Categorias</h4>
+                    <p>
+                      Aqui você tem controle de todas as categorias de sua
+                      aplicação.
+                    </p>
+                  </div>
+                  <div className="card-image">
+                    <FontAwesomeIcon icon={faListUl} className="card-icon" />
+                  </div>
+                </Card>
+              </Link>
               <Link href="/admin/cores">
                 <Card fontColor="black" height="90px">
                   <div className="card-info">
                     <h4>Gerenciar Cores</h4>
                     <p>
                       Aqui você tem controle de todas as cores para categorias
-                      de sua aplicação
+                      de sua aplicação.
                     </p>
                   </div>
                   <div className="card-image">
@@ -122,7 +137,7 @@ function AdminHome({ permission }) {
                     <h4>Gerenciar Ícones</h4>
                     <p>
                       Aqui você tem controle de todos os ícones para categorias
-                      de sua aplicação
+                      de sua aplicação.
                     </p>
                   </div>
                   <div className="card-image">
