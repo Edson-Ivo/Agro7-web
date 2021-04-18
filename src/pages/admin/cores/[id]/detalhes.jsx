@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 
@@ -19,7 +19,6 @@ import { ColorViewer } from '@/components/ColorsContainer/index';
 import { isLight } from '@/helpers/colors';
 
 function AdminCoresDetails({ permission }) {
-  const [disableButton] = useState(false);
   const router = useRouter();
 
   const { id } = router.query;
@@ -42,19 +41,21 @@ function AdminCoresDetails({ permission }) {
         <Section>
           <SectionHeader>
             <div className="SectionHeader__content">
-              <Breadcrumb
-                path={[
-                  { route: '/', name: 'Home' },
-                  { route: '/admin', name: 'Painel Adminstrativo' },
-                  { route: '/admin/cores', name: 'Cores para Categorias' },
-                  {
-                    route: `/admin/cores/${id}/detalhes`,
-                    name: `${dataColor?.name}`
-                  }
-                ]}
-              />
-              <h2>Editar Cor</h2>
-              <p>Aqui você irá editar a cor selecionada</p>
+              {dataColor && (
+                <Breadcrumb
+                  path={[
+                    { route: '/', name: 'Home' },
+                    { route: '/admin', name: 'Painel Adminstrativo' },
+                    { route: '/admin/cores', name: 'Cores para Categorias' },
+                    {
+                      route: `/admin/cores/${id}/detalhes`,
+                      name: `Cor ${dataColor?.name}`
+                    }
+                  ]}
+                />
+              )}
+              <h2>Informações da Cor {dataColor && `(${dataColor.name})`}</h2>
+              <p>Aqui você irá ver informações da cor em questão</p>
             </div>
           </SectionHeader>
           <SectionBody>
@@ -84,7 +85,6 @@ function AdminCoresDetails({ permission }) {
                       </div>
                       <div>
                         <Button
-                          disabled={disableButton}
                           className="primary"
                           type="button"
                           onClick={() =>

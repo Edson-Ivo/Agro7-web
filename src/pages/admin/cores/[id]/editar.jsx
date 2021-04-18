@@ -125,7 +125,7 @@ function AdminCoresEdit({ permission }) {
                 ]}
               />
               <h2>Editar Cor</h2>
-              <p>Aqui você irá editar a cor selecionada</p>
+              <p>Aqui você irá editar a cor em questão</p>
             </div>
           </SectionHeader>
           <SectionBody>
@@ -166,7 +166,7 @@ function AdminCoresEdit({ permission }) {
                             className="primary"
                             type="submit"
                           >
-                            Salvar Cor
+                            Salvar
                           </Button>
                         </div>
                       </div>
