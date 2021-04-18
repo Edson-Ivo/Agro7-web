@@ -16,6 +16,7 @@ import NotFound from '@/components/NotFound';
 import { useFetch } from '@/hooks/useFetch';
 import Loader from '@/components/Loader/index';
 import { ColorViewer } from '@/components/ColorsContainer/index';
+import { isLight } from '@/helpers/colors';
 
 function AdminCoresDetails({ permission }) {
   const [disableButton] = useState(false);
@@ -71,11 +72,10 @@ function AdminCoresDetails({ permission }) {
 
                     <ColorViewer
                       fillColor={dataColor.hexadecimal}
-                      isLight={false}
+                      isLight={isLight(dataColor.hexadecimal)}
                     >
                       {`#${dataColor.hexadecimal}`}
                     </ColorViewer>
-
                     <div className="form-group buttons">
                       <div>
                         <Button type="button" onClick={() => router.back()}>
