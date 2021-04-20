@@ -1,0 +1,185 @@
+import React, { useState, useRef } from 'react';
+import Head from 'next/head';
+import * as yup from 'yup';
+import { useRouter } from 'next/router';
+
+import Container from '@/components/Container';
+import Nav from '@/components/Nav';
+import Navbar from '@/components/Navbar';
+import Breadcrumb from '@/components/Breadcrumb';
+import Input from '@/components/Input';
+import Button from '@/components/Button';
+import { Alert } from '@/components/Alert';
+import { Section, SectionHeader, SectionBody } from '@/components/Section';
+
+import { CardContainer } from '@/components/CardContainer';
+import { privateRoute } from '@/components/PrivateRoute';
+import getFormData from '@/helpers/getFormData';
+import errorMessage from '@/helpers/errorMessage';
+import TextArea from '@/components/TextArea/index';
+import { useFetch } from '@/hooks/useFetch';
+import Error from '@/components/Error/index';
+import Select from '@/components/Select/index';
+import Loader from '@/components/Loader/index';
+import ProducerNotebookService from '@/services/ProducerNotebookService';
+import { dateToISOString } from '@/helpers/date';
+
+const schema = yup.object().shape({
+  name: yup.string().required('O campo nome é obrigatório!'),
+  description: yup.string().nullable(),
+  date: yup.string().required('O campo data é obrigatório!'),
+  categories: yup.string().required('Selecione uma categoria')
+});
+
+function ProducerNotebookCreate() {
+  const [alert, setAlert] = useState({ type: '', message: '' });
+  const [disableButton, setDisableButton] = useState(false);
+  const router = useRouter();
+  const formRef = useRef(null);
+
+  const getData = () => {
+    if (formRef.current === undefined) {
+      return {
+        name: null,
+        description: null,
+        date: null,
+        categories: null
+      };
+    }
+
+    return getFormData(formRef.current, {
+      name: null,
+      description: null,
+      date: null,
+      categories: null
+    });
+  };
+
+  const handleSubmit = async e => {
+    e.preventDefault();
+    setDisableButton(true);
+    schema
+      .validate(getData())
+      .then(async data => {
+        setAlert({
+          type: 'success',
+          message: 'Enviando...'
+        });
+
+        data.date = dateToISOString(data.date);
+        data.categories = Number(data.categories);
+
+        await ProducerNotebookService.create(data).then(res => {
+          if (res.status !== 201 || res?.statusCode) {
+            setAlert({ type: 'error', message: errorMessage(res) });
+            setTimeout(() => {
+              setDisableButton(false);
+            }, 1000);
+          } else {
+            setAlert({
+              type: 'success',
+              message: 'Anotação cadastrada com sucesso!'
+            });
+
+            setTimeout(() => {
+              router.push(
+                `/caderno-produtor?searchDate=${data.date.split('T')[0]}`
+              );
+              setDisableButton(false);
+            }, 1000);
+          }
+        });
+      })
+      .catch(err => {
+        setAlert({ type: 'error', message: err.errors[0] });
+        setDisableButton(false);
+      });
+  };
+
+  const { data: dataCategories, error: errorCategories } = useFetch(
+    `/categories/find/all?limit=30`
+  );
+
+  if (errorCategories) return <Error />;
+
+  return (
+    <>
+      <Head>
+        <title>Anotação Caderno do Produtor - Agro7</title>
+      </Head>
+
+      <Navbar />
+      <Container>
+        <Nav />
+        <Section>
+          <SectionHeader>
+            <div className="SectionHeader__content">
+              <Breadcrumb
+                path={[
+                  { route: '/', name: 'Home' },
+                  { route: '/caderno-produtor', name: 'Caderno do Produtor' },
+                  {
+                    route: '/caderno-produtor/cadastrar',
+                    name: 'Anotação'
+                  }
+                ]}
+              />
+              <h2>Anotar no Caderno</h2>
+              <p>Aqui você irá fazer uma anotação no seu Caderno do Produtor</p>
+            </div>
+          </SectionHeader>
+          <SectionBody>
+            <div className="SectionBody__content">
+              <CardContainer>
+                {alert.message !== '' && (
+                  <Alert type={alert.type}>{alert.message}</Alert>
+                )}
+                <form
+                  id="registerForm"
+                  ref={formRef}
+                  method="post"
+                  onSubmit={event => handleSubmit(event)}
+                >
+                  {(dataCategories && (
+                    <>
+                      <Input type="text" label="Nome" name="name" required />
+                      <Select
+                        options={dataCategories?.items.map(category => ({
+                          value: category.id,
+                          label: category.name
+                        }))}
+                        label="Selecionar categoria"
+                        name="categories"
+                        required
+                      />
+                      <Input type="date" label="Data" name="date" required />
+                      <TextArea name="description" label="Descrição" required />
+                      <div className="form-group buttons">
+                        <div>
+                          <Button type="button" onClick={() => router.back()}>
+                            Voltar
+                          </Button>
+                        </div>
+                        <div>
+                          <Button
+                            disabled={disableButton}
+                            className="primary"
+                            type="submit"
+                          >
+                            Adicionar Anotação
+                          </Button>
+                        </div>
+                      </div>
+                    </>
+                  )) || <Loader />}
+                </form>
+              </CardContainer>
+            </div>
+          </SectionBody>
+        </Section>
+      </Container>
+    </>
+  );
+}
+
+export default privateRoute()(ProducerNotebookCreate);

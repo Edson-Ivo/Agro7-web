@@ -6,6 +6,8 @@ export const getTimezone = (date, local = 'en-US', withTime = true) => {
     timeZone: 'America/Fortaleza'
   });
 
+  if (!withTime) dateObj.setHours(dateObj.getHours() - 3);
+
   return withTime ? dateString : dateString.split(' ')[0];
 };
 
@@ -15,18 +17,24 @@ export const getCurrentDate = date => {
   return new Date(tz);
 };
 
-export const weekDays = () => {
+export const weekDays = date => {
   const week = [];
 
-  const current = getCurrentDate();
+  const current = getCurrentDate(date);
 
   for (let i = 0; i < 7; i += 1) {
-    const date = {
+    current.setUTCHours(3, 0, 0, 0);
+
+    const isoString = dateToISOString(current);
+
+    const dateObj = {
       date: current.getDate(),
-      day: weekDayName[current.getDay()]
+      dateString: isoString.split('T')[0],
+      day: weekDayName[current.getDay()],
+      string: isoString
     };
 
-    week.push(date);
+    week.push(dateObj);
 
     current.setDate(current.getDate() - 1);
   }
@@ -41,3 +49,9 @@ export const dateToInput = date =>
   dateConversor(date).split(' ')[0].split('/').reverse().join('-');
 
 export const dateToISOString = date => getCurrentDate(date).toISOString();
+
+export const isValidDate = date => {
+  const d = getCurrentDate(date);
+
+  return d instanceof Date && !Number.isNaN(d.getTime());
+};

@@ -21,10 +21,10 @@ export default createGlobalStyle`
     color: ${props => props.theme.colors.green};
     font-weight: 700;
     text-decoration: none;
-  }
 
-  a:hover {
-    text-decoration: underline;
+    &:hover {
+      text-decoration: underline;
+    }
   }
 
   button {
@@ -141,7 +141,6 @@ export default createGlobalStyle`
   }
 
   .color-picker {
-
     .react-colorful {
       width: auto;
     }
@@ -165,6 +164,5 @@ export default createGlobalStyle`
     .react-colorful__hue {
       height: 20px;
     }
-
   }
 `;

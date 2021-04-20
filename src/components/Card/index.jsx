@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 export const Card = styled.div`
   color: ${props => props.fontColor || props.theme.colors.white};
@@ -11,17 +11,40 @@ export const Card = styled.div`
   background: ${props => props.color || props.theme.colors.white};
   box-shadow: 0px 6px 22px rgba(0, 0, 0, 0.05);
   border-radius: 10px;
-  padding: 15px 0px 15px 25px;
+
+  ${props =>
+    !props?.noPadding &&
+    css`
+      padding: 15px 0px 15px 25px;
+    `};
   overflow: hidden;
   margin-top: 10px;
-  transition: transform 0.3s cubic-bezier(0.215, 0.61, 0.355, 1);
+  transition: all 0.3s cubic-bezier(0.215, 0.61, 0.355, 1);
 
   .card-info {
+    ${props =>
+      props?.infoPadding &&
+      css`
+        padding: 15px 0px 15px 25px;
+      `};
     width: 70%;
 
     h4 {
       margin-bottom: 10px;
     }
+
+    p {
+      word-break: break-word;
+    }
+
+    ${props =>
+      props?.responsiveImage &&
+      css`
+        @media screen and (max-width: ${props.theme.breakpoints.mobile}px) {
+          padding: 15px;
+          width: 100%;
+        }
+      `};
   }
 
   .card-image {
@@ -29,7 +52,30 @@ export const Card = styled.div`
     width: 30%;
     display: flex;
     justify-content: flex-end;
-    padding-right: 24px;
+    position: relative;
+
+    ${props =>
+      !props?.noPadding &&
+      css`
+        padding-right: 24px;
+      `};
+
+    ${props =>
+      props?.responsiveImage &&
+      css`
+        @media screen and (max-width: ${props.theme.breakpoints.mobile}px) {
+          display: none;
+        }
+      `};
+
+    .absolute_content {
+      /* svg,
+      img {
+        position: absolute;
+        right: 0;
+        top: 0;
+      } */
+    }
   }
 
   .card-icon {
@@ -39,7 +85,7 @@ export const Card = styled.div`
   &:hover {
     filter: brightness(1.1);
     box-shadow: 0px 6px 13px rgba(0, 0, 0, 0.05);
-    /* transform: scale(1.025); */
+    transform: scale(0.995);
   }
 
   &:active {

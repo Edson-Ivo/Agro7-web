@@ -1,51 +1,125 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, createRef, useRef } from 'react';
 import Head from 'next/head';
+import Link from 'next/link';
+import Image from 'next/image';
+import { useSelector } from 'react-redux';
 import { useRouter } from 'next/router';
 
-import SearchSelect from '@/components/SearchSelect';
-import Select from '@/components/Select/index';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPlus } from '@fortawesome/free-solid-svg-icons';
+
+import CardBack from '@/assets/card_back.svg';
+
 import Container from '@/components/Container';
 import Nav from '@/components/Nav';
 import Navbar from '@/components/Navbar';
 import Breadcrumb from '@/components/Breadcrumb';
-import Input from '@/components/Input';
-import Button from '@/components/Button';
+import Error from '@/components/Error';
+import Loader from '@/components/Loader';
 import { Section, SectionHeader, SectionBody } from '@/components/Section';
 import { Card } from '@/components/Card';
-import Error from '@/components/Error';
 import { CardContainer } from '@/components/CardContainer';
+import { privateRoute } from '@/components/PrivateRoute';
+import { Alert } from '@/components/Alert';
 import {
   DateWrapper,
   DateContainer,
   DateContent,
   DateCard
-} from '@/styles/pages/CadernoProdutor';
-import { privateRoute } from '@/components/PrivateRoute';
-import Loader from '@/components/Loader';
+} from '@/components/DateContainer';
 
-import CardBack from '@/assets/card_back.svg';
-
-import { weekDays } from '@/helpers/date';
+import isEmpty from '@/helpers/isEmpty';
+import {
+  dateConversor,
+  dateToISOString,
+  getCurrentDate,
+  isValidDate,
+  weekDays
+} from '@/helpers/date';
+import { colorShade } from '@/helpers/colors';
 import { useFetch } from '@/hooks/useFetch';
+import Select from '@/components/Select/index';
+import useOnScreen from '@/hooks/useOnScreen';
+import { useInfiniteFetch } from '@/hooks/useInfiniteFetch';
+import Button from '@/components/Button/index';
 
 function ProducerNotebook() {
-  const [activeDate, setActiveDate] = useState(0);
+  const { id } = useSelector(state => state.user);
+  const daysRef = createRef();
+  const router = useRouter();
+
+  const ref = useRef();
+  const isVisible = useOnScreen(ref);
+
+  const pageSize = 2;
+  const [activeDate, setActiveDate] = useState(null);
+  const [activeCategory, setActiveCategory] = useState('');
   const [daysList, setDaysList] = useState([]);
 
-  const router = useRouter();
-  const limit = router.query.limit || 1;
+  const { searchDate = null } = router.query;
 
-  const { data, error } = useFetch('/coordinates/find/all');
+  const { data, error, mutate, size, setSize, isValidating } = useInfiniteFetch(
+    `/producer-notebook/find/by/user/${id}?date_start=${activeDate}${
+      activeCategory !== '' ? `&categories=${activeCategory}` : ''
+    }`,
+    pageSize
+  );
+
+  const { data: dataCategories, error: errorCategories } = useFetch(
+    `/categories/find/all?limit=30`
+  );
+
+  const issues = data ? [].concat(...data) : [];
+  const isLoadingInitialData = !data && !error;
+  const isLoadingMore =
+    isLoadingInitialData ||
+    (size > 0 && data && typeof data[size - 1] === 'undefined');
+  const isEmptyData = data?.[0]?.length === 0;
+  const isReachingEnd = size === pageSize;
+  const isRefreshing = isValidating && data && data.length === size;
 
   useEffect(() => {
-    setDaysList(weekDays);
-  }, []);
+    if (isVisible && !isReachingEnd && !isRefreshing) {
+      setSize(size + 1);
+    }
+  }, [isVisible, isRefreshing]);
 
-  const handleClick = async () => {
-    console.log('aaa');
+  useEffect(() => {
+    handleDate();
+  }, [searchDate]);
+
+  useEffect(() => {
+    if (daysRef.current !== null)
+      daysRef.current.scrollIntoView({ behavior: 'smooth' });
+  }, [activeDate]);
+
+  const handleDate = () => {
+    const actualWeek = weekDays();
+    let actualDate = null;
+
+    if (searchDate !== null && isValidDate(searchDate)) {
+      actualDate = dateToISOString(`${searchDate} `);
+    } else {
+      const date = getCurrentDate();
+      date.setUTCHours(3, 0, 0, 0);
+
+      actualDate = dateToISOString(date);
+    }
+
+    setDaysList(actualWeek);
+    setActiveDate(actualDate);
+    setActiveCategory('');
   };
 
-  if (error) return <Error />;
+  const handleChangeDate = date => {
+    router.push(`/caderno-produtor?searchDate=${date}`);
+  };
+
+  const handleChangeCategory = e => {
+    setActiveCategory(e?.value || '');
+  };
+
+  if (error || errorCategories) return <Error />;
 
   return (
     <>
@@ -66,76 +140,99 @@ function ProducerNotebook() {
                 ]}
               />
               <h2>Caderno do Produtor</h2>
+              <p>
+                Aqui você poderá visualizar suas ações realizadas no sistema
+                pela data ou categorias.
+              </p>
+              <Link href="/caderno-produtor/cadastrar">
+                <Button className="primary">
+                  <FontAwesomeIcon icon={faPlus} /> Anotar no Caderno
+                </Button>
+              </Link>
             </div>
           </SectionHeader>
           <SectionBody>
             <div className="SectionBody__content">
-              {(data && (
-                <CardContainer>
-                  <DateWrapper>
-                    <DateContainer style={{ marginBottom: '20px' }}>
-                      <DateContent style={{ width: `${71 * 7}px` }}>
-                        {daysList.map(({ date, day }, i) => (
-                          <DateCard
-                            key={i.toString()}
-                            active={!!(activeDate === i)}
+              <CardContainer ref={ref}>
+                <DateWrapper>
+                  <DateContainer>
+                    <DateContent style={{ width: `${71 * 7}px` }}>
+                      {daysList.map(({ date, day, dateString, string }, i) => (
+                        <DateCard
+                          key={i.toString()}
+                          onClick={() => handleChangeDate(dateString)}
+                          ref={activeDate === string ? daysRef : null}
+                          active={activeDate === string}
+                        >
+                          <h3>{date}</h3>
+                          <span>{day}</span>
+                        </DateCard>
+                      ))}
+                    </DateContent>
+                  </DateContainer>
+                </DateWrapper>
+                <div className="form-group">
+                  <div style={{ justifyContent: 'center' }}>
+                    <h2>{dateConversor(activeDate, false)}</h2>
+                  </div>
+                  {dataCategories && (
+                    <div>
+                      <Select
+                        options={dataCategories?.items.map(category => ({
+                          value: category.id,
+                          label: category.name
+                        }))}
+                        label="Filtrar por categoria"
+                        name="types"
+                        clearable
+                        onChange={handleChangeCategory}
+                        initialValue={activeCategory}
+                      />
+                    </div>
+                  )}
+                </div>
+                {(data && (
+                  <>
+                    {(!isEmpty(issues[0]?.items) &&
+                      issues[0].items.map(d => (
+                        <Link href={`/caderno-produtor/${d.id}/detalhes`}>
+                          {/* <a> */}
+                          <Card
+                            key={d.id}
+                            color={`#${d.categories.colors.hexadecimal}`}
+                            noPadding
+                            infoPadding
+                            responsiveImage
                           >
-                            <h3>{date}</h3>
-                            <span>{day}</span>
-                          </DateCard>
-                        ))}
-                      </DateContent>
-                    </DateContainer>
-                  </DateWrapper>
-                  <SearchSelect name="test" label="teste de pesquisa" />
-                  <Input
-                    type="text"
-                    label="Pesquisar por nome"
-                    name="search"
-                    style={{ marginBottom: '16px' }}
-                  />
-
-                  <Button onClick={handleClick}>teste</Button>
-
-                  <Select
-                    options={[
-                      { value: 'chocolate', label: 'Chocolate' },
-                      { value: 'strawberry', label: 'Strawberry' },
-                      { value: 'vanilla', label: 'Vanilla' }
-                    ]}
-                    label="teste"
-                    value="vanilla"
-                    name="teste"
-                    disabled
-                  />
-
-                  {/* {posts.map(post => (
-                    <Card key={post.id}>
-                      <div className="card-info">
-                        <h4>{post.title}</h4>
-                        <p>{post.body}</p>
-                      </div>
-                      <div className="card-image">
-                        <CardBack />
-                      </div>
-                    </Card>
-                  ))} */}
-
-                  {data.items.map(coordinate => (
-                    <div key={coordinate.id}>{coordinate.latitude}</div>
-                  ))}
-
-                  <Card>
-                    <div className="card-info">
-                      <h4>Colheita de Laranjas</h4>
-                      <p>Observações</p>
-                    </div>
-                    <div className="card-image">
-                      <CardBack />
-                    </div>
-                  </Card>
-                </CardContainer>
-              )) || <Loader />}
+                            <div className="card-info">
+                              <h4>{d.name}</h4>
+                              <p>{d.description}</p>
+                            </div>
+                            <div className="card-image">
+                              {/* <Image
+                              src="https://via.placeholder.com/150"
+                              width="150"
+                              height="150"
+                            /> */}
+                              <div className="absolute_content">
+                                <CardBack
+                                  fill={colorShade(
+                                    d.categories.colors.hexadecimal
+                                  )}
+                                />
+                              </div>
+                            </div>
+                          </Card>
+                          {/* </a> */}
+                        </Link>
+                      ))) || (
+                      <Alert style={{ marginTop: '10px' }}>
+                        Não há registros no caderno para o dia selecionado
+                      </Alert>
+                    )}
+                  </>
+                )) || <Loader />}
+              </CardContainer>
             </div>
           </SectionBody>
         </Section>
@@ -145,4 +242,3 @@ function ProducerNotebook() {
 }
 
 export default privateRoute()(ProducerNotebook);
-// export default ProducerNotebook;

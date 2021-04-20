@@ -107,12 +107,6 @@ function RelatoriosEdit() {
                       disabled
                     />
                     <TextArea
-                      name="adultery"
-                      label="Tratos Culturais"
-                      initialValue={dataActions?.adultery}
-                      disabled
-                    />
-                    <TextArea
                       name="cultivation"
                       label="Tratos Culturais"
                       initialValue={dataActions?.cultivation}

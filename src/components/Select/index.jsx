@@ -10,12 +10,16 @@ const Select = ({
   value,
   disabled,
   searchable = false,
+  clearable = false,
+  onChange = null,
   ...rest
 }) => {
   const [valueChange, setValueChange] = useState(value);
 
   const handleChange = e => {
-    setValueChange(e.value);
+    setValueChange(e?.value || '');
+
+    if (onChange !== null) onChange(e);
   };
 
   return (
@@ -25,12 +29,12 @@ const Select = ({
         options={options}
         classNamePrefix="select"
         placeholder={label}
-        defaultValue={options.filter(option => option.value === value)}
+        value={options.filter(option => option.value === valueChange) || null}
         onChange={e => handleChange(e)}
         isDisabled={disabled}
         noOptionsMessage={() => 'Não há dados'}
         isSearchable={searchable}
-        {...rest}
+        isClearable={clearable}
         theme={theme => ({
           ...theme,
           colors: {
@@ -42,6 +46,7 @@ const Select = ({
             neutral0: '#fff'
           }
         })}
+        {...rest}
       />
       <input type="hidden" tabIndex={-1} name={name} value={valueChange} />
     </InputContainer>

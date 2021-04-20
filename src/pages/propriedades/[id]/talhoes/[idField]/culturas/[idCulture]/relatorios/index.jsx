@@ -172,8 +172,7 @@ function Relatorios() {
                             <tr>
                               <th>Diagnóstico</th>
                               <th>Tratos Culturais</th>
-                              <th>Cultivação</th>
-                              <th>Fertilizando</th>
+                              <th>Adubando</th>
                               <th>Fitossanidade</th>
                               <th>Ações</th>
                             </tr>
@@ -188,7 +187,6 @@ function Relatorios() {
                                   }
                                 >
                                   <td>{d?.diagnostics}</td>
-                                  <td>{d?.adultery}</td>
                                   <td>{d?.cultivation}</td>
                                   <td>{d?.fertilizing ? 'Sim' : 'Não'}</td>
                                   <td>{d?.cultivation}</td>
@@ -202,7 +200,7 @@ function Relatorios() {
                                 </tr>
                               ))) || (
                               <tr>
-                                <td colSpan="6">
+                                <td colSpan="5">
                                   Não há relatórios registrados nessa cultura
                                 </td>
                               </tr>

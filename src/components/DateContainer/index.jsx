@@ -25,6 +25,7 @@ export const DateWrapper = styled.div`
 `;
 
 export const DateContainer = styled.div`
+  margin-bottom: 20px;
   overflow: auto;
   width: 100%;
 `;

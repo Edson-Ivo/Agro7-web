@@ -23,7 +23,6 @@ import Select from '@/components/Select';
 
 const schema = yup.object().shape({
   diagnostics: yup.string().required('O campo diagnóstico é obrigatório!'),
-  adultery: yup.string().required('O campo Tratos Culturais é obrigatório!'),
   cultivation: yup.string().required('O campo tratos culturais é obrigatório!'),
   plant_health: yup.string().required('O campo fitossanidade é obrigatório!'),
   fertilizing: yup
@@ -68,7 +67,6 @@ function RelatoriosEdit() {
     if (formRef.current === undefined) {
       return {
         diagnostics: null,
-        adultery: null,
         cultivation: null,
         plant_health: null,
         fertilizing: true,
@@ -78,7 +76,6 @@ function RelatoriosEdit() {
 
     return getFormData(formRef.current, {
       diagnostics: null,
-      adultery: null,
       cultivation: null,
       plant_health: null,
       fertilizing: true,
@@ -209,11 +206,6 @@ function RelatoriosEdit() {
                         name="diagnostics"
                         label="Diagnóstico da Cultura"
                         initialValue={dataActions?.diagnostics}
-                      />
-                      <TextArea
-                        name="adultery"
-                        label="Tratos Culturais"
-                        initialValue={dataActions?.adultery}
                       />
                       <TextArea
                         name="cultivation"
