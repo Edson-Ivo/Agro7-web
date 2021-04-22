@@ -124,7 +124,7 @@ function ProducerNotebookEdit() {
                   { route: '/caderno-produtor', name: 'Caderno do Produtor' },
                   {
                     route: `/caderno-produtor/${id}/editar`,
-                    name: 'Anotação'
+                    name: 'Editar Anotação'
                   }
                 ]}
               />

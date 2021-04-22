@@ -42,7 +42,7 @@ export const PaginationWrapper = styled.div`
       text-align: center;
       transition: all 0.3s;
       cursor: pointer;
-      font-family: Montserrat;
+      font-family: ${props => props.theme.fonts.montserratFamily};
       font-weight: 700;
       font-size: 1em;
       line-height: 1.25em;

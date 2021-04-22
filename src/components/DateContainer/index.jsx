@@ -4,12 +4,14 @@ export const DateWrapper = styled.div`
   display: flex;
   position: relative;
   height: 100%;
+  border-bottom: 1px solid ${props => props.theme.colors.border};
   width: 100%;
+
   &:after {
     content: '';
     display: flex;
-    width: 30px;
-    height: calc(100% - 20px);
+    width: 15px;
+    height: 100%;
     right: 0;
     position: absolute;
     z-index: 99;
@@ -25,7 +27,7 @@ export const DateWrapper = styled.div`
 `;
 
 export const DateContainer = styled.div`
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   overflow: auto;
   width: 100%;
 `;
@@ -48,13 +50,14 @@ export const DateCard = styled.div`
   margin-left: 16px;
   overflow: hidden;
   width: 55px;
+  transition: all 0.25s ease-in;
+
+  &:nth-child(2) {
+    margin-left: calc(16px + 55px);
+  }
 
   span {
     font-weight: 700;
-  }
-
-  &:first-of-type {
-    margin-left: 0;
   }
 
   ${props =>
@@ -63,4 +66,27 @@ export const DateCard = styled.div`
       color: ${props.theme.colors.white};
       filter: drop-shadow(-3px 5px 8px rgba(38, 48, 46, 0.1));
     `}
+
+  ${props =>
+    !props.active &&
+    css`
+      &:hover {
+        filter: brightness(0.97);
+      }
+    `}
+`;
+
+export const DateCardCalendar = styled.div`
+  align-items: center;
+  background: ${props => props.theme.colors.background};
+  border-right: 1px solid ${props => props.theme.colors.border};
+  cursor: pointer;
+  display: flex;
+  font-size: 25px;
+  height: 100%;
+  justify-content: center;
+  position: absolute;
+  text-align: center;
+  width: 55px;
+  z-index: 1000;
 `;

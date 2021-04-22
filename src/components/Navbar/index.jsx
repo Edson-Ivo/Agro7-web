@@ -55,7 +55,9 @@ const Navbar = () => {
                   src="/logo/logo.png"
                   width="100"
                   height="40"
+                  loading="eager"
                   alt="Logotipo Agro7"
+                  priority
                 />
               </a>
             </Link>
@@ -73,6 +75,7 @@ const Navbar = () => {
                   src="/assets/user-placeholder.png"
                   width={24}
                   height={24}
+                  loading="eager"
                   alt="Imagem de Usuário"
                 />
               </div>

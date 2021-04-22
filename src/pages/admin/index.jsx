@@ -24,6 +24,50 @@ import { Section, SectionHeader, SectionBody } from '@/components/Section';
 import { privateRoute } from '@/components/PrivateRoute';
 import NotFound from '@/components/NotFound';
 
+const data = [
+  {
+    href: '/admin/users',
+    title: 'Gerenciar Usuários',
+    description:
+      'Aqui você tem controle de todos os usuários da sua aplicação.',
+    icon: faUser
+  },
+  {
+    href: '/admin/propriedades',
+    title: 'Gerenciar Propriedades',
+    description: 'Aqui você pode gerenciar as propriedades de sua aplicação.',
+    icon: faMapMarkerAlt
+  },
+  {
+    href: '/admin/produtos',
+    title: 'Gerenciar Produtos',
+    description:
+      'Aqui você tem controle de todos os produtos de sua aplicação.',
+    icon: faBox
+  },
+  {
+    href: '/admin/categorias',
+    title: 'Gerenciar Categorias',
+    description:
+      'Aqui você tem controle de todas as categorias de sua aplicação.',
+    icon: faListUl
+  },
+  {
+    href: '/admin/cores',
+    title: 'Gerenciar Cores',
+    description:
+      'Aqui você tem controle de todas as cores para categorias de sua aplicação.',
+    icon: faPaintRoller
+  },
+  {
+    href: '/admin/cores',
+    title: 'Gerenciar Ícones',
+    description:
+      'Aqui você tem controle de todos os ícones para categorias de sua aplicação.',
+    icon: faStickyNote
+  }
+];
+
 function AdminHome({ permission }) {
   if (!permission) return <NotFound />;
   const { name } = useSelector(state => state.user);
@@ -55,99 +99,19 @@ function AdminHome({ permission }) {
           </SectionHeader>
           <SectionBody>
             <div className="SectionBody__content">
-              <Link href="/admin/users">
-                <Card fontColor="black" height="90px">
-                  <div className="card-info">
-                    <h4>Gerenciar Usuários</h4>
-                    <p>
-                      Aqui você tem controle de todos os usuários da sua
-                      aplicação.
-                    </p>
-                  </div>
-                  <div className="card-image">
-                    <FontAwesomeIcon icon={faUser} className="card-icon" />
-                  </div>
-                </Card>
-              </Link>
-              <Link href="/admin/propriedades">
-                <Card fontColor="black" height="90px">
-                  <div className="card-info">
-                    <h4>Gerenciar Propriedades</h4>
-                    <p>
-                      Aqui você tem controle de todos as propriedades da sua
-                      aplicação.
-                    </p>
-                  </div>
-                  <div className="card-image">
-                    <FontAwesomeIcon
-                      icon={faMapMarkerAlt}
-                      className="card-icon"
-                    />
-                  </div>
-                </Card>
-              </Link>
-              <Link href="/admin/produtos">
-                <Card fontColor="black" height="90px">
-                  <div className="card-info">
-                    <h4>Gerenciar Produtos</h4>
-                    <p>
-                      Aqui você tem controle de todos os produtos de sua
-                      aplicação.
-                    </p>
-                  </div>
-                  <div className="card-image">
-                    <FontAwesomeIcon icon={faBox} className="card-icon" />
-                  </div>
-                </Card>
-              </Link>
-              <Link href="/admin/categorias">
-                <Card fontColor="black" height="90px">
-                  <div className="card-info">
-                    <h4>Gerenciar Categorias</h4>
-                    <p>
-                      Aqui você tem controle de todas as categorias de sua
-                      aplicação.
-                    </p>
-                  </div>
-                  <div className="card-image">
-                    <FontAwesomeIcon icon={faListUl} className="card-icon" />
-                  </div>
-                </Card>
-              </Link>
-              <Link href="/admin/cores">
-                <Card fontColor="black" height="90px">
-                  <div className="card-info">
-                    <h4>Gerenciar Cores</h4>
-                    <p>
-                      Aqui você tem controle de todas as cores para categorias
-                      de sua aplicação.
-                    </p>
-                  </div>
-                  <div className="card-image">
-                    <FontAwesomeIcon
-                      icon={faPaintRoller}
-                      className="card-icon"
-                    />
-                  </div>
-                </Card>
-              </Link>
-              <Link href="/admin/icones">
-                <Card fontColor="black" height="90px">
-                  <div className="card-info">
-                    <h4>Gerenciar Ícones</h4>
-                    <p>
-                      Aqui você tem controle de todos os ícones para categorias
-                      de sua aplicação.
-                    </p>
-                  </div>
-                  <div className="card-image">
-                    <FontAwesomeIcon
-                      icon={faStickyNote}
-                      className="card-icon"
-                    />
-                  </div>
-                </Card>
-              </Link>
+              {data.map(({ href, title, description, icon }, i) => (
+                <Link href={href} key={i.toString()}>
+                  <Card isLight>
+                    <div className="card-info">
+                      <h4>{title}</h4>
+                      <p>{description}</p>
+                    </div>
+                    <div className="card-image">
+                      <FontAwesomeIcon icon={icon} className="card-icon" />
+                    </div>
+                  </Card>
+                </Link>
+              ))}
             </div>
           </SectionBody>
         </Section>

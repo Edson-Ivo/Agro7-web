@@ -11,7 +11,7 @@ export const TooltipContainer = styled.div`
   background: ${props => props.theme.colors.white};
   border-radius: 10px;
   font-weight: 700;
-  font-family: 'Montserrat';
+  font-family: ${props => props.theme.fonts.montserratFamily};
   cursor: pointer;
   animation: show 0.3s;
   top: 60px;

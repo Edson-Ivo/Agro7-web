@@ -98,7 +98,7 @@ function ProducerNotebookDetails() {
                       route: `/caderno-produtor?searchDate=${dateToInput(
                         data.date
                       )}`,
-                      name: 'Caderno do Produtor'
+                      name: `${dateConversor(data.date, false)}`
                     },
                     {
                       route: `/caderno-produtor/${id}/detalhes`,
@@ -150,7 +150,7 @@ function ProducerNotebookDetails() {
                         value: category.id,
                         label: category.name
                       }))}
-                      label="Selecionar categoria"
+                      label="Categoria"
                       name="categories"
                       value={data.categories.id}
                       disabled

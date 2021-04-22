@@ -23,8 +23,6 @@ export const weekDays = date => {
   const current = getCurrentDate(date);
 
   for (let i = 0; i < 7; i += 1) {
-    current.setUTCHours(3, 0, 0, 0);
-
     const isoString = dateToISOString(current);
 
     const dateObj = {
@@ -48,7 +46,12 @@ export const dateConversor = (date, withTime = true) =>
 export const dateToInput = date =>
   dateConversor(date).split(' ')[0].split('/').reverse().join('-');
 
-export const dateToISOString = date => getCurrentDate(date).toISOString();
+export const dateToISOString = date => {
+  const d = getCurrentDate(date);
+
+  d.setUTCHours(3, 0, 0, 0);
+  return d.toISOString();
+};
 
 export const isValidDate = date => {
   const d = getCurrentDate(date);

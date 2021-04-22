@@ -10,10 +10,10 @@ const getKey = (pageIndex, previousPageData, url, pageSize) => {
 export function useInfiniteFetch(url, pageSize) {
   const { data, error, mutate, size, setSize, isValidating } = useSWRInfinite(
     (...args) => getKey(...args, url, pageSize),
-    async () => {
-      const response = await api.get(url);
+    async access => {
+      const response = await api.get(access);
 
-      return response.data;
+      return [...new Set([...(response.data.items || [])])];
     }
   );
 

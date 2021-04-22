@@ -50,7 +50,7 @@ export const ColorsGrid = styled.div`
 export const ColorFillSelected = styled.div`
   position: absolute;
   background: rgba(255, 255, 255, 0.1);
-  color: #fff;
+  color: ${props => props.theme.colors.white};
   border-radius: 99999px;
   display: flex;
   align-items: center;

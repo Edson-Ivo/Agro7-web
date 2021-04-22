@@ -3,7 +3,11 @@ import Head from 'next/head';
 import Link from 'next/link';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCog, faMapMarkerAlt } from '@fortawesome/free-solid-svg-icons';
+import {
+  faCog,
+  faBook,
+  faMapMarkerAlt
+} from '@fortawesome/free-solid-svg-icons';
 
 import { useSelector } from 'react-redux';
 
@@ -16,6 +20,27 @@ import { Section, SectionHeader, SectionBody } from '@/components/Section';
 
 import { privateRoute } from '@/components/PrivateRoute';
 import { greetings } from '@/helpers/greetings';
+
+const data = [
+  {
+    href: '/propriedades',
+    title: 'Gerenciar Propriedades',
+    description: 'Aqui você pode gerenciar suas propriedades.',
+    icon: faMapMarkerAlt
+  },
+  {
+    href: '/caderno-produtor',
+    title: 'Caderno do Produtor',
+    description: 'Gerencie ou edite suas anotações do caderno do produtor.',
+    icon: faBook
+  },
+  {
+    href: '/configuracoes',
+    title: 'Meus Dados',
+    description: 'Gerencie ou edite seus dados aqui.',
+    icon: faCog
+  }
+];
 
 function Home() {
   const { name } = useSelector(state => state.user);
@@ -45,31 +70,19 @@ function Home() {
           </SectionHeader>
           <SectionBody>
             <div className="SectionBody__content">
-              <Link href="/propriedades">
-                <Card fontColor="black" height="90px">
-                  <div className="card-info">
-                    <h4>Gerenciar Propriedades</h4>
-                    <p>Aqui você pode gerenciar suas propriedades.</p>
-                  </div>
-                  <div className="card-image">
-                    <FontAwesomeIcon
-                      icon={faMapMarkerAlt}
-                      className="card-icon"
-                    />
-                  </div>
-                </Card>
-              </Link>
-              <Link href="/configuracoes">
-                <Card fontColor="black" height="90px">
-                  <div className="card-info">
-                    <h4>Meus Dados</h4>
-                    <p>Gerencie ou edite seus dados aqui.</p>
-                  </div>
-                  <div className="card-image">
-                    <FontAwesomeIcon icon={faCog} className="card-icon" />
-                  </div>
-                </Card>
-              </Link>
+              {data.map(({ href, title, description, icon }, i) => (
+                <Link href={href} key={i.toString()}>
+                  <Card isLight>
+                    <div className="card-info">
+                      <h4>{title}</h4>
+                      <p>{description}</p>
+                    </div>
+                    <div className="card-image">
+                      <FontAwesomeIcon icon={icon} className="card-icon" />
+                    </div>
+                  </Card>
+                </Link>
+              ))}
             </div>
           </SectionBody>
         </Section>

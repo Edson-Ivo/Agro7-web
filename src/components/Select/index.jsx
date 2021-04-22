@@ -12,6 +12,7 @@ const Select = ({
   searchable = false,
   clearable = false,
   onChange = null,
+  noLabel = false,
   ...rest
 }) => {
   const [valueChange, setValueChange] = useState(value);
@@ -24,7 +25,7 @@ const Select = ({
 
   return (
     <InputContainer>
-      {label && <Label className="input-label">{label}</Label>}
+      {label && !noLabel && <Label className="input-label">{label}</Label>}
       <ReactSelect
         options={options}
         classNamePrefix="select"

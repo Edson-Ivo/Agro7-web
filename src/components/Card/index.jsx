@@ -1,16 +1,21 @@
 import styled, { css } from 'styled-components';
 
 export const Card = styled.div`
-  color: ${props => props.fontColor || props.theme.colors.white};
+  color: ${props =>
+    props.isLight ? props.theme.colors.black : props.theme.colors.white};
   display: flex;
   cursor: pointer;
   flex-direction: row;
   width: 100%;
-  min-height: ${props => props.height || '140px'};
+  min-height: ${props => props.height || '90px'};
   border: 1px solid ${props => props.theme.colors.border};
   background: ${props => props.color || props.theme.colors.white};
   box-shadow: 0px 6px 22px rgba(0, 0, 0, 0.05);
   border-radius: 10px;
+
+  @media screen and (max-width: ${props => props.theme.breakpoints.mobile}px) {
+    min-height: ${props => props.height || '150px'};
+  }
 
   ${props =>
     !props?.noPadding &&
@@ -83,7 +88,7 @@ export const Card = styled.div`
   }
 
   &:hover {
-    filter: brightness(1.1);
+    filter: brightness(0.97);
     box-shadow: 0px 6px 13px rgba(0, 0, 0, 0.05);
     transform: scale(0.995);
   }

@@ -25,10 +25,10 @@ import {
   DateWrapper,
   DateContainer,
   DateContent,
-  DateCard
+  DateCard,
+  DateCardCalendar
 } from '@/components/DateContainer';
 
-import isEmpty from '@/helpers/isEmpty';
 import {
   dateConversor,
   dateToISOString,
@@ -36,7 +36,7 @@ import {
   isValidDate,
   weekDays
 } from '@/helpers/date';
-import { colorShade } from '@/helpers/colors';
+import { colorShade, isLight } from '@/helpers/colors';
 import { useFetch } from '@/hooks/useFetch';
 import Select from '@/components/Select/index';
 import useOnScreen from '@/hooks/useOnScreen';
@@ -51,14 +51,14 @@ function ProducerNotebook() {
   const ref = useRef();
   const isVisible = useOnScreen(ref);
 
-  const pageSize = 2;
+  const pageSize = 10;
   const [activeDate, setActiveDate] = useState(null);
   const [activeCategory, setActiveCategory] = useState('');
   const [daysList, setDaysList] = useState([]);
 
   const { searchDate = null } = router.query;
 
-  const { data, error, mutate, size, setSize, isValidating } = useInfiniteFetch(
+  const { data, error, size, setSize, isValidating } = useInfiniteFetch(
     `/producer-notebook/find/by/user/${id}?date_start=${activeDate}${
       activeCategory !== '' ? `&categories=${activeCategory}` : ''
     }`,
@@ -69,13 +69,14 @@ function ProducerNotebook() {
     `/categories/find/all?limit=30`
   );
 
-  const issues = data ? [].concat(...data) : [];
+  const notes = data ? [].concat(...data) : [];
   const isLoadingInitialData = !data && !error;
   const isLoadingMore =
     isLoadingInitialData ||
     (size > 0 && data && typeof data[size - 1] === 'undefined');
   const isEmptyData = data?.[0]?.length === 0;
-  const isReachingEnd = size === pageSize;
+  const isReachingEnd =
+    isEmptyData || (data && data[data.length - 1]?.length < pageSize);
   const isRefreshing = isValidating && data && data.length === size;
 
   useEffect(() => {
@@ -101,7 +102,6 @@ function ProducerNotebook() {
       actualDate = dateToISOString(`${searchDate} `);
     } else {
       const date = getCurrentDate();
-      date.setUTCHours(3, 0, 0, 0);
 
       actualDate = dateToISOString(date);
     }
@@ -153,10 +153,17 @@ function ProducerNotebook() {
           </SectionHeader>
           <SectionBody>
             <div className="SectionBody__content">
-              <CardContainer ref={ref}>
+              <CardContainer>
                 <DateWrapper>
                   <DateContainer>
-                    <DateContent style={{ width: `${71 * 7}px` }}>
+                    <DateContent style={{ width: `${71 * 8}px` }}>
+                      <DateCardCalendar>
+                        <Image
+                          src="/assets/calendar-search.png"
+                          width="30"
+                          height="30"
+                        />
+                      </DateCardCalendar>
                       {daysList.map(({ date, day, dateString, string }, i) => (
                         <DateCard
                           key={i.toString()}
@@ -171,9 +178,17 @@ function ProducerNotebook() {
                     </DateContent>
                   </DateContainer>
                 </DateWrapper>
-                <div className="form-group">
-                  <div style={{ justifyContent: 'center' }}>
-                    <h2>{dateConversor(activeDate, false)}</h2>
+                <div
+                  style={{
+                    marginTop: 14,
+                    borderBottom: '1px solid #EEEDEA',
+                    marginBottom: 14
+                  }}
+                >
+                  <div style={{ marginBottom: 8, marginLeft: 10 }}>
+                    <h4>
+                      Anotações do dia {dateConversor(activeDate, false)}:
+                    </h4>
                   </div>
                   {dataCategories && (
                     <div>
@@ -185,53 +200,58 @@ function ProducerNotebook() {
                         label="Filtrar por categoria"
                         name="types"
                         clearable
+                        noLabel
                         onChange={handleChangeCategory}
                         initialValue={activeCategory}
                       />
                     </div>
                   )}
                 </div>
-                {(data && (
+                {data && (
                   <>
-                    {(!isEmpty(issues[0]?.items) &&
-                      issues[0].items.map(d => (
-                        <Link href={`/caderno-produtor/${d.id}/detalhes`}>
-                          {/* <a> */}
-                          <Card
-                            key={d.id}
-                            color={`#${d.categories.colors.hexadecimal}`}
-                            noPadding
-                            infoPadding
-                            responsiveImage
-                          >
-                            <div className="card-info">
-                              <h4>{d.name}</h4>
-                              <p>{d.description}</p>
-                            </div>
-                            <div className="card-image">
-                              {/* <Image
+                    {(!isEmptyData &&
+                      notes.map(d => (
+                        <Card
+                          key={d.id}
+                          color={`#${d.categories.colors.hexadecimal}`}
+                          isLight={isLight(d.categories.colors.hexadecimal)}
+                          onClick={() =>
+                            router.push(`/caderno-produtor/${d.id}/detalhes`)
+                          }
+                          noPadding
+                          infoPadding
+                          responsiveImage
+                        >
+                          <div className="card-info">
+                            <h4>{d.name}</h4>
+                            <p>{d.description}</p>
+                          </div>
+                          <div className="card-image">
+                            {/* <Image
                               src="https://via.placeholder.com/150"
                               width="150"
                               height="150"
                             /> */}
-                              <div className="absolute_content">
-                                <CardBack
-                                  fill={colorShade(
-                                    d.categories.colors.hexadecimal
-                                  )}
-                                />
-                              </div>
+                            <div className="absolute_content">
+                              <CardBack
+                                fill={colorShade(
+                                  d.categories.colors.hexadecimal
+                                )}
+                              />
                             </div>
-                          </Card>
-                          {/* </a> */}
-                        </Link>
+                          </div>
+                        </Card>
                       ))) || (
                       <Alert style={{ marginTop: '10px' }}>
-                        Não há registros no caderno para o dia selecionado
+                        Não há registros no caderno para a data{' '}
+                        {activeCategory && 'ou categoria '} selecionada
                       </Alert>
                     )}
                   </>
-                )) || <Loader />}
+                )}
+                <div ref={ref}>
+                  {isLoadingMore && !isEmptyData ? <Loader /> : null}
+                </div>
               </CardContainer>
             </div>
           </SectionBody>
