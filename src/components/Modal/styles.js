@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { animated } from 'react-spring';
+import { ShowTransition } from '@/styles/mixins';
 
 export const Container = styled.div`
   top: 0;
@@ -11,7 +11,7 @@ export const Container = styled.div`
   background: rgba(38, 48, 46, 0.25);
 `;
 
-export const Content = styled(animated.div)`
+export const Content = styled.div`
   position: absolute;
   top: 33%;
   left: 0;
@@ -22,6 +22,7 @@ export const Content = styled(animated.div)`
   border-radius: 10px;
   height: auto !important;
   overflow: hidden;
+  animation: show 0.3s;
 
   max-width: 400px;
 
@@ -44,6 +45,8 @@ export const Content = styled(animated.div)`
   @media (max-width: ${props => props.theme.breakpoints.mobile}px) {
     max-width: 90%;
   }
+
+  ${ShowTransition}
 `;
 
 export const Header = styled.div`

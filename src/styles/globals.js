@@ -1,4 +1,5 @@
 import { createGlobalStyle } from 'styled-components';
+import { ShowTransition } from './mixins';
 
 export default createGlobalStyle`
   * {
@@ -165,4 +166,37 @@ export default createGlobalStyle`
       height: 20px;
     }
   }
+
+  .CalendarDay__selected, .CalendarDay__selected:active, .CalendarDay__selected:hover {
+    background: ${props => props.theme.colors.green};
+    border: 1px double ${props => props.theme.colors.green};
+  }
+  
+  .CalendarMonthGrid {
+    text-align: center;
+  }
+
+  .CalendarMonthGrid__horizontal {
+    left: 0 !important;
+    width: auto !important;
+  }
+
+  .DayPicker_portal__horizontal {
+    background-color: rgba(0,0,0,.3);
+    position: fixed;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 0 !important;
+    margin-top: 0 !important;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100% !important;
+    z-index: 999999 !important;  
+    animation: show 0.3s;
+
+    ${ShowTransition}
+  }
+
 `;

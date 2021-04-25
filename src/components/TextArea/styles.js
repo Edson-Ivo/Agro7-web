@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { ShrinkedLabel } from '../Input/mixins';
+import { ShrinkedLabel } from '@/styles/mixins';
 
 export const InputContainer = styled.div`
   position: relative;

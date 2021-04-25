@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { ShowTransition } from '@/styles/mixins';
 
 export const TooltipContainer = styled.div`
   z-index: 3;
@@ -62,14 +63,5 @@ export const TooltipContainer = styled.div`
     }
   }
 
-  @keyframes show {
-    0% {
-      opacity: 0;
-      transform: translateY(-20px);
-    }
-    100% {
-      opacity: 1;
-      transform: translateY(0px);
-    }
-  }
+  ${ShowTransition}
 `;

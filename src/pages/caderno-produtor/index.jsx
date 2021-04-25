@@ -1,4 +1,5 @@
 import React, { useState, useEffect, createRef, useRef } from 'react';
+import ScrollContainer from 'react-indiana-drag-scroll';
 import Head from 'next/head';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -8,14 +9,15 @@ import { useRouter } from 'next/router';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 
-import CardBack from '@/assets/card_back.svg';
-
 import Container from '@/components/Container';
 import Nav from '@/components/Nav';
 import Navbar from '@/components/Navbar';
 import Breadcrumb from '@/components/Breadcrumb';
 import Error from '@/components/Error';
 import Loader from '@/components/Loader';
+import Select from '@/components/Select';
+import Button from '@/components/Button';
+import DatePicker from '@/components/DatePicker';
 import { Section, SectionHeader, SectionBody } from '@/components/Section';
 import { Card } from '@/components/Card';
 import { CardContainer } from '@/components/CardContainer';
@@ -25,6 +27,7 @@ import {
   DateWrapper,
   DateContainer,
   DateContent,
+  DateCardWrapper,
   DateCard,
   DateCardCalendar
 } from '@/components/DateContainer';
@@ -38,10 +41,10 @@ import {
 } from '@/helpers/date';
 import { colorShade, isLight } from '@/helpers/colors';
 import { useFetch } from '@/hooks/useFetch';
-import Select from '@/components/Select/index';
 import useOnScreen from '@/hooks/useOnScreen';
 import { useInfiniteFetch } from '@/hooks/useInfiniteFetch';
-import Button from '@/components/Button/index';
+
+import CardBack from '@/assets/card_back.svg';
 
 function ProducerNotebook() {
   const { id } = useSelector(state => state.user);
@@ -55,6 +58,7 @@ function ProducerNotebook() {
   const [activeDate, setActiveDate] = useState(null);
   const [activeCategory, setActiveCategory] = useState('');
   const [daysList, setDaysList] = useState([]);
+  const [hideCalendar, setHideCalendar] = useState(true);
 
   const { searchDate = null } = router.query;
 
@@ -113,6 +117,7 @@ function ProducerNotebook() {
 
   const handleChangeDate = date => {
     router.push(`/caderno-produtor?searchDate=${date}`);
+    setHideCalendar(true);
   };
 
   const handleChangeCategory = e => {
@@ -139,7 +144,7 @@ function ProducerNotebook() {
                   { route: '/caderno-produtor', name: 'Caderno do Produtor' }
                 ]}
               />
-              <h2>Caderno do Produtor</h2>
+              <h2>Caderno do Produtor - {dateConversor(activeDate, false)}</h2>
               <p>
                 Aqui você poderá visualizar suas ações realizadas no sistema
                 pela data ou categorias.
@@ -154,27 +159,45 @@ function ProducerNotebook() {
           <SectionBody>
             <div className="SectionBody__content">
               <CardContainer>
+                <DatePicker
+                  hidden={hideCalendar}
+                  initialValue={activeDate}
+                  onChange={date => handleChangeDate(date.format('YYYY-MM-DD'))}
+                  onOutsideClick={() => setHideCalendar(true)}
+                />
                 <DateWrapper>
                   <DateContainer>
-                    <DateContent style={{ width: `${71 * 8}px` }}>
-                      <DateCardCalendar>
-                        <Image
-                          src="/assets/calendar-search.png"
-                          width="30"
-                          height="30"
-                        />
-                      </DateCardCalendar>
-                      {daysList.map(({ date, day, dateString, string }, i) => (
-                        <DateCard
-                          key={i.toString()}
-                          onClick={() => handleChangeDate(dateString)}
-                          ref={activeDate === string ? daysRef : null}
-                          active={activeDate === string}
+                    <DateContent>
+                      <ScrollContainer
+                        hideScrollbars={false}
+                        className="scroll-container"
+                      >
+                        <DateCardCalendar
+                          onClick={() => setHideCalendar(false)}
                         >
-                          <h3>{date}</h3>
-                          <span>{day}</span>
-                        </DateCard>
-                      ))}
+                          <div>
+                            <Image
+                              src="/assets/calendar-search.png"
+                              width="30"
+                              height="30"
+                            />
+                          </div>
+                        </DateCardCalendar>
+                        {daysList.map(
+                          ({ date, day, dateString, string }, i) => (
+                            <DateCardWrapper key={i.toString()}>
+                              <DateCard
+                                onClick={() => handleChangeDate(dateString)}
+                                ref={activeDate === string ? daysRef : null}
+                                active={activeDate === string}
+                              >
+                                <h3>{date}</h3>
+                                <span>{day}</span>
+                              </DateCard>
+                            </DateCardWrapper>
+                          )
+                        )}
+                      </ScrollContainer>
                     </DateContent>
                   </DateContainer>
                 </DateWrapper>

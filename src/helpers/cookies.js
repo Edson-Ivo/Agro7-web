@@ -5,6 +5,7 @@ export const setCookie = (key, value) => {
     cookie.set(key, value, {
       expires: 1,
       path: '/'
+      // secure: process.env.NODE_ENV !== 'development'
     });
   }
 };

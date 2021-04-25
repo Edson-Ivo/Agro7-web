@@ -72,7 +72,7 @@ function Home() {
             <div className="SectionBody__content">
               {data.map(({ href, title, description, icon }, i) => (
                 <Link href={href} key={i.toString()}>
-                  <Card isLight>
+                  <Card height="90px" isLight>
                     <div className="card-info">
                       <h4>{title}</h4>
                       <p>{description}</p>

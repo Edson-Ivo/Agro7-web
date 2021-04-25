@@ -88,6 +88,7 @@ export default function Login() {
                 mask="cpf_cnpj"
                 maxLength="18"
                 handleChange={e => handleChange(e)}
+                autoComplete="off"
                 required
               />
 
@@ -97,6 +98,7 @@ export default function Login() {
                 name="password"
                 style={{ marginBottom: '10px' }}
                 handleChange={e => handleChange(e)}
+                autoComplete="off"
                 required
               />
               {(!loading && (

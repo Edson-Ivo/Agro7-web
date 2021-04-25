@@ -22,7 +22,7 @@ export const weekDays = date => {
 
   const current = getCurrentDate(date);
 
-  for (let i = 0; i < 7; i += 1) {
+  for (let i = 0; i < 14; i += 1) {
     const isoString = dateToISOString(current);
 
     const dateObj = {
