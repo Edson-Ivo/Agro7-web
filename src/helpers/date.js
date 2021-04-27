@@ -1,60 +1,38 @@
+import moment from 'moment';
+import 'moment/locale/pt-br';
+
 const weekDayName = ['DOM.', 'SEG.', 'TER.', 'QUA.', 'QUI.', 'SEX.', 'SÁB.'];
 
-export const getTimezone = (date, local = 'en-US', withTime = true) => {
-  const dateObj = date ? new Date(date) : new Date();
-  const dateString = dateObj.toLocaleString(local, {
-    timeZone: 'America/Fortaleza'
-  });
-
-  if (!withTime) dateObj.setHours(dateObj.getHours() - 3);
-
-  return withTime ? dateString : dateString.split(' ')[0];
-};
-
-export const getCurrentDate = date => {
-  const tz = getTimezone(date);
-
-  return new Date(tz);
-};
+export const getCurrentDate = date => moment(date);
 
 export const weekDays = date => {
   const week = [];
 
-  const current = getCurrentDate(date);
+  const current = getCurrentDate(date).startOf('day');
 
   for (let i = 0; i < 14; i += 1) {
     const isoString = dateToISOString(current);
 
     const dateObj = {
-      date: current.getDate(),
+      date: current.format('DD'),
       dateString: isoString.split('T')[0],
-      day: weekDayName[current.getDay()],
+      day: weekDayName[current.day()],
       string: isoString
     };
 
     week.push(dateObj);
 
-    current.setDate(current.getDate() - 1);
+    current.subtract(1, 'days');
   }
 
   return week;
 };
 
 export const dateConversor = (date, withTime = true) =>
-  getTimezone(date, 'pt-BR', withTime);
+  moment(date).format(`L${withTime ? ' LT' : ''}`);
 
-export const dateToInput = date =>
-  dateConversor(date).split(' ')[0].split('/').reverse().join('-');
+export const dateToInput = date => getCurrentDate(date).format('YYYY-MM-DD');
 
-export const dateToISOString = date => {
-  const d = getCurrentDate(date);
+export const dateToISOString = date => getCurrentDate(date).toISOString(true);
 
-  d.setUTCHours(3, 0, 0, 0);
-  return d.toISOString();
-};
-
-export const isValidDate = date => {
-  const d = getCurrentDate(date);
-
-  return d instanceof Date && !Number.isNaN(d.getTime());
-};
+export const isValidDate = date => getCurrentDate(date).isValid();

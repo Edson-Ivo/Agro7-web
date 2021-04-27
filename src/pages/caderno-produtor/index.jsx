@@ -105,7 +105,7 @@ function ProducerNotebook() {
     if (searchDate !== null && isValidDate(searchDate)) {
       actualDate = dateToISOString(`${searchDate} `);
     } else {
-      const date = getCurrentDate();
+      const date = getCurrentDate().startOf('day');
 
       actualDate = dateToISOString(date);
     }

@@ -38,6 +38,7 @@ export const DateContent = styled.div`
 
   .scroll-container {
     display: flex;
+    cursor: grab;
     width: 100%;
 
     &::-webkit-scrollbar {
@@ -47,6 +48,10 @@ export const DateContent = styled.div`
     & {
       -ms-overflow-style: none;
       scrollbar-width: none;
+    }
+
+    &:active {
+      cursor: grabbing;
     }
   }
 `;
