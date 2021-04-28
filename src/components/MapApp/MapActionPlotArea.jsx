@@ -1,7 +1,13 @@
 import React, { memo, useEffect, useState } from 'react';
-import { GoogleMap, LoadScript, Marker, Polygon } from '@react-google-maps/api';
+import {
+  GoogleMap,
+  useJsApiLoader,
+  Marker,
+  Polygon
+} from '@react-google-maps/api';
 import Button from '@/components/Button';
 import renameKeys from '@/helpers/renameKeys';
+import Loader from '../Loader/index';
 
 const containerStyle = {
   width: '100%',
@@ -21,13 +27,15 @@ const options = {
   zIndex: 1
 };
 
-function MapActionPlotArea({
+const MapActionPlotArea = ({
   onClick,
   initialPosition = [],
   initialPath = []
-}) {
+}) => {
   const [center, setCenter] = useState([]);
   const [path, setPath] = useState([]);
+  const [windowMaps, setWindowMaps] = useState(null);
+  const [libraries] = useState(['geometry']);
 
   useEffect(() => {
     if (initialPosition.length > 1) {
@@ -72,6 +80,16 @@ function MapActionPlotArea({
     }
   };
 
+  const handleAreaCalc = () => {
+    if (windowMaps !== null) {
+      const mvcArray = new windowMaps.MVCArray();
+
+      path.forEach(el => {
+        mvcArray.push(new windowMaps.LatLng(el));
+      });
+    }
+  };
+
   const reset = () => {
     if (onClick !== undefined) {
       setPath([]);
@@ -80,31 +98,40 @@ function MapActionPlotArea({
     }
   };
 
-  return (
-    <>
-      <LoadScript googleMapsApiKey="AIzaSyAfjeouEb4FznjXbL5UxsGSQi-QLxccFYA">
-        <GoogleMap
-          mapContainerStyle={containerStyle}
-          center={center}
-          zoom={17}
-          onClick={handleClick}
-          mapTypeId="satellite"
-        >
-          {path.length > 0 &&
-            path.map(({ lat, lng }, i) => (
-              <Marker key={i.toString()} position={{ lat, lng }} />
-            ))}
+  const { isLoaded } = useJsApiLoader({
+    googleMapsApiKey: 'AIzaSyAfjeouEb4FznjXbL5UxsGSQi-QLxccFYA',
+    libraries
+  });
 
-          {path.length > 0 && <Polygon paths={path} options={options} />}
-        </GoogleMap>
-      </LoadScript>
+  return isLoaded ? (
+    <>
+      <GoogleMap
+        mapContainerStyle={containerStyle}
+        center={center}
+        zoom={17}
+        onClick={handleClick}
+        mapTypeId="satellite"
+        onLoad={() => {
+          setWindowMaps(window.google.maps);
+        }}
+      >
+        {path.length > 0 &&
+          path.map(({ lat, lng }, i) => (
+            <Marker key={i.toString()} position={{ lat, lng }} />
+          ))}
+
+        {path.length > 0 && <Polygon paths={path} options={options} />}
+      </GoogleMap>
+
       {onClick !== undefined && (
         <Button type="button" className="primary" onClick={() => reset()}>
           Limpar desenho
         </Button>
       )}
     </>
+  ) : (
+    <Loader />
   );
-}
+};
 
 export default memo(MapActionPlotArea);

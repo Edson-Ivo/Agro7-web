@@ -1,9 +1,9 @@
-import moment from 'moment';
+import moment from 'moment-timezone';
 import 'moment/locale/pt-br';
 
 const weekDayName = ['DOM.', 'SEG.', 'TER.', 'QUA.', 'QUI.', 'SEX.', 'SÁB.'];
 
-export const getCurrentDate = date => moment(date);
+export const getCurrentDate = date => moment(date).tz('America/Fortaleza');
 
 export const weekDays = date => {
   const week = [];
@@ -29,10 +29,13 @@ export const weekDays = date => {
 };
 
 export const dateConversor = (date, withTime = true) =>
-  moment(date).format(`L${withTime ? ' LT' : ''}`);
+  getCurrentDate(date).format(`L${withTime ? ' LT' : ''}`);
 
 export const dateToInput = date => getCurrentDate(date).format('YYYY-MM-DD');
 
-export const dateToISOString = date => getCurrentDate(date).toISOString(true);
+export const dateToISOString = date => getCurrentDate(date).toISOString();
+
+export const dateToISOStringFinish = date =>
+  getCurrentDate(date).add(1, 'days').subtract(1, 'milliseconds').toISOString();
 
 export const isValidDate = date => getCurrentDate(date).isValid();
