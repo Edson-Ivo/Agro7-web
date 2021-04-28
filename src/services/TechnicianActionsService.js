@@ -38,11 +38,8 @@ class TechnicianActionsService {
   static async update(id, data) {
     try {
       const response = await api.put(`/technician-actions/update/${id}`, {
-        diagnostics: data.diagnostics,
-        adultery: data.adultery,
-        cultivation: data.cultivation,
-        fertilizing: data.fertilizing,
-        plant_health: data.plant_health
+        concluded: data.concluded,
+        cultures: data.cultures
       });
       return response;
     } catch (error) {

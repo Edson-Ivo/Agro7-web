@@ -19,16 +19,12 @@ import { useFetch } from '@/hooks/useFetch';
 import getFormData from '@/helpers/getFormData';
 import TechnicianActionsService from '@/services/TechnicianActionsService';
 import TextArea from '@/components/TextArea';
-import Select from '@/components/Select';
 
 const schema = yup.object().shape({
   diagnostics: yup.string().required('O campo diagnóstico é obrigatório!'),
   cultivation: yup.string().required('O campo tratos culturais é obrigatório!'),
-  plant_health: yup.string().required('O campo fitossanidade é obrigatório!'),
-  fertilizing: yup
-    .mixed()
-    .oneOf(['true', 'false'], 'O valor de está adubada é obrigatório')
-    .required('O campo adubação é obrigatório')
+  fertilizing: yup.string().required('O campo adubação é obrigatório!'),
+  plant_health: yup.string().required('O campo fitossanidade é obrigatório!')
 });
 
 function RelatoriosCreate() {
@@ -88,7 +84,6 @@ function RelatoriosCreate() {
           message: 'Enviando...'
         });
 
-        d.fertilizing = d.fertilizing === 'true';
         d.cultures = Number(idCulture);
 
         await TechnicianActionsService.create(d).then(res => {
@@ -200,14 +195,7 @@ function RelatoriosCreate() {
                         label="Diagnóstico da Cultura"
                       />
                       <TextArea name="cultivation" label="Tratos Culturais" />
-                      <Select
-                        options={[
-                          { value: 'true', label: 'Sim' },
-                          { value: 'false', label: 'Não' }
-                        ]}
-                        label="Está adubada?"
-                        name="fertilizing"
-                      />
+                      <TextArea name="fertilizing" label="Adubação" />
                       <TextArea name="plant_health" label="Fitossanidade" />
 
                       <div className="form-group buttons">

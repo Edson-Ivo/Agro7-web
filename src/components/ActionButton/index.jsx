@@ -17,6 +17,7 @@ const ActionButton = ({
   onDelete,
   info = '/detalhes',
   noInfo = false,
+  noEdit = false,
   download = '',
   edit = '/editar'
 }) => (
@@ -43,13 +44,16 @@ const ActionButton = ({
         </a>
       </Link>
     )}
-    <Link href={`${path}/${id}${edit}`}>
-      <a title="Editar">
-        <div>
-          <FontAwesomeIcon icon={faEdit} />
-        </div>
-      </a>
-    </Link>
+
+    {!noEdit && (
+      <Link href={`${path}/${id}${edit}`}>
+        <a title="Editar">
+          <div>
+            <FontAwesomeIcon icon={faEdit} />
+          </div>
+        </a>
+      </Link>
+    )}
     <div
       onClick={() => onDelete()}
       onKeyPress={() => onDelete()}
