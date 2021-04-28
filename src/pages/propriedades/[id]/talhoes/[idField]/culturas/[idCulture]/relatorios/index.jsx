@@ -24,6 +24,7 @@ import errorMessage from '@/helpers/errorMessage';
 import isEmpty from '@/helpers/isEmpty';
 import Pagination from '@/components/Pagination';
 import TechnicianActionsService from '@/services/TechnicianActionsService';
+import truncate from '@/helpers/truncate';
 
 function Relatorios() {
   const router = useRouter();
@@ -172,7 +173,7 @@ function Relatorios() {
                             <tr>
                               <th>Diagnóstico</th>
                               <th>Tratos Culturais</th>
-                              <th>Adubando</th>
+                              <th>Adubação</th>
                               <th>Fitossanidade</th>
                               <th>Ações</th>
                             </tr>
@@ -186,14 +187,15 @@ function Relatorios() {
                                     router.push(`${baseUrl}/${d.id}/detalhes`)
                                   }
                                 >
-                                  <td>{d?.diagnostics}</td>
-                                  <td>{d?.cultivation}</td>
-                                  <td>{d?.fertilizing ? 'Sim' : 'Não'}</td>
-                                  <td>{d?.cultivation}</td>
+                                  <td>{truncate(d?.diagnostics, 40)}</td>
+                                  <td>{truncate(d?.cultivation, 40)}</td>
+                                  <td>{truncate(d?.fertilizing, 40)}</td>
+                                  <td>{truncate(d?.cultivation, 40)}</td>
                                   <td onClick={e => e.stopPropagation()}>
                                     <ActionButton
                                       id={d.id}
                                       path={baseUrl}
+                                      noEdit
                                       onDelete={() => handleDeleteModal(d.id)}
                                     />
                                   </td>

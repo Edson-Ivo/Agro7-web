@@ -1,24 +1,33 @@
-import React from 'react';
+import React, { useCallback, useState } from 'react';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
+
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCheck } from '@fortawesome/free-solid-svg-icons';
 
 import Container from '@/components/Container';
 import Nav from '@/components/Nav';
 import Navbar from '@/components/Navbar';
 import Breadcrumb from '@/components/Breadcrumb';
 import Button from '@/components/Button';
+import TextArea from '@/components/TextArea';
+import Loader from '@/components/Loader';
+import { Alert } from '@/components/Alert';
 import { Section, SectionHeader, SectionBody } from '@/components/Section';
 import { CardContainer } from '@/components/CardContainer';
 import { privateRoute } from '@/components/PrivateRoute';
-import Loader from '@/components/Loader';
 
 import { useFetch } from '@/hooks/useFetch';
-import TextArea from '@/components/TextArea';
-import Select from '@/components/Select';
+import { useModal } from '@/hooks/useModal';
+import TechnicianActionsService from '@/services/TechnicianActionsService';
+import errorMessage from '@/helpers/errorMessage';
 
-function RelatoriosEdit() {
+function RelatoriosDetails() {
   const router = useRouter();
   const { id, idField, idCulture, idAction } = router.query;
+  const [alert, setAlert] = useState({ type: '', message: '' });
+  const [disableButton, setDisableButton] = useState(false);
+  const { addModal, removeModal } = useModal();
 
   const { data, error } = useFetch(`/fields/find/by/id/${idField}`);
 
@@ -26,9 +35,63 @@ function RelatoriosEdit() {
     `/cultures/find/by/id/${idCulture}`
   );
 
-  const { data: dataActions, error: errorActions } = useFetch(
-    `/technician-actions/find/by/id/${idAction}`
-  );
+  const {
+    data: dataActions,
+    error: errorActions,
+    mutate: mutateActions
+  } = useFetch(`/technician-actions/find/by/id/${idAction}`);
+
+  const handleSubmit = async (value = true) => {
+    const concluded = !!value;
+    const message = concluded
+      ? 'Marcando relatório técnico como concluído. Aguarde...'
+      : 'Cancelando conclusão do relatório técnico. Aguarde...';
+
+    const d = {
+      concluded,
+      cultures: idCulture
+    };
+
+    setAlert({
+      type: 'success',
+      message
+    });
+
+    await TechnicianActionsService.update(idAction, d).then(res => {
+      if (res.status !== 200 || res?.statusCode) {
+        setAlert({ type: 'error', message: errorMessage(res) });
+        setTimeout(() => {
+          setDisableButton(false);
+        }, 1000);
+      } else {
+        mutateActions();
+
+        const messageUpdated = concluded
+          ? 'Relatório concluído com sucesso!'
+          : 'Conclusão do relatório cancelada com sucesso!';
+
+        setAlert({
+          type: 'success',
+          message: messageUpdated
+        });
+
+        setTimeout(() => {
+          setAlert({ message: '' });
+          setDisableButton(false);
+        }, 3000);
+      }
+    });
+  };
+
+  const handleRemoveConcludedModal = useCallback(() => {
+    addModal({
+      title: `Cancelar conclusão?`,
+      text: `Deseja realmente cancelar a conclusão desse relatório técnico?`,
+      confirm: true,
+      onConfirm: () => handleSubmit(false),
+      onCancel: removeModal
+    });
+  }, [addModal, removeModal]);
 
   const handleCancel = () => {
     router.back();
@@ -93,11 +156,36 @@ function RelatoriosEdit() {
                 {dataCultures?.products.name} do talhão{' '}
                 {`${data?.name} da propriedade ${data?.properties.name}`}.
               </p>
+              {data && (
+                <>
+                  {(!data?.concluded && (
+                    <Button
+                      type="button"
+                      className="primary"
+                      onClick={() => handleSubmit()}
+                      disabled={disableButton}
+                    >
+                      <FontAwesomeIcon icon={faCheck} /> Marcar como Concluído
+                    </Button>
+                  )) || (
+                    <Button
+                      type="button"
+                      onClick={() => handleRemoveConcludedModal()}
+                      disabled={disableButton}
+                    >
+                      <FontAwesomeIcon icon={faCheck} /> Concluído
+                    </Button>
+                  )}
+                </>
+              )}
             </div>
           </SectionHeader>
           <SectionBody>
             <div className="SectionBody__content">
               <CardContainer>
+                {alert.message !== '' && (
+                  <Alert type={alert.type}>{alert.message}</Alert>
+                )}
                 {(data && dataCultures && dataActions && (
                   <>
                     <TextArea
@@ -112,14 +200,10 @@ function RelatoriosEdit() {
                       initialValue={dataActions?.cultivation}
                       disabled
                     />
-                    <Select
-                      options={[
-                        { value: 'true', label: 'Sim' },
-                        { value: 'false', label: 'Não' }
-                      ]}
-                      label="Está adubada?"
+                    <TextArea
                       name="fertilizing"
-                      value={dataActions?.fertilizing.toString()}
+                      label="Adubação"
+                      initialValue={dataActions?.fertilizing}
                       disabled
                     />
                     <TextArea
@@ -132,12 +216,8 @@ function RelatoriosEdit() {
                     <div className="form-group buttons">
                       <div>
                         <Button type="button" onClick={handleCancel}>
-                          Cancelar
+                          Voltar
                         </Button>
-                      </div>
-
-                      <div>
-                        <Button className="primary">Editar Relatório</Button>
                       </div>
                     </div>
                   </>
@@ -151,4 +231,4 @@ function RelatoriosEdit() {
   );
 }
 
-export default privateRoute()(RelatoriosEdit);
+export default privateRoute()(RelatoriosDetails);
