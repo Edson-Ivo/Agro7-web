@@ -21,6 +21,7 @@ import { useFetch } from '@/hooks/useFetch';
 import { useModal } from '@/hooks/useModal';
 import TechnicianActionsService from '@/services/TechnicianActionsService';
 import errorMessage from '@/helpers/errorMessage';
+import { dateConversor } from '@/helpers/date';
 
 function RelatoriosDetails() {
   const router = useRouter();
@@ -65,6 +66,7 @@ function RelatoriosDetails() {
         }, 1000);
       } else {
         mutateActions();
+        removeModal();
 
         const messageUpdated = concluded
           ? 'Relatório concluído com sucesso!'
@@ -150,15 +152,20 @@ function RelatoriosDetails() {
                   ]}
                 />
               )}
-              <h2>Relatório da Cultura de {dataCultures?.products.name}</h2>
+              <h2>
+                Relatório da Cultura de {dataCultures?.products.name} -{' '}
+                {dataActions && dateConversor(dataActions?.created_at, false)}
+              </h2>
               <p>
-                Aqui você vendo o relatório da cultura de{' '}
-                {dataCultures?.products.name} do talhão{' '}
-                {`${data?.name} da propriedade ${data?.properties.name}`}.
+                Aqui você vendo o relatório técnico do dia{' '}
+                {dataActions && dateConversor(dataActions?.created_at, false)}{' '}
+                da cultura de {dataCultures?.products.name} do talhão{' '}
+                {`${data?.name} na propriedade ${data?.properties.name}`}.
               </p>
-              {data && (
+
+              {dataActions && (
                 <>
-                  {(!data?.concluded && (
+                  {(!dataActions?.concluded && (
                     <Button
                       type="button"
                       className="primary"
