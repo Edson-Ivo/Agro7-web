@@ -1,13 +1,9 @@
 import React, { memo, useEffect, useState } from 'react';
-import {
-  GoogleMap,
-  useJsApiLoader,
-  Marker,
-  Polygon
-} from '@react-google-maps/api';
+import { Marker, Polygon } from '@react-google-maps/api';
 import Button from '@/components/Button';
 import renameKeys from '@/helpers/renameKeys';
-import Loader from '../Loader/index';
+
+import MapWrapper from './MapWrapper';
 
 const containerStyle = {
   width: '100%',
@@ -29,13 +25,13 @@ const options = {
 
 const MapActionPlotArea = ({
   onClick,
+  onAreaCalc,
   initialPosition = [],
   initialPath = []
 }) => {
   const [center, setCenter] = useState([]);
   const [path, setPath] = useState([]);
   const [windowMaps, setWindowMaps] = useState(null);
-  const [libraries] = useState(['geometry']);
 
   useEffect(() => {
     if (initialPosition.length > 1) {
@@ -66,6 +62,12 @@ const MapActionPlotArea = ({
     }
   }, []);
 
+  useEffect(() => {
+    if (onAreaCalc !== undefined) {
+      onAreaCalc(handleAreaCalc());
+    }
+  }, [initialPath, path]);
+
   const handleClick = e => {
     if (onClick !== undefined) {
       const pos = { lat: e.latLng.lat(), lng: e.latLng.lng() };
@@ -87,7 +89,11 @@ const MapActionPlotArea = ({
       path.forEach(el => {
         mvcArray.push(new windowMaps.LatLng(el));
       });
+
+      return windowMaps.geometry.spherical.computeArea(mvcArray);
     }
+
+    return 0;
   };
 
   const reset = () => {
@@ -98,14 +104,9 @@ const MapActionPlotArea = ({
     }
   };
 
-  const { isLoaded } = useJsApiLoader({
-    googleMapsApiKey: 'AIzaSyAfjeouEb4FznjXbL5UxsGSQi-QLxccFYA',
-    libraries
-  });
-
-  return isLoaded ? (
+  return (
     <>
-      <GoogleMap
+      <MapWrapper
         mapContainerStyle={containerStyle}
         center={center}
         zoom={17}
@@ -121,7 +122,7 @@ const MapActionPlotArea = ({
           ))}
 
         {path.length > 0 && <Polygon paths={path} options={options} />}
-      </GoogleMap>
+      </MapWrapper>
 
       {onClick !== undefined && (
         <Button type="button" className="primary" onClick={() => reset()}>
@@ -129,8 +130,6 @@ const MapActionPlotArea = ({
         </Button>
       )}
     </>
-  ) : (
-    <Loader />
   );
 };
 

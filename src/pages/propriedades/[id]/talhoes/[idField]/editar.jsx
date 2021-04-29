@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState } from 'react';
 import * as yup from 'yup';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
-import { MultiStepForm as MultiStep, Step } from '@/components/Multiform';
 
 import Container from '@/components/Container';
 import Nav from '@/components/Nav';
@@ -23,6 +22,7 @@ import getFormData from '@/helpers/getFormData';
 import { MapActionPlotArea } from '@/components/MapApp';
 import isEmpty from '@/helpers/isEmpty';
 import Loader from '@/components/Loader';
+import areaConversor from '@/helpers/areaConversor';
 
 const schema = yup.object().shape({
   name: yup
@@ -44,16 +44,20 @@ function TalhoesEdit() {
   const [alert, setAlert] = useState({ type: '', message: '' });
   const [disableButton, setDisableButton] = useState(false);
   const [coordinates, setCoordinates] = useState([]);
-  const [activeStep, setActiveStep] = useState(1);
+
+  const areaRef = useRef(null);
+  const typeDimensionRef = useRef(null);
 
   const router = useRouter();
   const { id, idField } = router.query;
 
   const { data, error } = useFetch(`/properties/find/by/id/${id}`);
 
-  const { data: dataFields, error: errorFields } = useFetch(
-    `/fields/find/by/id/${idField}`
-  );
+  const {
+    data: dataFields,
+    error: errorFields,
+    mutate: mutateFields
+  } = useFetch(`/fields/find/by/id/${idField}`);
 
   const { data: dataTypeDimension } = useFetch(
     '/fields/find/all/types-dimension'
@@ -74,6 +78,12 @@ function TalhoesEdit() {
   const handleCoordinates = path => {
     if (!isEmpty(path)) setCoordinates([...coordinates, path]);
     else setCoordinates([]);
+  };
+
+  const handleAreaCalc = area => {
+    const { value: dimension } = typeDimensionRef.current;
+
+    areaRef.current.setValue(areaConversor(area, dimension));
   };
 
   const getData = () => {
@@ -116,6 +126,8 @@ function TalhoesEdit() {
               setDisableButton(false);
             }, 1000);
           } else {
+            mutateFields();
+
             setAlert({
               type: 'success',
               message: 'Talhão editado com sucesso!'
@@ -188,94 +200,62 @@ function TalhoesEdit() {
                 >
                   {(data && dataTypeDimension && dataFields && (
                     <>
-                      <MultiStep activeStep={activeStep}>
-                        <Step label="Dados" onClick={() => setActiveStep(1)}>
-                          <h4 className="step-title">Dados do Talhão</h4>
-
-                          <Input
-                            type="text"
-                            name="name"
-                            label="Nome do talhão"
-                            initialValue={dataFields.name}
-                          />
-                          <div className="form-group">
-                            <div>
-                              <Input
-                                type="number"
-                                label="Área"
-                                name="area"
-                                initialValue={dataFields.area}
-                              />
-                            </div>
-                            <div>
-                              <Select
-                                options={dataTypeDimension?.typesDimension.map(
-                                  dimension => ({
-                                    value: dimension,
-                                    label: dimension
-                                  })
-                                )}
-                                label="Unidade de medida"
-                                name="type_dimension"
-                                value={dataFields.type_dimension}
-                              />
-                            </div>
-                          </div>
-                        </Step>
-                        <Step
-                          label="Desenhar Talhão"
-                          onClick={() => setActiveStep(2)}
-                        >
-                          <h4 className="step-title">
-                            Clique sobre o mapa para criar os pontos do talhão
-                          </h4>
-                          <MapActionPlotArea
-                            initialPosition={[
-                              data.coordinates.latitude,
-                              data.coordinates.longitude
-                            ]}
-                            onClick={handleCoordinates}
-                            initialPath={dataFields.coordinates}
-                          />
-                        </Step>
-                      </MultiStep>
-                      <div className="form-group buttons">
-                        {(activeStep !== 1 && (
-                          <div>
-                            <Button
-                              type="button"
-                              onClick={() => setActiveStep(activeStep - 1)}
-                            >
-                              Voltar
-                            </Button>
-                          </div>
-                        )) || (
-                          <div>
-                            <Button type="button" onClick={handleCancel}>
-                              Cancelar
-                            </Button>
-                          </div>
-                        )}
+                      <Input
+                        type="text"
+                        name="name"
+                        label="Nome do talhão"
+                        initialValue={dataFields.name}
+                      />
+                      <div className="form-group">
                         <div>
-                          {activeStep !== 2 && (
-                            <Button
-                              type="button"
-                              onClick={() => setActiveStep(activeStep + 1)}
-                              className="primary"
-                            >
-                              Continuar
-                            </Button>
-                          )}
+                          <Input
+                            type="number"
+                            label="Área"
+                            name="area"
+                            ref={areaRef}
+                            initialValue={dataFields.area}
+                          />
+                        </div>
+                        <div>
+                          <Select
+                            options={dataTypeDimension?.typesDimension.map(
+                              dimension => ({
+                                value: dimension,
+                                label: dimension
+                              })
+                            )}
+                            label="Unidade de medida"
+                            name="type_dimension"
+                            ref={typeDimensionRef}
+                            value={dataFields.type_dimension}
+                          />
+                        </div>
+                      </div>
 
-                          {activeStep === 2 && (
-                            <Button
-                              disabled={disableButton}
-                              className="primary"
-                              type="submit"
-                            >
-                              Salvar
-                            </Button>
-                          )}
+                      <MapActionPlotArea
+                        initialPosition={[
+                          data.coordinates.latitude,
+                          data.coordinates.longitude
+                        ]}
+                        onClick={handleCoordinates}
+                        onAreaCalc={handleAreaCalc}
+                        initialPath={dataFields.coordinates}
+                      />
+
+                      <div className="form-group buttons">
+                        <div>
+                          <Button type="button" onClick={handleCancel}>
+                            Cancelar
+                          </Button>
+                        </div>
+                        <div>
+                          <Button
+                            disabled={disableButton}
+                            className="primary"
+                            type="submit"
+                          >
+                            Salvar
+                          </Button>
                         </div>
                       </div>
                     </>

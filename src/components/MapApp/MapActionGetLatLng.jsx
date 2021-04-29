@@ -1,5 +1,6 @@
 import React, { memo, useEffect, useState } from 'react';
-import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
+import { Marker } from '@react-google-maps/api';
+import MapWrapper from './MapWrapper';
 
 const containerStyle = {
   width: '100%',
@@ -35,18 +36,16 @@ function MapActionGetLatLng({ onClick, positions = [] }) {
   };
 
   return (
-    <LoadScript googleMapsApiKey="AIzaSyAfjeouEb4FznjXbL5UxsGSQi-QLxccFYA">
-      <GoogleMap
-        mapContainerStyle={containerStyle}
-        center={center}
-        zoom={8}
-        onClick={handleClick}
-      >
-        {position.length > 1 && (
-          <Marker position={{ lat: position[0], lng: position[1] }} />
-        )}
-      </GoogleMap>
-    </LoadScript>
+    <MapWrapper
+      mapContainerStyle={containerStyle}
+      center={center}
+      zoom={8}
+      onClick={handleClick}
+    >
+      {position.length > 1 && (
+        <Marker position={{ lat: position[0], lng: position[1] }} />
+      )}
+    </MapWrapper>
   );
 }
 

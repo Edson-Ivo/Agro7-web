@@ -1,20 +1,23 @@
-import React, { useState } from 'react';
+import React, { useState, forwardRef, useImperativeHandle } from 'react';
 import ReactSelect from 'react-select';
 
 import { InputContainer, Label } from './styles';
 
-const Select = ({
-  name,
-  options,
-  label,
-  value,
-  disabled,
-  searchable = false,
-  clearable = false,
-  onChange = null,
-  noLabel = false,
-  ...rest
-}) => {
+const Select = (
+  {
+    name,
+    options,
+    label,
+    value,
+    disabled,
+    searchable = false,
+    clearable = false,
+    onChange = null,
+    noLabel = false,
+    ...rest
+  },
+  ref
+) => {
   const [valueChange, setValueChange] = useState(value);
 
   const handleChange = e => {
@@ -22,6 +25,16 @@ const Select = ({
 
     if (onChange !== null) onChange(e);
   };
+
+  useImperativeHandle(ref, () => ({
+    value: valueChange,
+    setValue: v => {
+      const val = {
+        value: v
+      };
+      handleChange(val);
+    }
+  }));
 
   return (
     <InputContainer>
@@ -54,4 +67,4 @@ const Select = ({
   );
 };
 
-export default Select;
+export default forwardRef(Select);
