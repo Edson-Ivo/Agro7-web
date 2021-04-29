@@ -25,6 +25,7 @@ import isEmpty from '@/helpers/isEmpty';
 import Pagination from '@/components/Pagination';
 import TechnicianActionsService from '@/services/TechnicianActionsService';
 import truncate from '@/helpers/truncate';
+import { dateConversor } from '@/helpers/date';
 
 function Relatorios() {
   const router = useRouter();
@@ -171,6 +172,8 @@ function Relatorios() {
                         <Table>
                           <thead>
                             <tr>
+                              <th>Data</th>
+                              <th>Concluído</th>
                               <th>Diagnóstico</th>
                               <th>Tratos Culturais</th>
                               <th>Adubação</th>
@@ -187,10 +190,12 @@ function Relatorios() {
                                     router.push(`${baseUrl}/${d.id}/detalhes`)
                                   }
                                 >
-                                  <td>{truncate(d?.diagnostics, 40)}</td>
-                                  <td>{truncate(d?.cultivation, 40)}</td>
-                                  <td>{truncate(d?.fertilizing, 40)}</td>
-                                  <td>{truncate(d?.cultivation, 40)}</td>
+                                  <td>{dateConversor(d?.created_at, false)}</td>
+                                  <td>{d?.concluded ? 'Sim' : 'Não'}</td>
+                                  <td>{truncate(d?.diagnostics, 30)}</td>
+                                  <td>{truncate(d?.cultivation, 30)}</td>
+                                  <td>{truncate(d?.fertilizing, 30)}</td>
+                                  <td>{truncate(d?.cultivation, 30)}</td>
                                   <td onClick={e => e.stopPropagation()}>
                                     <ActionButton
                                       id={d.id}
@@ -202,7 +207,7 @@ function Relatorios() {
                                 </tr>
                               ))) || (
                               <tr>
-                                <td colSpan="5">
+                                <td colSpan="7">
                                   Não há relatórios registrados nessa cultura
                                 </td>
                               </tr>
