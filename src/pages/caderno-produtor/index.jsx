@@ -3,7 +3,6 @@ import ScrollContainer from 'react-indiana-drag-scroll';
 import Head from 'next/head';
 import Link from 'next/link';
 import Image from 'next/image';
-import { useSelector } from 'react-redux';
 import { useRouter } from 'next/router';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';

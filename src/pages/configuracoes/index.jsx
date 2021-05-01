@@ -1,6 +1,5 @@
 import React from 'react';
 import Head from 'next/head';
-import { useSelector } from 'react-redux';
 
 import Link from 'next/link';
 import Container from '@/components/Container';
@@ -20,9 +19,7 @@ import Loader from '@/components/Loader';
 import { useFetch } from '@/hooks/useFetch';
 
 function Configuracoes() {
-  const { id } = useSelector(state => state.user);
-
-  const { data, error } = useFetch(`/users/find/by/id/${id}`);
+  const { data, error } = useFetch(`/users/find/by/logged`);
 
   if (error) return <Error />;
 

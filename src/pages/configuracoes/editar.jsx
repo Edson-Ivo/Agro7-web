@@ -2,7 +2,6 @@ import React, { useState, useRef } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
 import * as yup from 'yup';
-import { useSelector } from 'react-redux';
 
 import { Alert } from '@/components/Alert';
 import Container from '@/components/Container';
@@ -80,9 +79,7 @@ function ConfiguracoesEdit() {
   const [loadingAddresses, setLoadingAddresses] = useState(false);
   const formRef = useRef(null);
 
-  const { id } = useSelector(state => state.user);
-
-  const { data, error, mutate } = useFetch(`/users/find/by/id/${id}`);
+  const { data, error, mutate } = useFetch(`/users/find/by/logged`);
 
   const stateRef = useRef(null);
   const cityRef = useRef(null);
@@ -193,7 +190,7 @@ function ConfiguracoesEdit() {
   return (
     <>
       <Head>
-        <title>Painel Adminstrativo | Cadastrar Usuário - Agro7</title>
+        <title>Editar meus dados - Agro7</title>
       </Head>
 
       <Navbar />
@@ -206,7 +203,7 @@ function ConfiguracoesEdit() {
                 path={[
                   { route: '/', name: 'Home' },
                   { route: '/configuracoes', name: 'Configurações' },
-                  { route: '/configuracoes/editar', name: 'Editar Dados' }
+                  { route: '/configuracoes/editar', name: 'Editar meus dados' }
                 ]}
               />
               <h2>Editar dados</h2>
