@@ -21,7 +21,6 @@ import Error from '@/components/Error';
 import { useFetch } from '@/hooks/useFetch';
 import ActionButton from '@/components/ActionButton';
 import { useModal } from '@/hooks/useModal';
-import { useSelector } from 'react-redux';
 
 import { useRouter } from 'next/router';
 import errorMessage from '@/helpers/errorMessage';
@@ -30,7 +29,6 @@ import { Alert } from '@/components/Alert/index';
 import Pagination from '@/components/Pagination/index';
 
 function Properties() {
-  const { id } = useSelector(state => state.user);
   const [alertMsg, setAlertMsg] = useState({ type: '', message: '' });
   const [loading, setLoading] = useState(false);
 
@@ -42,7 +40,7 @@ function Properties() {
   const { addModal, removeModal } = useModal();
 
   const { data, error, mutate } = useFetch(
-    `/properties/find/by/user/${id}?limit=${perPage}&page=${page}`
+    `/properties/find/by/user-logged?limit=${perPage}&page=${page}`
   );
 
   const handleDelete = useCallback(
