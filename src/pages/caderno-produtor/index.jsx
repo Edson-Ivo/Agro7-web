@@ -48,7 +48,6 @@ import { useInfiniteFetch } from '@/hooks/useInfiniteFetch';
 import CardBack from '@/assets/card_back.svg';
 
 function ProducerNotebook() {
-  const { id } = useSelector(state => state.user);
   const daysRef = createRef();
   const router = useRouter();
 
@@ -64,7 +63,7 @@ function ProducerNotebook() {
   const { searchDate = null } = router.query;
 
   const { data, error, size, setSize, isValidating } = useInfiniteFetch(
-    `/producer-notebook/find/by/user/${id}?date_start=${activeDate}&date_finish=${dateToISOStringFinish(
+    `/producer-notebook/find/by/user-logged?date_start=${activeDate}&date_finish=${dateToISOStringFinish(
       activeDate
     )}${activeCategory !== '' ? `&categories=${activeCategory}` : ''}`,
     pageSize
