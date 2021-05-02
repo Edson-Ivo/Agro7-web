@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -8,7 +8,44 @@ import Container, { CenterContainer } from '../Container';
 
 import Button from '../Button';
 
-export default function Error() {
+const dataErrors = {
+  401: {
+    title: 'Você não está autenticado...',
+    description:
+      'Desculpe, mas parece que você não está autenticado em nossa aplicação. Por favor, faça login.',
+    link: '/login',
+    text: 'Fazer login'
+  },
+  403: {
+    title: 'Não encontramos essa página...',
+    description:
+      'Desculpe, essa página que você tentou acessar não existe ou está bloqueada, aconselhamos você voltar para a página principal.'
+  },
+  404: {
+    title: 'Não encontramos essa página...',
+    description:
+      'Desculpe, essa página que você tentou acessar não existe ou está bloqueada, aconselhamos você voltar para a página principal.'
+  },
+  default: {
+    title: 'Algo deu errado...',
+    description: 'Aconteceu algum erro, vamos tentar novamente.'
+  }
+};
+
+export default function Error({ error }) {
+  const [dataError, setDataError] = useState(null);
+
+  const errorExists = errorValue => errorValue in dataErrors;
+
+  useEffect(() => {
+    const catchedError =
+      typeof error === 'object' ? error.response.data.statusCode : error;
+
+    setDataError(
+      errorExists(catchedError) ? dataErrors[catchedError] : dataErrors.default
+    );
+  }, []);
+
   return (
     <>
       <Container>
@@ -19,21 +56,30 @@ export default function Error() {
                 src="/logo/logo.png"
                 width="210"
                 height="90"
+                loading="eager"
                 alt="Logotipo Agro7"
+                priority
               />
             </div>
-            <h3 style={{ marginBottom: '20px' }}>Algo deu errado...</h3>
-            <p className="text">
-              Aconteceu algum erro, vamos tentar novamente.
-            </p>
-            <div style={{ marginTop: '20px' }}>
-              <a href="/">
-                <Button className="primary loginButton">
-                  <FontAwesomeIcon icon={faSignInAlt} className="loginIcon" />{' '}
-                  Voltar para página principal
-                </Button>
-              </a>
-            </div>
+            {dataError && (
+              <>
+                <h3 style={{ marginBottom: '20px' }}>{dataError.title}</h3>
+                <p className="text">{dataError.description}</p>
+                <div style={{ marginTop: '20px' }}>
+                  <a href={dataError?.link ? dataError.link : '/'}>
+                    <Button className="primary loginButton">
+                      <FontAwesomeIcon
+                        icon={faSignInAlt}
+                        className="loginIcon"
+                      />{' '}
+                      {dataError?.text
+                        ? dataError.text
+                        : 'Voltar para página principal'}
+                    </Button>
+                  </a>
+                </div>
+              </>
+            )}
           </div>
         </CenterContainer>
       </Container>

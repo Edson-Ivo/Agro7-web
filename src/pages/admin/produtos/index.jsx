@@ -16,11 +16,10 @@ import { Section, SectionHeader, SectionBody } from '@/components/Section';
 
 import { CardContainer } from '@/components/CardContainer';
 import { privateRoute } from '@/components/PrivateRoute';
-import NotFound from '@/components/NotFound';
-import Table from '@/components/Table';
-
-import Loader from '@/components/Loader';
 import Error from '@/components/Error';
+import Table from '@/components/Table';
+import Loader from '@/components/Loader';
+
 import { useFetch } from '@/hooks/useFetch';
 import ActionButton from '@/components/ActionButton';
 import { useModal } from '@/hooks/useModal';
@@ -80,7 +79,7 @@ function AdminProducts({ permission }) {
     [addModal, removeModal]
   );
 
-  if (!permission) return <NotFound />;
+  if (!permission) return <Error error={404} />;
   if (error) return <Error />;
 
   return (

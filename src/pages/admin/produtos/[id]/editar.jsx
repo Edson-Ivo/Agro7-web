@@ -16,7 +16,7 @@ import { CardContainer } from '@/components/CardContainer';
 import { privateRoute } from '@/components/PrivateRoute';
 import { Alert } from '@/components/Alert';
 import TextArea from '@/components/TextArea/index';
-import NotFound from '@/components/NotFound';
+import Error from '@/components/Error';
 
 import getFormData from '@/helpers/getFormData';
 import errorMessage from '@/helpers/errorMessage';
@@ -281,7 +281,7 @@ function AdminProductsEdit({ permission }) {
       });
   };
 
-  if (!permission) return <NotFound />;
+  if (!permission) return <Error error={404} />;
 
   return (
     <>
