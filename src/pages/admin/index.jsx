@@ -22,7 +22,7 @@ import Breadcrumb from '@/components/Breadcrumb';
 import { Section, SectionHeader, SectionBody } from '@/components/Section';
 
 import { privateRoute } from '@/components/PrivateRoute';
-import NotFound from '@/components/NotFound';
+import Error from '@/components/Error';
 
 const data = [
   {
@@ -69,7 +69,7 @@ const data = [
 ];
 
 function AdminHome({ permission }) {
-  if (!permission) return <NotFound />;
+  if (!permission) return <Error error={404} />;
   const { name } = useSelector(state => state.user);
 
   return (

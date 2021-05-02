@@ -13,7 +13,7 @@ import { Section, SectionHeader, SectionBody } from '@/components/Section';
 
 import { CardContainer } from '@/components/CardContainer';
 import { privateRoute } from '@/components/PrivateRoute';
-import NotFound from '@/components/NotFound';
+import Error from '@/components/Error';
 
 import Loader from '@/components/Loader';
 import { useFetch } from '@/hooks/useFetch';
@@ -26,7 +26,7 @@ function AdminUsers({ permission }) {
   const { data, error } = useFetch(`/users/find/by/id/${id}`);
   const { data: dataTypes } = useFetch('/users/find/all/types');
 
-  if (!permission) return <NotFound />;
+  if (!permission) return <Error error={404} />;
 
   return (
     <>

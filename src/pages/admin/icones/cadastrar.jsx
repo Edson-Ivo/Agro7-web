@@ -11,7 +11,7 @@ import Button from '@/components/Button';
 import FileInput from '@/components/FileInput';
 import { Section, SectionHeader, SectionBody } from '@/components/Section';
 import { CardContainer } from '@/components/CardContainer';
-import NotFound from '@/components/NotFound';
+import Error from '@/components/Error';
 
 import { privateRoute } from '@/components/PrivateRoute';
 import { Alert } from '@/components/Alert';
@@ -112,7 +112,7 @@ function AdminIconsCreate({ permission }) {
       });
   };
 
-  if (!permission) return <NotFound />;
+  if (!permission) return <Error error={404} />;
 
   return (
     <>

@@ -15,7 +15,7 @@ import { Section, SectionHeader, SectionBody } from '@/components/Section';
 
 import { CardContainer } from '@/components/CardContainer';
 import { privateRoute } from '@/components/PrivateRoute';
-import NotFound from '@/components/NotFound';
+import Error from '@/components/Error';
 import getFormData from '@/helpers/getFormData';
 import AddressesService from '@/services/AddressesService';
 import UsersService from '@/services/UsersService';
@@ -204,7 +204,7 @@ function AdminUsers({ permission }) {
       });
   };
 
-  if (!permission) return <NotFound />;
+  if (!permission) return <Error error={404} />;
 
   return (
     <>

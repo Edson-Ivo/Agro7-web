@@ -12,7 +12,7 @@ import { Section, SectionHeader, SectionBody } from '@/components/Section';
 
 import { CardContainer } from '@/components/CardContainer';
 import { privateRoute } from '@/components/PrivateRoute';
-import NotFound from '@/components/NotFound';
+import Error from '@/components/Error';
 import { useFetch } from '@/hooks/useFetch';
 import Loader from '@/components/Loader/index';
 import { ColorViewer } from '@/components/ColorsContainer/index';
@@ -24,7 +24,7 @@ function AdminCoresDetails({ permission }) {
   const { id } = router.query;
   const { data: dataColor, error } = useFetch(`/colors/find/by/id/${id}`);
 
-  if (!permission) return <NotFound />;
+  if (!permission) return <Error error={404} />;
 
   return (
     <>

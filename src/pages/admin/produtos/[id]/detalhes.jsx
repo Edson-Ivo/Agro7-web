@@ -14,7 +14,7 @@ import { CardContainer } from '@/components/CardContainer';
 import { privateRoute } from '@/components/PrivateRoute';
 
 import TextArea from '@/components/TextArea/index';
-import NotFound from '@/components/NotFound';
+import Error from '@/components/Error';
 
 import { useFetch } from '@/hooks/useFetch';
 import Loader from '@/components/Loader/index';
@@ -26,7 +26,7 @@ function AdminProductsDetails({ permission }) {
   const { id } = router.query;
   const { data, error } = useFetch(`/products/find/by/id/${id}`);
 
-  if (!permission) return <NotFound />;
+  if (!permission) return <Error error={404} />;
 
   return (
     <>
