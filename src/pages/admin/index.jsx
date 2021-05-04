@@ -22,7 +22,6 @@ import Breadcrumb from '@/components/Breadcrumb';
 import { Section, SectionHeader, SectionBody } from '@/components/Section';
 
 import { privateRoute } from '@/components/PrivateRoute';
-import Error from '@/components/Error';
 
 const data = [
   {
@@ -68,8 +67,7 @@ const data = [
   }
 ];
 
-function AdminHome({ permission }) {
-  if (!permission) return <Error error={404} />;
+function AdminHome() {
   const { name } = useSelector(state => state.user);
 
   return (

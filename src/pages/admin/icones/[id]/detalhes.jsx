@@ -18,7 +18,7 @@ import TextArea from '@/components/TextArea/index';
 import { useFetch } from '@/hooks/useFetch';
 import Loader from '@/components/Loader/index';
 
-function AdminIconsDetails({ permission }) {
+function AdminIconsDetails() {
   const router = useRouter();
 
   const { id } = router.query;
@@ -27,8 +27,6 @@ function AdminIconsDetails({ permission }) {
   const handleCancel = () => {
     router.back();
   };
-
-  if (!permission) return <Error error={404} />;
 
   return (
     <>

@@ -133,7 +133,7 @@ const schema = yup.object().shape({
     .nullable()
 });
 
-function AdminProductsEdit({ permission }) {
+function AdminProductsEdit() {
   const formRef = useRef(null);
   const inputRef = useRef(null);
   const [activeStep, setActiveStep] = useState(1);
@@ -280,8 +280,6 @@ function AdminProductsEdit({ permission }) {
         setDisableButton(false);
       });
   };
-
-  if (!permission) return <Error error={404} />;
 
   return (
     <>

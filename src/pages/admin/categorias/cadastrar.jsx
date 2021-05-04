@@ -30,7 +30,7 @@ const schema = yup.object().shape({
   description: yup.string().nullable()
 });
 
-function AdminCategoriesCreate({ permission }) {
+function AdminCategoriesCreate() {
   const [alert, setAlert] = useState({ type: '', message: '' });
   const [disableButton, setDisableButton] = useState(false);
   const [activeStep, setActiveStep] = useState(1);
@@ -130,7 +130,6 @@ function AdminCategoriesCreate({ permission }) {
       });
   };
 
-  if (!permission) return <Error error={404} />;
   if (errorColors || errorIcons) return <Error />;
 
   return (

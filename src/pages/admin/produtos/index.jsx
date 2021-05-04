@@ -29,7 +29,7 @@ import errorMessage from '@/helpers/errorMessage';
 import truncate from '@/helpers/truncate';
 import { dateConversor } from '@/helpers/date';
 
-function AdminProducts({ permission }) {
+function AdminProducts() {
   const [alertMsg, setAlertMsg] = useState({ type: '', message: '' });
   const [loading, setLoading] = useState(false);
 
@@ -79,7 +79,6 @@ function AdminProducts({ permission }) {
     [addModal, removeModal]
   );
 
-  if (!permission) return <Error error={404} />;
   if (error) return <Error />;
 
   return (

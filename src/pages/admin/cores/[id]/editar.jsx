@@ -33,7 +33,7 @@ const schema = yup.object().shape({
     )
 });
 
-function AdminCoresEdit({ permission }) {
+function AdminCoresEdit() {
   const [alert, setAlert] = useState({ type: '', message: '' });
   const [disableButton, setDisableButton] = useState(false);
   const formRef = useRef(null);
@@ -97,8 +97,6 @@ function AdminCoresEdit({ permission }) {
         setDisableButton(false);
       });
   };
-
-  if (!permission) return <Error error={404} />;
 
   return (
     <>

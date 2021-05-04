@@ -19,14 +19,12 @@ import Error from '@/components/Error';
 import { useFetch } from '@/hooks/useFetch';
 import Loader from '@/components/Loader/index';
 
-function AdminProductsDetails({ permission }) {
+function AdminProductsDetails() {
   const router = useRouter();
   const [activeStep, setActiveStep] = useState(1);
 
   const { id } = router.query;
   const { data, error } = useFetch(`/products/find/by/id/${id}`);
-
-  if (!permission) return <Error error={404} />;
 
   return (
     <>

@@ -88,12 +88,11 @@ export const Card = styled.div`
   }
 
   &:hover {
-    filter: brightness(0.97);
+    filter: brightness(0.98);
     box-shadow: 0px 6px 13px rgba(0, 0, 0, 0.05);
-    transform: scale(0.995);
   }
 
   &:active {
-    transform: scale(0.9725);
+    transform: scale(0.985);
   }
 `;

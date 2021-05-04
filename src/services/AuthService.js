@@ -1,4 +1,5 @@
 import { Base64 } from 'js-base64';
+import isValidJSON from '@/helpers/isValidJSON';
 import { AUTH_COOKIE_NAME, AUTH_COOKIE_TOKEN } from './constants';
 import { getCookie, setCookie, removeCookie } from '../helpers/cookies';
 
@@ -36,12 +37,14 @@ class AuthService {
 
   static decodeUserData(data) {
     if (data) {
-      return JSON.parse(decodeURIComponent(Base64.decode(data)));
+      const decodedUser = Base64.decode(data);
+
+      if (isValidJSON(decodedUser))
+        return JSON.parse(decodeURIComponent(decodedUser));
     }
     return {
       id: 0,
       name: '',
-      email: '',
       types: ''
     };
   }

@@ -19,15 +19,13 @@ import { ColorViewer } from '@/components/ColorsContainer/index';
 import { isLight } from '@/helpers/colors';
 import TextArea from '@/components/TextArea/index';
 
-function AdminCategoriesDetails({ permission }) {
+function AdminCategoriesDetails() {
   const router = useRouter();
 
   const { id } = router.query;
   const { data: dataCategory, error } = useFetch(
     `/categories/find/by/id/${id}`
   );
-
-  if (!permission) return <Error error={404} />;
 
   return (
     <>

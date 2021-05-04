@@ -177,4 +177,4 @@ function Configuracoes() {
   );
 }
 
-export default privateRoute(['administrator'])(Configuracoes);
+export default privateRoute()(Configuracoes);
