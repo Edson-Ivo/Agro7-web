@@ -30,7 +30,7 @@ const schema = yup.object().shape({
   description: yup.string().nullable()
 });
 
-function AdminIconsEdit({ permission }) {
+function AdminIconsEdit() {
   const formRef = useRef(null);
   const inputRef = useRef(null);
   const [alert, setAlert] = useState({ type: '', message: '' });
@@ -119,8 +119,6 @@ function AdminIconsEdit({ permission }) {
         setDisableButton(false);
       });
   };
-
-  if (!permission) return <Error error={404} />;
 
   return (
     <>

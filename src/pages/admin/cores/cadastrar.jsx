@@ -31,7 +31,7 @@ const schema = yup.object().shape({
     )
 });
 
-function AdminCoresCreate({ permission }) {
+function AdminCoresCreate() {
   const [alert, setAlert] = useState({ type: '', message: '' });
   const [disableButton, setDisableButton] = useState(false);
   const router = useRouter();
@@ -88,8 +88,6 @@ function AdminCoresCreate({ permission }) {
         setDisableButton(false);
       });
   };
-
-  if (!permission) return <Error error={404} />;
 
   return (
     <>

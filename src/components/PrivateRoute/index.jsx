@@ -1,41 +1,37 @@
 import React, { Component } from 'react';
-import ServerCookie from 'next-cookies';
+
 import { AUTH_COOKIE_TOKEN, AUTH_COOKIE_NAME } from '@/services/constants';
+
+import isEmpty from '@/helpers/isEmpty';
 import AuthService from '@/services/AuthService';
+
 import { redirect } from '@/helpers/redirect';
+import { getCookie } from '@/helpers/cookies';
+import Error from '../Error/index';
 
 export function privateRoute(types) {
   return WrappedComponent =>
     class extends Component {
       static async getInitialProps(ctx) {
-        const token = ServerCookie(ctx)[AUTH_COOKIE_TOKEN];
-        const userData = ServerCookie(ctx)[AUTH_COOKIE_NAME];
+        const token = getCookie(AUTH_COOKIE_TOKEN, ctx);
+        const userData = getCookie(AUTH_COOKIE_NAME, ctx);
 
-        let initialProps = { permission: true, type: 'independent' };
+        let initialProps = { hasPermission: true };
 
         if (!token || !userData) {
+          AuthService.logout();
+
           redirect('/login', ctx.res);
         }
 
-        if (types) {
-          let user = ServerCookie(ctx)[AUTH_COOKIE_NAME];
+        if (!isEmpty(types)) {
+          const user = AuthService.decodeUserData(userData);
+          const hasPermission = types.includes(user?.types);
 
-          if (user) {
-            user = AuthService.decodeUserData(user);
-            let perm = true;
-
-            if (!types.includes(user.types)) {
-              perm = false;
-            }
-
-            initialProps = {
-              ...initialProps,
-              permission: perm,
-              type: user.types
-            };
-          } else {
-            redirect('/login', ctx.res);
-          }
+          initialProps = {
+            ...initialProps,
+            hasPermission
+          };
         }
 
         if (WrappedComponent.getInitialProps)
@@ -45,8 +41,12 @@ export function privateRoute(types) {
       }
 
       render() {
-        return (
-          <WrappedComponent permission={this.permission} {...this.props} />
+        const { hasPermission } = this.props;
+
+        return hasPermission ? (
+          <WrappedComponent {...this.props} />
+        ) : (
+          <Error error={403} />
         );
       }
     };

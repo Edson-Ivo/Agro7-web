@@ -29,7 +29,7 @@ import ColorsContainer from '@/components/ColorsContainer/index';
 import truncate from '@/helpers/truncate';
 import CategoriesService from '@/services/CategoriesService';
 
-function AdminCategories({ permission }) {
+function AdminCategories() {
   const [alertMsg, setAlertMsg] = useState({ type: '', message: '' });
   const [loading, setLoading] = useState(false);
 
@@ -82,7 +82,6 @@ function AdminCategories({ permission }) {
     [addModal, removeModal]
   );
 
-  if (!permission) return <Error error={404} />;
   if (error) return <Error />;
 
   return (

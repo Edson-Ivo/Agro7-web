@@ -18,13 +18,11 @@ import Loader from '@/components/Loader/index';
 import { ColorViewer } from '@/components/ColorsContainer/index';
 import { isLight } from '@/helpers/colors';
 
-function AdminCoresDetails({ permission }) {
+function AdminCoresDetails() {
   const router = useRouter();
 
   const { id } = router.query;
   const { data: dataColor, error } = useFetch(`/colors/find/by/id/${id}`);
-
-  if (!permission) return <Error error={404} />;
 
   return (
     <>

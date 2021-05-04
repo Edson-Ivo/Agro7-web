@@ -27,7 +27,7 @@ import { useModal } from '@/hooks/useModal';
 import UsersService from '@/services/UsersService';
 import errorMessage from '@/helpers/errorMessage';
 
-function AdminUsers({ permission }) {
+function AdminUsers() {
   const [alertMsg, setAlertMsg] = useState({ type: '', message: '' });
   const [loading, setLoading] = useState(false);
 
@@ -77,7 +77,6 @@ function AdminUsers({ permission }) {
     [addModal, removeModal]
   );
 
-  if (!permission) return <Error error={404} />;
   if (error) return <Error />;
 
   return (

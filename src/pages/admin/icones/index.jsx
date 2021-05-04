@@ -28,7 +28,7 @@ import errorMessage from '@/helpers/errorMessage';
 import truncate from '@/helpers/truncate';
 import IconsService from '@/services/IconsService';
 
-function AdminIcons({ permission }) {
+function AdminIcons() {
   const [alertMsg, setAlertMsg] = useState({ type: '', message: '' });
   const [loading, setLoading] = useState(false);
 
@@ -78,7 +78,6 @@ function AdminIcons({ permission }) {
     [addModal, removeModal]
   );
 
-  if (!permission) return <Error error={404} />;
   if (error) return <Error />;
 
   return (

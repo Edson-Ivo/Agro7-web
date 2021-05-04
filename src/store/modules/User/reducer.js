@@ -5,7 +5,6 @@ import { AUTHENTICATE, DEAUTHENTICATE } from './constants';
 let INITIAL_STATE = {
   id: 0,
   name: '',
-  email: '',
   types: ''
 };
 
@@ -31,7 +30,6 @@ const UserReducer = (state = INITIAL_STATE, action) => {
       return {
         id: 0,
         name: '',
-        email: '',
         types: ''
       };
     }

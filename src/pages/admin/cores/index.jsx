@@ -28,7 +28,7 @@ import errorMessage from '@/helpers/errorMessage';
 import ColorsContainer from '@/components/ColorsContainer/index';
 import ColorsService from '@/services/ColorsService';
 
-function AdminColors({ permission }) {
+function AdminColors() {
   const [alertMsg, setAlertMsg] = useState({ type: '', message: '' });
   const [loading, setLoading] = useState(false);
 
@@ -81,7 +81,6 @@ function AdminColors({ permission }) {
     [addModal, removeModal]
   );
 
-  if (!permission) return <Error error={404} />;
   if (error) return <Error />;
 
   return (

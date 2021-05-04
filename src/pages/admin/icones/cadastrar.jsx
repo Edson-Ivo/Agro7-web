@@ -28,7 +28,7 @@ const schema = yup.object().shape({
   description: yup.string().nullable()
 });
 
-function AdminIconsCreate({ permission }) {
+function AdminIconsCreate() {
   const formRef = useRef(null);
   const inputRef = useRef(null);
   const [alert, setAlert] = useState({ type: '', message: '' });
@@ -111,8 +111,6 @@ function AdminIconsCreate({ permission }) {
         setDisableButton(false);
       });
   };
-
-  if (!permission) return <Error error={404} />;
 
   return (
     <>

@@ -80,7 +80,7 @@ const schema = yup.object().shape({
     .nullable()
 });
 
-function AdminUsers({ permission }) {
+function AdminUsers() {
   const [alert, setAlert] = useState({ type: '', message: '' });
   const [disableButton, setDisableButton] = useState(false);
   const [loadingAddresses, setLoadingAddresses] = useState(false);
@@ -203,8 +203,6 @@ function AdminUsers({ permission }) {
         setDisableButton(false);
       });
   };
-
-  if (!permission) return <Error error={404} />;
 
   return (
     <>

@@ -19,14 +19,12 @@ import Loader from '@/components/Loader';
 import { useFetch } from '@/hooks/useFetch';
 import capitalize from '@/helpers/capitalize';
 
-function AdminUsers({ permission }) {
+function AdminUsers() {
   const router = useRouter();
   const { id } = router.query;
 
   const { data, error } = useFetch(`/users/find/by/id/${id}`);
   const { data: dataTypes } = useFetch('/users/find/all/types');
-
-  if (!permission) return <Error error={404} />;
 
   return (
     <>
