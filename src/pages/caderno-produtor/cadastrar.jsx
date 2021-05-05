@@ -100,7 +100,7 @@ function ProducerNotebookCreate() {
     `/categories/find/all?limit=30`
   );
 
-  if (errorCategories) return <Error />;
+  if (errorCategories) return <Error error={errorCategories} />;
 
   return (
     <>
