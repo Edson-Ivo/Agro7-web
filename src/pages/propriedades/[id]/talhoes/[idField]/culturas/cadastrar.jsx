@@ -22,6 +22,7 @@ import getFormData from '@/helpers/getFormData';
 import CulturesService from '@/services/CulturesService';
 import SearchSelect from '@/components/SearchSelect/index';
 import { dateToISOString } from '@/helpers/date';
+import Error from '@/components/Error/index';
 
 const schema = yup.object().shape({
   date_start: yup.string().required('O campo data inicial é obrigatório!'),
@@ -128,10 +129,11 @@ function CulturasCreate() {
       });
   };
 
+  if (error) return <Error error={error} />;
+  if (data && id !== String(data?.properties?.id)) return <Error error={404} />;
+
   return (
     <>
-      {error && router.back()}
-      {data && id !== data?.properties.id.toString() && router.back()}
       <Head>
         <title>Adicionar Cultura - Agro7</title>
       </Head>

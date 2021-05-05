@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import Head from 'next/head';
 import Link from 'next/link';
 import Image from 'next/image';
 
@@ -49,6 +50,9 @@ export default function Error({ error }) {
 
   return (
     <>
+      <Head>
+        <title>{dataError?.title} - Agro7</title>
+      </Head>
       <Container>
         <CenterContainer>
           <div className="CenterContainer__content">

@@ -24,6 +24,7 @@ import errorMessage from '@/helpers/errorMessage';
 import isEmpty from '@/helpers/isEmpty';
 import Pagination from '@/components/Pagination/index';
 import CulturesService from '@/services/CulturesService';
+import Error from '@/components/Error/index';
 
 function Culturas() {
   const router = useRouter();
@@ -54,7 +55,7 @@ function Culturas() {
 
       await CulturesService.delete(identifier).then(res => {
         if (res.status >= 400 || res?.statusCode) {
-          setAlertMsg(errorMessage(res));
+          setAlertMsg({ type: 'error', message: errorMessage(res) });
         } else {
           mutateCultures();
 
@@ -83,10 +84,11 @@ function Culturas() {
     [addModal, removeModal]
   );
 
+  if (error || errorCultures) return <Error error={error || errorCultures} />;
+  if (data && id !== String(data?.properties?.id)) return <Error error={404} />;
+
   return (
     <>
-      {(error || errorCultures) && router.back()}
-      {data && id !== data?.properties.id.toString() && router.back()}
       <Head>
         <title>Culturas do Talhão {data && data.name} - Agro7</title>
       </Head>
