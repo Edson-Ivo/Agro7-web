@@ -120,9 +120,10 @@ function AdminIconsEdit() {
       });
   };
 
+  if (error) return <Error error={error} />;
+
   return (
     <>
-      {error && router.back()}
       <Head>
         <title>Painel Adminstrativo | Editar Ícone - Agro7</title>
       </Head>

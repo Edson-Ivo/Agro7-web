@@ -71,8 +71,8 @@ function AdminCoresEdit() {
 
         data.hexadecimal = data.hexadecimal.replaceAll('#', '');
 
-        await ColorsService.create(data).then(res => {
-          if (res.status !== 201 || res?.statusCode) {
+        await ColorsService.update(id, data).then(res => {
+          if (res.status !== 200 || res?.statusCode) {
             setAlert({ type: 'error', message: errorMessage(res) });
             setTimeout(() => {
               setDisableButton(false);
@@ -98,9 +98,10 @@ function AdminCoresEdit() {
       });
   };
 
+  if (error) return <Error error={error} />;
+
   return (
     <>
-      {error && router.back()}
       <Head>
         <title>Painel Adminstrativo | Editar Cor - Agro7</title>
       </Head>

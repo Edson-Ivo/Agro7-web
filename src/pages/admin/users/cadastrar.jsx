@@ -15,7 +15,6 @@ import { Section, SectionHeader, SectionBody } from '@/components/Section';
 
 import { CardContainer } from '@/components/CardContainer';
 import { privateRoute } from '@/components/PrivateRoute';
-import Error from '@/components/Error';
 import getFormData from '@/helpers/getFormData';
 import AddressesService from '@/services/AddressesService';
 import UsersService from '@/services/UsersService';

@@ -81,7 +81,7 @@ function AdminColors() {
     [addModal, removeModal]
   );
 
-  if (error) return <Error />;
+  if (error) return <Error error={error} />;
 
   return (
     <>
