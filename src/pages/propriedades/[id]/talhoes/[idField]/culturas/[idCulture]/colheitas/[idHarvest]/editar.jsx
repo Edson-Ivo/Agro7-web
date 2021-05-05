@@ -20,6 +20,7 @@ import { useFetch } from '@/hooks/useFetch';
 import getFormData from '@/helpers/getFormData';
 import { dateToInput, dateToISOString } from '@/helpers/date';
 import HarvestsService from '@/services/HarvestsService';
+import Error from '@/components/Error/index';
 
 const schema = yup.object().shape({
   date: yup.string().required('O campo data é obrigatório!'),
@@ -131,13 +132,14 @@ function ColheitasEdit() {
       });
   };
 
+  if (error || errorCultures || errorHarvests)
+    return <Error error={error || errorCultures || errorHarvests} />;
+  if (data && id !== String(data?.properties?.id)) return <Error error={404} />;
+  if (dataCultures && idField !== String(dataCultures?.fields?.id))
+    return <Error error={404} />;
+
   return (
     <>
-      {(error || errorCultures || errorHarvests) && router.back()}
-      {data && id !== data?.properties?.id.toString() && router.back()}
-      {dataCultures &&
-        idField !== dataCultures?.fields?.id.toString() &&
-        router.back()}
       <Head>
         <title>Editar Colheita - Agro7</title>
       </Head>

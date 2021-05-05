@@ -25,6 +25,7 @@ import isEmpty from '@/helpers/isEmpty';
 import Pagination from '@/components/Pagination';
 import HarvestsService from '@/services/HarvestsService';
 import { dateConversor } from '@/helpers/date';
+import Error from '@/components/Error/index';
 
 function Colheitas() {
   const router = useRouter();
@@ -61,7 +62,7 @@ function Colheitas() {
 
       await HarvestsService.delete(identifier).then(res => {
         if (res.status >= 400 || res?.statusCode) {
-          setAlertMsg(errorMessage(res));
+          setAlertMsg({ type: 'error', message: errorMessage(res) });
         } else {
           mutateHarvests();
 
@@ -90,13 +91,14 @@ function Colheitas() {
     [addModal, removeModal]
   );
 
+  if (error || errorCultures || errorHarvests)
+    return <Error error={error || errorCultures || errorHarvests} />;
+  if (data && id !== String(data?.properties?.id)) return <Error error={404} />;
+  if (dataCultures && idField !== String(dataCultures?.fields?.id))
+    return <Error error={404} />;
+
   return (
     <>
-      {(error || errorCultures || errorHarvests) && router.back()}
-      {data && id !== data?.properties?.id.toString() && router.back()}
-      {dataCultures &&
-        idField !== dataCultures?.fields?.id.toString() &&
-        router.back()}
       <Head>
         <title>
           Colheitas da Cultura de {dataCultures?.products.name} do Talhão{' '}
