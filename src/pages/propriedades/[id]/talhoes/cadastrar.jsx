@@ -23,6 +23,7 @@ import FieldsService from '@/services/FieldsService';
 import getFormData from '@/helpers/getFormData';
 import isEmpty from '@/helpers/isEmpty';
 import areaConversor from '@/helpers/areaConversor';
+import Error from '@/components/Error/index';
 
 const schema = yup.object().shape({
   name: yup
@@ -154,9 +155,10 @@ function TalhoesCadastrar() {
       });
   };
 
+  if (error) return <Error error={error} />;
+
   return (
     <>
-      {error && router.back()}
       <Head>
         <title>Adicionar Talhão - Agro7</title>
       </Head>
