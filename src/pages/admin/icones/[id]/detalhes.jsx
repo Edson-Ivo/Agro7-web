@@ -28,9 +28,10 @@ function AdminIconsDetails() {
     router.back();
   };
 
+  if (error) return <Error error={error} />;
+
   return (
     <>
-      {error && router.back()}
       <Head>
         <title>
           Painel Adminstrativo | Ícone {dataIcon && dataIcon.name} - Agro7

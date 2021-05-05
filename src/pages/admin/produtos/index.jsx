@@ -50,7 +50,7 @@ function AdminProducts() {
 
       await ProductsService.delete(id).then(res => {
         if (res.status !== 200 || res?.statusCode) {
-          setAlertMsg(errorMessage(res));
+          setAlertMsg({ type: 'error', message: errorMessage(res) });
         } else {
           mutate();
 
@@ -79,7 +79,7 @@ function AdminProducts() {
     [addModal, removeModal]
   );
 
-  if (error) return <Error />;
+  if (error) return <Error error={error} />;
 
   return (
     <>

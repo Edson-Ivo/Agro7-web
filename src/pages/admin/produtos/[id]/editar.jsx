@@ -281,9 +281,10 @@ function AdminProductsEdit() {
       });
   };
 
+  if (error) return <Error error={error} />;
+
   return (
     <>
-      {error && router.back()}
       <Head>
         <title>Painel Adminstrativo | Editar Produto - Agro7</title>
       </Head>

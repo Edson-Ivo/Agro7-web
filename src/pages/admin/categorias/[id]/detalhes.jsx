@@ -27,9 +27,10 @@ function AdminCategoriesDetails() {
     `/categories/find/by/id/${id}`
   );
 
+  if (error) return <Error error={error} />;
+
   return (
     <>
-      {error && router.back()}
       <Head>
         <title>
           Painel Adminstrativo | Categoria {dataCategory && dataCategory.name} -

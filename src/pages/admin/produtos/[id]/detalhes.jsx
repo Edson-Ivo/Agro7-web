@@ -26,9 +26,10 @@ function AdminProductsDetails() {
   const { id } = router.query;
   const { data, error } = useFetch(`/products/find/by/id/${id}`);
 
+  if (error) return <Error error={error} />;
+
   return (
     <>
-      {error && router.back()}
       <Head>
         <title>
           Painel Adminstrativo | Produto {data && data.name} - Agro7

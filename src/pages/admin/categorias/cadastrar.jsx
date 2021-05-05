@@ -130,7 +130,8 @@ function AdminCategoriesCreate() {
       });
   };
 
-  if (errorColors || errorIcons) return <Error />;
+  if (errorColors || errorIcons)
+    return <Error error={errorColors || errorIcons} />;
 
   return (
     <>

@@ -26,9 +26,10 @@ function AdminUsers() {
   const { data, error } = useFetch(`/users/find/by/id/${id}`);
   const { data: dataTypes } = useFetch('/users/find/all/types');
 
+  if (error) return <Error error={error} />;
+
   return (
     <>
-      {error && router.back()}
       <Head>
         <title>Painel Adminstrativo | Gerenciar Usuários - Agro7</title>
       </Head>

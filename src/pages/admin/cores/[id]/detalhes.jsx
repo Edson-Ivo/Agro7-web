@@ -24,9 +24,10 @@ function AdminCoresDetails() {
   const { id } = router.query;
   const { data: dataColor, error } = useFetch(`/colors/find/by/id/${id}`);
 
+  if (error) return <Error error={error} />;
+
   return (
     <>
-      {error && router.back()}
       <Head>
         <title>
           Painel Adminstrativo | Cor {dataColor && dataColor.name} - Agro7
