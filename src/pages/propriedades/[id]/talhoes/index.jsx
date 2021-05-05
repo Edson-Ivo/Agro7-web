@@ -24,6 +24,7 @@ import errorMessage from '@/helpers/errorMessage';
 import isEmpty from '@/helpers/isEmpty';
 import FieldsService from '@/services/FieldsService';
 import Pagination from '@/components/Pagination/index';
+import Error from '@/components/Error/index';
 
 function Talhoes() {
   const router = useRouter();
@@ -54,7 +55,7 @@ function Talhoes() {
 
       await FieldsService.delete(identifier).then(res => {
         if (res.status >= 400 || res?.statusCode) {
-          setAlertMsg(errorMessage(res));
+          setAlertMsg({ type: 'error', message: errorMessage(res) });
         } else {
           mutateFields();
 
@@ -83,9 +84,10 @@ function Talhoes() {
     [addModal, removeModal]
   );
 
+  if (error || errorFields) return <Error error={error || errorFields} />;
+
   return (
     <>
-      {(error || errorFields) && router.back()}
       <Head>
         <title>Talhões da Propriedade {data && data.name} - Agro7</title>
       </Head>

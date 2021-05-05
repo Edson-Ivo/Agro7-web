@@ -21,6 +21,7 @@ import { useFetch } from '@/hooks/useFetch';
 
 import { MapActionPlotArea } from '@/components/MapApp';
 import Loader from '@/components/Loader';
+import Error from '@/components/Error/index';
 
 function TalhoesInfo() {
   const router = useRouter();
@@ -33,9 +34,10 @@ function TalhoesInfo() {
     `/fields/find/by/id/${idField}`
   );
 
+  if (error || errorFields) return <Error error={error || errorFields} />;
+
   return (
     <>
-      {(error || errorFields) && router.back()}
       <Head>
         <title>Talhão - Agro7</title>
       </Head>

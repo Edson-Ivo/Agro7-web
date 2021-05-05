@@ -23,6 +23,7 @@ import { MapActionPlotArea } from '@/components/MapApp';
 import isEmpty from '@/helpers/isEmpty';
 import Loader from '@/components/Loader';
 import areaConversor from '@/helpers/areaConversor';
+import Error from '@/components/Error/index';
 
 const schema = yup.object().shape({
   name: yup
@@ -146,9 +147,10 @@ function TalhoesEdit() {
       });
   };
 
+  if (error || errorFields) return <Error error={error || errorFields} />;
+
   return (
     <>
-      {(error || errorFields) && router.back()}
       <Head>
         <title>Editar Talhão - Agro7</title>
       </Head>
