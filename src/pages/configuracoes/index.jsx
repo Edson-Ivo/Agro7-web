@@ -21,7 +21,7 @@ import { useFetch } from '@/hooks/useFetch';
 function Configuracoes() {
   const { data, error } = useFetch(`/users/find/by/logged`);
 
-  if (error) return <Error />;
+  if (error) return <Error error={error} />;
 
   return (
     <>
@@ -157,12 +157,12 @@ function Configuracoes() {
                     <div className="form-group buttons">
                       <div>
                         <Link href="configuracoes/editar">
-                          <Button>Editar Dados</Button>
+                          <Button type="button">Editar Dados</Button>
                         </Link>
                       </div>
                       <div>
                         <Link href="configuracoes/senha">
-                          <Button>Alterar Senha</Button>
+                          <Button type="button">Alterar Senha</Button>
                         </Link>
                       </div>
                     </div>

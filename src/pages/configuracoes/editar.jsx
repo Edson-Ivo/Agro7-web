@@ -163,9 +163,6 @@ function ConfiguracoesEdit() {
               async res2 => {
                 if (res2.status >= 400 || res2?.statusCode) {
                   setAlert({ type: 'error', message: errorMessage(res2) });
-                  setTimeout(() => {
-                    setDisableButton(false);
-                  }, 1000);
                 } else {
                   mutate();
                   setAlert({
@@ -183,9 +180,13 @@ function ConfiguracoesEdit() {
       .catch(err => {
         setAlert({ type: 'error', message: err.errors[0] });
       });
+
+    setTimeout(() => {
+      setDisableButton(false);
+    }, 1000);
   };
 
-  if (error) return <Error />;
+  if (error) return <Error error={error} />;
 
   return (
     <>
