@@ -21,6 +21,7 @@ import Loader from '@/components/Loader';
 import { useFetch } from '@/hooks/useFetch';
 
 import { dateToInput } from '@/helpers/date';
+import Error from '@/components/Error/index';
 
 function CulturasInfo() {
   const router = useRouter();
@@ -32,10 +33,11 @@ function CulturasInfo() {
     `/cultures/find/by/id/${idCulture}`
   );
 
+  if (error || errorCultures) return <Error error={error || errorCultures} />;
+  if (data && id !== String(data?.properties?.id)) return <Error error={404} />;
+
   return (
     <>
-      {(error || errorCultures) && router.back()}
-      {data && id !== data?.properties.id.toString() && router.back()}
       <Head>
         <title>Cultura - Agro7</title>
       </Head>

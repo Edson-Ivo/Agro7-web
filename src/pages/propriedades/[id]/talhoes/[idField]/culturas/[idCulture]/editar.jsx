@@ -22,6 +22,7 @@ import getFormData from '@/helpers/getFormData';
 import CulturesService from '@/services/CulturesService';
 import SearchSelect from '@/components/SearchSelect/index';
 import { dateToInput, dateToISOString } from '@/helpers/date';
+import Error from '@/components/Error/index';
 
 const schema = yup.object().shape({
   date_start: yup.string().required('O campo data inicial é obrigatório!'),
@@ -108,7 +109,7 @@ function CulturasEdit() {
         d.fields = Number(idField);
 
         await CulturesService.update(idCulture, d).then(res => {
-          if (res.status !== 201 || res?.statusCode) {
+          if (res.status !== 200 || res?.statusCode) {
             setAlert({ type: 'error', message: errorMessage(res) });
             setTimeout(() => {
               setDisableButton(false);
@@ -136,10 +137,11 @@ function CulturasEdit() {
       });
   };
 
+  if (error || errorCultures) return <Error error={error || errorCultures} />;
+  if (data && id !== String(data?.properties?.id)) return <Error error={404} />;
+
   return (
     <>
-      {(error || errorCultures) && router.back()}
-      {data && id !== data?.properties.id.toString() && router.back()}
       <Head>
         <title>Editar Cultura - Agro7</title>
       </Head>
