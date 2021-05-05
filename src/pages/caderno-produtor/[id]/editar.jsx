@@ -104,7 +104,8 @@ function ProducerNotebookEdit() {
     `/categories/find/all?limit=30`
   );
 
-  if (errorCategories || error) return <Error />;
+  if (errorCategories || error)
+    return <Error error={errorCategories || error} />;
 
   return (
     <>

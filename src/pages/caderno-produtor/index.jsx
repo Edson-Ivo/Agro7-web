@@ -123,7 +123,8 @@ function ProducerNotebook() {
     setActiveCategory(e?.value || '');
   };
 
-  if (error || errorCategories) return <Error />;
+  if (errorCategories || error)
+    return <Error error={errorCategories || error} />;
 
   return (
     <>

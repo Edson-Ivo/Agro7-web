@@ -49,7 +49,7 @@ function ProducerNotebookDetails() {
 
       await ProducerNotebookService.delete(identifier).then(res => {
         if (res.status >= 400 || res?.statusCode) {
-          setAlert(errorMessage(res));
+          setAlert({ type: 'error', message: errorMessage(res) });
         } else {
           mutate();
 
@@ -75,7 +75,8 @@ function ProducerNotebookDetails() {
     });
   }, [addModal, removeModal]);
 
-  if (errorCategories || error) return <Error />;
+  if (errorCategories || error)
+    return <Error error={errorCategories || error} />;
 
   return (
     <>
