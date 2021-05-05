@@ -28,6 +28,7 @@ import { useRouter } from 'next/router';
 import { useFetch } from '@/hooks/useFetch';
 import AddressesService from '@/services/AddressesService';
 import Loader from '@/components/Loader/index';
+import Error from '@/components/Error/index';
 
 const schema = yup.object().shape({
   name: yup
@@ -262,9 +263,10 @@ function PropertiesEdit() {
       });
   };
 
+  if (error) return <Error error={error} />;
+
   return (
     <>
-      {error && router.back()}
       <Head>
         <title>Editando propriedade - Agro7</title>
       </Head>

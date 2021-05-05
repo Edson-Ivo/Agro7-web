@@ -23,7 +23,7 @@ export const getCookieFromBrowser = key => cookie.get(key);
 const getCookieFromServer = (key, ctx) => {
   const { req } = ctx;
 
-  if (!req && !req.headers && !req.headers.cookie) return undefined;
+  if (!req || !req.headers || !req.headers.cookie) return undefined;
 
   const rawCookie = req.headers.cookie
     .split(';')

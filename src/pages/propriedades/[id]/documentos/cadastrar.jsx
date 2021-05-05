@@ -19,6 +19,7 @@ import errorMessage from '@/helpers/errorMessage';
 import { useFetch } from '@/hooks/useFetch';
 import DocumentsService from '@/services/DocumentsService';
 import { useRouter } from 'next/router';
+import Error from '@/components/Error/index';
 
 function DocumentosCreate() {
   const formRef = useRef(null);
@@ -103,9 +104,10 @@ function DocumentosCreate() {
     }
   };
 
+  if (error) return <Error error={error} />;
+
   return (
     <>
-      {error && router.back()}
       <Head>
         <title>Adicionar Documento - Agro7</title>
       </Head>

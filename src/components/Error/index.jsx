@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import Link from 'next/link';
 import Image from 'next/image';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -66,17 +67,19 @@ export default function Error({ error }) {
                 <h3 style={{ marginBottom: '20px' }}>{dataError.title}</h3>
                 <p className="text">{dataError.description}</p>
                 <div style={{ marginTop: '20px' }}>
-                  <a href={dataError?.link ? dataError.link : '/'}>
-                    <Button className="primary loginButton">
-                      <FontAwesomeIcon
-                        icon={faSignInAlt}
-                        className="loginIcon"
-                      />{' '}
-                      {dataError?.text
-                        ? dataError.text
-                        : 'Voltar para página principal'}
-                    </Button>
-                  </a>
+                  <Link href={dataError?.link ? dataError.link : '/'}>
+                    <a>
+                      <Button className="primary loginButton">
+                        <FontAwesomeIcon
+                          icon={faSignInAlt}
+                          className="loginIcon"
+                        />{' '}
+                        {dataError?.text
+                          ? dataError.text
+                          : 'Voltar para página principal'}
+                      </Button>
+                    </a>
+                  </Link>
                 </div>
               </>
             )}

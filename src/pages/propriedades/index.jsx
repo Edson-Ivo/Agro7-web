@@ -50,7 +50,7 @@ function Properties() {
 
       await PropertiesService.delete(identifier).then(res => {
         if (res.status >= 400 || res?.statusCode) {
-          setAlertMsg(errorMessage(res));
+          setAlertMsg({ type: 'error', message: errorMessage(res) });
         } else {
           mutate();
 
@@ -79,12 +79,12 @@ function Properties() {
     [addModal, removeModal]
   );
 
-  if (error) return <Error />;
+  if (error) return <Error error={error} />;
 
   return (
     <>
       <Head>
-        <title>Painel do Usuário | Suas propriedades - Agro7</title>
+        <title>Suas propriedades - Agro7</title>
       </Head>
 
       <Navbar />
