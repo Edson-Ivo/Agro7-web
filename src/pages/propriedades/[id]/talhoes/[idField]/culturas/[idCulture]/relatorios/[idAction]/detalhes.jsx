@@ -22,6 +22,7 @@ import { useModal } from '@/hooks/useModal';
 import TechnicianActionsService from '@/services/TechnicianActionsService';
 import errorMessage from '@/helpers/errorMessage';
 import { dateConversor } from '@/helpers/date';
+import Error from '@/components/Error/index';
 
 function RelatoriosDetails() {
   const router = useRouter();
@@ -99,13 +100,14 @@ function RelatoriosDetails() {
     router.back();
   };
 
+  if (error || errorCultures || errorActions)
+    return <Error error={error || errorCultures || errorActions} />;
+  if (data && id !== String(data?.properties?.id)) return <Error error={404} />;
+  if (dataCultures && idField !== String(dataCultures?.fields?.id))
+    return <Error error={404} />;
+
   return (
     <>
-      {(error || errorCultures || errorActions) && router.back()}
-      {data && id !== data?.properties?.id.toString() && router.back()}
-      {dataCultures &&
-        idField !== dataCultures?.fields?.id.toString() &&
-        router.back()}
       <Head>
         <title>Relatório - Agro7</title>
       </Head>

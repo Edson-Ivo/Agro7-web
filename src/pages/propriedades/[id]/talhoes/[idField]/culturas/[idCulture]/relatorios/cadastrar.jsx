@@ -19,6 +19,7 @@ import { useFetch } from '@/hooks/useFetch';
 import getFormData from '@/helpers/getFormData';
 import TechnicianActionsService from '@/services/TechnicianActionsService';
 import TextArea from '@/components/TextArea';
+import Error from '@/components/Error/index';
 
 const schema = yup.object().shape({
   diagnostics: yup.string().required('O campo diagnóstico é obrigatório!'),
@@ -113,13 +114,13 @@ function RelatoriosCreate() {
       });
   };
 
+  if (error || errorCultures) return <Error error={error || errorCultures} />;
+  if (data && id !== String(data?.properties?.id)) return <Error error={404} />;
+  if (dataCultures && idField !== String(dataCultures?.fields?.id))
+    return <Error error={404} />;
+
   return (
     <>
-      {(error || errorCultures) && router.back()}
-      {data && id !== data?.properties?.id.toString() && router.back()}
-      {dataCultures &&
-        idField !== dataCultures?.fields?.id.toString() &&
-        router.back()}
       <Head>
         <title>Adicionar Relatório - Agro7</title>
       </Head>
@@ -227,4 +228,4 @@ function RelatoriosCreate() {
   );
 }
 
-export default privateRoute()(RelatoriosCreate);
+export default privateRoute(['technical', 'administrator'])(RelatoriosCreate);
