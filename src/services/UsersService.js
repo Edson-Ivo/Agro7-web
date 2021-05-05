@@ -25,10 +25,7 @@ class UsersService {
 
   static async updateByAdmin(id, data) {
     try {
-      const response = await api.put(
-        `/users/update/${id}`,
-        JSON.stringify({ data })
-      );
+      const response = await api.put(`/users/update/${id}`, { ...data });
       return response;
     } catch (error) {
       return error.response;
@@ -37,10 +34,9 @@ class UsersService {
 
   static async updatePasswordByAdmin(id, data) {
     try {
-      const response = await api.put(
-        `/users/update/password/${id}`,
-        JSON.stringify({ data })
-      );
+      const response = await api.put(`/users/update-password/${id}`, {
+        ...data
+      });
       return response;
     } catch (error) {
       return error.response;
@@ -67,7 +63,7 @@ class UsersService {
   static async updatePasswordByOwner(data) {
     try {
       const response = await api.put(
-        `/users/update/password`,
+        `/users/update-password`,
         { ...data },
         {
           headers: {
@@ -75,16 +71,6 @@ class UsersService {
           }
         }
       );
-      return response;
-    } catch (error) {
-      return error.response;
-    }
-  }
-
-  static async deleteByOwnerAccount() {
-    try {
-      const response = await api.delete(`/users/`);
-
       return response;
     } catch (error) {
       return error.response;

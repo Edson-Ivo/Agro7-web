@@ -142,7 +142,7 @@ function ConfiguracoesSenha() {
                     <div className="form-group buttons">
                       <div>
                         <Link href="/configuracoes">
-                          <Button>Cancelar</Button>
+                          <Button type="button">Cancelar</Button>
                         </Link>
                       </div>
                       <div>

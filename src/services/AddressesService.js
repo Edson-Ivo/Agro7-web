@@ -15,7 +15,7 @@ class AddressesService {
 
   static async update(id, data) {
     try {
-      const response = await api.put(`/addresses/${id}`, {
+      const response = await api.put(`/addresses/update/${id}`, {
         state: data.state,
         street: data.street,
         city: data.city,
