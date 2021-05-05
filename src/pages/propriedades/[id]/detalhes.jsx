@@ -28,6 +28,7 @@ import errorMessage from '@/helpers/errorMessage';
 import capitalize from '@/helpers/capitalize';
 import DocumentsService from '@/services/DocumentsService';
 import Pagination from '@/components/Pagination/index';
+import Error from '@/components/Error/index';
 
 function PropertieInfo() {
   const [activeStep, setActiveStep] = useState(1);
@@ -61,7 +62,7 @@ function PropertieInfo() {
 
       await DocumentsService.delete(identifier).then(res => {
         if (res.status >= 400 || res?.statusCode) {
-          setAlertMsg(errorMessage(res));
+          setAlertMsg({ type: 'error', message: errorMessage(res) });
         } else {
           mutateDocs();
 
@@ -90,9 +91,10 @@ function PropertieInfo() {
     [addModal, removeModal]
   );
 
+  if (error) return <Error error={error} />;
+
   return (
     <>
-      {error && router.back()}
       <Head>
         <title>Propriedade - Agro7</title>
       </Head>

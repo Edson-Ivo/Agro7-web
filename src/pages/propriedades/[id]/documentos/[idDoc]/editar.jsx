@@ -18,6 +18,7 @@ import { privateRoute } from '@/components/PrivateRoute';
 import { useFetch } from '@/hooks/useFetch';
 import DocumentsService from '@/services/DocumentsService';
 import { useRouter } from 'next/router';
+import Error from '@/components/Error/index';
 
 function DocumentosEdit() {
   const formRef = useRef(null);
@@ -84,9 +85,10 @@ function DocumentosEdit() {
     }
   };
 
+  if (error || errorDocs) return <Error error={error || errorDocs} />;
+
   return (
     <>
-      {(error || errorDocs) && router.back()}
       <Head>
         <title>Editar Documento - Agro7</title>
       </Head>
