@@ -18,6 +18,7 @@ const ActionButton = ({
   info = '/detalhes',
   noInfo = false,
   noEdit = false,
+  noDelete = false,
   download = '',
   edit = '/editar'
 }) => (
@@ -54,17 +55,20 @@ const ActionButton = ({
         </a>
       </Link>
     )}
-    <div
-      onClick={() => onDelete()}
-      onKeyPress={() => onDelete()}
-      title="Deletar"
-      role="button"
-      tabIndex="0"
-    >
-      <div>
-        <FontAwesomeIcon icon={faTrash} />
+
+    {!noDelete && (
+      <div
+        onClick={() => onDelete()}
+        onKeyPress={() => onDelete()}
+        title="Deletar"
+        role="button"
+        tabIndex="0"
+      >
+        <div>
+          <FontAwesomeIcon icon={faTrash} />
+        </div>
       </div>
-    </div>
+    )}
   </ActionButtonContainer>
 );
 

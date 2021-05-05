@@ -1,4 +1,5 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import Head from 'next/head';
 import Link from 'next/link';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -26,9 +27,13 @@ import Pagination from '@/components/Pagination';
 import TechnicianActionsService from '@/services/TechnicianActionsService';
 import truncate from '@/helpers/truncate';
 import { dateConversor } from '@/helpers/date';
+import Error from '@/components/Error/index';
 
 function Relatorios() {
+  const [willCreate, setWillCreate] = useState(false);
   const router = useRouter();
+  const { types } = useSelector(state => state.user);
+
   const { id, idField, idCulture, page = 1 } = router.query;
 
   const perPage = 10;
@@ -55,23 +60,29 @@ function Relatorios() {
     `/technician-actions/find/by/culture/${idCulture}?limit=${perPage}&page=${page}`
   );
 
+  useEffect(() => {
+    setWillCreate(['technical', 'administrator'].includes(types));
+  }, []);
+
   const handleDelete = useCallback(
     async identifier => {
       removeModal();
       setLoading(true);
 
-      await TechnicianActionsService.delete(identifier).then(res => {
-        if (res.status >= 400 || res?.statusCode) {
-          setAlertMsg(errorMessage(res));
-        } else {
-          mutateTechActions();
+      if (willCreate) {
+        await TechnicianActionsService.delete(identifier).then(res => {
+          if (res.status >= 400 || res?.statusCode) {
+            setAlertMsg({ type: 'error', message: errorMessage(res) });
+          } else {
+            mutateTechActions();
 
-          setAlertMsg({
-            type: 'success',
-            message: 'O relatório técnico foi deletado com sucesso!'
-          });
-        }
-      });
+            setAlertMsg({
+              type: 'success',
+              message: 'O relatório técnico foi deletado com sucesso!'
+            });
+          }
+        });
+      }
 
       setLoading(false);
     },
@@ -91,13 +102,14 @@ function Relatorios() {
     [addModal, removeModal]
   );
 
+  if (error || errorCultures || errorTechActions)
+    return <Error error={error || errorCultures || errorTechActions} />;
+  if (data && id !== String(data?.properties?.id)) return <Error error={404} />;
+  if (dataCultures && idField !== String(dataCultures?.fields?.id))
+    return <Error error={404} />;
+
   return (
     <>
-      {(error || errorCultures || errorTechActions) && router.back()}
-      {data && id !== data?.properties?.id.toString() && router.back()}
-      {dataCultures &&
-        idField !== dataCultures?.fields?.id.toString() &&
-        router.back()}
       <Head>
         <title>
           Relatório Técnico da Cultura de {dataCultures?.products.name} do
@@ -152,11 +164,13 @@ function Relatorios() {
                 {dataCultures?.products.name} do talhão{' '}
                 {`${data?.name} da propriedade ${data?.properties.name}`}.
               </p>
-              <Link href={`${baseUrl}/cadastrar`}>
-                <Button className="primary">
-                  <FontAwesomeIcon icon={faPlus} /> Adicionar Relatório
-                </Button>
-              </Link>
+              {willCreate && (
+                <Link href={`${baseUrl}/cadastrar`}>
+                  <Button className="primary">
+                    <FontAwesomeIcon icon={faPlus} /> Adicionar Relatório
+                  </Button>
+                </Link>
+              )}
             </div>
           </SectionHeader>
           <SectionBody>
@@ -201,6 +215,7 @@ function Relatorios() {
                                       id={d.id}
                                       path={baseUrl}
                                       noEdit
+                                      noDelete={!willCreate}
                                       onDelete={() => handleDeleteModal(d.id)}
                                     />
                                   </td>
