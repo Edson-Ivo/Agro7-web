@@ -28,11 +28,12 @@ import TechnicianActionsService from '@/services/TechnicianActionsService';
 import truncate from '@/helpers/truncate';
 import { dateConversor } from '@/helpers/date';
 import Error from '@/components/Error/index';
+import urlRoute from '@/helpers/urlRoute';
 
 function Relatorios() {
   const [willCreate, setWillCreate] = useState(false);
   const router = useRouter();
-  const { types } = useSelector(state => state.user);
+  const { types, id: userId } = useSelector(state => state.user);
 
   const { id, idField, idCulture, page = 1 } = router.query;
 
@@ -41,10 +42,6 @@ function Relatorios() {
   const [alertMsg, setAlertMsg] = useState({ type: '', message: '' });
   const { addModal, removeModal } = useModal();
   const [loading, setLoading] = useState(false);
-
-  const [baseUrl] = useState(
-    `/propriedades/${id}/talhoes/${idField}/culturas/${idCulture}/relatorios`
-  );
 
   const { data, error } = useFetch(`/fields/find/by/id/${idField}`);
 
@@ -60,29 +57,44 @@ function Relatorios() {
     `/technician-actions/find/by/culture/${idCulture}?limit=${perPage}&page=${page}`
   );
 
+  const [route, setRoute] = useState({});
+  const [baseUrl, setBaseUrl] = useState('');
+
   useEffect(() => {
-    setWillCreate(['technical', 'administrator'].includes(types));
+    setRoute(urlRoute(router, types));
   }, []);
+
+  useEffect(() => {
+    setBaseUrl(
+      `${route.path}/${id}/talhoes/${idField}/culturas/${idCulture}/relatorios`
+    );
+  }, [route]);
+
+  useEffect(() => {
+    if (data)
+      setWillCreate(
+        ['technical', 'administrator'].includes(types) &&
+          data?.properties?.users?.id !== userId
+      );
+  }, [data]);
 
   const handleDelete = useCallback(
     async identifier => {
       removeModal();
       setLoading(true);
 
-      if (willCreate) {
-        await TechnicianActionsService.delete(identifier).then(res => {
-          if (res.status >= 400 || res?.statusCode) {
-            setAlertMsg({ type: 'error', message: errorMessage(res) });
-          } else {
-            mutateTechActions();
+      await TechnicianActionsService.delete(identifier).then(res => {
+        if (res.status >= 400 || res?.statusCode) {
+          setAlertMsg({ type: 'error', message: errorMessage(res) });
+        } else {
+          mutateTechActions();
 
-            setAlertMsg({
-              type: 'success',
-              message: 'O relatório técnico foi deletado com sucesso!'
-            });
-          }
-        });
-      }
+          setAlertMsg({
+            type: 'success',
+            message: 'O relatório técnico foi deletado com sucesso!'
+          });
+        }
+      });
 
       setLoading(false);
     },
@@ -107,6 +119,7 @@ function Relatorios() {
   if (data && id !== String(data?.properties?.id)) return <Error error={404} />;
   if (dataCultures && idField !== String(dataCultures?.fields?.id))
     return <Error error={404} />;
+  if (!isEmpty(route) && !route.hasPermission) return <Error error={404} />;
 
   return (
     <>
@@ -127,29 +140,34 @@ function Relatorios() {
                 <Breadcrumb
                   path={[
                     { route: '/', name: 'Home' },
-                    { route: '/propriedades', name: 'Propriedades' },
                     {
-                      route: `/propriedades/${id}/detalhes`,
+                      route: '/tecnico',
+                      name: 'Painel Técnico',
+                      active: route && route.permission === types
+                    },
+                    { route: `${route.path}`, name: 'Propriedades' },
+                    {
+                      route: `${route.path}/${id}/detalhes`,
                       name: `${data?.properties.name}`
                     },
                     {
-                      route: `/propriedades/${id}/talhoes`,
+                      route: `${route.path}/${id}/talhoes`,
                       name: `Talhões`
                     },
                     {
-                      route: `/propriedades/${id}/talhoes/${idField}/detalhes`,
+                      route: `${route.path}/${id}/talhoes/${idField}/detalhes`,
                       name: `${data?.name}`
                     },
                     {
-                      route: `/propriedades/${id}/talhoes/${idField}/culturas`,
+                      route: `${route.path}/${id}/talhoes/${idField}/culturas`,
                       name: `Culturas`
                     },
                     {
-                      route: `/propriedades/${id}/talhoes/${idField}/culturas/${idCulture}/detalhes`,
+                      route: `${route.path}/${id}/talhoes/${idField}/culturas/${idCulture}/detalhes`,
                       name: `${dataCultures?.products.name}`
                     },
                     {
-                      route: `/propriedades/${id}/talhoes/${idField}/culturas/${idCulture}/relatorios`,
+                      route: `${route.path}/${id}/talhoes/${idField}/culturas/${idCulture}/relatorios`,
                       name: `Relatórios`
                     }
                   ]}
@@ -234,8 +252,7 @@ function Relatorios() {
                         url={`${baseUrl}`}
                         currentPage={page}
                         itemsPerPage={perPage}
-                        totalPages={dataTechActions.totalPages}
-                        page="page"
+                        totalPages={dataTechActions.meta.totalPages}
                       />
                     </>
                   )) || <Loader />}

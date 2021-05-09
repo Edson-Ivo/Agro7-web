@@ -5,10 +5,11 @@ import styled from 'styled-components';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
+  faUserCog,
   faHome,
-  faUser,
   faBook,
-  faMapMarkerAlt
+  faMapMarkerAlt,
+  faMapMarkedAlt
 } from '@fortawesome/free-solid-svg-icons';
 
 import { useRouter } from 'next/router';
@@ -78,6 +79,7 @@ const NavList = styled.div`
       font-size: 1.2em;
       align-items: flex-start;
       margin-right: 17px;
+      width: 20px;
     }
 
     &.active,
@@ -103,19 +105,16 @@ const NavList = styled.div`
 `;
 
 const NavButton = ({ link, icon, text }) => {
-  const router = useRouter();
+  const { asPath } = useRouter();
   const dispatch = useDispatch();
 
-  let active = '';
   let path = '';
+  let linked = '';
 
-  if (router.pathname !== '/') {
-    [, path] = router.pathname.split('/');
-  }
+  if (asPath !== '/') [path] = asPath.split('/')?.[1].split('?');
+  if (link !== '/') [, linked] = link.split('/');
 
-  if (`/${path}` === link) {
-    active = 'active';
-  }
+  const active = path === linked ? 'active' : '';
 
   const handleClick = () => {
     dispatch(NavChangeAction(false));
@@ -139,27 +138,37 @@ const Nav = () => {
     <NavContainer className={navOpen ? 'open' : ''}>
       <NavContent>
         <NavList>
-          {types === 'administrator' && (
-            <>
-              <NavButton
-                link="/admin"
-                icon={faUser}
-                text="Painel Administrativo"
-              />
-              <hr />
-            </>
-          )}
           <NavButton link="/" icon={faHome} text="Página Inicial" />
           <NavButton
             link="/propriedades"
             icon={faMapMarkerAlt}
-            text="Propriedades"
+            text="Suas Propriedades"
           />
           <NavButton
             link="/caderno-produtor"
             icon={faBook}
             text="Caderno Produtor"
           />
+          {types === 'technical' && (
+            <>
+              <hr />
+              <NavButton
+                link="/tecnico/propriedades"
+                icon={faMapMarkedAlt}
+                text="Propriedades Relacionadas"
+              />
+            </>
+          )}
+          {types === 'administrator' && (
+            <>
+              <hr />
+              <NavButton
+                link="/admin"
+                icon={faUserCog}
+                text="Painel Administrativo"
+              />
+            </>
+          )}
         </NavList>
       </NavContent>
     </NavContainer>

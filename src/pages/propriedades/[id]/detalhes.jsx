@@ -1,8 +1,8 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faThumbtack } from '@fortawesome/free-solid-svg-icons';
+import { faThumbtack, faUserFriends } from '@fortawesome/free-solid-svg-icons';
 
 import Container from '@/components/Container';
 import { MapActionGetLatLng } from '@/components/MapApp';
@@ -29,6 +29,9 @@ import capitalize from '@/helpers/capitalize';
 import DocumentsService from '@/services/DocumentsService';
 import Pagination from '@/components/Pagination/index';
 import Error from '@/components/Error/index';
+import { useSelector } from 'react-redux';
+import urlRoute from '@/helpers/urlRoute';
+import isEmpty from '@/helpers/isEmpty';
 
 function PropertieInfo() {
   const [activeStep, setActiveStep] = useState(1);
@@ -43,6 +46,8 @@ function PropertieInfo() {
   const [alertMsg, setAlertMsg] = useState({ type: '', message: '' });
   const { addModal, removeModal } = useModal();
   const [loading, setLoading] = useState(false);
+  const [loadingWillAccess, setLoadingWillAccess] = useState(false);
+  const [willAccess, setWillAccess] = useState(false);
 
   const { data, error } = useFetch(`/properties/find/by/id/${id}`);
 
@@ -54,6 +59,20 @@ function PropertieInfo() {
   const { data: dataTypeDimension } = useFetch(
     '/properties/find/all/types-dimension'
   );
+
+  const { id: userId, types } = useSelector(state => state.user);
+  const [route, setRoute] = useState({});
+
+  useEffect(() => {
+    setRoute(urlRoute(router, types));
+  }, []);
+
+  useEffect(() => {
+    if (data) {
+      setWillAccess(!(types === 'technical' && data?.users?.id !== userId));
+      setLoadingWillAccess(true);
+    }
+  }, [data]);
 
   const handleDelete = useCallback(
     async identifier => {
@@ -92,6 +111,7 @@ function PropertieInfo() {
   );
 
   if (error) return <Error error={error} />;
+  if (!isEmpty(route) && !route.hasPermission) return <Error error={404} />;
 
   return (
     <>
@@ -109,9 +129,14 @@ function PropertieInfo() {
                 <Breadcrumb
                   path={[
                     { route: '/', name: 'Home' },
-                    { route: '/propriedades', name: 'Propriedades' },
                     {
-                      route: `/propriedades/${id}/detalhes`,
+                      route: '/tecnico',
+                      name: 'Painel Técnico',
+                      active: route && route.permission === types
+                    },
+                    { route: `${route.path}`, name: 'Propriedades' },
+                    {
+                      route: `${route.path}/${id}/detalhes`,
                       name: `${data?.name}`
                     }
                   ]}
@@ -122,11 +147,22 @@ function PropertieInfo() {
                 Aqui você irá ver informações detalhadas da propriedade em
                 questão
               </p>
-              <Link href={`/propriedades/${id}/talhoes/`}>
-                <Button className="primary">
-                  <FontAwesomeIcon icon={faThumbtack} /> Ver Talhões
-                </Button>
-              </Link>
+              {loadingWillAccess && (
+                <div className="buttons__container">
+                  <Link href={`${route.path}/${id}/talhoes/`}>
+                    <Button className="primary">
+                      <FontAwesomeIcon icon={faThumbtack} /> Ver Talhões
+                    </Button>
+                  </Link>
+                  {willAccess && (
+                    <Link href={`${route.path}/${id}/tecnicos/`}>
+                      <Button className="primary">
+                        <FontAwesomeIcon icon={faUserFriends} /> Ver Técnicos
+                      </Button>
+                    </Link>
+                  )}
+                </div>
+              )}
             </div>
           </SectionHeader>
           <SectionBody>
@@ -296,7 +332,7 @@ function PropertieInfo() {
                             <Button
                               className="primary"
                               onClick={() =>
-                                router.push(`/propriedades/${id}/editar`)
+                                router.push(`${route.path}/${id}/editar`)
                               }
                             >
                               Editar
@@ -332,7 +368,7 @@ function PropertieInfo() {
                                         <ActionButton
                                           id={d.id}
                                           download={d.url}
-                                          path={`/propriedades/${id}/documentos`}
+                                          path={`${route.path}/${id}/documentos`}
                                           onDelete={() =>
                                             handleDeleteModal(d.id)
                                           }
@@ -350,10 +386,10 @@ function PropertieInfo() {
                               </tbody>
                             </Table>
                             <Pagination
-                              url={`/propriedades/${id}/detalhes`}
+                              url={`${route.path}/${id}/detalhes`}
                               currentPage={pageDocs}
                               itemsPerPage={perPageDocs}
-                              totalPages={dataDocs.totalPages}
+                              totalPages={dataDocs.meta.totalPages}
                               page="pageDocs"
                             />
                           </>
@@ -369,7 +405,7 @@ function PropertieInfo() {
                               className="primary"
                               onClick={() =>
                                 router.push(
-                                  `/propriedades/${id}/documentos/cadastrar`
+                                  `${route.path}/${id}/documentos/cadastrar`
                                 )
                               }
                             >

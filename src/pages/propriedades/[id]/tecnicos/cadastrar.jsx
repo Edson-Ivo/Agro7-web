@@ -7,9 +7,7 @@ import Container from '@/components/Container';
 import Nav from '@/components/Nav';
 import Navbar from '@/components/Navbar';
 import Breadcrumb from '@/components/Breadcrumb';
-import Input from '@/components/Input';
 import Button from '@/components/Button';
-import Select from '@/components/Select';
 import { Section, SectionHeader, SectionBody } from '@/components/Section';
 import { CardContainer } from '@/components/CardContainer';
 import { privateRoute } from '@/components/PrivateRoute';
@@ -19,53 +17,41 @@ import Loader from '@/components/Loader';
 import errorMessage from '@/helpers/errorMessage';
 import { useFetch } from '@/hooks/useFetch';
 import getFormData from '@/helpers/getFormData';
-import CulturesService from '@/services/CulturesService';
-import SearchSelect from '@/components/SearchSelect/index';
-import { dateToISOString } from '@/helpers/date';
+import isEmpty from '@/helpers/isEmpty';
 import Error from '@/components/Error/index';
 import { useSelector } from 'react-redux';
 import urlRoute from '@/helpers/urlRoute';
-import isEmpty from '@/helpers/isEmpty';
+import PropertiesService from '@/services/PropertiesService';
+import SearchSelect from '@/components/SearchSelect/index';
 
 const schema = yup.object().shape({
-  date_start: yup.string().required('O campo data inicial é obrigatório!'),
-  date_finish: yup.string().required('O campo data final é obrigatório!'),
-  area: yup
-    .number()
-    .transform(value => (Number.isNaN(value) ? undefined : value))
-    .required('A área precisa ser definida')
-    .positive('A área precisa ter um valor positivo'),
-  type_dimension: yup
-    .string()
-    .required('Unidade de medida precisa ser definida'),
-  products: yup
-    .number()
-    .transform(value => (Number.isNaN(value) ? undefined : value))
-    .required('O produto tem que ser escolhido')
+  technicians: yup.string().required('Selecione um técnico primeiro.')
 });
 
-function CulturasCreate() {
+function TecnicosCadastrar() {
   const formRef = useRef(null);
   const [alert, setAlert] = useState({ type: '', message: '' });
   const [disableButton, setDisableButton] = useState(false);
+  const [willAccess, setWillAccess] = useState(true);
 
   const router = useRouter();
-  const { id, idField } = router.query;
+  const { id } = router.query;
 
-  const { types } = useSelector(state => state.user);
+  const { id: userId, types } = useSelector(state => state.user);
   const [route, setRoute] = useState({});
 
-  const { data, error } = useFetch(`/fields/find/by/id/${idField}`);
-
-  const { data: dataTypeDimension } = useFetch(
-    '/cultures/find/all/types-dimension'
-  );
+  const { data, error } = useFetch(`/properties/find/by/id/${id}`);
 
   useEffect(() => {
     setAlert({ type: '', message: '' });
     setDisableButton(false);
     setRoute(urlRoute(router, types));
   }, []);
+
+  useEffect(() => {
+    if (data)
+      setWillAccess(!(types === 'technical' && data?.users?.id !== userId));
+  }, [data]);
 
   const handleCancel = () => {
     router.back();
@@ -74,20 +60,12 @@ function CulturasCreate() {
   const getData = () => {
     if (formRef.current === undefined) {
       return {
-        date_start: null,
-        date_finish: null,
-        area: null,
-        type_dimension: null,
-        products: null
+        technicians: null
       };
     }
 
     return getFormData(formRef.current, {
-      date_start: null,
-      date_finish: null,
-      area: null,
-      type_dimension: null,
-      products: null
+      technicians: null
     });
   };
 
@@ -102,11 +80,10 @@ function CulturasCreate() {
           message: 'Enviando...'
         });
 
-        d.date_start = dateToISOString(d.date_start);
-        d.date_finish = dateToISOString(d.date_finish);
-        d.fields = Number(idField);
+        d.technicians = Number(d.technicians);
+        d.properties = Number(id);
 
-        await CulturesService.create(d).then(res => {
+        await PropertiesService.createTechniciansProperties(d).then(res => {
           if (res.status !== 201 || res?.statusCode) {
             setAlert({ type: 'error', message: errorMessage(res) });
             setTimeout(() => {
@@ -115,15 +92,10 @@ function CulturasCreate() {
           } else {
             setAlert({
               type: 'success',
-              message: 'Cultura cadastrada com sucesso!'
+              message: 'Técnico solicitado com sucesso!'
             });
 
-            setTimeout(() => {
-              router.push(
-                `${route.path}/${id}/talhoes/${idField}/culturas/${res.data.id}/detalhes`
-              );
-              setDisableButton(false);
-            }, 1000);
+            router.push(`${route.path}/${id}/tecnicos`);
           }
         });
       })
@@ -134,13 +106,13 @@ function CulturasCreate() {
   };
 
   if (error) return <Error error={error} />;
-  if (data && id !== String(data?.properties?.id)) return <Error error={404} />;
-  if (!isEmpty(route) && !route.hasPermission) return <Error error={404} />;
+  if ((!isEmpty(route) && !route.hasPermission) || !willAccess)
+    return <Error error={404} />;
 
   return (
     <>
       <Head>
-        <title>Adicionar Cultura - Agro7</title>
+        <title>Solicitar Técnico - Agro7</title>
       </Head>
 
       <Navbar />
@@ -161,31 +133,23 @@ function CulturasCreate() {
                     { route: `${route.path}`, name: 'Propriedades' },
                     {
                       route: `${route.path}/${id}/detalhes`,
-                      name: `${data?.properties.name}`
-                    },
-                    {
-                      route: `${route.path}/${id}/talhoes`,
-                      name: `Talhões`
-                    },
-                    {
-                      route: `${route.path}/${id}/talhoes/${idField}/detalhes`,
                       name: `${data?.name}`
                     },
                     {
-                      route: `${route.path}/${id}/talhoes/${idField}/culturas`,
-                      name: `Culturas`
+                      route: `${route.path}/${id}/tecnicos`,
+                      name: `Técnicos Relacionados`
                     },
                     {
-                      route: `${route.path}/${id}/talhoes/${idField}/culturas/cadastrar`,
+                      route: `${route.path}/${id}/tecnicos/cadastrar`,
                       name: `Cadastrar`
                     }
                   ]}
                 />
               )}
-              <h2>Adicionar Cultura {data && `(${data.name})`}</h2>
+              <h2>Solicitar Técnico {`(${data && data.name})`}</h2>
               <p>
-                Aqui você irá adicionar uma cultura para o talhão{' '}
-                {data && `${data.name} da propriedade ${data.properties.name}`}.
+                Aqui você irá solicitar um técnico para gerenciar a propriedade{' '}
+                {data && data.name}
               </p>
             </div>
           </SectionHeader>
@@ -201,46 +165,13 @@ function CulturasCreate() {
                   method="post"
                   onSubmit={event => handleSubmit(event)}
                 >
-                  {(data && dataTypeDimension && (
+                  {(data && (
                     <>
                       <SearchSelect
-                        name="products"
-                        label="Digite o nome do produto:"
-                        url="/products/find/all"
+                        name="technicians"
+                        label="Digite o nome do técnico:"
+                        url="/users/find/all/technicians"
                       />
-                      <div className="form-group">
-                        <div>
-                          <Input
-                            type="date"
-                            label="Data inicial"
-                            name="date_start"
-                          />
-                        </div>
-                        <div>
-                          <Input
-                            type="date"
-                            label="Data final"
-                            name="date_finish"
-                          />
-                        </div>
-                      </div>
-                      <div className="form-group">
-                        <div>
-                          <Input type="number" label="Área" name="area" />
-                        </div>
-                        <div>
-                          <Select
-                            options={dataTypeDimension?.typesDimension.map(
-                              dimension => ({
-                                value: dimension,
-                                label: dimension
-                              })
-                            )}
-                            label="Unidade de medida"
-                            name="type_dimension"
-                          />
-                        </div>
-                      </div>
 
                       <div className="form-group buttons">
                         <div>
@@ -248,14 +179,13 @@ function CulturasCreate() {
                             Cancelar
                           </Button>
                         </div>
-
                         <div>
                           <Button
                             disabled={disableButton}
                             className="primary"
                             type="submit"
                           >
-                            Adicionar Cultura
+                            Solicitar Técnico
                           </Button>
                         </div>
                       </div>
@@ -271,4 +201,4 @@ function CulturasCreate() {
   );
 }
 
-export default privateRoute()(CulturasCreate);
+export default privateRoute()(TecnicosCadastrar);

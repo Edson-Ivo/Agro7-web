@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
 import Link from 'next/link';
@@ -22,6 +22,9 @@ import { useFetch } from '@/hooks/useFetch';
 import { MapActionPlotArea } from '@/components/MapApp';
 import Loader from '@/components/Loader';
 import Error from '@/components/Error/index';
+import { useSelector } from 'react-redux';
+import urlRoute from '@/helpers/urlRoute';
+import isEmpty from '@/helpers/isEmpty';
 
 function TalhoesInfo() {
   const router = useRouter();
@@ -34,7 +37,15 @@ function TalhoesInfo() {
     `/fields/find/by/id/${idField}`
   );
 
+  const { types } = useSelector(state => state.user);
+  const [route, setRoute] = useState({});
+
+  useEffect(() => {
+    setRoute(urlRoute(router, types));
+  }, []);
+
   if (error || errorFields) return <Error error={error || errorFields} />;
+  if (!isEmpty(route) && !route.hasPermission) return <Error error={404} />;
 
   return (
     <>
@@ -52,17 +63,22 @@ function TalhoesInfo() {
                 <Breadcrumb
                   path={[
                     { route: '/', name: 'Home' },
-                    { route: '/propriedades', name: 'Propriedades' },
                     {
-                      route: `/propriedades/${id}/detalhes`,
+                      route: '/tecnico',
+                      name: 'Painel Técnico',
+                      active: route && route.permission === types
+                    },
+                    { route: `${route.path}`, name: 'Propriedades' },
+                    {
+                      route: `${route.path}/${id}/detalhes`,
                       name: `${data?.name}`
                     },
                     {
-                      route: `/propriedades/${id}/talhoes`,
+                      route: `${route.path}/${id}/talhoes`,
                       name: `Talhões`
                     },
                     {
-                      route: `/propriedades/${id}/talhoes/${idField}/detalhes`,
+                      route: `${route.path}/${id}/talhoes/${idField}/detalhes`,
                       name: `${dataFields?.name}`
                     }
                   ]}
@@ -76,7 +92,7 @@ function TalhoesInfo() {
                 {dataFields && dataFields.name} da propriedade{' '}
                 {dataFields && dataFields.properties.name}.
               </p>
-              <Link href={`/propriedades/${id}/talhoes/${idField}/culturas`}>
+              <Link href={`${route.path}/${id}/talhoes/${idField}/culturas`}>
                 <Button className="primary">
                   <FontAwesomeIcon icon={faLeaf} /> Ver Culturas
                 </Button>
@@ -138,7 +154,7 @@ function TalhoesInfo() {
                           className="primary"
                           onClick={() =>
                             router.push(
-                              `/propriedades/${id}/talhoes/${idField}/editar`
+                              `${route.path}/${id}/talhoes/${idField}/editar`
                             )
                           }
                         >

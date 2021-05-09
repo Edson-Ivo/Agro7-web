@@ -21,6 +21,9 @@ import getFormData from '@/helpers/getFormData';
 import { dateToInput, dateToISOString } from '@/helpers/date';
 import HarvestsService from '@/services/HarvestsService';
 import Error from '@/components/Error/index';
+import urlRoute from '@/helpers/urlRoute';
+import { useSelector } from 'react-redux';
+import isEmpty from '@/helpers/isEmpty';
 
 const schema = yup.object().shape({
   date: yup.string().required('O campo data é obrigatório!'),
@@ -57,13 +60,14 @@ function ColheitasEdit() {
     mutate: mutateHarvests
   } = useFetch(`/harvests/find/by/id/${idHarvest}`);
 
-  useEffect(
-    () => () => {
-      setAlert({ type: '', message: '' });
-      setDisableButton(false);
-    },
-    []
-  );
+  const { types } = useSelector(state => state.user);
+  const [route, setRoute] = useState({});
+
+  useEffect(() => {
+    setAlert({ type: '', message: '' });
+    setDisableButton(false);
+    setRoute(urlRoute(router, types));
+  }, []);
 
   const handleCancel = () => {
     router.back();
@@ -137,6 +141,7 @@ function ColheitasEdit() {
   if (data && id !== String(data?.properties?.id)) return <Error error={404} />;
   if (dataCultures && idField !== String(dataCultures?.fields?.id))
     return <Error error={404} />;
+  if (!isEmpty(route) && !route.hasPermission) return <Error error={404} />;
 
   return (
     <>
@@ -154,7 +159,12 @@ function ColheitasEdit() {
                 <Breadcrumb
                   path={[
                     { route: '/', name: 'Home' },
-                    { route: '/propriedades', name: 'Propriedades' },
+                    {
+                      route: '/tecnico',
+                      name: 'Painel Técnico',
+                      active: route && route.permission === types
+                    },
+                    { route: `${route.path}`, name: 'Propriedades' },
                     {
                       route: `/propriedades/${id}/detalhes`,
                       name: `${data?.properties.name}`

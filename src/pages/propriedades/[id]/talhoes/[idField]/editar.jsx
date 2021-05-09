@@ -24,6 +24,8 @@ import isEmpty from '@/helpers/isEmpty';
 import Loader from '@/components/Loader';
 import areaConversor from '@/helpers/areaConversor';
 import Error from '@/components/Error/index';
+import urlRoute from '@/helpers/urlRoute';
+import { useSelector } from 'react-redux';
 
 const schema = yup.object().shape({
   name: yup
@@ -64,13 +66,14 @@ function TalhoesEdit() {
     '/fields/find/all/types-dimension'
   );
 
-  useEffect(
-    () => () => {
-      setAlert({ type: '', message: '' });
-      setDisableButton(false);
-    },
-    []
-  );
+  const { types } = useSelector(state => state.user);
+  const [route, setRoute] = useState({});
+
+  useEffect(() => {
+    setAlert({ type: '', message: '' });
+    setDisableButton(false);
+    setRoute(urlRoute(router, types));
+  }, []);
 
   const handleCancel = () => {
     router.back();
@@ -135,7 +138,7 @@ function TalhoesEdit() {
             });
 
             setTimeout(() => {
-              router.push(`/propriedades/${id}/talhoes/${idField}/detalhes`);
+              router.push(`${route.path}/${id}/talhoes/${idField}/detalhes`);
               setDisableButton(false);
             }, 1000);
           }
@@ -148,6 +151,7 @@ function TalhoesEdit() {
   };
 
   if (error || errorFields) return <Error error={error || errorFields} />;
+  if (!isEmpty(route) && !route.hasPermission) return <Error error={404} />;
 
   return (
     <>
@@ -165,17 +169,22 @@ function TalhoesEdit() {
                 <Breadcrumb
                   path={[
                     { route: '/', name: 'Home' },
-                    { route: '/propriedades', name: 'Propriedades' },
                     {
-                      route: `/propriedades/${id}/detalhes`,
+                      route: '/tecnico',
+                      name: 'Painel Técnico',
+                      active: route && route.permission === types
+                    },
+                    { route: `${route.path}`, name: 'Propriedades' },
+                    {
+                      route: `${route.path}/${id}/detalhes`,
                       name: `${data?.name}`
                     },
                     {
-                      route: `/propriedades/${id}/talhoes`,
+                      route: `${route.path}/${id}/talhoes`,
                       name: `Talhões`
                     },
                     {
-                      route: `/propriedades/${id}/talhoes/${idField}/editar`,
+                      route: `${route.path}/${id}/talhoes/${idField}/editar`,
                       name: `Editar`
                     }
                   ]}

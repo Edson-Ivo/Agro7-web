@@ -33,7 +33,7 @@ export const PaginationWrapper = styled.div`
 
     a {
       color: ${props => props.theme.colors.primary};
-      border-radius: 9999px;
+      border-radius: 10px;
       cursor: pointer;
       text-decoration: none;
       margin: 0 3px;

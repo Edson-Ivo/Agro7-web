@@ -23,9 +23,31 @@ class PropertiesService {
     }
   }
 
+  static async createTechniciansProperties(data) {
+    try {
+      const response = await api.post(`/technicians-properties/create`, {
+        ...data
+      });
+
+      return response;
+    } catch (error) {
+      return error.response;
+    }
+  }
+
   static async delete(id) {
     try {
       const response = await api.delete(`/properties/${id}`);
+
+      return response;
+    } catch (error) {
+      return error.response;
+    }
+  }
+
+  static async deleteTechniciansProperties(id) {
+    try {
+      const response = await api.delete(`/technicians-properties/${id}`);
 
       return response;
     } catch (error) {
