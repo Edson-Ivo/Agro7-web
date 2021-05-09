@@ -20,6 +20,9 @@ import { useFetch } from '@/hooks/useFetch';
 import DocumentsService from '@/services/DocumentsService';
 import { useRouter } from 'next/router';
 import Error from '@/components/Error/index';
+import { useSelector } from 'react-redux';
+import urlRoute from '@/helpers/urlRoute';
+import isEmpty from '@/helpers/isEmpty';
 
 function DocumentosCreate() {
   const formRef = useRef(null);
@@ -32,20 +35,21 @@ function DocumentosCreate() {
 
   const { data, error } = useFetch(`/properties/find/by/id/${id}`);
 
-  useEffect(
-    () => () => {
-      setAlert({ type: '', message: '' });
-      setDisableButton(false);
-    },
-    []
-  );
+  const { types } = useSelector(state => state.user);
+  const [route, setRoute] = useState({});
+
+  useEffect(() => {
+    setAlert({ type: '', message: '' });
+    setDisableButton(false);
+    setRoute(urlRoute(router, types));
+  }, []);
 
   const handleCancel = () => {
     if (!createProperty) {
       router.back();
     } else {
       router.replace(
-        `/propriedades/${id}/talhoes/cadastrar?createProperty=true`
+        `${route.path}/${id}/talhoes/cadastrar?createProperty=true`
       );
     }
   };
@@ -87,12 +91,12 @@ function DocumentosCreate() {
 
             if (!createProperty) {
               setTimeout(() => {
-                router.push(`/propriedades/${id}/detalhes`);
+                router.push(`${route.path}/${id}/detalhes`);
                 setDisableButton(false);
               }, 1000);
             } else {
               router.replace(
-                `/propriedades/${id}/talhoes/cadastrar?createProperty=true`
+                `${route.path}/${id}/talhoes/cadastrar?createProperty=true`
               );
             }
           }
@@ -105,6 +109,7 @@ function DocumentosCreate() {
   };
 
   if (error) return <Error error={error} />;
+  if (!isEmpty(route) && !route.hasPermission) return <Error error={404} />;
 
   return (
     <>
@@ -121,13 +126,18 @@ function DocumentosCreate() {
               <Breadcrumb
                 path={[
                   { route: '/', name: 'Home' },
-                  { route: '/propriedades', name: 'Propriedades' },
                   {
-                    route: `/propriedades/${id}/detalhes`,
+                    route: '/tecnico',
+                    name: 'Painel Técnico',
+                    active: route && route.permission === types
+                  },
+                  { route: `${route.path}`, name: 'Propriedades' },
+                  {
+                    route: `${route.path}/${id}/detalhes`,
                     name: `${data?.name}`
                   },
                   {
-                    route: `/propriedades/${id}/documentos/cadastrar`,
+                    route: `${route.path}/${id}/documentos/cadastrar`,
                     name: 'Adicionar Documento'
                   }
                 ]}

@@ -28,8 +28,11 @@ export const weekDays = date => {
   return week;
 };
 
-export const dateConversor = (date, withTime = true) =>
-  getCurrentDate(date).format(`L${withTime ? ' LT' : ''}`);
+export const dateConversor = (date, withTime = true) => {
+  if (!date) return null;
+
+  return getCurrentDate(date).format(`L${withTime ? ' LT' : ''}`);
+};
 
 export const dateToInput = date => getCurrentDate(date).format('YYYY-MM-DD');
 

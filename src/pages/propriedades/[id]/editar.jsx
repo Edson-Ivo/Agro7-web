@@ -29,6 +29,9 @@ import { useFetch } from '@/hooks/useFetch';
 import AddressesService from '@/services/AddressesService';
 import Loader from '@/components/Loader/index';
 import Error from '@/components/Error/index';
+import urlRoute from '@/helpers/urlRoute';
+import { useSelector } from 'react-redux';
+import isEmpty from '@/helpers/isEmpty';
 
 const schema = yup.object().shape({
   name: yup
@@ -111,6 +114,9 @@ function PropertiesEdit() {
   const [activeStep, setActiveStep] = useState(1);
   const [loadingAddresses, setLoadingAddresses] = useState(false);
 
+  const { types } = useSelector(state => state.user);
+  const [route, setRoute] = useState({});
+
   const stateRef = useRef(null);
   const cityRef = useRef(null);
   const neighborhoodRef = useRef(null);
@@ -119,15 +125,13 @@ function PropertiesEdit() {
   const latitudeRef = useRef(null);
   const longitudeRef = useRef(null);
 
-  useEffect(
-    () => () => {
-      setAlert({ type: '', message: '' });
-      setDisableButton(false);
-      setActiveStep(1);
-      setLoadingAddresses(false);
-    },
-    []
-  );
+  useEffect(() => {
+    setAlert({ type: '', message: '' });
+    setDisableButton(false);
+    setActiveStep(1);
+    setLoadingAddresses(false);
+    setRoute(urlRoute(router, types));
+  }, []);
 
   const getData = () => {
     if (formRef.current === undefined) {
@@ -245,7 +249,7 @@ function PropertiesEdit() {
                         });
 
                         setTimeout(() => {
-                          router.push(`/propriedades/${id}/detalhes`);
+                          router.push(`${route.path}/${id}/detalhes`);
                           setDisableButton(false);
                         }, 1000);
                       }
@@ -264,6 +268,7 @@ function PropertiesEdit() {
   };
 
   if (error) return <Error error={error} />;
+  if (!isEmpty(route) && !route.hasPermission) return <Error error={404} />;
 
   return (
     <>
@@ -280,8 +285,13 @@ function PropertiesEdit() {
               <Breadcrumb
                 path={[
                   { route: '/', name: 'Home' },
-                  { route: '/propriedades', name: 'Propriedades' },
-                  { route: `/propriedades/${id}/editar`, name: 'Editar' }
+                  {
+                    route: '/tecnico',
+                    name: 'Painel Técnico',
+                    active: route && route.permission === types
+                  },
+                  { route: `${route.path}`, name: 'Propriedades' },
+                  { route: `${route.path}/${id}/editar`, name: 'Editar' }
                 ]}
               />
               <h2>Editar propriedade {`(${data && data.name})`}</h2>

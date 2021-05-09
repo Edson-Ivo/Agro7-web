@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -25,6 +25,8 @@ import isEmpty from '@/helpers/isEmpty';
 import FieldsService from '@/services/FieldsService';
 import Pagination from '@/components/Pagination/index';
 import Error from '@/components/Error/index';
+import { useSelector } from 'react-redux';
+import urlRoute from '@/helpers/urlRoute';
 
 function Talhoes() {
   const router = useRouter();
@@ -38,9 +40,19 @@ function Talhoes() {
   const { addModal, removeModal } = useModal();
   const [loading, setLoading] = useState(false);
 
-  const { data, error } = useFetch(`/properties/find/by/id/${id}`);
+  const { types } = useSelector(state => state.user);
+  const [route, setRoute] = useState({});
+  const [baseUrl, setBaseUrl] = useState('');
 
-  const [baseUrl] = useState(`/propriedades/${id}/talhoes`);
+  useEffect(() => {
+    setRoute(urlRoute(router, types));
+  }, []);
+
+  useEffect(() => {
+    setBaseUrl(`${route.path}/${id}/talhoes`);
+  }, [route]);
+
+  const { data, error } = useFetch(`/properties/find/by/id/${id}`);
 
   const {
     data: dataFields,
@@ -85,6 +97,7 @@ function Talhoes() {
   );
 
   if (error || errorFields) return <Error error={error || errorFields} />;
+  if (!isEmpty(route) && !route.hasPermission) return <Error error={404} />;
 
   return (
     <>
@@ -102,13 +115,18 @@ function Talhoes() {
                 <Breadcrumb
                   path={[
                     { route: '/', name: 'Home' },
-                    { route: '/propriedades', name: 'Propriedades' },
                     {
-                      route: `/propriedades/${id}/detalhes`,
+                      route: '/tecnico',
+                      name: 'Painel Técnico',
+                      active: route && route.permission === types
+                    },
+                    { route: `${route.path}`, name: 'Propriedades' },
+                    {
+                      route: `${route.path}/${id}/detalhes`,
                       name: `${data?.name}`
                     },
                     {
-                      route: `/propriedades/${id}/talhoes`,
+                      route: `${route.path}/${id}/talhoes`,
                       name: `Talhões`
                     }
                   ]}
@@ -174,8 +192,7 @@ function Talhoes() {
                         url={`${baseUrl}`}
                         currentPage={page}
                         itemsPerPage={perPage}
-                        totalPages={dataFields.totalPages}
-                        page="page"
+                        totalPages={dataFields.meta.totalPages}
                       />
                     </>
                   )) || <Loader />}

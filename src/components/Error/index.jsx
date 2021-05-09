@@ -21,12 +21,12 @@ const dataErrors = {
   403: {
     title: 'Não encontramos essa página...',
     description:
-      'Desculpe, essa página que você tentou acessar não existe ou está bloqueada, aconselhamos você voltar para a página principal.'
+      'Desculpe, essa página que você tentou acessar não existe ou está bloqueada, aconselhamos você voltar para a página inicial.'
   },
   404: {
     title: 'Não encontramos essa página...',
     description:
-      'Desculpe, essa página que você tentou acessar não existe ou está bloqueada, aconselhamos você voltar para a página principal.'
+      'Desculpe, essa página que você tentou acessar não existe ou está bloqueada, aconselhamos você voltar para a página inicial.'
   },
   default: {
     title: 'Algo deu errado...',
@@ -80,7 +80,7 @@ export default function Error({ error }) {
                         />{' '}
                         {dataError?.text
                           ? dataError.text
-                          : 'Voltar para página principal'}
+                          : 'Voltar para página inicial'}
                       </Button>
                     </a>
                   </Link>

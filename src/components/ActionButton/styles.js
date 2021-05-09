@@ -19,7 +19,7 @@ export const ActionButtonContainer = styled.div`
     align-items: center;
     color: ${props => props.theme.colors.black};
     font-size: 16px;
-    border-radius: 50%;
+    border-radius: 8px;
     transition: all ease-in 0.2s;
 
     &:hover,

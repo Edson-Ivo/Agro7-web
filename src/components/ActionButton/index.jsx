@@ -6,7 +6,8 @@ import {
   faEdit,
   faInfoCircle,
   faTrash,
-  faFileDownload
+  faFileDownload,
+  faTimes
 } from '@fortawesome/free-solid-svg-icons';
 
 import { ActionButtonContainer } from './styles';
@@ -19,6 +20,7 @@ const ActionButton = ({
   noInfo = false,
   noEdit = false,
   noDelete = false,
+  noRemove = true,
   download = '',
   edit = '/editar'
 }) => (
@@ -66,6 +68,20 @@ const ActionButton = ({
       >
         <div>
           <FontAwesomeIcon icon={faTrash} />
+        </div>
+      </div>
+    )}
+
+    {!noRemove && (
+      <div
+        onClick={() => onDelete()}
+        onKeyPress={() => onDelete()}
+        title="Remover"
+        role="button"
+        tabIndex="0"
+      >
+        <div>
+          <FontAwesomeIcon icon={faTimes} />
         </div>
       </div>
     )}

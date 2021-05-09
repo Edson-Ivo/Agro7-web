@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -25,6 +25,8 @@ import isEmpty from '@/helpers/isEmpty';
 import Pagination from '@/components/Pagination/index';
 import CulturesService from '@/services/CulturesService';
 import Error from '@/components/Error/index';
+import { useSelector } from 'react-redux';
+import urlRoute from '@/helpers/urlRoute';
 
 function Culturas() {
   const router = useRouter();
@@ -38,7 +40,17 @@ function Culturas() {
 
   const { data, error } = useFetch(`/fields/find/by/id/${idField}`);
 
-  const [baseUrl] = useState(`/propriedades/${id}/talhoes/${idField}/culturas`);
+  const { types } = useSelector(state => state.user);
+  const [route, setRoute] = useState({});
+  const [baseUrl, setBaseUrl] = useState('');
+
+  useEffect(() => {
+    setRoute(urlRoute(router, types));
+  }, []);
+
+  useEffect(() => {
+    setBaseUrl(`${route.path}/${id}/talhoes/${idField}/culturas`);
+  }, [route]);
 
   const {
     data: dataCultures,
@@ -86,6 +98,7 @@ function Culturas() {
 
   if (error || errorCultures) return <Error error={error || errorCultures} />;
   if (data && id !== String(data?.properties?.id)) return <Error error={404} />;
+  if (!isEmpty(route) && !route.hasPermission) return <Error error={404} />;
 
   return (
     <>
@@ -103,21 +116,26 @@ function Culturas() {
                 <Breadcrumb
                   path={[
                     { route: '/', name: 'Home' },
-                    { route: '/propriedades', name: 'Propriedades' },
                     {
-                      route: `/propriedades/${id}/detalhes`,
+                      route: '/tecnico',
+                      name: 'Painel Técnico',
+                      active: route && route.permission === types
+                    },
+                    { route: `${route.path}`, name: 'Propriedades' },
+                    {
+                      route: `${route.path}/${id}/detalhes`,
                       name: `${data?.properties.name}`
                     },
                     {
-                      route: `/propriedades/${id}/talhoes`,
+                      route: `${route.path}/${id}/talhoes`,
                       name: `Talhões`
                     },
                     {
-                      route: `/propriedades/${id}/talhoes/${idField}/detalhes`,
+                      route: `${route.path}/${id}/talhoes/${idField}/detalhes`,
                       name: `${data?.name}`
                     },
                     {
-                      route: `/propriedades/${id}/talhoes/${idField}/culturas`,
+                      route: `${route.path}/${id}/talhoes/${idField}/culturas`,
                       name: `Culturas`
                     }
                   ]}
@@ -186,8 +204,7 @@ function Culturas() {
                         url={`${baseUrl}`}
                         currentPage={page}
                         itemsPerPage={perPage}
-                        totalPages={dataCultures.totalPages}
-                        page="page"
+                        totalPages={dataCultures.meta.totalPages}
                       />
                     </>
                   )) || <Loader />}

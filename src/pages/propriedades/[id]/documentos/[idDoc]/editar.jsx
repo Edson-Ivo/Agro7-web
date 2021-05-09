@@ -19,6 +19,9 @@ import { useFetch } from '@/hooks/useFetch';
 import DocumentsService from '@/services/DocumentsService';
 import { useRouter } from 'next/router';
 import Error from '@/components/Error/index';
+import urlRoute from '@/helpers/urlRoute';
+import { useSelector } from 'react-redux';
+import isEmpty from '@/helpers/isEmpty';
 
 function DocumentosEdit() {
   const formRef = useRef(null);
@@ -30,18 +33,18 @@ function DocumentosEdit() {
   const { id, idDoc } = router.query;
 
   const { data, error } = useFetch(`/properties/find/by/id/${id}`);
-  const docs = useFetch(`/documents/find/by/id/${idDoc}`);
-
-  const dataDocs = docs.data;
-  const errorDocs = docs.error;
-
-  useEffect(
-    () => () => {
-      setAlert({ type: '', message: '' });
-      setDisableButton(false);
-    },
-    []
+  const { data: dataDocs, error: errorDocs } = useFetch(
+    `/documents/find/by/id/${idDoc}`
   );
+
+  const { types } = useSelector(state => state.user);
+  const [route, setRoute] = useState({});
+
+  useEffect(() => {
+    setAlert({ type: '', message: '' });
+    setDisableButton(false);
+    setRoute(urlRoute(router, types));
+  }, []);
 
   const handleSubmit = async e => {
     e.preventDefault();
@@ -86,6 +89,7 @@ function DocumentosEdit() {
   };
 
   if (error || errorDocs) return <Error error={error || errorDocs} />;
+  if (!isEmpty(route) && !route.hasPermission) return <Error error={404} />;
 
   return (
     <>
@@ -102,7 +106,12 @@ function DocumentosEdit() {
               <Breadcrumb
                 path={[
                   { route: '/', name: 'Home' },
-                  { route: '/propriedades', name: 'Propriedades' },
+                  {
+                    route: '/tecnico',
+                    name: 'Painel Técnico',
+                    active: route && route.permission === types
+                  },
+                  { route: `${route.path}`, name: 'Propriedades' },
                   {
                     route: `/propriedades/${id}/detalhes`,
                     name: `${data?.name}`
@@ -144,7 +153,7 @@ function DocumentosEdit() {
                         type="text"
                         name="archive"
                         label="Documento atual"
-                        initialValue={dataDocs.filename}
+                        initialValue={dataDocs.url}
                         disabled
                       />
                       <FileInput

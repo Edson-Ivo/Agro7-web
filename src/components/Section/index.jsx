@@ -73,7 +73,7 @@ export const SectionHeader = styled.div`
 
 export const SectionBody = styled.div`
   background: ${props => props.theme.colors.background_nav};
-  padding-top: 24px;
+  padding: 24px 0;
 
   .SectionBody__content {
     margin: 0 auto;

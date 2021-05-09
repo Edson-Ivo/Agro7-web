@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
 import Link from 'next/link';
@@ -22,6 +22,9 @@ import { useFetch } from '@/hooks/useFetch';
 
 import { dateToInput } from '@/helpers/date';
 import Error from '@/components/Error/index';
+import { useSelector } from 'react-redux';
+import urlRoute from '@/helpers/urlRoute';
+import isEmpty from '@/helpers/isEmpty';
 
 function CulturasInfo() {
   const router = useRouter();
@@ -33,8 +36,16 @@ function CulturasInfo() {
     `/cultures/find/by/id/${idCulture}`
   );
 
+  const { types } = useSelector(state => state.user);
+  const [route, setRoute] = useState({});
+
+  useEffect(() => {
+    setRoute(urlRoute(router, types));
+  }, []);
+
   if (error || errorCultures) return <Error error={error || errorCultures} />;
   if (data && id !== String(data?.properties?.id)) return <Error error={404} />;
+  if (!isEmpty(route) && !route.hasPermission) return <Error error={404} />;
 
   return (
     <>
@@ -52,25 +63,30 @@ function CulturasInfo() {
                 <Breadcrumb
                   path={[
                     { route: '/', name: 'Home' },
-                    { route: '/propriedades', name: 'Propriedades' },
                     {
-                      route: `/propriedades/${id}/detalhes`,
+                      route: '/tecnico',
+                      name: 'Painel Técnico',
+                      active: route && route.permission === types
+                    },
+                    { route: `${route.path}`, name: 'Propriedades' },
+                    {
+                      route: `${route.path}/${id}/detalhes`,
                       name: `${data?.properties.name}`
                     },
                     {
-                      route: `/propriedades/${id}/talhoes`,
+                      route: `${route.path}/${id}/talhoes`,
                       name: `Talhões`
                     },
                     {
-                      route: `/propriedades/${id}/talhoes/${idField}/detalhes`,
+                      route: `${route.path}/${id}/talhoes/${idField}/detalhes`,
                       name: `${data?.name}`
                     },
                     {
-                      route: `/propriedades/${id}/talhoes/${idField}/culturas`,
+                      route: `${route.path}/${id}/talhoes/${idField}/culturas`,
                       name: `Culturas`
                     },
                     {
-                      route: `/propriedades/${id}/talhoes/${idField}/culturas/${idCulture}/detalhes`,
+                      route: `${route.path}/${id}/talhoes/${idField}/culturas/${idCulture}/detalhes`,
                       name: `${dataCultures?.products.name}`
                     }
                   ]}
@@ -84,14 +100,14 @@ function CulturasInfo() {
               </p>
               <div className="buttons__container">
                 <Link
-                  href={`/propriedades/${id}/talhoes/${idField}/culturas/${idCulture}/colheitas`}
+                  href={`${route.path}/${id}/talhoes/${idField}/culturas/${idCulture}/colheitas`}
                 >
                   <Button className="primary">
                     <FontAwesomeIcon icon={faSeedling} /> Ver Colheitas
                   </Button>
                 </Link>
                 <Link
-                  href={`/propriedades/${id}/talhoes/${idField}/culturas/${idCulture}/relatorios`}
+                  href={`${route.path}/${id}/talhoes/${idField}/culturas/${idCulture}/relatorios`}
                 >
                   <Button className="primary">
                     <FontAwesomeIcon icon={faFileAlt} /> Ver Relatórios Técnicos
@@ -173,7 +189,7 @@ function CulturasInfo() {
                           className="primary"
                           onClick={() =>
                             router.push(
-                              `/propriedades/${id}/talhoes/${idField}/culturas/${idCulture}/editar`
+                              `${route.path}/${id}/talhoes/${idField}/culturas/${idCulture}/editar`
                             )
                           }
                         >

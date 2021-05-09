@@ -20,6 +20,9 @@ import getFormData from '@/helpers/getFormData';
 import TechnicianActionsService from '@/services/TechnicianActionsService';
 import TextArea from '@/components/TextArea';
 import Error from '@/components/Error/index';
+import { useSelector } from 'react-redux';
+import urlRoute from '@/helpers/urlRoute';
+import isEmpty from '@/helpers/isEmpty';
 
 const schema = yup.object().shape({
   diagnostics: yup.string().required('O campo diagnóstico é obrigatório!'),
@@ -42,13 +45,14 @@ function RelatoriosCreate() {
     `/cultures/find/by/id/${idCulture}`
   );
 
-  useEffect(
-    () => () => {
-      setAlert({ type: '', message: '' });
-      setDisableButton(false);
-    },
-    []
-  );
+  const { types, id: userId } = useSelector(state => state.user);
+  const [route, setRoute] = useState({});
+
+  useEffect(() => {
+    setAlert({ type: '', message: '' });
+    setDisableButton(false);
+    setRoute(urlRoute(router, types));
+  }, []);
 
   const handleCancel = () => {
     router.back();
@@ -101,7 +105,7 @@ function RelatoriosCreate() {
 
             setTimeout(() => {
               router.push(
-                `/propriedades/${id}/talhoes/${idField}/culturas/${idCulture}/relatorios/${res.data.id}/detalhes`
+                `${route.path}/${id}/talhoes/${idField}/culturas/${idCulture}/relatorios/${res.data.id}/detalhes`
               );
               setDisableButton(false);
             }, 1000);
@@ -117,6 +121,9 @@ function RelatoriosCreate() {
   if (error || errorCultures) return <Error error={error || errorCultures} />;
   if (data && id !== String(data?.properties?.id)) return <Error error={404} />;
   if (dataCultures && idField !== String(dataCultures?.fields?.id))
+    return <Error error={404} />;
+  if (!isEmpty(route) && !route.hasPermission) return <Error error={404} />;
+  if (data && data?.properties?.users?.id === userId)
     return <Error error={404} />;
 
   return (
@@ -135,33 +142,38 @@ function RelatoriosCreate() {
                 <Breadcrumb
                   path={[
                     { route: '/', name: 'Home' },
-                    { route: '/propriedades', name: 'Propriedades' },
                     {
-                      route: `/propriedades/${id}/detalhes`,
+                      route: '/tecnico',
+                      name: 'Painel Técnico',
+                      active: route && route.permission === types
+                    },
+                    { route: `${route.path}`, name: 'Propriedades' },
+                    {
+                      route: `${route.path}/${id}/detalhes`,
                       name: `${data?.properties.name}`
                     },
                     {
-                      route: `/propriedades/${id}/talhoes`,
+                      route: `${route.path}/${id}/talhoes`,
                       name: `Talhões`
                     },
                     {
-                      route: `/propriedades/${id}/talhoes/${idField}/detalhes`,
+                      route: `${route.path}/${id}/talhoes/${idField}/detalhes`,
                       name: `${data?.name}`
                     },
                     {
-                      route: `/propriedades/${id}/talhoes/${idField}/culturas`,
+                      route: `${route.path}/${id}/talhoes/${idField}/culturas`,
                       name: `Culturas`
                     },
                     {
-                      route: `/propriedades/${id}/talhoes/${idField}/culturas/${idCulture}/detalhes`,
+                      route: `${route.path}/${id}/talhoes/${idField}/culturas/${idCulture}/detalhes`,
                       name: `${dataCultures?.products.name}`
                     },
                     {
-                      route: `/propriedades/${id}/talhoes/${idField}/culturas/${idCulture}/relatorios`,
+                      route: `${route.path}/${id}/talhoes/${idField}/culturas/${idCulture}/relatorios`,
                       name: `Relatórios`
                     },
                     {
-                      route: `/propriedades/${id}/talhoes/${idField}/culturas/${idCulture}/relatorios/cadastrar`,
+                      route: `${route.path}/${id}/talhoes/${idField}/culturas/${idCulture}/relatorios/cadastrar`,
                       name: `Adicionar`
                     }
                   ]}

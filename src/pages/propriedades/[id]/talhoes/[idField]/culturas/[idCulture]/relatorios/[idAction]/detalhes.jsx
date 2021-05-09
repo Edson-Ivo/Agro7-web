@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
 
@@ -23,6 +23,9 @@ import TechnicianActionsService from '@/services/TechnicianActionsService';
 import errorMessage from '@/helpers/errorMessage';
 import { dateConversor } from '@/helpers/date';
 import Error from '@/components/Error/index';
+import { useSelector } from 'react-redux';
+import urlRoute from '@/helpers/urlRoute';
+import isEmpty from '@/helpers/isEmpty';
 
 function RelatoriosDetails() {
   const router = useRouter();
@@ -42,6 +45,13 @@ function RelatoriosDetails() {
     error: errorActions,
     mutate: mutateActions
   } = useFetch(`/technician-actions/find/by/id/${idAction}`);
+
+  const { types } = useSelector(state => state.user);
+  const [route, setRoute] = useState({});
+
+  useEffect(() => {
+    setRoute(urlRoute(router, types));
+  }, []);
 
   const handleSubmit = async (value = true) => {
     const concluded = !!value;
@@ -105,6 +115,7 @@ function RelatoriosDetails() {
   if (data && id !== String(data?.properties?.id)) return <Error error={404} />;
   if (dataCultures && idField !== String(dataCultures?.fields?.id))
     return <Error error={404} />;
+  if (!isEmpty(route) && !route.hasPermission) return <Error error={404} />;
 
   return (
     <>
@@ -122,33 +133,38 @@ function RelatoriosDetails() {
                 <Breadcrumb
                   path={[
                     { route: '/', name: 'Home' },
-                    { route: '/propriedades', name: 'Propriedades' },
                     {
-                      route: `/propriedades/${id}/detalhes`,
+                      route: '/tecnico',
+                      name: 'Painel Técnico',
+                      active: route && route.permission === types
+                    },
+                    { route: `${route.path}`, name: 'Propriedades' },
+                    {
+                      route: `${route.path}/${id}/detalhes`,
                       name: `${data?.properties.name}`
                     },
                     {
-                      route: `/propriedades/${id}/talhoes`,
+                      route: `${route.path}/${id}/talhoes`,
                       name: `Talhões`
                     },
                     {
-                      route: `/propriedades/${id}/talhoes/${idField}/detalhes`,
+                      route: `${route.path}/${id}/talhoes/${idField}/detalhes`,
                       name: `${data?.name}`
                     },
                     {
-                      route: `/propriedades/${id}/talhoes/${idField}/culturas`,
+                      route: `${route.path}/${id}/talhoes/${idField}/culturas`,
                       name: `Culturas`
                     },
                     {
-                      route: `/propriedades/${id}/talhoes/${idField}/culturas/${idCulture}/detalhes`,
+                      route: `${route.path}/${id}/talhoes/${idField}/culturas/${idCulture}/detalhes`,
                       name: `${dataCultures?.products.name}`
                     },
                     {
-                      route: `/propriedades/${id}/talhoes/${idField}/culturas/${idCulture}/relatorios`,
+                      route: `${route.path}/${id}/talhoes/${idField}/culturas/${idCulture}/relatorios`,
                       name: `Relatórios`
                     },
                     {
-                      route: `/propriedades/${id}/talhoes/${idField}/culturas/${idCulture}/relatorios/${idAction}/detalhes`,
+                      route: `${route.path}/${id}/talhoes/${idField}/culturas/${idCulture}/relatorios/${idAction}/detalhes`,
                       name: `Detalhes`
                     }
                   ]}

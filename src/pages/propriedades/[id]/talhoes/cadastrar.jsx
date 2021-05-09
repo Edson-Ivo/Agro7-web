@@ -24,6 +24,8 @@ import getFormData from '@/helpers/getFormData';
 import isEmpty from '@/helpers/isEmpty';
 import areaConversor from '@/helpers/areaConversor';
 import Error from '@/components/Error/index';
+import { useSelector } from 'react-redux';
+import urlRoute from '@/helpers/urlRoute';
 
 const schema = yup.object().shape({
   name: yup
@@ -52,22 +54,23 @@ function TalhoesCadastrar() {
   const router = useRouter();
   const { id, createProperty } = router.query;
 
+  const { types } = useSelector(state => state.user);
+  const [route, setRoute] = useState({});
+
   const { data, error } = useFetch(`/properties/find/by/id/${id}`);
   const { data: dataTypeDimension } = useFetch(
     '/fields/find/all/types-dimension'
   );
 
-  useEffect(
-    () => () => {
-      setAlert({ type: '', message: '' });
-      setDisableButton(false);
-    },
-    []
-  );
+  useEffect(() => {
+    setAlert({ type: '', message: '' });
+    setDisableButton(false);
+    setRoute(urlRoute(router, types));
+  }, []);
 
   const handleCancel = () => {
     if (createProperty) {
-      router.push(`/propriedades/${id}/detalhes`);
+      router.push(`${route.path}/${id}/detalhes`);
     } else {
       router.back();
     }
@@ -131,12 +134,12 @@ function TalhoesCadastrar() {
 
               if (createProperty) {
                 setTimeout(() => {
-                  router.push(`/propriedades/${id}/detalhes`);
+                  router.push(`${route.path}/${id}/detalhes`);
                   setDisableButton(false);
                 }, 1000);
               } else {
                 router.push(
-                  `/propriedades/${id}/talhoes/${res.data.id}/detalhes`
+                  `${route.path}/${id}/talhoes/${res.data.id}/detalhes`
                 );
               }
             }
@@ -156,6 +159,7 @@ function TalhoesCadastrar() {
   };
 
   if (error) return <Error error={error} />;
+  if (!isEmpty(route) && !route.hasPermission) return <Error error={404} />;
 
   return (
     <>
@@ -173,17 +177,22 @@ function TalhoesCadastrar() {
                 <Breadcrumb
                   path={[
                     { route: '/', name: 'Home' },
-                    { route: '/propriedades', name: 'Propriedades' },
                     {
-                      route: `/propriedades/${id}/detalhes`,
+                      route: '/tecnico',
+                      name: 'Painel Técnico',
+                      active: route && route.permission === types
+                    },
+                    { route: `${route.path}`, name: 'Propriedades' },
+                    {
+                      route: `${route.path}/${id}/detalhes`,
                       name: `${data?.name}`
                     },
                     {
-                      route: `/propriedades/${id}/talhoes`,
+                      route: `${route.path}/${id}/talhoes`,
                       name: `Talhões`
                     },
                     {
-                      route: `/propriedades/${id}/talhoes/cadastrar`,
+                      route: `${route.path}/${id}/talhoes/cadastrar`,
                       name: `Cadastrar`
                     }
                   ]}

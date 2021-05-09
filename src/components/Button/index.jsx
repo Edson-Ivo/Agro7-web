@@ -29,6 +29,10 @@ const Button = styled.button`
   &.red {
     background: ${props => props.theme.colors.red}!important;
     color: ${props => props.theme.colors.white}!important;
+
+    &:hover {
+      border: 1px solid ${props => props.theme.colors.red};
+    }
   }
 
   &:hover {

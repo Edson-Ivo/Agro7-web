@@ -10,16 +10,18 @@ import { BreadcrumbContainer } from './styles';
 const Breadcrumb = ({ path }) => (
   <>
     <BreadcrumbContainer>
-      {path.map(({ route, name }, i) => (
-        <h5 key={i.toString()}>
-          <Link href={route}>{name}</Link>
-          {path.length - 1 === i || (
-            <span>
-              <FontAwesomeIcon icon={faChevronRight} className="separator" />
-            </span>
-          )}
-        </h5>
-      ))}
+      {path.map(({ route, name, active = true }, i) =>
+        active ? (
+          <h5 key={i.toString()}>
+            <Link href={route}>{name}</Link>
+            {path.length - 1 === i || (
+              <span>
+                <FontAwesomeIcon icon={faChevronRight} className="separator" />
+              </span>
+            )}
+          </h5>
+        ) : null
+      )}
     </BreadcrumbContainer>
   </>
 );
