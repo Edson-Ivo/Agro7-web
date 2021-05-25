@@ -39,9 +39,7 @@ function AdminCategoriesCreate() {
   const router = useRouter();
 
   const [pageColors, setPageColors] = useState(1);
-  const [pageIcons, setPageIcons] = useState(1);
   const [selectedColor, setSelectedColor] = useState(null);
-  const [selectedIcon, setSelectedIcon] = useState(1);
 
   const perPage = 9;
 
@@ -49,34 +47,24 @@ function AdminCategoriesCreate() {
     `/colors/find/all?limit=${perPage}&page=${pageColors}`
   );
 
-  const { data: dataIcons, error: errorIcons } = useFetch(
-    `/icons/find/all?limit=${perPage}&page=${pageIcons}`
-  );
-
   const getData = () => {
     if (formRef.current === undefined) {
       return {
         name: null,
         description: null,
-        colors: null,
-        icons: null
+        colors: null
       };
     }
 
     return getFormData(formRef.current, {
       name: null,
       description: null,
-      colors: null,
-      icons: null
+      colors: null
     });
   };
 
   const handleColors = colorId => {
     setSelectedColor(colorId);
-  };
-
-  const handleIcons = iconId => {
-    setSelectedIcon(iconId);
   };
 
   const handleSubmit = async e => {
@@ -95,15 +83,8 @@ function AdminCategoriesCreate() {
             type: 'error',
             message: 'Selecione uma cor!'
           });
-        } else if (selectedIcon === null) {
-          setAlert({
-            type: 'error',
-            message: 'Selecione um ícone!'
-          });
         } else {
           data.colors = selectedColor;
-          data.icons = selectedIcon;
-
           await CategoriesService.create(data).then(res => {
             if (res.status !== 201 || res?.statusCode) {
               setAlert({ type: 'error', message: errorMessage(res) });
@@ -130,8 +111,7 @@ function AdminCategoriesCreate() {
       });
   };
 
-  if (errorColors || errorIcons)
-    return <Error error={errorColors || errorIcons} />;
+  if (errorColors) return <Error error={errorColors} />;
 
   return (
     <>
@@ -157,7 +137,7 @@ function AdminCategoriesCreate() {
                 ]}
               />
               <h2>Cadastre uma Categoria</h2>
-              <p>Aqui você irá cadastrar uma cor no seu sistema</p>
+              <p>Aqui você irá cadastrar uma categoria no seu sistema</p>
             </div>
           </SectionHeader>
           <SectionBody>
@@ -212,9 +192,6 @@ function AdminCategoriesCreate() {
                         </>
                       )) || <Loader />}
                     </Step>
-                    <Step label="Ícone" onClick={() => setActiveStep(3)}>
-                      <h4 className="step-title">Selecione o Ícone</h4>
-                    </Step>
                   </MultiStep>
 
                   <div className="form-group buttons">
@@ -235,7 +212,7 @@ function AdminCategoriesCreate() {
                       </div>
                     )}
                     <div>
-                      {activeStep !== 3 && (
+                      {activeStep !== 2 && (
                         <Button
                           type="button"
                           onClick={() => setActiveStep(activeStep + 1)}
@@ -245,7 +222,7 @@ function AdminCategoriesCreate() {
                         </Button>
                       )}
 
-                      {activeStep === 3 && (
+                      {activeStep === 2 && (
                         <Button
                           disabled={disableButton}
                           className="primary"

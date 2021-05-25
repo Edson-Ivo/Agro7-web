@@ -115,7 +115,7 @@ export const DateCardCalendar = styled.div`
 
   & > div {
     align-items: center;
-    border-radius: 9999px;
+    border-radius: 8px;
     display: flex;
     height: 55px;
     justify-content: center;
