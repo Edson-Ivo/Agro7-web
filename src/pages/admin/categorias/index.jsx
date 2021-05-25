@@ -153,6 +153,7 @@ function AdminCategories() {
                                   <ActionButton
                                     id={d.id}
                                     path={baseUrl}
+                                    noDelete={!d.can_delete}
                                     onDelete={() => handleDeleteModal(d.id)}
                                   />
                                 </td>

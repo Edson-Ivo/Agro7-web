@@ -8,7 +8,6 @@ import {
   faMapMarkerAlt,
   faBox,
   faPaintRoller,
-  faStickyNote,
   faListUl
 } from '@fortawesome/free-solid-svg-icons';
 
@@ -57,13 +56,6 @@ const data = [
     description:
       'Aqui você tem controle de todas as cores para categorias de sua aplicação.',
     icon: faPaintRoller
-  },
-  {
-    href: '/admin/cores',
-    title: 'Gerenciar Ícones',
-    description:
-      'Aqui você tem controle de todos os ícones para categorias de sua aplicação.',
-    icon: faStickyNote
   }
 ];
 
