@@ -107,6 +107,8 @@ function ProducerNotebookEdit() {
   if (errorCategories || error)
     return <Error error={errorCategories || error} />;
 
+  if (data?.is_log) return <Error error={404} />;
+
   return (
     <>
       <Head>

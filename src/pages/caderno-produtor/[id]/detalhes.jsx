@@ -114,21 +114,23 @@ function ProducerNotebookDetails() {
                 dia {dateConversor(data?.date, false)} do seu Caderno do
                 Produtor.
               </p>
-              <div className="buttons__container">
-                <Link href={`/caderno-produtor/${id}/editar`}>
-                  <Button className="primary">
-                    <FontAwesomeIcon icon={faEdit} /> Editar Anotação
-                  </Button>
-                </Link>
+              {data && !data.is_log && (
+                <div className="buttons__container">
+                  <Link href={`/caderno-produtor/${id}/editar`}>
+                    <Button className="primary">
+                      <FontAwesomeIcon icon={faEdit} /> Editar Anotação
+                    </Button>
+                  </Link>
 
-                <Button
-                  className="red"
-                  type="button"
-                  onClick={() => handleDeleteModal()}
-                >
-                  <FontAwesomeIcon icon={faTrash} /> Deletar Anotação
-                </Button>
-              </div>
+                  <Button
+                    className="red"
+                    type="button"
+                    onClick={() => handleDeleteModal()}
+                  >
+                    <FontAwesomeIcon icon={faTrash} /> Deletar Anotação
+                  </Button>
+                </div>
+              )}
             </div>
           </SectionHeader>
           <SectionBody>

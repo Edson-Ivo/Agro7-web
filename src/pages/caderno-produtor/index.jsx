@@ -83,9 +83,7 @@ function ProducerNotebook() {
   const isRefreshing = isValidating && data && data.length === size;
 
   useEffect(() => {
-    if (isVisible && !isReachingEnd && !isRefreshing) {
-      setSize(size + 1);
-    }
+    if (isVisible && !isReachingEnd && !isRefreshing) setSize(size + 1);
   }, [isVisible, isRefreshing]);
 
   useEffect(() => {
@@ -250,11 +248,6 @@ function ProducerNotebook() {
                             <p>{d.description}</p>
                           </div>
                           <div className="card-image">
-                            {/* <Image
-                              src="https://via.placeholder.com/150"
-                              width="150"
-                              height="150"
-                            /> */}
                             <div className="absolute_content">
                               <CardBack
                                 fill={colorShade(
