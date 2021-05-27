@@ -103,7 +103,7 @@ function AdminCoresEdit() {
   return (
     <>
       <Head>
-        <title>Painel Adminstrativo | Editar Cor - Agro7</title>
+        <title>Painel Administrativo | Editar Cor - Agro7</title>
       </Head>
 
       <Navbar />
@@ -115,7 +115,7 @@ function AdminCoresEdit() {
               <Breadcrumb
                 path={[
                   { route: '/', name: 'Home' },
-                  { route: '/admin', name: 'Painel Adminstrativo' },
+                  { route: '/admin', name: 'Painel Administrativo' },
                   { route: '/admin/cores', name: 'Cores para Categorias' },
                   {
                     route: `/admin/cores/${id}/editar`,

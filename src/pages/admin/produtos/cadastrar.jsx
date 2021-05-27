@@ -265,7 +265,7 @@ function AdminProductsCreate() {
   return (
     <>
       <Head>
-        <title>Painel Adminstrativo | Cadastrar Produto - Agro7</title>
+        <title>Painel Administrativo | Cadastrar Produto - Agro7</title>
       </Head>
 
       <Navbar />
@@ -277,7 +277,7 @@ function AdminProductsCreate() {
               <Breadcrumb
                 path={[
                   { route: '/', name: 'Home' },
-                  { route: '/admin', name: 'Painel Adminstrativo' },
+                  { route: '/admin', name: 'Painel Administrativo' },
                   { route: '/admin/produtos', name: 'Produtos' },
                   {
                     route: '/admin/produtos/cadastrar',

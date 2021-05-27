@@ -31,7 +31,7 @@ function AdminUsers() {
   return (
     <>
       <Head>
-        <title>Painel Adminstrativo | Gerenciar Usuários - Agro7</title>
+        <title>Painel Administrativo | Gerenciar Usuários - Agro7</title>
       </Head>
 
       <Navbar />
@@ -44,7 +44,7 @@ function AdminUsers() {
                 <Breadcrumb
                   path={[
                     { route: '/', name: 'Home' },
-                    { route: '/admin', name: 'Painel Adminstrativo' },
+                    { route: '/admin', name: 'Painel Administrativo' },
                     { route: '/admin/users', name: 'Usuários' },
                     {
                       route: `/admin/users/${id}/detalhes`,

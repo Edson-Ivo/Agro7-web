@@ -286,7 +286,7 @@ function AdminProductsEdit() {
   return (
     <>
       <Head>
-        <title>Painel Adminstrativo | Editar Produto - Agro7</title>
+        <title>Painel Administrativo | Editar Produto - Agro7</title>
       </Head>
 
       <Navbar />
@@ -298,7 +298,7 @@ function AdminProductsEdit() {
               <Breadcrumb
                 path={[
                   { route: '/', name: 'Home' },
-                  { route: '/admin', name: 'Painel Adminstrativo' },
+                  { route: '/admin', name: 'Painel Administrativo' },
                   { route: '/admin/produtos', name: 'Produtos' },
                   {
                     route: `/admin/produtos/${id}/editar`,

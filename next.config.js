@@ -19,6 +19,14 @@ const nextConfig = {
       {
         source: '/tecnico/propriedades/:path*',
         destination: '/propriedades/:path*'
+      },
+      {
+        source: '/admin/propriedades/:path*',
+        destination: '/propriedades/:path*'
+      },
+      {
+        source: '/user/:slug/propriedades/:path*',
+        destination: '/propriedades/:path*'
       }
     ];
   }

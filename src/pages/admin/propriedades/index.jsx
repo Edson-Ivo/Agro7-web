@@ -1,63 +1,58 @@
-import React, { useCallback, useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import Head from 'next/head';
-import Link from 'next/link';
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus } from '@fortawesome/free-solid-svg-icons';
-import Button from '@/components/Button';
-import Pagination from '@/components/Pagination/index';
-import { useRouter } from 'next/router';
 import Container from '@/components/Container';
 import Nav from '@/components/Nav';
 import Navbar from '@/components/Navbar';
 import Breadcrumb from '@/components/Breadcrumb';
-import { Alert } from '@/components/Alert';
 import { Section, SectionHeader, SectionBody } from '@/components/Section';
 
 import { CardContainer } from '@/components/CardContainer';
 import { privateRoute } from '@/components/PrivateRoute';
-import Error from '@/components/Error';
 import Table from '@/components/Table';
-import Loader from '@/components/Loader';
 
+import Loader from '@/components/Loader';
+import Error from '@/components/Error';
 import { useFetch } from '@/hooks/useFetch';
 import ActionButton from '@/components/ActionButton';
 import { useModal } from '@/hooks/useModal';
 
-import UsersService from '@/services/UsersService';
+import { useRouter } from 'next/router';
 import errorMessage from '@/helpers/errorMessage';
-import Input from '@/components/Input/index';
+import PropertiesService from '@/services/PropertiesService';
+import { Alert } from '@/components/Alert/index';
+import Pagination from '@/components/Pagination/index';
 import isEmpty from '@/helpers/isEmpty';
 
-function AdminUsers() {
+function Properties() {
   const [alertMsg, setAlertMsg] = useState({ type: '', message: '' });
   const [loading, setLoading] = useState(false);
-  const [searchedUser, setSearchedUser] = useState('');
 
   const router = useRouter();
 
-  const perPage = 10;
   const { page = 1 } = router.query;
+  const perPage = 10;
 
-  const { data, error, mutate } = useFetch(
-    `/users/find/all?name=${searchedUser}&limit=${perPage}&page=${page}`
-  );
   const { addModal, removeModal } = useModal();
 
+  const { data, error, mutate } = useFetch(
+    `/properties/find/all?limit=${perPage}&page=${page}`
+  );
+
   const handleDelete = useCallback(
-    async id => {
+    async identifier => {
       removeModal();
       setLoading(true);
 
-      await UsersService.deleteByAdmin(id).then(res => {
-        if (res.status !== 200 || res?.statusCode) {
+      await PropertiesService.delete(identifier).then(res => {
+        if (res.status >= 400 || res?.statusCode) {
           setAlertMsg({ type: 'error', message: errorMessage(res) });
         } else {
           mutate();
 
           setAlertMsg({
             type: 'success',
-            message: 'Usuário deletado com sucesso!'
+            message: 'A propriedade foi deletada com sucesso!'
           });
         }
       });
@@ -68,26 +63,24 @@ function AdminUsers() {
   );
 
   const handleDeleteModal = useCallback(
-    id => {
+    identifier => {
       addModal({
-        title: 'Deletar Usuário',
-        text: 'Deseja realmente deletar este usuário?',
+        title: 'Deletar Propriedade',
+        text: 'Deseja realmente deletar esta propriedade?',
         confirm: true,
-        onConfirm: () => handleDelete(id),
+        onConfirm: () => handleDelete(identifier),
         onCancel: removeModal
       });
     },
     [addModal, removeModal]
   );
 
-  const searchUser = e => setSearchedUser(e.target.value);
-
   if (error) return <Error error={error} />;
 
   return (
     <>
       <Head>
-        <title>Painel Administrativo | Gerenciar Usuários - Agro7</title>
+        <title>Painel Administrativo | Gerenciar Propriedades - Agro7</title>
       </Head>
 
       <Navbar />
@@ -100,15 +93,10 @@ function AdminUsers() {
                 path={[
                   { route: '/', name: 'Home' },
                   { route: '/admin', name: 'Painel Administrativo' },
-                  { route: '/admin/users', name: 'Usuários' }
+                  { route: '/admin/propriedades', name: 'Propriedades' }
                 ]}
               />
-              <h2>Gerenciar Usuários</h2>
-              <Link href="/admin/users/cadastrar">
-                <Button className="primary">
-                  <FontAwesomeIcon icon={faPlus} /> Novo Usuário
-                </Button>
-              </Link>
+              <h2>Gerenciar Propriedades</h2>
             </div>
           </SectionHeader>
           <SectionBody>
@@ -117,62 +105,44 @@ function AdminUsers() {
                 {alertMsg.message && (
                   <Alert type={alertMsg.type}>{alertMsg.message}</Alert>
                 )}
-                <div
-                  style={{
-                    borderBottom: '1px solid #EEEDEA',
-                    marginTop: -10,
-                    marginBottom: 14
-                  }}
-                >
-                  <Input
-                    type="text"
-                    name="userSelect"
-                    handleChange={searchUser}
-                    label="Pesquisar por Nome"
-                  />
-                </div>
                 {((data || loading) && (
                   <>
                     <div className="table-responsive">
                       <Table>
                         <thead>
                           <tr>
-                            <th>Nome</th>
-                            <th>E-mail</th>
-                            <th>Documento</th>
-                            <th>Telefone</th>
+                            <th>Nome da propriedade</th>
+                            <th>Estado</th>
+                            <th>Cidade</th>
                             <th>Ações</th>
                           </tr>
                         </thead>
                         <tbody>
                           {(!isEmpty(data?.items) &&
-                            data.items.map(user => (
+                            data.items.map(p => (
                               <tr
-                                key={user.id}
+                                key={p.id}
                                 onClick={() =>
                                   router.push(
-                                    `/admin/users/${user.id}/detalhes`
+                                    `/admin/propriedades/${p.id}/detalhes`
                                   )
                                 }
                               >
-                                <td>{user.name}</td>
-                                <td>{user.email}</td>
-                                <td>{user.documents}</td>
-                                <td>{user.phone}</td>
+                                <td>{p.name}</td>
+                                <td>{p.addresses.state}</td>
+                                <td>{p.addresses.city}</td>
                                 <td onClick={e => e.stopPropagation()}>
                                   <ActionButton
-                                    id={user.id}
-                                    path="/admin/users"
-                                    onDelete={() => handleDeleteModal(user.id)}
+                                    id={p.id}
+                                    path="/admin/propriedades"
+                                    onDelete={() => handleDeleteModal(p.id)}
                                   />
                                 </td>
                               </tr>
                             ))) || (
                             <tr>
-                              <td colSpan="5">
-                                {!searchedUser
-                                  ? `Não há usuários cadastrados`
-                                  : `Não há usuários correspondentes à pesquisa`}
+                              <td colSpan="4">
+                                Não há propriedades cadastradas
                               </td>
                             </tr>
                           )}
@@ -180,7 +150,7 @@ function AdminUsers() {
                       </Table>
                     </div>
                     <Pagination
-                      url="/admin/users"
+                      url="/admin/propriedades"
                       currentPage={page}
                       itemsPerPage={perPage}
                       totalPages={data.meta.totalPages}
@@ -196,4 +166,4 @@ function AdminUsers() {
   );
 }
 
-export default privateRoute(['administrator'])(AdminUsers);
+export default privateRoute(['administrator'])(Properties);

@@ -33,8 +33,8 @@ function AdminCategoriesDetails() {
     <>
       <Head>
         <title>
-          Painel Adminstrativo | Categoria {dataCategory && dataCategory.name} -
-          Agro7
+          Painel Administrativo | Categoria {dataCategory && dataCategory.name}{' '}
+          - Agro7
         </title>
       </Head>
 
@@ -48,7 +48,7 @@ function AdminCategoriesDetails() {
                 <Breadcrumb
                   path={[
                     { route: '/', name: 'Home' },
-                    { route: '/admin', name: 'Painel Adminstrativo' },
+                    { route: '/admin', name: 'Painel Administrativo' },
                     { route: '/admin/categorias', name: 'Categorias' },
                     {
                       route: `/admin/categorias/${id}/detalhes`,

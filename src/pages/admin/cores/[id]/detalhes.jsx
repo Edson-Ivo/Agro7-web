@@ -30,7 +30,7 @@ function AdminCoresDetails() {
     <>
       <Head>
         <title>
-          Painel Adminstrativo | Cor {dataColor && dataColor.name} - Agro7
+          Painel Administrativo | Cor {dataColor && dataColor.name} - Agro7
         </title>
       </Head>
 
@@ -44,7 +44,7 @@ function AdminCoresDetails() {
                 <Breadcrumb
                   path={[
                     { route: '/', name: 'Home' },
-                    { route: '/admin', name: 'Painel Adminstrativo' },
+                    { route: '/admin', name: 'Painel Administrativo' },
                     { route: '/admin/cores', name: 'Cores para Categorias' },
                     {
                       route: `/admin/cores/${id}/detalhes`,
