@@ -87,7 +87,7 @@ function AdminColors() {
     <>
       <Head>
         <title>
-          Painel Adminstrativo | Gerenciar Cores de Categoria - Agro7
+          Painel Administrativo | Gerenciar Cores de Categoria - Agro7
         </title>
       </Head>
 
@@ -100,7 +100,7 @@ function AdminColors() {
               <Breadcrumb
                 path={[
                   { route: '/', name: 'Home' },
-                  { route: '/admin', name: 'Painel Adminstrativo' },
+                  { route: '/admin', name: 'Painel Administrativo' },
                   { route: baseUrl, name: 'Cores para Categorias' }
                 ]}
               />

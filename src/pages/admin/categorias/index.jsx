@@ -87,7 +87,7 @@ function AdminCategories() {
   return (
     <>
       <Head>
-        <title>Painel Adminstrativo | Gerenciar Categorias - Agro7</title>
+        <title>Painel Administrativo | Gerenciar Categorias - Agro7</title>
       </Head>
 
       <Navbar />
@@ -99,7 +99,7 @@ function AdminCategories() {
               <Breadcrumb
                 path={[
                   { route: '/', name: 'Home' },
-                  { route: '/admin', name: 'Painel Adminstrativo' },
+                  { route: '/admin', name: 'Painel Administrativo' },
                   { route: baseUrl, name: 'Categorias' }
                 ]}
               />

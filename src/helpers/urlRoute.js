@@ -10,7 +10,8 @@ const urlRoute = (router, types) => {
 
   if (path === 'propriedades') {
     routesList = {
-      technical: '/tecnico/propriedades'
+      technical: '/tecnico/propriedades',
+      administrator: '/admin/propriedades'
     };
   }
 

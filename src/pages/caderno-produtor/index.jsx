@@ -163,7 +163,7 @@ function ProducerNotebook() {
                   onChange={date => handleChangeDate(date.format('YYYY-MM-DD'))}
                   onOutsideClick={() => setHideCalendar(true)}
                 />
-                <DateWrapper>
+                <DateWrapper style={{ marginTop: -10 }}>
                   <DateContainer>
                     <DateContent>
                       <ScrollContainer
@@ -201,8 +201,8 @@ function ProducerNotebook() {
                 </DateWrapper>
                 <div
                   style={{
-                    marginTop: 14,
                     borderBottom: '1px solid #EEEDEA',
+                    marginTop: 14,
                     marginBottom: 14
                   }}
                 >

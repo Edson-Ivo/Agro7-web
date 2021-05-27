@@ -288,7 +288,14 @@ function PropertiesEdit() {
                   {
                     route: '/tecnico',
                     name: 'Painel Técnico',
-                    active: route && route.permission === types
+                    active:
+                      types === 'technician' && route?.permission === types
+                  },
+                  {
+                    route: '/admin',
+                    name: 'Painel Administrativo',
+                    active:
+                      types === 'administrator' && route?.permission === types
                   },
                   { route: `${route.path}`, name: 'Propriedades' },
                   { route: `${route.path}/${id}/editar`, name: 'Editar' }

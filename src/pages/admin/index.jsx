@@ -65,7 +65,7 @@ function AdminHome() {
   return (
     <>
       <Head>
-        <title>Painel Adminstrativo - Agro7</title>
+        <title>Painel Administrativo - Agro7</title>
       </Head>
 
       <Navbar />
@@ -77,10 +77,10 @@ function AdminHome() {
               <Breadcrumb
                 path={[
                   { route: '/', name: 'Home' },
-                  { route: '/admin', name: 'Painel Adminstrativo' }
+                  { route: '/admin', name: 'Painel Administrativo' }
                 ]}
               />
-              <h2>Painel Adminstrativo</h2>
+              <h2>Painel Administrativo</h2>
               <p>
                 Olá {name}! Esse é seu painel, aqui você pode gerenciar o
                 controle de sua aplicação!

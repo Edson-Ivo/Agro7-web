@@ -91,7 +91,7 @@ function AdminCoresCreate() {
   return (
     <>
       <Head>
-        <title>Painel Adminstrativo | Cadastrar Cor - Agro7</title>
+        <title>Painel Administrativo | Cadastrar Cor - Agro7</title>
       </Head>
 
       <Navbar />
@@ -103,7 +103,7 @@ function AdminCoresCreate() {
               <Breadcrumb
                 path={[
                   { route: '/', name: 'Home' },
-                  { route: '/admin', name: 'Painel Adminstrativo' },
+                  { route: '/admin', name: 'Painel Administrativo' },
                   { route: '/admin/cores', name: 'Cores para Categorias' },
                   {
                     route: '/admin/cores/cadastrar',

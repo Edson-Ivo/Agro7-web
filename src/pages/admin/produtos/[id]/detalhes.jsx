@@ -32,7 +32,7 @@ function AdminProductsDetails() {
     <>
       <Head>
         <title>
-          Painel Adminstrativo | Produto {data && data.name} - Agro7
+          Painel Administrativo | Produto {data && data.name} - Agro7
         </title>
       </Head>
 
@@ -46,7 +46,7 @@ function AdminProductsDetails() {
                 <Breadcrumb
                   path={[
                     { route: '/', name: 'Home' },
-                    { route: '/admin', name: 'Painel Adminstrativo' },
+                    { route: '/admin', name: 'Painel Administrativo' },
                     { route: '/admin/produtos', name: 'Produtos' },
                     {
                       route: `/admin/produtos/${id}/detalhes`,
