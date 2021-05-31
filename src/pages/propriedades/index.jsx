@@ -27,6 +27,7 @@ import errorMessage from '@/helpers/errorMessage';
 import PropertiesService from '@/services/PropertiesService';
 import { Alert } from '@/components/Alert/index';
 import Pagination from '@/components/Pagination/index';
+import isEmpty from '@/helpers/isEmpty';
 
 function Properties() {
   const [alertMsg, setAlertMsg] = useState({ type: '', message: '' });
@@ -126,7 +127,7 @@ function Properties() {
                           </tr>
                         </thead>
                         <tbody>
-                          {(data?.items.length > 0 &&
+                          {(!isEmpty(data?.items) &&
                             data.items.map(p => (
                               <tr
                                 key={p.id}
@@ -135,8 +136,8 @@ function Properties() {
                                 }
                               >
                                 <td>{p.name}</td>
-                                <td>{p.addresses.state}</td>
-                                <td>{p.addresses.city}</td>
+                                <td>{p?.addresses?.state}</td>
+                                <td>{p?.addresses?.city}</td>
                                 <td onClick={e => e.stopPropagation()}>
                                   <ActionButton
                                     id={p.id}

@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import Head from 'next/head';
 
 import Container from '@/components/Container';
@@ -15,17 +15,19 @@ import Loader from '@/components/Loader';
 import Error from '@/components/Error';
 import { useFetch } from '@/hooks/useFetch';
 import ActionButton from '@/components/ActionButton';
-import { useModal } from '@/hooks/useModal';
 
 import { useRouter } from 'next/router';
+import Pagination from '@/components/Pagination/index';
+import { useSelector } from 'react-redux';
+import { useModal } from '@/hooks/useModal';
 import errorMessage from '@/helpers/errorMessage';
 import PropertiesService from '@/services/PropertiesService';
 import { Alert } from '@/components/Alert/index';
-import Pagination from '@/components/Pagination/index';
 import isEmpty from '@/helpers/isEmpty';
 
-function Properties() {
+function RequestsTechnichian() {
   const [alertMsg, setAlertMsg] = useState({ type: '', message: '' });
+  const { id } = useSelector(state => state.user);
   const [loading, setLoading] = useState(false);
 
   const router = useRouter();
@@ -33,26 +35,30 @@ function Properties() {
   const { page = 1 } = router.query;
   const perPage = 10;
 
-  const { addModal, removeModal } = useModal();
-
   const { data, error, mutate } = useFetch(
-    `/properties/find/all?limit=${perPage}&page=${page}`
+    `/technicians-requests/find/by/technician/${id}?limit=${perPage}&page=${page}`
   );
 
-  const handleDelete = useCallback(
-    async identifier => {
+  const { addModal, removeModal } = useModal();
+
+  const handleUpdate = useCallback(
+    async (identifier, accepted) => {
       removeModal();
       setLoading(true);
 
-      await PropertiesService.delete(identifier).then(res => {
-        if (res.status >= 400 || res?.statusCode) {
+      await PropertiesService.updateTechniciansPropertiesRequests(identifier, {
+        accepted
+      }).then(res => {
+        if (res.status !== 200 || res?.statusCode) {
           setAlertMsg({ type: 'error', message: errorMessage(res) });
         } else {
           mutate();
 
           setAlertMsg({
             type: 'success',
-            message: 'A propriedade foi deletada com sucesso!'
+            message: `Solicitação ${
+              accepted ? 'aceita' : 'recusada'
+            } com sucesso!`
           });
         }
       });
@@ -62,13 +68,15 @@ function Properties() {
     [addModal, removeModal]
   );
 
-  const handleDeleteModal = useCallback(
-    identifier => {
+  const handleUpdateModal = useCallback(
+    (identifier, accepted) => {
       addModal({
-        title: 'Deletar Propriedade',
-        text: 'Deseja realmente deletar esta propriedade?',
+        title: 'Solicitação Técnica',
+        text: `Deseja realmente ${
+          accepted ? 'aceitar' : 'recusar'
+        } essa solicitação técnica?`,
         confirm: true,
-        onConfirm: () => handleDelete(identifier),
+        onConfirm: () => handleUpdate(identifier, accepted),
         onCancel: removeModal
       });
     },
@@ -80,7 +88,7 @@ function Properties() {
   return (
     <>
       <Head>
-        <title>Painel Administrativo | Gerenciar Propriedades - Agro7</title>
+        <title>Solicitação Técnica - Agro7</title>
       </Head>
 
       <Navbar />
@@ -92,11 +100,18 @@ function Properties() {
               <Breadcrumb
                 path={[
                   { route: '/', name: 'Home' },
-                  { route: '/admin', name: 'Painel Administrativo' },
-                  { route: '/admin/propriedades', name: 'Propriedades' }
+                  { route: '/tecnico', name: 'Painel Técnico' },
+                  {
+                    route: '/tecnico/solicitacoes',
+                    name: 'Solicitação Técnica'
+                  }
                 ]}
               />
-              <h2>Gerenciar Propriedades</h2>
+              <h2>Solicitações Técnica</h2>
+              <p>
+                Aqui você irá gerenciar todas as solicitações técnicas de
+                propriedades.
+              </p>
             </div>
           </SectionHeader>
           <SectionBody>
@@ -111,38 +126,37 @@ function Properties() {
                       <Table>
                         <thead>
                           <tr>
-                            <th>Nome da propriedade</th>
-                            <th>Estado</th>
-                            <th>Cidade</th>
+                            <th>Mensagem</th>
                             <th>Ações</th>
                           </tr>
                         </thead>
                         <tbody>
                           {(!isEmpty(data?.items) &&
                             data.items.map(p => (
-                              <tr
-                                key={p.id}
-                                onClick={() =>
-                                  router.push(
-                                    `/admin/propriedades/${p.id}/detalhes`
-                                  )
-                                }
-                              >
-                                <td>{p.name}</td>
-                                <td>{p?.addresses?.state}</td>
-                                <td>{p?.addresses?.city}</td>
-                                <td onClick={e => e.stopPropagation()}>
+                              <tr key={p.id}>
+                                <td>{`${p?.properties?.users?.name} solicitou para que você trabalhe na propriedade ${p?.properties?.name}.`}</td>
+                                <td>
                                   <ActionButton
                                     id={p.id}
-                                    path="/admin/propriedades"
-                                    onDelete={() => handleDeleteModal(p.id)}
+                                    path="/tecnico/solicitacoes"
+                                    onAccept={() =>
+                                      handleUpdateModal(p.id, true)
+                                    }
+                                    onDelete={() =>
+                                      handleUpdateModal(p.id, false)
+                                    }
+                                    noInfo
+                                    noEdit
+                                    noAccept={false}
+                                    noRemove={false}
+                                    noDelete
                                   />
                                 </td>
                               </tr>
                             ))) || (
                             <tr>
-                              <td colSpan="4">
-                                Não há propriedades cadastradas
+                              <td colSpan="2">
+                                Não há solicitações técnicas no momento
                               </td>
                             </tr>
                           )}
@@ -150,7 +164,7 @@ function Properties() {
                       </Table>
                     </div>
                     <Pagination
-                      url="/admin/propriedades"
+                      url="/tecnico/solicitacoes"
                       currentPage={page}
                       itemsPerPage={perPage}
                       totalPages={data.meta.totalPages}
@@ -166,4 +180,4 @@ function Properties() {
   );
 }
 
-export default privateRoute(['administrator'])(Properties);
+export default privateRoute(['technical'])(RequestsTechnichian);

@@ -260,45 +260,22 @@ function PropertieInfo() {
                             />
                           </div>
                         </div>
-                        <div className="form-group">
-                          <div>
-                            <Input
-                              type="text"
-                              label="Bairro"
-                              name="neighborhood"
-                              initialValue={data.addresses.neighborhood}
-                              disabled
-                            />
-                          </div>
-                          <div>
-                            <Input
-                              type="text"
-                              label="Rua"
-                              name="street"
-                              initialValue={data.addresses.street}
-                              disabled
-                            />
-                          </div>
+                        <div>
+                          <Input
+                            type="text"
+                            label="Logradouro"
+                            name="locality"
+                            initialValue={data?.addresses?.locality}
+                          />
                         </div>
-                        <div className="form-group">
-                          <div>
-                            <Input
-                              type="text"
-                              label="Número"
-                              name="number"
-                              initialValue={data.addresses.number}
-                              disabled
-                            />
-                          </div>
-                          <div>
-                            <Input
-                              type="text"
-                              label="Complementos"
-                              name="complements"
-                              initialValue={data.addresses.complements || ''}
-                              disabled
-                            />
-                          </div>
+                        <div>
+                          <Input
+                            type="text"
+                            label="Acesso"
+                            name="access"
+                            initialValue={data?.addresses?.access || ''}
+                            disabled
+                          />
                         </div>
 
                         <div className="form-group">

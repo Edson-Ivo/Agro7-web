@@ -83,21 +83,24 @@ function TecnicosCadastrar() {
         d.technicians = Number(d.technicians);
         d.properties = Number(id);
 
-        await PropertiesService.createTechniciansProperties(d).then(res => {
-          if (res.status !== 201 || res?.statusCode) {
-            setAlert({ type: 'error', message: errorMessage(res) });
-            setTimeout(() => {
-              setDisableButton(false);
-            }, 1000);
-          } else {
-            setAlert({
-              type: 'success',
-              message: 'Técnico solicitado com sucesso!'
-            });
+        await PropertiesService.createTechniciansPropertiesRequests(d).then(
+          res => {
+            if (res.status !== 201 || res?.statusCode) {
+              setAlert({ type: 'error', message: errorMessage(res) });
+              setTimeout(() => {
+                setDisableButton(false);
+              }, 1000);
+            } else {
+              setAlert({
+                type: 'success',
+                message:
+                  'Técnico solicitado com sucesso, aguardando resposta...'
+              });
 
-            router.push(`${route.path}/${id}/tecnicos`);
+              router.push(`${route.path}/${id}/tecnicos/solicitacoes`);
+            }
           }
-        });
+        );
       })
       .catch(err => {
         setAlert({ type: 'error', message: err.errors[0] });
@@ -147,8 +150,8 @@ function TecnicosCadastrar() {
                       name: `Técnicos Relacionados`
                     },
                     {
-                      route: `${route.path}/${id}/tecnicos/cadastrar`,
-                      name: `Cadastrar`
+                      route: `${route.path}/${id}/tecnicos/solicitacoes/cadastrar`,
+                      name: `Solicitar Técnico`
                     }
                   ]}
                 />

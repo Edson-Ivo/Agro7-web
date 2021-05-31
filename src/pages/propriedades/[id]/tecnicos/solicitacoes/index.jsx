@@ -1,15 +1,11 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import Head from 'next/head';
-import Link from 'next/link';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus, faUserSecret } from '@fortawesome/free-solid-svg-icons';
 
 import Container from '@/components/Container';
 import Nav from '@/components/Nav';
 import Navbar from '@/components/Navbar';
 import Breadcrumb from '@/components/Breadcrumb';
 import Loader from '@/components/Loader';
-import Button from '@/components/Button';
 import Table from '@/components/Table';
 import { Alert } from '@/components/Alert';
 import { useModal } from '@/hooks/useModal';
@@ -29,7 +25,7 @@ import urlRoute from '@/helpers/urlRoute';
 import PropertiesService from '@/services/PropertiesService';
 import { dateConversor } from '@/helpers/date';
 
-function Tecnicos() {
+function SolicitacoesTecnicos() {
   const router = useRouter();
   const { id } = router.query;
 
@@ -49,7 +45,7 @@ function Tecnicos() {
   const { data, error } = useFetch(`/properties/find/by/id/${id}`);
 
   const { data: dataTec, error: errorTec, mutate: mutateTec } = useFetch(
-    `/technicians-properties/find/by/property/${id}?limit=${perPage}&page=${page}`
+    `/technicians-requests/find/by/property/${id}?limit=${perPage}&page=${page}`
   );
 
   useEffect(() => {
@@ -70,20 +66,20 @@ function Tecnicos() {
       removeModal();
       setLoading(true);
 
-      await PropertiesService.deleteTechniciansProperties(identifier).then(
-        res => {
-          if (res.status >= 400 || res?.statusCode) {
-            setAlertMsg({ type: 'error', message: errorMessage(res) });
-          } else {
-            mutateTec();
+      await PropertiesService.deleteTechniciansPropertiesRequests(
+        identifier
+      ).then(res => {
+        if (res.status >= 400 || res?.statusCode) {
+          setAlertMsg({ type: 'error', message: errorMessage(res) });
+        } else {
+          mutateTec();
 
-            setAlertMsg({
-              type: 'success',
-              message: 'O técnico foi removido com sucesso!'
-            });
-          }
+          setAlertMsg({
+            type: 'success',
+            message: 'A solicitação foi cancelada com sucesso!'
+          });
         }
-      );
+      });
 
       setLoading(false);
     },
@@ -93,8 +89,8 @@ function Tecnicos() {
   const handleDeleteModal = useCallback(
     identifier => {
       addModal({
-        title: `Remover esse Técnico da Propriedade?`,
-        text: `Deseja realmente remover esse técnico dessa propriedade?`,
+        title: `Cancelar essa Solicitação de Técnico?`,
+        text: `Deseja realmente cancelar essa solicitação de técnico para relacioná-lo a essa propriedade?`,
         confirm: true,
         onConfirm: () => handleDelete(identifier),
         onCancel: removeModal
@@ -111,7 +107,7 @@ function Tecnicos() {
     <>
       <Head>
         <title>
-          Técnicos Relacionados a Propriedade {data && data.name} - Agro7
+          Solicitações de Técnicos na Propriedade {data && data.name} - Agro7
         </title>
       </Head>
 
@@ -145,31 +141,22 @@ function Tecnicos() {
                     {
                       route: `${route.path}/${id}/tecnicos`,
                       name: `Técnicos Relacionados`
+                    },
+                    {
+                      route: `${route.path}/${id}/tecnicos/solicitacoes`,
+                      name: `Solicitações`
                     }
                   ]}
                 />
               )}
               <h2>
-                Técnicos relacionados a propriedade {data && `(${data.name})`}
+                Solicitações de Técnicos na propriedade{' '}
+                {data && `(${data.name})`}
               </h2>
               <p>
-                Aqui você irá ver os técnicos relacionados da propriedade em
-                questão
+                Aqui você irá ver as solicitações de técnicos para relacioná-los
+                a propriedade em questão
               </p>
-
-              <div className="buttons__container">
-                <Link href={`${baseUrl}/solicitacoes`}>
-                  <Button className="primary">
-                    <FontAwesomeIcon icon={faUserSecret} /> Solicitações
-                    Pendentes
-                  </Button>
-                </Link>
-                <Link href={`${baseUrl}/solicitacoes/cadastrar`}>
-                  <Button className="primary">
-                    <FontAwesomeIcon icon={faPlus} /> Solicitar Técnico
-                  </Button>
-                </Link>
-              </div>
             </div>
           </SectionHeader>
           <SectionBody>
@@ -186,7 +173,7 @@ function Tecnicos() {
                           <thead>
                             <tr>
                               <th>Nome do Técnico</th>
-                              <th>Adicionado em</th>
+                              <th>Solicitado em</th>
                               <th>Ações</th>
                             </tr>
                           </thead>
@@ -211,7 +198,7 @@ function Tecnicos() {
                               ))) || (
                               <tr>
                                 <td colSpan="3">
-                                  Não há técnicos relacionados para essa
+                                  Não há solicitações de técnicos para essa
                                   propriedade
                                 </td>
                               </tr>
@@ -237,4 +224,4 @@ function Tecnicos() {
   );
 }
 
-export default privateRoute()(Tecnicos);
+export default privateRoute()(SolicitacoesTecnicos);

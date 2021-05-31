@@ -120,7 +120,7 @@ function RelatoriosDetails() {
   return (
     <>
       <Head>
-        <title>Relatório - Agro7</title>
+        <title>Relatório Técnico - Agro7</title>
       </Head>
 
       <Navbar />

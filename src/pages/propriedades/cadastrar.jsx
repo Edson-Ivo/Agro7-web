@@ -27,6 +27,7 @@ import { useRouter } from 'next/router';
 import AddressesService from '@/services/AddressesService';
 import { useFetch } from '@/hooks/useFetch';
 import Loader from '@/components/Loader/index';
+import isEmpty from '@/helpers/isEmpty';
 
 const schema = yup.object().shape({
   name: yup
@@ -55,11 +56,6 @@ const schema = yup.object().shape({
     .min(2, 'O estado tem que ter no mínimo 2 caracteres')
     .max(15, 'Você não pode ultrapassar 15 caracteres no nome do estado')
     .required('Você precisa informar o estado da propriedade.'),
-  neighborhood: yup
-    .string()
-    .min(2, 'O nome do bairro tem que ter no mínimo 2 caracteres')
-    .max(50, 'Você não pode ultrapassar 50 caracteres no nome do bairro')
-    .required('Você precisa informar o bairro da propriedade'),
   city: yup
     .string()
     .min(2, 'O nome da cidade tem que ter no mínimo 2 caracteres')
@@ -69,25 +65,20 @@ const schema = yup.object().shape({
     .string()
     .min(
       9,
-      'Você tem que digitar no mínimo e no máximo 9 caracteres, para o CEP. Ex: 00000-000'
+      'Você tem que digitar no mínimo e no máximo 9 caracteres para o CEP. Ex: 00000-000'
     )
     .max(
       9,
       'Você tem que digitar no mínimo e no máximo 9 caracteres para o CEP. Ex: 00000-000'
     )
     .required('Você precisa informar o CEP da propriedade'),
-  street: yup
+  locality: yup
     .string()
-    .min(4, 'O nome da rua tem que ter no mínimo 4 caracteres')
-    .max(50, 'O nome da rua não pode ultrapassar 50 caracteres')
-    .required('Você precisa informar a rua da propriedade'),
-  number: yup
+    .max(250, 'O logradouro não pode ultrapassar 250 caracteres')
+    .required('Você precisa informar o logradouro da propriedade'),
+  access: yup
     .string()
-    .max(50, 'O número não pode ultrapassar 50 caracteres')
-    .required('Você precisa informar o número da propriedade'),
-  complements: yup
-    .string()
-    .max(100, 'O complemento não pode ultrapassar 100 caracteres')
+    .max(250, 'O acesso não pode ultrapassar 250 caracteres')
     .nullable()
 });
 
@@ -101,8 +92,6 @@ function Properties() {
 
   const stateRef = useRef(null);
   const cityRef = useRef(null);
-  const neighborhoodRef = useRef(null);
-  const streetRef = useRef(null);
   const postalcodeRef = useRef(null);
   const latitudeRef = useRef(null);
   const longitudeRef = useRef(null);
@@ -133,12 +122,10 @@ function Properties() {
         latitude: null,
         longitude: null,
         state: null,
-        neighborhood: null,
         city: null,
         postcode: null,
-        street: null,
-        number: null,
-        complements: null
+        locality: null,
+        access: null
       };
     }
 
@@ -150,12 +137,10 @@ function Properties() {
       latitude: null,
       longitude: null,
       state: null,
-      neighborhood: null,
       city: null,
       postcode: null,
-      street: null,
-      number: null,
-      complements: null
+      locality: null,
+      access: null
     });
   };
 
@@ -163,24 +148,18 @@ function Properties() {
     const { value } = e.target;
     if (value.length === 9) {
       setLoadingAddresses(true);
-      AddressesService.getCep(value.replace('-', '')).then(res => {
-        if (res.data !== '') {
-          const { state, city, neighborhood, street } = res.data;
-          if (!stateRef.current.value) {
-            stateRef.current.setValue(state);
+
+      AddressesService.getCep(value.replace('-', '')).then(
+        ({ data: dataAddressCep }) => {
+          if (!isEmpty(dataAddressCep)) {
+            const { state, city } = dataAddressCep;
+            if (!stateRef.current.value) stateRef.current.setValue(state);
+            if (!cityRef.current.value) cityRef.current.setValue(city);
           }
-          if (!cityRef.current.value) {
-            cityRef.current.setValue(city);
-          }
-          if (!neighborhoodRef.current.value) {
-            neighborhoodRef.current.setValue(neighborhood);
-          }
-          if (!streetRef.current.value) {
-            streetRef.current.setValue(street);
-          }
+
+          setLoadingAddresses(false);
         }
-        setLoadingAddresses(false);
-      });
+      );
     }
   };
 
@@ -349,43 +328,21 @@ function Properties() {
                               />
                             </div>
                           </div>
-                          <div className="form-group">
-                            <div>
-                              <Input
-                                type="text"
-                                label="Bairro"
-                                name="neighborhood"
-                                initialValue=""
-                                ref={neighborhoodRef}
-                              />
-                            </div>
-                            <div>
-                              <Input
-                                type="text"
-                                label="Rua"
-                                name="street"
-                                initialValue=""
-                                ref={streetRef}
-                              />
-                            </div>
+                          <div>
+                            <Input
+                              type="text"
+                              label="Logradouro"
+                              name="locality"
+                              initialValue=""
+                            />
                           </div>
-                          <div className="form-group">
-                            <div>
-                              <Input
-                                type="text"
-                                label="Número"
-                                name="number"
-                                initialValue=""
-                              />
-                            </div>
-                            <div>
-                              <Input
-                                type="text"
-                                label="Complementos"
-                                name="complements"
-                                initialValue=""
-                              />
-                            </div>
+                          <div>
+                            <Input
+                              type="text"
+                              label="Acesso"
+                              name="access"
+                              initialValue=""
+                            />
                           </div>
                         </Step>
                         <Step
