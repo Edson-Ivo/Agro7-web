@@ -28,10 +28,7 @@ import urlRoute from '@/helpers/urlRoute';
 import { useSelector } from 'react-redux';
 
 const schema = yup.object().shape({
-  name: yup
-    .string()
-    .min(4, 'O nome precisa ter no mínimo 4 caracteres')
-    .required('O campo nome é obrigatório!'),
+  name: yup.string().required('O campo nome é obrigatório!'),
   area: yup
     .number()
     .transform(value => (Number.isNaN(value) ? undefined : value))

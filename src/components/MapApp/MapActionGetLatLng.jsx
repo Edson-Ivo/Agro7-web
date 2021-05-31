@@ -40,6 +40,7 @@ function MapActionGetLatLng({ onClick, positions = [] }) {
       mapContainerStyle={containerStyle}
       center={center}
       zoom={8}
+      mapTypeId="satellite"
       onClick={handleClick}
     >
       {position.length > 1 && (

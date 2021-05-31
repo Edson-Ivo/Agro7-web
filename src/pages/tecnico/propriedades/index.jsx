@@ -23,6 +23,7 @@ import { useModal } from '@/hooks/useModal';
 import errorMessage from '@/helpers/errorMessage';
 import PropertiesService from '@/services/PropertiesService';
 import { Alert } from '@/components/Alert/index';
+import isEmpty from '@/helpers/isEmpty';
 
 function PropertiesTechnichian() {
   const [alertMsg, setAlertMsg] = useState({ type: '', message: '' });
@@ -83,7 +84,7 @@ function PropertiesTechnichian() {
   return (
     <>
       <Head>
-        <title>Propriedades relacionadas - Agro7</title>
+        <title>Propriedades Relacionadas - Agro7</title>
       </Head>
 
       <Navbar />
@@ -102,10 +103,10 @@ function PropertiesTechnichian() {
                   }
                 ]}
               />
-              <h2>Propriedades relacionadas</h2>
+              <h2>Propriedades Relacionadas</h2>
               <p>
                 Aqui você irá ver todas as propriedades que estão relacionadas
-                com seu usuário de técnico
+                com seu usuário de técnico.
               </p>
             </div>
           </SectionHeader>
@@ -129,7 +130,7 @@ function PropertiesTechnichian() {
                           </tr>
                         </thead>
                         <tbody>
-                          {(data?.items.length > 0 &&
+                          {(!isEmpty(data?.items) &&
                             data.items.map(p => (
                               <tr
                                 key={p.id}

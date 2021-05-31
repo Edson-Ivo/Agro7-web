@@ -46,11 +46,11 @@ const schema = yup.object().shape({
   type_dimension: yup
     .string()
     .required('Unidade de medida precisa ser definida'),
-  type_owner: yup.string().required(),
+  type_owner: yup.string().min(1).required(),
   latitude: yup
     .number()
     .transform(value => (Number.isNaN(value) ? undefined : value))
-    .required('A latitude é obrigatória'),
+    .required('A latitute é obrigatória'),
   longitude: yup
     .number()
     .transform(value => (Number.isNaN(value) ? undefined : value))
@@ -60,11 +60,6 @@ const schema = yup.object().shape({
     .min(2, 'O estado tem que ter no mínimo 2 caracteres')
     .max(15, 'Você não pode ultrapassar 15 caracteres no nome do estado')
     .required('Você precisa informar o estado da propriedade.'),
-  neighborhood: yup
-    .string()
-    .min(2, 'O nome do bairro tem que ter no mínimo 2 caracteres')
-    .max(50, 'Você não pode ultrapassar 50 caracteres no nome do bairro')
-    .required('Você precisa informar o bairro da propriedade'),
   city: yup
     .string()
     .min(2, 'O nome da cidade tem que ter no mínimo 2 caracteres')
@@ -74,25 +69,20 @@ const schema = yup.object().shape({
     .string()
     .min(
       9,
-      'Você tem que digitar no mínimo e no máximo 9 caracteres, para o CEP. Ex: 00000000'
+      'Você tem que digitar no mínimo e no máximo 9 caracteres para o CEP. Ex: 00000-000'
     )
     .max(
       9,
-      'Você tem que digitar no mínimo e no máximo 9 caracteres para o CEP. Ex: 00000000'
+      'Você tem que digitar no mínimo e no máximo 9 caracteres para o CEP. Ex: 00000-000'
     )
     .required('Você precisa informar o CEP da propriedade'),
-  street: yup
+  locality: yup
     .string()
-    .min(4, 'O nome da rua tem que ter no mínimo 4 caracteres')
-    .max(50, 'O nome da rua não pode ultrapassar 50 caracteres')
-    .required('Você precisa informar a rua da propriedade'),
-  number: yup
+    .max(250, 'O logradouro não pode ultrapassar 250 caracteres')
+    .required('Você precisa informar o logradouro da propriedade'),
+  access: yup
     .string()
-    .max(50, 'O número não pode ultrapassar 50 caracteres')
-    .required('Você precisa informar o número da propriedade'),
-  complements: yup
-    .string()
-    .max(100, 'O complemento não pode ultrapassar 100 caracteres')
+    .max(250, 'O acesso não pode ultrapassar 250 caracteres')
     .nullable()
 });
 
@@ -119,8 +109,6 @@ function PropertiesEdit() {
 
   const stateRef = useRef(null);
   const cityRef = useRef(null);
-  const neighborhoodRef = useRef(null);
-  const streetRef = useRef(null);
   const postalcodeRef = useRef(null);
   const latitudeRef = useRef(null);
   const longitudeRef = useRef(null);
@@ -143,12 +131,10 @@ function PropertiesEdit() {
         latitude: null,
         longitude: null,
         state: null,
-        neighborhood: null,
         city: null,
         postcode: null,
-        street: null,
-        number: null,
-        complements: null
+        locality: null,
+        access: null
       };
     }
 
@@ -160,12 +146,10 @@ function PropertiesEdit() {
       latitude: null,
       longitude: null,
       state: null,
-      neighborhood: null,
       city: null,
       postcode: null,
-      street: null,
-      number: null,
-      complements: null
+      locality: null,
+      access: null
     });
   };
 
@@ -173,24 +157,18 @@ function PropertiesEdit() {
     const { value } = e.target;
     if (value.length === 9) {
       setLoadingAddresses(true);
-      AddressesService.getCep(value.replace('-', '')).then(res => {
-        if (res.data !== '') {
-          const { state, city, neighborhood, street } = res.data;
-          if (!stateRef.current.value) {
-            stateRef.current.setValue(state);
+
+      AddressesService.getCep(value.replace('-', '')).then(
+        ({ data: dataAddressCep }) => {
+          if (!isEmpty(dataAddressCep)) {
+            const { state, city } = dataAddressCep;
+            if (!stateRef.current.value) stateRef.current.setValue(state);
+            if (!cityRef.current.value) cityRef.current.setValue(city);
           }
-          if (!cityRef.current.value) {
-            cityRef.current.setValue(city);
-          }
-          if (!neighborhoodRef.current.value) {
-            neighborhoodRef.current.setValue(neighborhood);
-          }
-          if (!streetRef.current.value) {
-            streetRef.current.setValue(street);
-          }
+
+          setLoadingAddresses(false);
         }
-        setLoadingAddresses(false);
-      });
+      );
     }
   };
 
@@ -215,6 +193,16 @@ function PropertiesEdit() {
           message: 'Enviando...'
         });
 
+        const { state, city, postcode, locality, access } = d;
+
+        d.addresses = {
+          state,
+          city,
+          postcode,
+          locality,
+          access
+        };
+
         await PropertiesService.update(id, d).then(async res => {
           if (res.status >= 400 || res?.statusCode) {
             setAlert({ type: 'error', message: errorMessage(res) });
@@ -222,39 +210,28 @@ function PropertiesEdit() {
               setDisableButton(false);
             }, 1000);
           } else {
-            await AddressesService.update(data.addresses.id, d).then(
-              async res2 => {
-                if (res2.status >= 400 || res2?.statusCode) {
-                  setAlert({ type: 'error', message: errorMessage(res2) });
+            CoordinatesService.update(data.coordinates.id, d).then(
+              async res3 => {
+                if (res3.status >= 400 || res3?.statusCode) {
+                  setAlert({
+                    type: 'error',
+                    message: errorMessage(res3)
+                  });
                   setTimeout(() => {
                     setDisableButton(false);
                   }, 1000);
                 } else {
-                  CoordinatesService.update(data.coordinates.id, d).then(
-                    async res3 => {
-                      if (res3.status >= 400 || res3?.statusCode) {
-                        setAlert({
-                          type: 'error',
-                          message: errorMessage(res3)
-                        });
-                        setTimeout(() => {
-                          setDisableButton(false);
-                        }, 1000);
-                      } else {
-                        mutate();
+                  mutate();
 
-                        setAlert({
-                          type: 'success',
-                          message: 'Propriedade atualizada com sucesso!'
-                        });
+                  setAlert({
+                    type: 'success',
+                    message: 'Propriedade atualizada com sucesso!'
+                  });
 
-                        setTimeout(() => {
-                          router.push(`${route.path}/${id}/detalhes`);
-                          setDisableButton(false);
-                        }, 1000);
-                      }
-                    }
-                  );
+                  setTimeout(() => {
+                    router.push(`${route.path}/${id}/detalhes`);
+                    setDisableButton(false);
+                  }, 1000);
                 }
               }
             );
@@ -399,43 +376,21 @@ function PropertiesEdit() {
                             />
                           </div>
                         </div>
-                        <div className="form-group">
-                          <div>
-                            <Input
-                              type="text"
-                              label="Bairro"
-                              name="neighborhood"
-                              initialValue={data.addresses.neighborhood}
-                              ref={neighborhoodRef}
-                            />
-                          </div>
-                          <div>
-                            <Input
-                              type="text"
-                              label="Rua"
-                              name="street"
-                              initialValue={data.addresses.street}
-                              ref={streetRef}
-                            />
-                          </div>
+                        <div>
+                          <Input
+                            type="text"
+                            label="Logradouro"
+                            name="locality"
+                            initialValue={data?.addresses?.locality}
+                          />
                         </div>
-                        <div className="form-group">
-                          <div>
-                            <Input
-                              type="text"
-                              label="Número"
-                              name="number"
-                              initialValue={data.addresses.number}
-                            />
-                          </div>
-                          <div>
-                            <Input
-                              type="text"
-                              label="Complementos"
-                              name="complements"
-                              initialValue={data.addresses.complements || ''}
-                            />
-                          </div>
+                        <div>
+                          <Input
+                            type="text"
+                            label="Acesso"
+                            name="access"
+                            initialValue={data?.addresses?.access || ''}
+                          />
                         </div>
                       </Step>
                       <Step

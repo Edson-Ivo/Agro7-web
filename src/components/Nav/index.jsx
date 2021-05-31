@@ -9,7 +9,7 @@ import {
   faHome,
   faBook,
   faMapMarkerAlt,
-  faMapMarkedAlt
+  faUserSecret
 } from '@fortawesome/free-solid-svg-icons';
 
 import { useRouter } from 'next/router';
@@ -153,9 +153,9 @@ const Nav = () => {
             <>
               <hr />
               <NavButton
-                link="/tecnico/propriedades"
-                icon={faMapMarkedAlt}
-                text="Propriedades Relacionadas"
+                link="/tecnico"
+                icon={faUserSecret}
+                text="Painel Técnico"
               />
             </>
           )}
