@@ -51,7 +51,7 @@ function TalhoesCadastrar() {
   const router = useRouter();
   const { id, createProperty } = router.query;
 
-  const { types } = useSelector(state => state.user);
+  const { type } = useSelector(state => state.user);
   const [route, setRoute] = useState({});
 
   const { data, error } = useFetch(`/properties/find/by/id/${id}`);
@@ -62,7 +62,7 @@ function TalhoesCadastrar() {
   useEffect(() => {
     setAlert({ type: '', message: '' });
     setDisableButton(false);
-    setRoute(urlRoute(router, types));
+    setRoute(urlRoute(router, type));
   }, []);
 
   const handleCancel = () => {
@@ -177,14 +177,13 @@ function TalhoesCadastrar() {
                     {
                       route: '/tecnico',
                       name: 'Painel Técnico',
-                      active:
-                        types === 'technician' && route?.permission === types
+                      active: type === 'tecnico' && route?.permission === type
                     },
                     {
                       route: '/admin',
                       name: 'Painel Administrativo',
                       active:
-                        types === 'administrator' && route?.permission === types
+                        type === 'administrador' && route?.permission === type
                     },
                     { route: `${route.path}`, name: 'Propriedades' },
                     {

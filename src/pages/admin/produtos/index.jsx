@@ -174,4 +174,4 @@ function AdminProducts() {
   );
 }
 
-export default privateRoute(['administrator'])(AdminProducts);
+export default privateRoute(['administrador'])(AdminProducts);

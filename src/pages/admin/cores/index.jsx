@@ -188,4 +188,4 @@ function AdminColors() {
   );
 }
 
-export default privateRoute(['administrator'])(AdminColors);
+export default privateRoute(['administrador'])(AdminColors);

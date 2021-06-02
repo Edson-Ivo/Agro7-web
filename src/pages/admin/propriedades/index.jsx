@@ -166,4 +166,4 @@ function Properties() {
   );
 }
 
-export default privateRoute(['administrator'])(Properties);
+export default privateRoute(['administrador'])(Properties);

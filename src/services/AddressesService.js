@@ -10,7 +10,7 @@ class AddressesService {
   }
 
   static async getCep(number) {
-    return api.get(`/addresses/find/cep/${number}`);
+    return api.get(`/properties-addresses/find/cep/${number}`);
   }
 
   static async update(id, data) {

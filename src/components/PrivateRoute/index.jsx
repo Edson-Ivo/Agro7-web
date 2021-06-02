@@ -9,7 +9,7 @@ import { redirect } from '@/helpers/redirect';
 import { getCookie } from '@/helpers/cookies';
 import Error from '../Error/index';
 
-export function privateRoute(types) {
+export function privateRoute(type) {
   return WrappedComponent =>
     class extends Component {
       static async getInitialProps(ctx) {
@@ -24,9 +24,9 @@ export function privateRoute(types) {
           redirect('/login', ctx.res);
         }
 
-        if (!isEmpty(types)) {
+        if (!isEmpty(type)) {
           const user = AuthService.decodeUserData(userData);
-          const hasPermission = types.includes(user?.types);
+          const hasPermission = type.includes(user?.type);
 
           initialProps = {
             ...initialProps,

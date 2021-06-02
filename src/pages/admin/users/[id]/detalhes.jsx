@@ -81,8 +81,8 @@ function AdminUsers() {
                     <Input
                       type="text"
                       label="Documento"
-                      name="documents"
-                      initialValue={data.documents}
+                      name="document"
+                      initialValue={data.document}
                       disabled
                     />
                     <div className="form-group">
@@ -115,8 +115,8 @@ function AdminUsers() {
                         label: capitalize(userType)
                       }))}
                       label="Tipo de Usuário"
-                      value={data.types}
-                      name="types"
+                      value={data.type}
+                      name="type"
                       disabled
                     />
                     <div className="form-group">
@@ -213,4 +213,4 @@ function AdminUsers() {
   );
 }
 
-export default privateRoute(['administrator'])(AdminUsers);
+export default privateRoute(['administrador'])(AdminUsers);

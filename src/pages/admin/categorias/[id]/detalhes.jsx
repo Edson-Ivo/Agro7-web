@@ -119,4 +119,4 @@ function AdminCategoriesDetails() {
   );
 }
 
-export default privateRoute(['administrator'])(AdminCategoriesDetails);
+export default privateRoute(['administrador'])(AdminCategoriesDetails);

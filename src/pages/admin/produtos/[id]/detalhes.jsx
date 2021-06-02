@@ -332,4 +332,4 @@ function AdminProductsDetails() {
   );
 }
 
-export default privateRoute(['administrator'])(AdminProductsDetails);
+export default privateRoute(['administrador'])(AdminProductsDetails);

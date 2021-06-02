@@ -45,7 +45,7 @@ class AuthService {
     return {
       id: 0,
       name: '',
-      types: ''
+      type: ''
     };
   }
 }

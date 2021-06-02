@@ -60,16 +60,16 @@ function PropertieInfo() {
     '/properties/find/all/types-dimension'
   );
 
-  const { id: userId, types } = useSelector(state => state.user);
+  const { id: userId, type } = useSelector(state => state.user);
   const [route, setRoute] = useState({});
 
   useEffect(() => {
-    setRoute(urlRoute(router, types));
+    setRoute(urlRoute(router, type));
   }, []);
 
   useEffect(() => {
     if (data) {
-      setWillAccess(!(types === 'technical' && data?.users?.id !== userId));
+      setWillAccess(!(type === 'tecnico' && data?.users?.id !== userId));
       setLoadingWillAccess(true);
     }
   }, [data]);
@@ -132,14 +132,13 @@ function PropertieInfo() {
                     {
                       route: '/tecnico',
                       name: 'Painel Técnico',
-                      active:
-                        types === 'technician' && route?.permission === types
+                      active: type === 'tecnico' && route?.permission === type
                     },
                     {
                       route: '/admin',
                       name: 'Painel Administrativo',
                       active:
-                        types === 'administrator' && route?.permission === types
+                        type === 'administrador' && route?.permission === type
                     },
                     { route: `${route.path}`, name: 'Propriedades' },
                     {

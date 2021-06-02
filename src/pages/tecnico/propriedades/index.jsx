@@ -181,4 +181,4 @@ function PropertiesTechnichian() {
   );
 }
 
-export default privateRoute(['technical'])(PropertiesTechnichian);
+export default privateRoute(['tecnico'])(PropertiesTechnichian);
