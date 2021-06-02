@@ -104,7 +104,7 @@ function PropertiesEdit() {
   const [activeStep, setActiveStep] = useState(1);
   const [loadingAddresses, setLoadingAddresses] = useState(false);
 
-  const { types } = useSelector(state => state.user);
+  const { type } = useSelector(state => state.user);
   const [route, setRoute] = useState({});
 
   const stateRef = useRef(null);
@@ -118,7 +118,7 @@ function PropertiesEdit() {
     setDisableButton(false);
     setActiveStep(1);
     setLoadingAddresses(false);
-    setRoute(urlRoute(router, types));
+    setRoute(urlRoute(router, type));
   }, []);
 
   const getData = () => {
@@ -265,14 +265,13 @@ function PropertiesEdit() {
                   {
                     route: '/tecnico',
                     name: 'Painel Técnico',
-                    active:
-                      types === 'technician' && route?.permission === types
+                    active: type === 'tecnico' && route?.permission === type
                   },
                   {
                     route: '/admin',
                     name: 'Painel Administrativo',
                     active:
-                      types === 'administrator' && route?.permission === types
+                      type === 'administrador' && route?.permission === type
                   },
                   { route: `${route.path}`, name: 'Propriedades' },
                   { route: `${route.path}/${id}/editar`, name: 'Editar' }

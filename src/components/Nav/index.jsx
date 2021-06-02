@@ -132,7 +132,7 @@ const NavButton = ({ link, icon, text }) => {
 
 const Nav = () => {
   const navOpen = useSelector(state => state.nav.open);
-  const { types } = useSelector(state => state.user);
+  const { type } = useSelector(state => state.user);
 
   return (
     <NavContainer className={navOpen ? 'open' : ''}>
@@ -149,7 +149,7 @@ const Nav = () => {
             icon={faBook}
             text="Caderno Produtor"
           />
-          {types === 'technical' && (
+          {type === 'tecnico' && (
             <>
               <hr />
               <NavButton
@@ -159,7 +159,7 @@ const Nav = () => {
               />
             </>
           )}
-          {types === 'administrator' && (
+          {type === 'administrador' && (
             <>
               <hr />
               <NavButton

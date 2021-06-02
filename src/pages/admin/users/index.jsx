@@ -157,7 +157,7 @@ function AdminUsers() {
                               >
                                 <td>{user.name}</td>
                                 <td>{user.email}</td>
-                                <td>{user.documents}</td>
+                                <td>{user.document}</td>
                                 <td>{user.phone}</td>
                                 <td onClick={e => e.stopPropagation()}>
                                   <ActionButton
@@ -196,4 +196,4 @@ function AdminUsers() {
   );
 }
 
-export default privateRoute(['administrator'])(AdminUsers);
+export default privateRoute(['administrador'])(AdminUsers);

@@ -180,4 +180,4 @@ function RequestsTechnichian() {
   );
 }
 
-export default privateRoute(['technical'])(RequestsTechnichian);
+export default privateRoute(['tecnico'])(RequestsTechnichian);

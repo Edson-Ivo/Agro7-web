@@ -181,4 +181,4 @@ function AdminCoresEdit() {
   );
 }
 
-export default privateRoute(['administrator'])(AdminCoresEdit);
+export default privateRoute(['administrador'])(AdminCoresEdit);

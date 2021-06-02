@@ -614,4 +614,4 @@ function AdminProductsEdit() {
   );
 }
 
-export default privateRoute(['administrator'])(AdminProductsEdit);
+export default privateRoute(['administrador'])(AdminProductsEdit);

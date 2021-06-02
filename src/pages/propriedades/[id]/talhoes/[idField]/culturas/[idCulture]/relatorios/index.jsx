@@ -33,7 +33,7 @@ import urlRoute from '@/helpers/urlRoute';
 function Relatorios() {
   const [willCreate, setWillCreate] = useState(false);
   const router = useRouter();
-  const { types, id: userId } = useSelector(state => state.user);
+  const { type, id: userId } = useSelector(state => state.user);
 
   const { id, idField, idCulture, page = 1 } = router.query;
 
@@ -61,7 +61,7 @@ function Relatorios() {
   const [baseUrl, setBaseUrl] = useState('');
 
   useEffect(() => {
-    setRoute(urlRoute(router, types));
+    setRoute(urlRoute(router, type));
   }, []);
 
   useEffect(() => {
@@ -73,7 +73,7 @@ function Relatorios() {
   useEffect(() => {
     if (data)
       setWillCreate(
-        ['technical', 'administrator'].includes(types) &&
+        ['tecnico', 'administrador'].includes(type) &&
           data?.properties?.users?.id !== userId
       );
   }, [data]);
@@ -143,14 +143,13 @@ function Relatorios() {
                     {
                       route: '/tecnico',
                       name: 'Painel Técnico',
-                      active:
-                        types === 'technician' && route?.permission === types
+                      active: type === 'tecnico' && route?.permission === type
                     },
                     {
                       route: '/admin',
                       name: 'Painel Administrativo',
                       active:
-                        types === 'administrator' && route?.permission === types
+                        type === 'administrador' && route?.permission === type
                     },
                     { route: `${route.path}`, name: 'Propriedades' },
                     {

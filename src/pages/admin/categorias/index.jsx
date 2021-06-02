@@ -183,4 +183,4 @@ function AdminCategories() {
   );
 }
 
-export default privateRoute(['administrator'])(AdminCategories);
+export default privateRoute(['administrador'])(AdminCategories);

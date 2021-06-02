@@ -34,10 +34,10 @@ const schema = yup.object().shape({
     .email('O e-mail precisa ser um e-mail válido')
     .required('O campo e-mail é obrigatório!'),
   password: yup.string().required('O campo senha é obrigatório!'),
-  documents: yup.string().min(11).required('O campo documento é obrigatório!'),
+  document: yup.string().min(11).required('O campo documento é obrigatório!'),
   phone: yup.string().required('O campo telefone é obrigatório!'),
   phone_whatsapp: yup.string(),
-  types: yup.string().required('O campo tipo de usuário é obrigatório!'),
+  type: yup.string().required('O campo tipo de usuário é obrigatório!'),
   state: yup
     .string()
     .min(2, 'O estado tem que ter no mínimo 2 caracteres')
@@ -100,11 +100,11 @@ function AdminUsers() {
         name: null,
         email: null,
         password: null,
-        documents: null,
-        type_documents: null,
+        document: null,
+        type_document: null,
         phone: null,
         phone_whatsapp: null,
-        types: null,
+        type: null,
         state: null,
         neighborhood: null,
         city: null,
@@ -119,11 +119,11 @@ function AdminUsers() {
       name: null,
       email: null,
       password: null,
-      documents: null,
-      type_documents: false,
+      document: null,
+      type_document: false,
       phone: null,
       phone_whatsapp: null,
-      types: null,
+      type: null,
       state: null,
       neighborhood: null,
       city: null,
@@ -170,8 +170,8 @@ function AdminUsers() {
           message: 'Enviando...'
         });
 
-        if (data.documents.length <= 14) data.type_documents = false;
-        else data.type_documents = true;
+        if (data.document.length <= 14) data.type_document = false;
+        else data.type_document = true;
 
         data.phone = extractNumbers(data.phone);
         data.phone_whatsapp = extractNumbers(data.phone_whatsapp);
@@ -255,7 +255,7 @@ function AdminUsers() {
                       <Input
                         type="text"
                         label="Documento (CPF ou CNPJ)"
-                        name="documents"
+                        name="document"
                         mask="cpf_cnpj"
                         maxLength="18"
                         required
@@ -287,7 +287,7 @@ function AdminUsers() {
                           label: capitalize(userType)
                         }))}
                         label="Tipo de Usuário"
-                        name="types"
+                        name="type"
                         required
                       />
                       <div className="form-group">
@@ -395,4 +395,4 @@ function AdminUsers() {
   );
 }
 
-export default privateRoute(['administrator'])(AdminUsers);
+export default privateRoute(['administrador'])(AdminUsers);

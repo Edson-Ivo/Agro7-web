@@ -52,7 +52,7 @@ function CulturasCreate() {
   const router = useRouter();
   const { id, idField } = router.query;
 
-  const { types } = useSelector(state => state.user);
+  const { type } = useSelector(state => state.user);
   const [route, setRoute] = useState({});
 
   const { data, error } = useFetch(`/fields/find/by/id/${idField}`);
@@ -64,7 +64,7 @@ function CulturasCreate() {
   useEffect(() => {
     setAlert({ type: '', message: '' });
     setDisableButton(false);
-    setRoute(urlRoute(router, types));
+    setRoute(urlRoute(router, type));
   }, []);
 
   const handleCancel = () => {
@@ -156,14 +156,13 @@ function CulturasCreate() {
                     {
                       route: '/tecnico',
                       name: 'Painel Técnico',
-                      active:
-                        types === 'technician' && route?.permission === types
+                      active: type === 'tecnico' && route?.permission === type
                     },
                     {
                       route: '/admin',
                       name: 'Painel Administrativo',
                       active:
-                        types === 'administrator' && route?.permission === types
+                        type === 'administrador' && route?.permission === type
                     },
                     { route: `${route.path}`, name: 'Propriedades' },
                     {

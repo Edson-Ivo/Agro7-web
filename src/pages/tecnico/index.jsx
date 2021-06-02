@@ -86,4 +86,4 @@ function TechnichianHome() {
   );
 }
 
-export default privateRoute(['technical'])(TechnichianHome);
+export default privateRoute(['tecnico'])(TechnichianHome);

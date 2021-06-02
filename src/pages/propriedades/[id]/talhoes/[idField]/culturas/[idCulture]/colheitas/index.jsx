@@ -53,12 +53,12 @@ function Colheitas() {
     `/harvests/find/by/culture/${idCulture}?limit=${perPage}&page=${page}`
   );
 
-  const { types } = useSelector(state => state.user);
+  const { type } = useSelector(state => state.user);
   const [route, setRoute] = useState({});
   const [baseUrl, setBaseUrl] = useState('');
 
   useEffect(() => {
-    setRoute(urlRoute(router, types));
+    setRoute(urlRoute(router, type));
   }, []);
 
   useEffect(() => {
@@ -132,14 +132,13 @@ function Colheitas() {
                     {
                       route: '/tecnico',
                       name: 'Painel Técnico',
-                      active:
-                        types === 'technician' && route?.permission === types
+                      active: type === 'tecnico' && route?.permission === type
                     },
                     {
                       route: '/admin',
                       name: 'Painel Administrativo',
                       active:
-                        types === 'administrator' && route?.permission === types
+                        type === 'administrador' && route?.permission === type
                     },
                     { route: `${route.path}`, name: 'Propriedades' },
                     {

@@ -110,4 +110,4 @@ function AdminHome() {
   );
 }
 
-export default privateRoute(['administrator'])(AdminHome);
+export default privateRoute(['administrador'])(AdminHome);

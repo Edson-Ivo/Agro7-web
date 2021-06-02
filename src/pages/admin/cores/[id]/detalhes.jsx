@@ -105,4 +105,4 @@ function AdminCoresDetails() {
   );
 }
 
-export default privateRoute(['administrator'])(AdminCoresDetails);
+export default privateRoute(['administrador'])(AdminCoresDetails);

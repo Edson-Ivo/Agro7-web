@@ -267,4 +267,4 @@ function AdminCategoriesEdit() {
   );
 }
 
-export default privateRoute(['administrator'])(AdminCategoriesEdit);
+export default privateRoute(['administrador'])(AdminCategoriesEdit);

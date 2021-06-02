@@ -63,13 +63,13 @@ function TalhoesEdit() {
     '/fields/find/all/types-dimension'
   );
 
-  const { types } = useSelector(state => state.user);
+  const { type } = useSelector(state => state.user);
   const [route, setRoute] = useState({});
 
   useEffect(() => {
     setAlert({ type: '', message: '' });
     setDisableButton(false);
-    setRoute(urlRoute(router, types));
+    setRoute(urlRoute(router, type));
   }, []);
 
   const handleCancel = () => {
@@ -169,14 +169,13 @@ function TalhoesEdit() {
                     {
                       route: '/tecnico',
                       name: 'Painel Técnico',
-                      active:
-                        types === 'technician' && route?.permission === types
+                      active: type === 'tecnico' && route?.permission === type
                     },
                     {
                       route: '/admin',
                       name: 'Painel Administrativo',
                       active:
-                        types === 'administrator' && route?.permission === types
+                        type === 'administrador' && route?.permission === type
                     },
                     { route: `${route.path}`, name: 'Propriedades' },
                     {

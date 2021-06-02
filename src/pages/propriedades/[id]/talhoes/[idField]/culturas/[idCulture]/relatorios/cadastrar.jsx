@@ -45,13 +45,13 @@ function RelatoriosCreate() {
     `/cultures/find/by/id/${idCulture}`
   );
 
-  const { types, id: userId } = useSelector(state => state.user);
+  const { type, id: userId } = useSelector(state => state.user);
   const [route, setRoute] = useState({});
 
   useEffect(() => {
     setAlert({ type: '', message: '' });
     setDisableButton(false);
-    setRoute(urlRoute(router, types));
+    setRoute(urlRoute(router, type));
   }, []);
 
   const handleCancel = () => {
@@ -145,14 +145,13 @@ function RelatoriosCreate() {
                     {
                       route: '/tecnico',
                       name: 'Painel Técnico',
-                      active:
-                        types === 'technician' && route?.permission === types
+                      active: type === 'tecnico' && route?.permission === type
                     },
                     {
                       route: '/admin',
                       name: 'Painel Administrativo',
                       active:
-                        types === 'administrator' && route?.permission === types
+                        type === 'administrador' && route?.permission === type
                     },
                     { route: `${route.path}`, name: 'Propriedades' },
                     {
@@ -247,4 +246,4 @@ function RelatoriosCreate() {
   );
 }
 
-export default privateRoute(['technical', 'administrator'])(RelatoriosCreate);
+export default privateRoute(['tecnico', 'administrador'])(RelatoriosCreate);
