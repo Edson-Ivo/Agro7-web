@@ -148,8 +148,8 @@ function Configuracoes() {
                         <Input
                           type="text"
                           label="Complementos"
-                          name="complements"
-                          initialValue={data.addresses.complements || ''}
+                          name="complement"
+                          initialValue={data.addresses.complement || ''}
                           disabled
                         />
                       </div>

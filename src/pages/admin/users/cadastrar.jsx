@@ -73,7 +73,7 @@ const schema = yup.object().shape({
     .string()
     .max(50, 'O número não pode ultrapassar 50 caracteres')
     .required('Você precisa informar o número do endereço do usuário'),
-  complements: yup
+  complement: yup
     .string()
     .max(100, 'O complemento não pode ultrapassar 100 caracteres')
     .nullable()
@@ -111,7 +111,7 @@ function AdminUsers() {
         postcode: null,
         street: null,
         number: null,
-        complements: null
+        complement: null
       };
     }
 
@@ -130,7 +130,7 @@ function AdminUsers() {
       postcode: null,
       street: null,
       number: null,
-      complements: null
+      complement: null
     });
   };
 
@@ -361,7 +361,7 @@ function AdminUsers() {
                           <Input
                             type="text"
                             label="Complementos"
-                            name="complements"
+                            name="complement"
                             initialValue=""
                           />
                         </div>
