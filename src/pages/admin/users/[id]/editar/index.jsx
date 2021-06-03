@@ -1,7 +1,10 @@
 import React, { useState, useRef } from 'react';
 import Head from 'next/head';
+import Link from 'next/link';
 import * as yup from 'yup';
 import { useRouter } from 'next/router';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faKey } from '@fortawesome/free-solid-svg-icons';
 
 import Container from '@/components/Container';
 import Nav from '@/components/Nav';
@@ -10,8 +13,8 @@ import Breadcrumb from '@/components/Breadcrumb';
 import Input from '@/components/Input';
 import Select from '@/components/Select';
 import Button from '@/components/Button';
-import { Alert } from '@/components/Alert';
 import { Section, SectionHeader, SectionBody } from '@/components/Section';
+import { Alert } from '@/components/Alert';
 
 import { CardContainer } from '@/components/CardContainer';
 import { privateRoute } from '@/components/PrivateRoute';
@@ -23,6 +26,7 @@ import extractNumbers from '@/helpers/extractNumbers';
 import { useFetch } from '@/hooks/useFetch';
 import capitalize from '@/helpers/capitalize';
 import Loader from '@/components/Loader/index';
+import Error from '@/components/Error/index';
 import isEmpty from '@/helpers/isEmpty';
 
 const schema = yup.object().shape({
@@ -34,7 +38,6 @@ const schema = yup.object().shape({
     .string()
     .email('O e-mail precisa ser um e-mail válido')
     .required('O campo e-mail é obrigatório!'),
-  password: yup.string().required('O campo senha é obrigatório!'),
   document: yup.string().min(11).required('O campo documento é obrigatório!'),
   phone: yup.string().required('O campo telefone é obrigatório!'),
   phone_whatsapp: yup.string().nullable(),
@@ -80,13 +83,16 @@ const schema = yup.object().shape({
     .nullable()
 });
 
-function AdminUsers() {
+function AdminUsersEdit() {
   const [alert, setAlert] = useState({ type: '', message: '' });
   const [disableButton, setDisableButton] = useState(false);
   const [loadingAddresses, setLoadingAddresses] = useState(false);
   const router = useRouter();
   const formRef = useRef(null);
 
+  const { id } = router.query;
+
+  const { data, error } = useFetch(`/users/find/by/id/${id}`);
   const { data: dataTypes } = useFetch('/users/find/all/types');
 
   const stateRef = useRef(null);
@@ -100,7 +106,6 @@ function AdminUsers() {
       return {
         name: null,
         email: null,
-        password: null,
         document: null,
         type_document: null,
         phone: null,
@@ -119,7 +124,6 @@ function AdminUsers() {
     return getFormData(formRef.current, {
       name: null,
       email: null,
-      password: null,
       document: null,
       type_document: false,
       phone: null,
@@ -165,21 +169,41 @@ function AdminUsers() {
     setDisableButton(true);
     schema
       .validate(getData())
-      .then(async data => {
+      .then(async d => {
         setAlert({
           type: 'success',
           message: 'Enviando...'
         });
 
-        if (data.document.length <= 14) data.type_document = false;
-        else data.type_document = true;
+        if (d.document.length <= 14) d.type_document = false;
+        else d.type_document = true;
 
-        data.phone = extractNumbers(data.phone);
-        data.phone_whatsapp = extractNumbers(data.phone_whatsapp);
+        d.phone = extractNumbers(d.phone);
+        d.phone_whatsapp = extractNumbers(d.phone_whatsapp);
 
-        if (isEmpty(data.phone_whatsapp)) delete data.phone_whatsapp;
+        if (isEmpty(d.phone_whatsapp)) delete d.phone_whatsapp;
 
-        await UsersService.create(data).then(res => {
+        const {
+          state,
+          neighborhood,
+          city,
+          postcode,
+          street,
+          number,
+          complement
+        } = d;
+
+        d.addresses = {
+          state,
+          neighborhood,
+          city,
+          postcode,
+          street,
+          number,
+          complement
+        };
+
+        await UsersService.updateByAdmin(id, d).then(res => {
           if (res.status !== 201 || res?.statusCode) {
             setAlert({ type: 'error', message: errorMessage(res) });
             setTimeout(() => {
@@ -188,11 +212,11 @@ function AdminUsers() {
           } else {
             setAlert({
               type: 'success',
-              message: 'Usuário cadastrado com sucesso!'
+              message: 'Usuário editado com sucesso!'
             });
 
             setTimeout(() => {
-              router.push('/admin/users');
+              router.push(`/admin/users/${id}/detalhes`);
               setDisableButton(false);
             }, 1000);
           }
@@ -204,10 +228,12 @@ function AdminUsers() {
       });
   };
 
+  if (error) return <Error error={error} />;
+
   return (
     <>
       <Head>
-        <title>Painel Administrativo | Cadastrar Usuário - Agro7</title>
+        <title>Painel Administrativo | Editar Usuário - Agro7</title>
       </Head>
 
       <Navbar />
@@ -222,13 +248,20 @@ function AdminUsers() {
                   { route: '/admin', name: 'Painel Administrativo' },
                   { route: '/admin/users', name: 'Usuários' },
                   {
-                    route: '/admin/users/cadastrar',
-                    name: 'Cadastrar'
+                    route: `/admin/users/${id}/editar`,
+                    name: `Editar`
                   }
                 ]}
               />
-              <h2>Cadastre um usuário</h2>
-              <p>Aqui você irá cadastrar um usuário para o sistema</p>
+
+              <h2>Editar Usuário {data && `(${data.name})`}</h2>
+              <p>Aqui você irá editar o usuário em questão</p>
+
+              <Link href={`/admin/users/${id}/editar/senha`}>
+                <Button className="primary">
+                  <FontAwesomeIcon icon={faKey} /> Alterar Senha
+                </Button>
+              </Link>
             </div>
           </SectionHeader>
           <SectionBody>
@@ -243,22 +276,27 @@ function AdminUsers() {
                   method="post"
                   onSubmit={event => handleSubmit(event)}
                 >
-                  {(dataTypes && (
+                  {(data && dataTypes && (
                     <>
-                      <Input type="text" label="Nome" name="name" required />
-                      <Input type="text" label="E-mail" name="email" required />
                       <Input
-                        type="password"
-                        label="Senha"
-                        name="password"
+                        type="text"
+                        label="Nome"
+                        name="name"
+                        initialValue={data.name}
                         required
                       />
                       <Input
                         type="text"
-                        label="Documento (CPF ou CNPJ)"
+                        label="E-mail"
+                        name="email"
+                        initialValue={data.email}
+                        required
+                      />
+                      <Input
+                        type="text"
+                        label="Documento"
                         name="document"
-                        mask="cpf_cnpj"
-                        maxLength="18"
+                        initialValue={data.document}
                         required
                       />
                       <div className="form-group">
@@ -269,6 +307,7 @@ function AdminUsers() {
                             name="phone"
                             mask="phone"
                             maxLength={15}
+                            initialValue={data.phone}
                             required
                           />
                         </div>
@@ -279,6 +318,7 @@ function AdminUsers() {
                             name="phone_whatsapp"
                             mask="phone"
                             maxLength={15}
+                            initialValue={data.phone_whatsapp || ''}
                           />
                         </div>
                       </div>
@@ -288,6 +328,7 @@ function AdminUsers() {
                           label: capitalize(userType)
                         }))}
                         label="Tipo de Usuário"
+                        value={data.type}
                         name="type"
                         required
                       />
@@ -297,7 +338,7 @@ function AdminUsers() {
                             type="text"
                             label="CEP"
                             name="postcode"
-                            initialValue=""
+                            initialValue={data.addresses.postcode}
                             mask="cep"
                             disabled={loadingAddresses}
                             ref={postalcodeRef}
@@ -310,7 +351,7 @@ function AdminUsers() {
                             type="text"
                             label="Estado"
                             name="state"
-                            initialValue=""
+                            initialValue={data.addresses.state}
                             ref={stateRef}
                             required
                           />
@@ -320,7 +361,7 @@ function AdminUsers() {
                             type="text"
                             label="Cidade"
                             name="city"
-                            initialValue=""
+                            initialValue={data.addresses.city}
                             ref={cityRef}
                             required
                           />
@@ -332,7 +373,7 @@ function AdminUsers() {
                             type="text"
                             label="Bairro"
                             name="neighborhood"
-                            initialValue=""
+                            initialValue={data.addresses.neighborhood}
                             ref={neighborhoodRef}
                             required
                           />
@@ -342,7 +383,7 @@ function AdminUsers() {
                             type="text"
                             label="Rua"
                             name="street"
-                            initialValue=""
+                            initialValue={data.addresses.street}
                             ref={streetRef}
                             required
                           />
@@ -354,7 +395,7 @@ function AdminUsers() {
                             type="text"
                             label="Número"
                             name="number"
-                            initialValue=""
+                            initialValue={data.addresses.number}
                             required
                           />
                         </div>
@@ -363,7 +404,7 @@ function AdminUsers() {
                             type="text"
                             label="Complementos"
                             name="complement"
-                            initialValue=""
+                            initialValue={data.addresses.complement || ''}
                           />
                         </div>
                       </div>
@@ -380,7 +421,7 @@ function AdminUsers() {
                             className="primary"
                             type="submit"
                           >
-                            Cadastrar Usuário
+                            Salvar
                           </Button>
                         </div>
                       </div>
@@ -396,4 +437,4 @@ function AdminUsers() {
   );
 }
 
-export default privateRoute(['administrador'])(AdminUsers);
+export default privateRoute(['administrador'])(AdminUsersEdit);
