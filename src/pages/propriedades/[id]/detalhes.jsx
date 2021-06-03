@@ -52,7 +52,7 @@ function PropertieInfo() {
   const { data, error } = useFetch(`/properties/find/by/id/${id}`);
 
   const { data: dataDocs, error: errorDocs, mutate: mutateDocs } = useFetch(
-    `/documents/find/property/${id}?limit=${perPageDocs}&page=${pageDocs}`
+    `/properties-documents/find/property/${id}?limit=${perPageDocs}&page=${pageDocs}`
   );
   const { data: dataTypeOwner } = useFetch('/properties/find/all/types-owner');
 

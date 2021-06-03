@@ -34,7 +34,7 @@ function DocumentosEdit() {
 
   const { data, error } = useFetch(`/properties/find/by/id/${id}`);
   const { data: dataDocs, error: errorDocs } = useFetch(
-    `/documents/find/by/id/${idDoc}`
+    `/properties-documents/find/by/id/${idDoc}`
   );
 
   const { type } = useSelector(state => state.user);

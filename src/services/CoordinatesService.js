@@ -2,16 +2,16 @@ import { api } from './api';
 
 class CoordinatesService {
   static async findAll() {
-    return api.get('/coordinates/find/all');
+    return api.get('/properties-coordinates/find/all');
   }
 
   static async findById(id) {
-    return api.get(`/coordinates/find/by/id/${id}`);
+    return api.get(`/properties-coordinates/find/by/id/${id}`);
   }
 
   static async update(id, data) {
     try {
-      const response = await api.put(`/coordinates/update/${id}`, {
+      const response = await api.put(`/properties-coordinates/update/${id}`, {
         latitude: data.latitude,
         longitude: data.longitude
       });
@@ -23,7 +23,7 @@ class CoordinatesService {
 
   static async delete(id) {
     try {
-      const response = await api.delete(`/coordinates/${id}`);
+      const response = await api.delete(`/properties-coordinates/${id}`);
 
       return response;
     } catch (error) {

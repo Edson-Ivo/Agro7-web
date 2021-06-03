@@ -66,7 +66,7 @@ const schema = yup.object().shape({
     .string()
     .max(50, 'O número não pode ultrapassar 50 caracteres')
     .required('Você precisa informar o número do endereço do usuário'),
-  complements: yup
+  complement: yup
     .string()
     .max(100, 'O complemento não pode ultrapassar 100 caracteres')
     .nullable()
@@ -99,7 +99,7 @@ function ConfiguracoesEdit() {
         postcode: null,
         street: null,
         number: null,
-        complements: null
+        complement: null
       };
     }
 
@@ -113,7 +113,7 @@ function ConfiguracoesEdit() {
       postcode: null,
       street: null,
       number: null,
-      complements: null
+      complement: null
     });
   };
 
@@ -159,7 +159,7 @@ function ConfiguracoesEdit() {
           if (res.status >= 400 || res?.statusCode) {
             setAlert({ type: 'error', message: errorMessage(res) });
           } else {
-            await AddressesService.update(data.addresses.id, dataReq).then(
+            await AddressesService.usersUpdate(data.addresses.id, dataReq).then(
               async res2 => {
                 if (res2.status >= 400 || res2?.statusCode) {
                   setAlert({ type: 'error', message: errorMessage(res2) });
@@ -325,8 +325,8 @@ function ConfiguracoesEdit() {
                         <Input
                           type="text"
                           label="Complementos"
-                          name="complements"
-                          initialValue={data.addresses.complements || ''}
+                          name="complement"
+                          initialValue={data.addresses.complement || ''}
                         />
                       </div>
                     </div>
