@@ -210,7 +210,7 @@ function PropertiesEdit() {
               setDisableButton(false);
             }, 1000);
           } else {
-            CoordinatesService.update(data.coordinates.id, d).then(
+            CoordinatesService.propertiesUpdate(data.coordinates.id, d).then(
               async res3 => {
                 if (res3.status >= 400 || res3?.statusCode) {
                   setAlert({

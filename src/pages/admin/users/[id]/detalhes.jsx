@@ -189,21 +189,23 @@ function AdminUsers() {
                         />
                       </div>
                     </div>
+                    <div className="form-group buttons">
+                      <div>
+                        <Button onClick={() => router.back()}>Voltar</Button>
+                      </div>
+                      <div>
+                        <Button
+                          className="primary"
+                          onClick={() =>
+                            router.push(`/admin/users/${id}/editar`)
+                          }
+                        >
+                          Editar
+                        </Button>
+                      </div>
+                    </div>
                   </>
                 )) || <Loader />}
-                <div className="form-group buttons">
-                  <div>
-                    <Button onClick={() => router.back()}>Voltar</Button>
-                  </div>
-                  <div>
-                    <Button
-                      className="primary"
-                      onClick={() => router.push(`/admin/users/${id}/editar`)}
-                    >
-                      Editar
-                    </Button>
-                  </div>
-                </div>
               </CardContainer>
             </div>
           </SectionBody>

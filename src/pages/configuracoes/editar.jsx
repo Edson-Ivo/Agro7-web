@@ -30,7 +30,7 @@ const schema = yup.object().shape({
     .min(4, 'O nome precisa ter no mínimo 4 caracteres')
     .required('O campo nome é obrigatório!'),
   phone: yup.string().required('O campo telefone é obrigatório!'),
-  phone_whatsapp: yup.string(),
+  phone_whatsapp: yup.string().nullable(),
   state: yup
     .string()
     .min(2, 'O estado tem que ter no mínimo 2 caracteres')
