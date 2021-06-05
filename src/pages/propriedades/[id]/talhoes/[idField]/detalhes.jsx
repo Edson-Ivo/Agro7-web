@@ -100,7 +100,7 @@ function TalhoesInfo() {
               </p>
               <Link href={`${route.path}/${id}/talhoes/${idField}/culturas`}>
                 <Button className="primary">
-                  <FontAwesomeIcon icon={faLeaf} /> Ver Culturas
+                  <FontAwesomeIcon icon={faLeaf} /> Culturas
                 </Button>
               </Link>
             </div>

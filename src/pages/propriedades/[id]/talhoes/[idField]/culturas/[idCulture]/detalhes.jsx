@@ -4,7 +4,11 @@ import Head from 'next/head';
 import Link from 'next/link';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faFileAlt, faSeedling } from '@fortawesome/free-solid-svg-icons';
+import {
+  faFileAlt,
+  faSeedling,
+  faHandHoldingWater
+} from '@fortawesome/free-solid-svg-icons';
 
 import Container from '@/components/Container';
 import Nav from '@/components/Nav';
@@ -36,12 +40,23 @@ function CulturasInfo() {
     `/cultures/find/by/id/${idCulture}`
   );
 
-  const { type } = useSelector(state => state.user);
+  const { type, id: userId } = useSelector(state => state.user);
   const [route, setRoute] = useState({});
+  const [loadingWillAccess, setLoadingWillAccess] = useState(false);
+  const [willAccess, setWillAccess] = useState(false);
 
   useEffect(() => {
     setRoute(urlRoute(router, type));
   }, []);
+
+  useEffect(() => {
+    if (data) {
+      setWillAccess(
+        !(type === 'tecnico' && data?.properties?.users?.id !== userId)
+      );
+      setLoadingWillAccess(true);
+    }
+  }, [data]);
 
   if (error || errorCultures) return <Error error={error || errorCultures} />;
   if (data && id !== String(data?.properties?.id)) return <Error error={404} />;
@@ -104,22 +119,33 @@ function CulturasInfo() {
                 {dataCultures?.products.name} no talhão{' '}
                 {`${data?.name} da propriedade ${data?.properties.name}`}.
               </p>
-              <div className="buttons__container">
-                <Link
-                  href={`${route.path}/${id}/talhoes/${idField}/culturas/${idCulture}/colheitas`}
-                >
-                  <Button className="primary">
-                    <FontAwesomeIcon icon={faSeedling} /> Ver Colheitas
-                  </Button>
-                </Link>
-                <Link
-                  href={`${route.path}/${id}/talhoes/${idField}/culturas/${idCulture}/relatorios`}
-                >
-                  <Button className="primary">
-                    <FontAwesomeIcon icon={faFileAlt} /> Ver Relatórios Técnicos
-                  </Button>
-                </Link>
-              </div>
+              {loadingWillAccess && (
+                <div className="buttons__container">
+                  <Link
+                    href={`${route.path}/${id}/talhoes/${idField}/culturas/${idCulture}/colheitas`}
+                  >
+                    <Button className="primary">
+                      <FontAwesomeIcon icon={faSeedling} /> Colheitas
+                    </Button>
+                  </Link>
+                  <Link
+                    href={`${route.path}/${id}/talhoes/${idField}/culturas/${idCulture}/relatorios`}
+                  >
+                    <Button className="primary">
+                      <FontAwesomeIcon icon={faFileAlt} /> Relatórios Técnicos
+                    </Button>
+                  </Link>
+                  {willAccess && (
+                    <Link
+                      href={`${route.path}/${id}/talhoes/${idField}/culturas/${idCulture}/acoes`}
+                    >
+                      <Button className="primary">
+                        <FontAwesomeIcon icon={faHandHoldingWater} /> Ações
+                      </Button>
+                    </Link>
+                  )}
+                </div>
+              )}
             </div>
           </SectionHeader>
           <SectionBody>

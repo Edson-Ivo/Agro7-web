@@ -157,13 +157,13 @@ function PropertieInfo() {
                 <div className="buttons__container">
                   <Link href={`${route.path}/${id}/talhoes/`}>
                     <Button className="primary">
-                      <FontAwesomeIcon icon={faThumbtack} /> Ver Talhões
+                      <FontAwesomeIcon icon={faThumbtack} /> Talhões
                     </Button>
                   </Link>
                   {willAccess && (
                     <Link href={`${route.path}/${id}/tecnicos/`}>
                       <Button className="primary">
-                        <FontAwesomeIcon icon={faUserFriends} /> Ver Técnicos
+                        <FontAwesomeIcon icon={faUserFriends} /> Técnicos
                       </Button>
                     </Link>
                   )}

@@ -50,9 +50,10 @@ export const SectionHeader = styled.div`
       }
 
       button {
-        &:first-child {
+        &:nth-child(even) {
           margin-top: 0;
-          margin-right: 16px;
+          margin-left: 8px;
+          margin-right: 8px;
         }
       }
     }
@@ -63,9 +64,9 @@ export const SectionHeader = styled.div`
       align-items: center;
 
       button {
-        margin: 0 auto;
-        max-width: 100%;
-        margin-top: 16px;
+        margin: 0 auto !important;
+        max-width: 100% !important;
+        margin-top: 8px !important;
       }
     }
   }
