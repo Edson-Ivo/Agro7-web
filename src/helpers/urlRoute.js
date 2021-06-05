@@ -1,4 +1,4 @@
-const urlRoute = (router, types) => {
+const urlRoute = (router, types, blockTypes = []) => {
   let [, path] = router.route.split('/');
   let permission = null;
   let hasPermission = true;
@@ -21,7 +21,7 @@ const urlRoute = (router, types) => {
     if (asPath.startsWith(route)) {
       hasPermission = false;
 
-      if (type === types) {
+      if (type === types && !blockTypes.includes(types)) {
         path = route;
         permission = type;
         hasPermission = true;

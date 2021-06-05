@@ -28,6 +28,7 @@ import ProductsService from '@/services/ProductsService';
 import errorMessage from '@/helpers/errorMessage';
 import truncate from '@/helpers/truncate';
 import { dateConversor } from '@/helpers/date';
+import isEmpty from '@/helpers/isEmpty';
 
 function AdminProducts() {
   const [alertMsg, setAlertMsg] = useState({ type: '', message: '' });
@@ -127,7 +128,7 @@ function AdminProducts() {
                           </tr>
                         </thead>
                         <tbody>
-                          {(data?.items &&
+                          {(!isEmpty(data?.items) &&
                             data.items.map(d => (
                               <tr
                                 key={d.id}
