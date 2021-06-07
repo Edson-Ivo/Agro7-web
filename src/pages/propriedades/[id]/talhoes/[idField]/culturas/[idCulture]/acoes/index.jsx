@@ -28,17 +28,29 @@ import { dateConversor } from '@/helpers/date';
 import Error from '@/components/Error/index';
 import { useSelector } from 'react-redux';
 import urlRoute from '@/helpers/urlRoute';
-import CulturesService from '@/services/CulturesService';
+import CulturesActionsService, {
+  actionsList
+} from '@/services/CulturesActionsService';
+import objectKeyExists from '@/helpers/objectKeyExists';
 
 function AcoesCultura() {
   const router = useRouter();
-  const { id, idField, idCulture, page = 1 } = router.query;
+  const {
+    id,
+    idField,
+    idCulture,
+    typeAction = 'services',
+    page = 1
+  } = router.query;
 
   const perPage = 10;
 
   const [alertMsg, setAlertMsg] = useState({ type: '', message: '' });
   const [loading, setLoading] = useState(false);
-  const [typeAction, setTypeAction] = useState('a');
+  const [route, setRoute] = useState({});
+  const [baseUrl, setBaseUrl] = useState('');
+
+  const { type } = useSelector(state => state.user);
 
   const { addModal, removeModal } = useModal();
   const { data, error } = useFetch(`/fields/find/by/id/${idField}`);
@@ -52,20 +64,8 @@ function AcoesCultura() {
     error: errorActions,
     mutate: mutateActions
   } = useFetch(
-    `/cultures/find/by/id/${idCulture}?limit=${perPage}&page=${page}`
+    `/cultures-${typeAction}/find/by/culture/${idCulture}?limit=${perPage}&page=${page}`
   );
-
-  // const {
-  //   data: dataActions,
-  //   error: errorActions,
-  //   mutate: mutateActions
-  // } = useFetch(
-  //   `/cultures-${typeAction}/find/by/culture/${idCulture}?limit=${perPage}&page=${page}`
-  // );
-
-  const { type } = useSelector(state => state.user);
-  const [route, setRoute] = useState({});
-  const [baseUrl, setBaseUrl] = useState('');
 
   useEffect(() => {
     setRoute(urlRoute(router, type, ['tecnico']));
@@ -78,11 +78,11 @@ function AcoesCultura() {
   }, [route]);
 
   const handleDelete = useCallback(
-    async identifier => {
+    async (identifier, typeAct) => {
       removeModal();
       setLoading(true);
 
-      await CulturesService.delete(identifier).then(res => {
+      await CulturesActionsService.delete(identifier, typeAct).then(res => {
         if (res.status >= 400 || res?.statusCode) {
           setAlertMsg({ type: 'error', message: errorMessage(res) });
         } else {
@@ -101,21 +101,20 @@ function AcoesCultura() {
   );
 
   const handleDeleteModal = useCallback(
-    identifier => {
+    (identifier, typeAct) => {
       addModal({
         title: `Deletar essa Ação?`,
         text: `Deseja realmente deletar essa ação?`,
         confirm: true,
-        onConfirm: () => handleDelete(identifier),
+        onConfirm: () => handleDelete(identifier, typeAct),
         onCancel: removeModal
       });
     },
     [addModal, removeModal]
   );
 
-  const handleChangeTypeAction = e => {
-    setTypeAction(e?.value || '');
-  };
+  const handleChangeTypeAction = e =>
+    router.replace(`${baseUrl}?typeAction=${e?.value || ''}`);
 
   if (error || errorCultures || errorActions)
     return <Error error={error || errorCultures || errorActions} />;
@@ -123,6 +122,7 @@ function AcoesCultura() {
   if (dataCultures && idField !== String(dataCultures?.fields?.id))
     return <Error error={404} />;
   if (!isEmpty(route) && !route.hasPermission) return <Error error={404} />;
+  if (!objectKeyExists(actionsList, typeAction)) return <Error error={404} />;
 
   return (
     <>
@@ -171,7 +171,7 @@ function AcoesCultura() {
                       name: `${dataCultures?.products.name}`
                     },
                     {
-                      route: `${route.path}/${id}/talhoes/${idField}/culturas/${idCulture}/Ações`,
+                      route: `${route.path}/${id}/talhoes/${idField}/culturas/${idCulture}/acoes`,
                       name: `Ações`
                     }
                   ]}
@@ -200,32 +200,27 @@ function AcoesCultura() {
                   {alertMsg.message && (
                     <Alert type={alertMsg.type}>{alertMsg.message}</Alert>
                   )}
+                  <Select
+                    options={Object.keys(actionsList).map(action => ({
+                      value: actionsList[action].value,
+                      label: actionsList[action].label
+                    }))}
+                    label="Filtrar por Ação"
+                    name="types"
+                    onChange={handleChangeTypeAction}
+                    value={typeAction}
+                  />
                   {(((!isEmpty(typeAction) &&
                     data &&
                     dataCultures &&
                     dataActions) ||
                     loading) && (
                     <>
-                      <Select
-                        options={CulturesService.actionsList.map(
-                          ({ value, label }) => ({
-                            value,
-                            label
-                          })
-                        )}
-                        label="Filtrar por categoria"
-                        name="types"
-                        clearable
-                        noLabel
-                        onChange={handleChangeTypeAction}
-                        initialValue={typeAction}
-                      />
                       <div className="table-responsive">
                         <Table>
                           <thead>
                             <tr>
-                              <th>Tipo de Ação</th>
-                              <th>Feito</th>
+                              <th>Lista</th>
                               <th>Criado em</th>
                               <th>Ações</th>
                             </tr>
@@ -233,24 +228,34 @@ function AcoesCultura() {
                           <tbody>
                             {(!isEmpty(dataActions?.items) &&
                               dataActions.items.map(d => (
-                                <tr key={d.id}>
-                                  <td>{dateConversor(d?.date, false)}</td>
-                                  <td>{`${d?.quantity}kg`}</td>
-                                  <td>{dateConversor(d?.forecast, false)}</td>
-                                  <td>{`${d?.quantity_forecast}kg`}</td>
+                                <tr
+                                  key={d.id}
+                                  onClick={() =>
+                                    router.push(
+                                      `${baseUrl}/${typeAction}/${d.id}/detalhes`
+                                    )
+                                  }
+                                >
                                   <td>
+                                    {CulturesActionsService.text(typeAction, d)}
+                                  </td>
+                                  <td>{dateConversor(d.created_at, false)}</td>
+                                  <td onClick={e => e.stopPropagation()}>
                                     <ActionButton
                                       id={d.id}
-                                      path={baseUrl}
-                                      noInfo
-                                      onDelete={() => handleDeleteModal(d.id)}
+                                      path={`${baseUrl}/${typeAction}`}
+                                      onDelete={() =>
+                                        handleDeleteModal(d.id, typeAction)
+                                      }
                                     />
                                   </td>
                                 </tr>
                               ))) || (
                               <tr>
-                                <td colSpan="4">
-                                  Não há ações registradas nessa cultura
+                                <td colSpan="3">
+                                  Não há ações de{' '}
+                                  {actionsList[typeAction].label.toLowerCase()}{' '}
+                                  registradas nessa cultura
                                 </td>
                               </tr>
                             )}

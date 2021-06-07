@@ -50,6 +50,10 @@ const Input = (
       setValue(masks.cep(e.target.value));
       e.target.value = masks.cep(e.target.value);
     }
+    if (mask === 'money') {
+      setValue(masks.money(e.target.value));
+      e.target.value = masks.money(e.target.value);
+    }
   };
 
   const changeAction = e => {
@@ -64,7 +68,7 @@ const Input = (
 
   return (
     <InputContainer>
-      {label && type === 'date' && (
+      {label && ['date', 'time'].includes(type) && (
         <UpperLabel className="input-label">{label}</UpperLabel>
       )}
       <StyledInput
@@ -76,7 +80,7 @@ const Input = (
         ref={ref}
         {...otherProps}
       />
-      {label && type !== 'date' && (
+      {label && !['date', 'time'].includes(type) && (
         <Label className={`input-label ${hasText ? 'label_active' : ''}`}>
           {label}
         </Label>

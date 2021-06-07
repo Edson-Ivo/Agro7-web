@@ -3,11 +3,12 @@ import { getCookieFromBrowser } from '../helpers/cookies';
 import { AUTH_COOKIE_TOKEN } from './constants';
 
 export const api = axios.create({
-  baseURL: 'https://agro7.herokuapp.com'
+  baseURL: 'http://54.94.110.68:3000'
 });
 
 api.interceptors.request.use(config => {
   const token = getCookieFromBrowser(AUTH_COOKIE_TOKEN);
   config.headers.Authorization = token ? `Bearer ${token}` : '';
+
   return config;
 });
