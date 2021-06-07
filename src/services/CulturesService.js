@@ -49,27 +49,4 @@ class CulturesService {
   }
 }
 
-CulturesService.actionsList = [
-  {
-    value: 'services',
-    label: 'Serviços'
-  },
-  {
-    value: 'irrigations',
-    label: 'Irrigações'
-  },
-  {
-    value: 'supplies',
-    label: 'Insumos'
-  },
-  {
-    value: 'applications_supplies',
-    label: 'Aplicação de Insumos'
-  },
-  {
-    value: 'others',
-    label: 'Outros'
-  }
-];
-
 export default CulturesService;

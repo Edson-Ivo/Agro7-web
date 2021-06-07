@@ -42,3 +42,11 @@ export const dateToISOStringFinish = date =>
   getCurrentDate(date).add(1, 'days').subtract(1, 'milliseconds').toISOString();
 
 export const isValidDate = date => getCurrentDate(date).isValid();
+
+export const removeTimeSeconds = time => {
+  const timeToArray = String(time).split(':');
+
+  if (timeToArray.length === 3) timeToArray.pop();
+
+  return timeToArray.join(':');
+};

@@ -42,5 +42,14 @@ export const masks = {
   },
 
   cep: v =>
-    v.replace(/^([\d]{2})\.*([\d]{3})-*([\d]{3})/, '$1$2-$3').substring(0, 9)
+    v.replace(/^([\d]{2})\.*([\d]{3})-*([\d]{3})/, '$1$2-$3').substring(0, 9),
+
+  money: v => {
+    if (v.length <= 1) v = `0${v}`;
+    v = parseFloat(v.replace(/[^\d]/g, '').replace(/(\d\d?)$/, '.$1')).toFixed(
+      2
+    );
+
+    return v;
+  }
 };
