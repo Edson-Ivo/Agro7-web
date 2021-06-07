@@ -54,7 +54,12 @@ const SearchSelect = ({
           }
         })}
       />
-      <input type="hidden" tabIndex={-1} name={name} value={valueChange} />
+      <input
+        type="hidden"
+        tabIndex={-1}
+        name={name}
+        value={valueChange || ''}
+      />
     </InputContainer>
   );
 };

@@ -14,7 +14,8 @@ export const StyledInput = styled.input`
   font-size: 1em;
   height: ${props => (props.type !== 'checkbox' ? `50px;` : '')};
   line-height: 50px;
-  padding: ${props => (props.type !== 'date' ? `16px 20px 0` : '0 20px')};
+  padding: ${props =>
+    !['date', 'time'].includes(props.type) ? `16px 20px 0` : '0 20px'};
   ${props => (props.type !== 'checkbox' ? `display: block;` : '')};
   ${props => (props.type !== 'checkbox' ? `width: 100%;` : '')};
   ${props => (props.type !== 'checkbox' ? `margin: 5px 0px 15px` : '')};
@@ -34,7 +35,7 @@ export const StyledInput = styled.input`
   }
 
   ${props =>
-    !['checkbox', 'date'].includes(props.type) &&
+    !['checkbox', 'date', 'time'].includes(props.type) &&
     css`
       &:focus + .input-label {
         ${ShrinkedLabel}

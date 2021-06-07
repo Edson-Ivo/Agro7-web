@@ -16,19 +16,11 @@ const Table = styled.table`
       background-position: center;
 
       &:hover {
-        background: ${props => props.theme.colors.gray}
-          radial-gradient(
-            circle,
-            transparent 1%,
-            ${props => props.theme.colors.gray} 1%
-          )
-          center/15000%;
+        background-color: ${props => props.theme.colors.gray};
       }
 
       &:active {
         background-color: ${props => props.theme.colors.black_10};
-        background-size: 100%;
-        transition: background 0s;
       }
     }
   }
