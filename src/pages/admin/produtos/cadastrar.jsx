@@ -22,6 +22,7 @@ import getFormData from '@/helpers/getFormData';
 import ProductsService from '@/services/ProductsService';
 import { useRouter } from 'next/router';
 import TextArea from '@/components/TextArea/index';
+import NutricionalService from '@/services/NutricionalService';
 
 const schema = yup.object().shape({
   name: yup.string().required('O campo nome é obrigatório!'),
@@ -135,19 +136,17 @@ const schema = yup.object().shape({
 function AdminProductsCreate() {
   const formRef = useRef(null);
   const inputRef = useRef(null);
+  const inputNutricionalRef = useRef(null);
   const [activeStep, setActiveStep] = useState(1);
   const [alert, setAlert] = useState({ type: '', message: '' });
   const [disableButton, setDisableButton] = useState(false);
 
   const router = useRouter();
 
-  useEffect(
-    () => () => {
-      setAlert({ type: '', message: '' });
-      setDisableButton(false);
-    },
-    []
-  );
+  useEffect(() => {
+    setAlert({ type: '', message: '' });
+    setDisableButton(false);
+  }, []);
 
   const getData = () => {
     if (formRef.current === undefined) {
@@ -219,39 +218,65 @@ function AdminProductsCreate() {
           message: 'Enviando...'
         });
 
-        if (inputRef.current.error.message) {
-          setAlert({ type: 'error', message: inputRef.current.error.message });
+        if (
+          inputRef.current.error.message ||
+          inputNutricionalRef.current.error.message
+        ) {
+          setAlert({
+            type: 'error',
+            message:
+              inputRef.current.error.message ||
+              inputNutricionalRef.current.error.message
+          });
           setDisableButton(false);
         } else {
-          const formData = new FormData();
+          const productFormData = new FormData();
 
-          setAlert({
-            type: 'success',
-            message: 'Enviando...'
-          });
+          productFormData.append('name', data.name);
+          productFormData.append('description', data.description);
+          productFormData.append('file', e.target.file.files[0]);
 
-          Object.keys(data).forEach(key => {
-            formData.append(key, data[key]);
-          });
-
-          formData.append('file', e.target.file.files[0]);
-
-          await ProductsService.create(formData).then(res => {
+          await ProductsService.create(productFormData).then(async res => {
             if (res.status !== 201 || res?.statusCode) {
               setAlert({ type: 'error', message: errorMessage(res) });
               setTimeout(() => {
                 setDisableButton(false);
               }, 1000);
             } else {
-              setAlert({
-                type: 'success',
-                message: 'Produto cadastrado com sucesso!'
+              const productId = res.data.id;
+              const nutricionalFormData = new FormData();
+
+              Object.keys(data).forEach(key => {
+                nutricionalFormData.append(key, data[key]);
               });
 
-              setTimeout(() => {
-                router.push(`/admin/produtos/${res.data.id}/detalhes`);
-                setDisableButton(false);
-              }, 1000);
+              nutricionalFormData.append(
+                'file',
+                e.target.fileNutricional.files[0]
+              );
+
+              nutricionalFormData.append('products', productId);
+
+              await NutricionalService.create(nutricionalFormData).then(
+                res2 => {
+                  if (res2.status !== 201 || res2?.statusCode) {
+                    setAlert({ type: 'error', message: errorMessage(res2) });
+                    setTimeout(() => {
+                      setDisableButton(false);
+                    }, 1000);
+                  } else {
+                    setAlert({
+                      type: 'success',
+                      message: 'Produto cadastrado com sucesso!'
+                    });
+
+                    setTimeout(() => {
+                      router.push(`/admin/produtos/${productId}/detalhes`);
+                      setDisableButton(false);
+                    }, 1000);
+                  }
+                }
+              );
             }
           });
         }
@@ -318,7 +343,17 @@ function AdminProductsCreate() {
                       />
                     </Step>
                     <Step label="Nutricional" onClick={() => setActiveStep(2)}>
-                      <h4 className="step-title">Nutricional (opcional)</h4>
+                      <h4 className="step-title">Tabela Nutricional:</h4>
+                      <FileInput
+                        ref={inputNutricionalRef}
+                        name="fileNutricional"
+                        label="Selecione a Imagem da Tabela Nutricional"
+                        extensions={['.jpg', '.jpeg', '.png', '.gif']}
+                        max={1}
+                      />
+                      <h4 className="step-title">
+                        Escrever Nutricional (opcional)
+                      </h4>
                       <div className="form-group">
                         <div>
                           <Input type="number" name="water" label="Água (%)" />

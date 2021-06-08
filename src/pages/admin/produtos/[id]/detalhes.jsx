@@ -92,7 +92,16 @@ function AdminProductsDetails() {
                         label="Nutricional"
                         onClick={() => setActiveStep(2)}
                       >
-                        <h4 className="step-title">Nutricional</h4>
+                        <h4 className="step-title">Tabela Nutricional:</h4>
+                        <Input
+                          type="text"
+                          name="imageNutricional"
+                          label="Imagem atual"
+                          initialValue={
+                            data?.nutritional?.nutritional_images?.url
+                          }
+                          disabled
+                        />
                         <div className="form-group">
                           <div>
                             <Input
