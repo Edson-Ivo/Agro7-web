@@ -183,11 +183,6 @@ function AcoesCulturaCadastrar() {
                   path={[
                     { route: '/', name: 'Home' },
                     {
-                      route: '/tecnico',
-                      name: 'Painel Técnico',
-                      active: type === 'tecnico' && route?.permission === type
-                    },
-                    {
                       route: '/admin',
                       name: 'Painel Administrativo',
                       active:
