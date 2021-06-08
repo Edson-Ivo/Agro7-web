@@ -23,6 +23,7 @@ import errorMessage from '@/helpers/errorMessage';
 import ProductsService from '@/services/ProductsService';
 import { useFetch } from '@/hooks/useFetch';
 import Loader from '@/components/Loader/index';
+import NutricionalService from '@/services/NutricionalService';
 
 const schema = yup.object().shape({
   name: yup.string().required('O campo nome é obrigatório!'),
@@ -136,6 +137,7 @@ const schema = yup.object().shape({
 function AdminProductsEdit() {
   const formRef = useRef(null);
   const inputRef = useRef(null);
+  const inputNutricionalRef = useRef(null);
   const [activeStep, setActiveStep] = useState(1);
   const [alert, setAlert] = useState({ type: '', message: '' });
   const [disableButton, setDisableButton] = useState(false);
@@ -145,13 +147,10 @@ function AdminProductsEdit() {
   const { id } = router.query;
   const { data, error, mutate } = useFetch(`/products/find/by/id/${id}`);
 
-  useEffect(
-    () => () => {
-      setAlert({ type: '', message: '' });
-      setDisableButton(false);
-    },
-    []
-  );
+  useEffect(() => {
+    setAlert({ type: '', message: '' });
+    setDisableButton(false);
+  }, []);
 
   const getData = () => {
     if (formRef.current === undefined) {
@@ -223,60 +222,99 @@ function AdminProductsEdit() {
           message: 'Enviando...'
         });
 
-        if (e.target.file.files.length > 0 && inputRef.current.error.message) {
-          setAlert({ type: 'error', message: inputRef.current.error.message });
+        if (
+          (e.target.file.files.length > 0 && inputRef.current.error.message) ||
+          (e.target.fileNutricional.files.length > 0 &&
+            inputNutricionalRef.current.error.message)
+        ) {
+          setAlert({
+            type: 'error',
+            message:
+              inputRef.current.error.message ||
+              inputNutricionalRef.current.error.message
+          });
           setDisableButton(false);
         } else {
-          const formData = new FormData();
+          const productFormData = new FormData();
 
-          setAlert({
-            type: 'success',
-            message: 'Enviando...'
-          });
+          productFormData.append('name', dataEdit.name);
+          productFormData.append('description', dataEdit.description);
 
-          formData.append('name', dataEdit.name);
-          formData.append('description', dataEdit.description);
+          if (e.target.file.files.length > 0)
+            productFormData.append('file', e.target.file.files[0]);
 
-          if (e.target.file.files.length > 0) {
-            formData.append('file', e.target.file.files[0]);
-          }
-
-          await ProductsService.update(id, formData).then(async res => {
+          await ProductsService.update(id, productFormData).then(async res => {
             if (res.status !== 200 || res?.statusCode) {
               setAlert({ type: 'error', message: errorMessage(res) });
               setTimeout(() => {
                 setDisableButton(false);
               }, 1000);
             } else {
-              await ProductsService.updateNutritional(
+              const nutricionalImageEdit =
+                e.target.fileNutricional.files.length > 0;
+              let editSuccess = false;
+
+              Object.keys(dataEdit).forEach(key => {
+                dataEdit[key] = String(dataEdit[key]);
+              });
+
+              await NutricionalService.update(
                 data?.nutritional.id,
                 dataEdit
-              ).then(res2 => {
+              ).then(async res2 => {
                 if (res2.status !== 200 || res2?.statusCode) {
                   setAlert({ type: 'error', message: errorMessage(res2) });
                   setTimeout(() => {
                     setDisableButton(false);
                   }, 1000);
-                } else {
-                  mutate();
+                } else if (nutricionalImageEdit) {
+                  const nutricionalImageFormData = new FormData();
 
-                  setAlert({
-                    type: 'success',
-                    message: 'Produto editado com sucesso!'
+                  nutricionalImageFormData.append(
+                    'file',
+                    e.target.fileNutricional.files[0]
+                  );
+
+                  await NutricionalService.updateNutritionalImage(
+                    data?.nutritional?.nutritional_images?.id,
+                    nutricionalImageFormData
+                  ).then(res3 => {
+                    if (res3.status !== 200 || res3?.statusCode) {
+                      setAlert({
+                        type: 'error',
+                        message: errorMessage(res3)
+                      });
+                      setTimeout(() => {
+                        setDisableButton(false);
+                      }, 1000);
+                    } else {
+                      editSuccess = true;
+                    }
                   });
-
-                  setTimeout(() => {
-                    router.push(`/admin/produtos/${id}/detalhes`);
-                    setDisableButton(false);
-                  }, 1000);
+                } else {
+                  editSuccess = true;
                 }
               });
+
+              if (editSuccess) {
+                mutate();
+
+                setAlert({
+                  type: 'success',
+                  message: 'Produto editado com sucesso!'
+                });
+
+                setTimeout(() => {
+                  router.push(`/admin/produtos/${id}/detalhes`);
+                  setDisableButton(false);
+                }, 1000);
+              }
             }
           });
         }
       })
       .catch(err => {
-        setAlert({ type: 'error', message: err.errors[0] });
+        setAlert({ type: 'error', message: err.errors?.[0] });
         setDisableButton(false);
       });
   };
@@ -357,7 +395,26 @@ function AdminProductsEdit() {
                           label="Nutricional"
                           onClick={() => setActiveStep(2)}
                         >
-                          <h4 className="step-title">Nutricional</h4>
+                          <h4 className="step-title">Tabela Nutricional:</h4>
+                          <Input
+                            type="text"
+                            name="imageNutricional"
+                            label="Imagem atual"
+                            initialValue={
+                              data?.nutritional?.nutritional_images?.url
+                            }
+                            disabled
+                          />
+                          <FileInput
+                            ref={inputNutricionalRef}
+                            name="fileNutricional"
+                            label="Selecione a Imagem da Tabela Nutricional"
+                            extensions={['.jpg', '.jpeg', '.png', '.gif']}
+                            max={1}
+                          />
+                          <h4 className="step-title">
+                            Escrever Nutricional (opcional)
+                          </h4>
                           <div className="form-group">
                             <div>
                               <Input

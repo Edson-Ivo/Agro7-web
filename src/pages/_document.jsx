@@ -33,6 +33,7 @@ export default class MyDocument extends Document {
       <Html lang="pt-br">
         <Head>
           <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
+      
           <meta name="application-name" content="Agro7" />
           <meta
             name="description"
