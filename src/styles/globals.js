@@ -2,6 +2,7 @@ import { createGlobalStyle } from 'styled-components';
 import { ShowTransition } from './mixins';
 
 export default createGlobalStyle`
+
   * {
     margin: 0;
     padding: 0;
@@ -87,6 +88,15 @@ export default createGlobalStyle`
     border: 0;
   }
 
+  input,
+  textarea,
+  button,
+  select,
+  div,
+  a {
+    -webkit-tap-highlight-color: transparent;
+  }
+
   p.text {
     font-size: calc(1.15em - 0.1px);
     line-height: 1.6em;
@@ -130,15 +140,6 @@ export default createGlobalStyle`
   .step-title {
     text-align: center;
     margin: 25px 0;
-  }
-
-  input,
-  textarea,
-  button,
-  select,
-  div,
-  a {
-    -webkit-tap-highlight-color: transparent;
   }
 
   .color-picker {

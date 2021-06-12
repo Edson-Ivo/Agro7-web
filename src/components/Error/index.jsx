@@ -41,7 +41,7 @@ export default function Error({ error }) {
 
   useEffect(() => {
     const catchedError =
-      typeof error === 'object' ? error.response.data.statusCode : error;
+      typeof error === 'object' ? error?.response?.data?.statusCode : error;
 
     setDataError(
       errorExists(catchedError) ? dataErrors[catchedError] : dataErrors.default

@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react';
 import Head from 'next/head';
 import * as yup from 'yup';
 import { useRouter } from 'next/router';
+import { Form } from '@unform/web';
 
 import Container from '@/components/Container';
 import Nav from '@/components/Nav';
@@ -15,7 +16,6 @@ import { Section, SectionHeader, SectionBody } from '@/components/Section';
 
 import { CardContainer } from '@/components/CardContainer';
 import { privateRoute } from '@/components/PrivateRoute';
-import getFormData from '@/helpers/getFormData';
 import AddressesService from '@/services/AddressesService';
 import UsersService from '@/services/UsersService';
 import errorMessage from '@/helpers/errorMessage';
@@ -89,52 +89,6 @@ function AdminUsers() {
 
   const { data: dataTypes } = useFetch('/users/find/all/types');
 
-  const stateRef = useRef(null);
-  const cityRef = useRef(null);
-  const neighborhoodRef = useRef(null);
-  const streetRef = useRef(null);
-  const postalcodeRef = useRef(null);
-
-  const getData = () => {
-    if (formRef.current === undefined) {
-      return {
-        name: null,
-        email: null,
-        password: null,
-        document: null,
-        type_document: null,
-        phone: null,
-        phone_whatsapp: null,
-        type: null,
-        state: null,
-        neighborhood: null,
-        city: null,
-        postcode: null,
-        street: null,
-        number: null,
-        complement: null
-      };
-    }
-
-    return getFormData(formRef.current, {
-      name: null,
-      email: null,
-      password: null,
-      document: null,
-      type_document: false,
-      phone: null,
-      phone_whatsapp: null,
-      type: null,
-      state: null,
-      neighborhood: null,
-      city: null,
-      postcode: null,
-      street: null,
-      number: null,
-      complement: null
-    });
-  };
-
   const handleChangeCep = e => {
     const { value } = e.target;
     if (value.length === 9) {
@@ -142,29 +96,23 @@ function AdminUsers() {
       AddressesService.getCep(value.replace('-', '')).then(res => {
         if (res.data !== '') {
           const { state, city, neighborhood, street } = res.data;
-          if (!stateRef.current.value) {
-            stateRef.current.setValue(state);
-          }
-          if (!cityRef.current.value) {
-            cityRef.current.setValue(city);
-          }
-          if (!neighborhoodRef.current.value) {
-            neighborhoodRef.current.setValue(neighborhood);
-          }
-          if (!streetRef.current.value) {
-            streetRef.current.setValue(street);
-          }
+
+          formRef.current.setFieldValue('state', state);
+          formRef.current.setFieldValue('city', city);
+          formRef.current.setFieldValue('neighborhood', neighborhood);
+          formRef.current.setFieldValue('street', street);
         }
+
         setLoadingAddresses(false);
       });
     }
   };
 
-  const handleSubmit = async e => {
-    e.preventDefault();
+  const handleSubmit = async d => {
     setDisableButton(true);
+
     schema
-      .validate(getData())
+      .validate(d)
       .then(async data => {
         setAlert({
           type: 'success',
@@ -201,6 +149,12 @@ function AdminUsers() {
       .catch(err => {
         setAlert({ type: 'error', message: err.errors[0] });
         setDisableButton(false);
+
+        if (err instanceof yup.ValidationError) {
+          const { path, message } = err;
+
+          formRef.current.setFieldError(path, message);
+        }
       });
   };
 
@@ -237,14 +191,9 @@ function AdminUsers() {
                 {alert.message !== '' && (
                   <Alert type={alert.type}>{alert.message}</Alert>
                 )}
-                <form
-                  id="registerForm"
-                  ref={formRef}
-                  method="post"
-                  onSubmit={event => handleSubmit(event)}
-                >
-                  {(dataTypes && (
-                    <>
+                {(dataTypes && (
+                  <>
+                    <Form ref={formRef} method="post" onSubmit={handleSubmit}>
                       <Input type="text" label="Nome" name="name" required />
                       <Input type="text" label="E-mail" name="email" required />
                       <Input
@@ -300,7 +249,6 @@ function AdminUsers() {
                             initialValue=""
                             mask="cep"
                             disabled={loadingAddresses}
-                            ref={postalcodeRef}
                             handleChange={handleChangeCep}
                             required
                           />
@@ -311,7 +259,6 @@ function AdminUsers() {
                             label="Estado"
                             name="state"
                             initialValue=""
-                            ref={stateRef}
                             required
                           />
                         </div>
@@ -321,7 +268,6 @@ function AdminUsers() {
                             label="Cidade"
                             name="city"
                             initialValue=""
-                            ref={cityRef}
                             required
                           />
                         </div>
@@ -333,7 +279,6 @@ function AdminUsers() {
                             label="Bairro"
                             name="neighborhood"
                             initialValue=""
-                            ref={neighborhoodRef}
                             required
                           />
                         </div>
@@ -343,7 +288,6 @@ function AdminUsers() {
                             label="Rua"
                             name="street"
                             initialValue=""
-                            ref={streetRef}
                             required
                           />
                         </div>
@@ -384,9 +328,9 @@ function AdminUsers() {
                           </Button>
                         </div>
                       </div>
-                    </>
-                  )) || <Loader />}
-                </form>
+                    </Form>
+                  </>
+                )) || <Loader />}
               </CardContainer>
             </div>
           </SectionBody>

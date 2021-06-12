@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import * as yup from 'yup';
 import { useRouter } from 'next/router';
+import { Form } from '@unform/web';
 import Head from 'next/head';
 
 import Container from '@/components/Container';
@@ -16,7 +17,6 @@ import Loader from '@/components/Loader';
 
 import errorMessage from '@/helpers/errorMessage';
 import { useFetch } from '@/hooks/useFetch';
-import getFormData from '@/helpers/getFormData';
 import TechnicianActionsService from '@/services/TechnicianActionsService';
 import TextArea from '@/components/TextArea';
 import Error from '@/components/Error/index';
@@ -58,31 +58,11 @@ function RelatoriosCreate() {
     router.back();
   };
 
-  const getData = () => {
-    if (formRef.current === undefined) {
-      return {
-        diagnostics: null,
-        cultivation: null,
-        plant_health: null,
-        fertilizing: true,
-        cultures: null
-      };
-    }
-
-    return getFormData(formRef.current, {
-      diagnostics: null,
-      cultivation: null,
-      plant_health: null,
-      fertilizing: true,
-      cultures: null
-    });
-  };
-
-  const handleSubmit = async e => {
-    e.preventDefault();
+  const handleSubmit = async dt => {
     setDisableButton(true);
+
     schema
-      .validate(getData())
+      .validate(dt)
       .then(async d => {
         setAlert({
           type: 'success',
@@ -115,6 +95,12 @@ function RelatoriosCreate() {
       .catch(err => {
         setAlert({ type: 'error', message: err.errors[0] });
         setDisableButton(false);
+
+        if (err instanceof yup.ValidationError) {
+          const { path, message } = err;
+
+          formRef.current.setFieldError(path, message);
+        }
       });
   };
 
@@ -201,14 +187,10 @@ function RelatoriosCreate() {
                 {alert.message !== '' && (
                   <Alert type={alert.type}>{alert.message}</Alert>
                 )}
-                <form
-                  id="registerForm"
-                  ref={formRef}
-                  method="post"
-                  onSubmit={event => handleSubmit(event)}
-                >
-                  {(data && dataCultures && (
-                    <>
+
+                {(data && dataCultures && (
+                  <>
+                    <Form ref={formRef} method="post" onSubmit={handleSubmit}>
                       <TextArea
                         name="diagnostics"
                         label="Diagnóstico da Cultura"
@@ -234,9 +216,9 @@ function RelatoriosCreate() {
                           </Button>
                         </div>
                       </div>
-                    </>
-                  )) || <Loader />}
-                </form>
+                    </Form>
+                  </>
+                )) || <Loader />}
               </CardContainer>
             </div>
           </SectionBody>

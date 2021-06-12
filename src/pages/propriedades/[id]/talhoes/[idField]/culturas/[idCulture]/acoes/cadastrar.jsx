@@ -1,6 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { useRouter } from 'next/router';
 import Head from 'next/head';
+import { useRouter } from 'next/router';
+import * as yup from 'yup';
+import { Form } from '@unform/web';
 
 import Container from '@/components/Container';
 import Nav from '@/components/Nav';
@@ -15,7 +17,6 @@ import Loader from '@/components/Loader';
 
 import errorMessage from '@/helpers/errorMessage';
 import { useFetch } from '@/hooks/useFetch';
-import getFormData from '@/helpers/getFormData';
 import Error from '@/components/Error/index';
 import { useSelector } from 'react-redux';
 import urlRoute from '@/helpers/urlRoute';
@@ -62,45 +63,14 @@ function AcoesCulturaCadastrar() {
     router.back();
   };
 
-  const getData = () => {
-    if (formRef.current === undefined) {
-      return {
-        name: null,
-        value: null,
-        description: null,
-        date_start: null,
-        time_start: null,
-        date_finish: null,
-        time_finish: null,
-        supplies: null,
-        dose: null,
-        type_dose: null
-      };
-    }
-
-    return getFormData(formRef.current, {
-      name: null,
-      value: null,
-      description: null,
-      date_start: null,
-      time_start: null,
-      date_finish: null,
-      time_finish: null,
-      supplies: null,
-      dose: null,
-      type_dose: null
-    });
-  };
-
-  const handleSubmit = async e => {
-    e.preventDefault();
+  const handleSubmit = async dt => {
     setDisableButton(true);
 
     const schema = CulturesActionsService.schema(typeAction);
 
     if (schema) {
       schema
-        .validate(getData())
+        .validate(dt)
         .then(async d => {
           setAlert({
             type: 'success',
@@ -149,6 +119,12 @@ function AcoesCulturaCadastrar() {
         .catch(err => {
           setAlert({ type: 'error', message: err.errors[0] });
           setDisableButton(false);
+
+          if (err instanceof yup.ValidationError) {
+            const { path, message } = err;
+
+            formRef.current.setFieldError(path, message);
+          }
         });
     }
   };
@@ -236,14 +212,14 @@ function AcoesCulturaCadastrar() {
                 {alert.message !== '' && (
                   <Alert type={alert.type}>{alert.message}</Alert>
                 )}
-                <form
-                  id="registerForm"
-                  ref={formRef}
-                  method="post"
-                  onSubmit={event => handleSubmit(event)}
-                >
-                  {(data && dataCultures && (
-                    <>
+                {(data && dataCultures && (
+                  <>
+                    <Form
+                      ref={formRef}
+                      method="post"
+                      onSubmit={handleSubmit}
+                      initialData={{ types: typeAction }}
+                    >
                       <Select
                         options={Object.keys(actionsList).map(action => ({
                           value: actionsList[action].value,
@@ -252,7 +228,6 @@ function AcoesCulturaCadastrar() {
                         label="Selecione a Ação"
                         name="types"
                         onChange={handleChangeTypeAction}
-                        value={typeAction}
                       />
 
                       {typeAction && (
@@ -285,9 +260,9 @@ function AcoesCulturaCadastrar() {
                           </Button>
                         </div>
                       </div>
-                    </>
-                  )) || <Loader />}
-                </form>
+                    </Form>
+                  </>
+                )) || <Loader />}
               </CardContainer>
             </div>
           </SectionBody>

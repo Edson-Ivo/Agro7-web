@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
+import { Form } from '@unform/web';
 
 import Container from '@/components/Container';
 import Nav from '@/components/Nav';
@@ -20,8 +21,10 @@ import isEmpty from '@/helpers/isEmpty';
 import { actionsList } from '@/services/CulturesActionsService';
 import objectKeyExists from '@/helpers/objectKeyExists';
 import CulturesActionsForm from '@/components/CultureActionsForm';
+import { dateToInput, removeTimeSeconds } from '@/helpers/date';
 
 function AcoesCulturasDetalhes() {
+  const formRef = useRef(null);
   const [route, setRoute] = useState({});
   const [baseUrl, setBaseUrl] = useState('');
 
@@ -131,9 +134,21 @@ function AcoesCulturasDetalhes() {
           <SectionBody>
             <div className="SectionBody__content">
               <CardContainer>
-                <form id="registerForm">
-                  {(data && dataCultures && dataActions && (
-                    <>
+                {(data && dataCultures && dataActions && (
+                  <>
+                    <Form
+                      ref={formRef}
+                      initialData={{
+                        ...dataActions,
+                        date_start: dateToInput(dataActions?.date_start),
+                        date_finish: dateToInput(dataActions?.date_finish),
+                        time_start: removeTimeSeconds(dataActions?.time_start),
+                        time_finish: removeTimeSeconds(
+                          dataActions?.time_finish
+                        ),
+                        supplies: dataActions?.supplies?.id
+                      }}
+                    >
                       <CulturesActionsForm
                         typeAction={typeAction}
                         idCulture={idCulture}
@@ -150,6 +165,7 @@ function AcoesCulturasDetalhes() {
 
                         <div>
                           <Button
+                            type="button"
                             className="primary"
                             onClick={() =>
                               router.push(
@@ -161,9 +177,9 @@ function AcoesCulturasDetalhes() {
                           </Button>
                         </div>
                       </div>
-                    </>
-                  )) || <Loader />}
-                </form>
+                    </Form>
+                  </>
+                )) || <Loader />}
               </CardContainer>
             </div>
           </SectionBody>

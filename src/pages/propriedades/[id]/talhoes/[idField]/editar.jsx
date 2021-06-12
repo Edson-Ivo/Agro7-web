@@ -1,7 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
-import * as yup from 'yup';
-import { useRouter } from 'next/router';
 import Head from 'next/head';
+import { useRouter } from 'next/router';
+import * as yup from 'yup';
+import { Form } from '@unform/web';
 
 import Container from '@/components/Container';
 import Nav from '@/components/Nav';
@@ -18,7 +19,6 @@ import { Alert } from '@/components/Alert';
 import errorMessage from '@/helpers/errorMessage';
 import { useFetch } from '@/hooks/useFetch';
 import FieldsService from '@/services/FieldsService';
-import getFormData from '@/helpers/getFormData';
 import { MapActionPlotArea } from '@/components/MapApp';
 import isEmpty from '@/helpers/isEmpty';
 import Loader from '@/components/Loader';
@@ -44,9 +44,7 @@ function TalhoesEdit() {
   const [alert, setAlert] = useState({ type: '', message: '' });
   const [disableButton, setDisableButton] = useState(false);
   const [coordinates, setCoordinates] = useState([]);
-
-  const areaRef = useRef(null);
-  const typeDimensionRef = useRef(null);
+  const [dataArea, setDataArea] = useState(0.0);
 
   const router = useRouter();
   const { id, idField } = router.query;
@@ -81,35 +79,23 @@ function TalhoesEdit() {
     else setCoordinates([]);
   };
 
-  const handleAreaCalc = area => {
-    const { value: dimension } = typeDimensionRef.current;
-
-    areaRef.current.setValue(areaConversor(area, dimension));
+  const handleChangeTypeDimension = e => {
+    handleAreaCalc(dataArea, e?.value);
   };
 
-  const getData = () => {
-    if (formRef.current === undefined) {
-      return {
-        name: null,
-        area: null,
-        type_dimension: null,
-        coordinates: []
-      };
-    }
+  const handleAreaCalc = (area, dim = null) => {
+    const dimension = dim || formRef.current.getFieldValue('type_dimension');
 
-    return getFormData(formRef.current, {
-      name: null,
-      area: null,
-      type_dimension: null,
-      coordinates: []
-    });
+    setDataArea(area);
+
+    formRef.current.setFieldValue('area', areaConversor(area, dimension));
   };
 
-  const handleSubmit = async e => {
-    e.preventDefault();
+  const handleSubmit = async dt => {
     setDisableButton(true);
+
     schema
-      .validate(getData())
+      .validate(dt)
       .then(async d => {
         setAlert({
           type: 'success',
@@ -144,6 +130,12 @@ function TalhoesEdit() {
       .catch(err => {
         setAlert({ type: 'error', message: err.errors[0] });
         setDisableButton(false);
+
+        if (err instanceof yup.ValidationError) {
+          const { path, message } = err;
+
+          formRef.current.setFieldError(path, message);
+        }
       });
   };
 
@@ -206,29 +198,19 @@ function TalhoesEdit() {
                 {alert.message !== '' && (
                   <Alert type={alert.type}>{alert.message}</Alert>
                 )}
-                <form
-                  id="registerForm"
-                  ref={formRef}
-                  method="post"
-                  onSubmit={event => handleSubmit(event)}
-                >
-                  {(data && dataTypeDimension && dataFields && (
-                    <>
-                      <Input
-                        type="text"
-                        name="name"
-                        label="Nome do talhão"
-                        initialValue={dataFields.name}
-                      />
+
+                {(data && dataTypeDimension && dataFields && (
+                  <>
+                    <Form
+                      ref={formRef}
+                      method="post"
+                      onSubmit={handleSubmit}
+                      initialData={{ ...dataFields }}
+                    >
+                      <Input type="text" name="name" label="Nome do talhão" />
                       <div className="form-group">
                         <div>
-                          <Input
-                            type="number"
-                            label="Área"
-                            name="area"
-                            ref={areaRef}
-                            initialValue={dataFields.area}
-                          />
+                          <Input type="number" label="Área" name="area" />
                         </div>
                         <div>
                           <Select
@@ -240,8 +222,7 @@ function TalhoesEdit() {
                             )}
                             label="Unidade de medida"
                             name="type_dimension"
-                            ref={typeDimensionRef}
-                            value={dataFields.type_dimension}
+                            onChange={handleChangeTypeDimension}
                           />
                         </div>
                       </div>
@@ -272,9 +253,9 @@ function TalhoesEdit() {
                           </Button>
                         </div>
                       </div>
-                    </>
-                  )) || <Loader />}
-                </form>
+                    </Form>
+                  </>
+                )) || <Loader />}
               </CardContainer>
             </div>
           </SectionBody>

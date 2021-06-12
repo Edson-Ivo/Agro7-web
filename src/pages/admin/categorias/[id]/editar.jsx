@@ -3,6 +3,7 @@ import Head from 'next/head';
 import { MultiStepForm as MultiStep, Step } from '@/components/Multiform';
 import * as yup from 'yup';
 import { useRouter } from 'next/router';
+import { Form } from '@unform/web';
 
 import Container from '@/components/Container';
 import Nav from '@/components/Nav';
@@ -16,7 +17,6 @@ import { Section, SectionHeader, SectionBody } from '@/components/Section';
 import { CardContainer } from '@/components/CardContainer';
 import { privateRoute } from '@/components/PrivateRoute';
 import Error from '@/components/Error';
-import getFormData from '@/helpers/getFormData';
 import errorMessage from '@/helpers/errorMessage';
 import CategoriesService from '@/services/CategoriesService';
 import { useFetch } from '@/hooks/useFetch';
@@ -52,22 +52,6 @@ function AdminCategoriesEdit() {
     `/colors/find/all?limit=${perPage}&page=${pageColors}`
   );
 
-  const getData = () => {
-    if (formRef.current === undefined) {
-      return {
-        name: null,
-        description: null,
-        colors: null
-      };
-    }
-
-    return getFormData(formRef.current, {
-      name: null,
-      description: null,
-      colors: null
-    });
-  };
-
   useEffect(() => {
     if (dataCategory) setSelectedColor(dataCategory.colors.id);
   }, [dataCategory]);
@@ -76,12 +60,12 @@ function AdminCategoriesEdit() {
     setSelectedColor(colorId);
   };
 
-  const handleSubmit = async e => {
-    e.preventDefault();
+  const handleSubmit = async data => {
     setDisableButton(true);
+
     schema
-      .validate(getData())
-      .then(async data => {
+      .validate(data)
+      .then(async d => {
         setAlert({
           type: 'success',
           message: 'Enviando...'
@@ -93,9 +77,9 @@ function AdminCategoriesEdit() {
             message: 'Selecione uma cor!'
           });
         } else {
-          data.colors = selectedColor;
+          d.colors = selectedColor;
 
-          await CategoriesService.update(id, data).then(res => {
+          await CategoriesService.update(id, d).then(res => {
             if (res.status !== 200 || res?.statusCode) {
               setAlert({ type: 'error', message: errorMessage(res) });
               setTimeout(() => {
@@ -118,6 +102,12 @@ function AdminCategoriesEdit() {
       .catch(err => {
         setAlert({ type: 'error', message: err.errors[0] });
         setDisableButton(false);
+
+        if (err instanceof yup.ValidationError) {
+          const { path, message } = err;
+
+          formRef.current.setFieldError(path, message);
+        }
       });
   };
 
@@ -157,28 +147,22 @@ function AdminCategoriesEdit() {
                 {alert.message !== '' && (
                   <Alert type={alert.type}>{alert.message}</Alert>
                 )}
-                <form
-                  id="registerForm"
-                  ref={formRef}
-                  method="post"
-                  onSubmit={event => handleSubmit(event)}
-                >
-                  {(dataCategory && (
-                    <>
+
+                {(dataCategory && (
+                  <>
+                    <Form
+                      ref={formRef}
+                      method="post"
+                      onSubmit={handleSubmit}
+                      initialData={{
+                        ...dataCategory
+                      }}
+                    >
                       <MultiStep activeStep={activeStep}>
                         <Step label="Dados" onClick={() => setActiveStep(1)}>
                           <h4 className="step-title">Dados da Categoria</h4>
-                          <Input
-                            type="text"
-                            label="Nome"
-                            name="name"
-                            initialValue={dataCategory.name}
-                          />
-                          <TextArea
-                            name="description"
-                            label="Descrição"
-                            initialValue={dataCategory.description}
-                          />
+                          <Input type="text" label="Nome" name="name" />
+                          <TextArea name="description" label="Descrição" />
                         </Step>
                         <Step label="Cor" onClick={() => setActiveStep(2)}>
                           <h4 className="step-title">Selecione a Cor</h4>
@@ -250,14 +234,14 @@ function AdminCategoriesEdit() {
                               className="primary"
                               type="submit"
                             >
-                              Salvar Categoria
+                              Salvar Edição
                             </Button>
                           )}
                         </div>
                       </div>
-                    </>
-                  )) || <Loader />}
-                </form>
+                    </Form>
+                  </>
+                )) || <Loader />}
               </CardContainer>
             </div>
           </SectionBody>

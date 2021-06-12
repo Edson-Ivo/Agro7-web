@@ -1,7 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
+import Head from 'next/head';
 import * as yup from 'yup';
 import { useRouter } from 'next/router';
-import Head from 'next/head';
+import { Form } from '@unform/web';
 
 import Container from '@/components/Container';
 import Nav from '@/components/Nav';
@@ -18,7 +19,6 @@ import Loader from '@/components/Loader';
 
 import errorMessage from '@/helpers/errorMessage';
 import { useFetch } from '@/hooks/useFetch';
-import getFormData from '@/helpers/getFormData';
 import CulturesService from '@/services/CulturesService';
 import SearchSelect from '@/components/SearchSelect/index';
 import { dateToISOString } from '@/helpers/date';
@@ -71,31 +71,11 @@ function CulturasCreate() {
     router.back();
   };
 
-  const getData = () => {
-    if (formRef.current === undefined) {
-      return {
-        date_start: null,
-        date_finish: null,
-        area: null,
-        type_dimension: null,
-        products: null
-      };
-    }
-
-    return getFormData(formRef.current, {
-      date_start: null,
-      date_finish: null,
-      area: null,
-      type_dimension: null,
-      products: null
-    });
-  };
-
-  const handleSubmit = async e => {
-    e.preventDefault();
+  const handleSubmit = async dt => {
     setDisableButton(true);
+
     schema
-      .validate(getData())
+      .validate(dt)
       .then(async d => {
         setAlert({
           type: 'success',
@@ -130,6 +110,12 @@ function CulturasCreate() {
       .catch(err => {
         setAlert({ type: 'error', message: err.errors[0] });
         setDisableButton(false);
+
+        if (err instanceof yup.ValidationError) {
+          const { path, message } = err;
+
+          formRef.current.setFieldError(path, message);
+        }
       });
   };
 
@@ -201,14 +187,9 @@ function CulturasCreate() {
                 {alert.message !== '' && (
                   <Alert type={alert.type}>{alert.message}</Alert>
                 )}
-                <form
-                  id="registerForm"
-                  ref={formRef}
-                  method="post"
-                  onSubmit={event => handleSubmit(event)}
-                >
-                  {(data && dataTypeDimension && (
-                    <>
+                {(data && dataTypeDimension && (
+                  <>
+                    <Form ref={formRef} method="post" onSubmit={handleSubmit}>
                       <SearchSelect
                         name="products"
                         label="Digite o nome do produto:"
@@ -265,9 +246,9 @@ function CulturasCreate() {
                           </Button>
                         </div>
                       </div>
-                    </>
-                  )) || <Loader />}
-                </form>
+                    </Form>
+                  </>
+                )) || <Loader />}
               </CardContainer>
             </div>
           </SectionBody>

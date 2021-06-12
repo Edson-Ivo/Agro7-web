@@ -1,5 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Head from 'next/head';
+import Link from 'next/link';
+import * as yup from 'yup';
+import { Form } from '@unform/web';
 
 import Container from '@/components/Container';
 import Nav from '@/components/Nav';
@@ -22,6 +25,10 @@ import Error from '@/components/Error/index';
 import urlRoute from '@/helpers/urlRoute';
 import { useSelector } from 'react-redux';
 import isEmpty from '@/helpers/isEmpty';
+
+const schema = yup.object().shape({
+  name: yup.string().required('Você precisa dar um nome para o documento')
+});
 
 function DocumentosEdit() {
   const formRef = useRef(null);
@@ -46,46 +53,54 @@ function DocumentosEdit() {
     setRoute(urlRoute(router, type));
   }, []);
 
-  const handleSubmit = async e => {
-    e.preventDefault();
+  const handleSubmit = async (dt, { reset }, e) => {
     setDisableButton(true);
 
-    if (e.target.file.files.length > 0 && inputRef.current.error.message) {
-      setAlert({ type: 'error', message: inputRef.current.error.message });
-    } else if (!e.target.name.value) {
-      setAlert({
-        type: 'error',
-        message: 'Você precisa dar um nome para o documento'
-      });
-    } else {
-      const formData = new FormData();
+    schema
+      .validate(dt)
+      .then(async d => {
+        setAlert({
+          type: 'success',
+          message: 'Enviando...'
+        });
 
-      setAlert({
-        type: 'success',
-        message: 'Enviando...'
-      });
+        if (e.target.file.files.length > 0 && inputRef.current.error.message) {
+          setAlert({ type: 'error', message: inputRef.current.error.message });
+        } else {
+          const formData = new FormData();
 
-      formData.append('name', e.target.name.value);
-
-      if (e.target.file.files.length > 0) {
-        formData.append('file', e.target.file.files[0]);
-      }
-
-      await DocumentsService.update(idDoc, formData)
-        .then(() => {
           setAlert({
             type: 'success',
-            message: 'Documento editado com sucesso!'
+            message: 'Enviando...'
           });
-          setTimeout(() => {
-            router.push(`/propriedades/${id}/detalhes`);
-          }, 1000);
-        })
-        .catch(err => {
-          setAlert({ type: 'error', message: err.errors[0] });
-          setDisableButton(false);
-        });
-    }
+
+          formData.append('name', d.name);
+
+          if (e.target.file.files.length > 0)
+            formData.append('file', e.target.file.files[0]);
+
+          await DocumentsService.update(idDoc, formData).then(() => {
+            setAlert({
+              type: 'success',
+              message: 'Documento editado com sucesso!'
+            });
+
+            setTimeout(() => {
+              router.push(`/propriedades/${id}/detalhes`);
+            }, 1000);
+          });
+        }
+      })
+      .catch(err => {
+        setAlert({ type: 'error', message: err.errors[0] });
+        setDisableButton(false);
+
+        if (err instanceof yup.ValidationError) {
+          const { path, message } = err;
+
+          formRef.current.setFieldError(path, message);
+        }
+      });
   };
 
   if (error || errorDocs) return <Error error={error || errorDocs} />;
@@ -141,27 +156,30 @@ function DocumentosEdit() {
                 {alert.message !== '' && (
                   <Alert type={alert.type}>{alert.message}</Alert>
                 )}
-                <form
-                  id="registerForm"
-                  ref={formRef}
-                  method="post"
-                  onSubmit={event => handleSubmit(event)}
-                >
-                  {(dataDocs && (
-                    <>
+
+                {(dataDocs && (
+                  <>
+                    <Form
+                      ref={formRef}
+                      method="post"
+                      onSubmit={handleSubmit}
+                      initialData={{ ...dataDocs }}
+                    >
                       <Input
                         type="text"
                         name="name"
                         label="Nome do documento"
-                        initialValue={dataDocs.name}
                       />
-                      <Input
-                        type="text"
-                        name="archive"
-                        label="Documento atual"
-                        initialValue={dataDocs.url}
-                        disabled
-                      />
+                      <Link href={dataDocs?.url} replace passHref>
+                        <a target="_blank" rel="noopener noreferrer">
+                          <Input
+                            type="text"
+                            name="url"
+                            label="Clique aqui para ver o documento atual"
+                            disabled
+                          />
+                        </a>
+                      </Link>
                       <FileInput
                         ref={inputRef}
                         name="file"
@@ -185,9 +203,9 @@ function DocumentosEdit() {
                           </Button>
                         </div>
                       </div>
-                    </>
-                  )) || <Loader />}
-                </form>
+                    </Form>
+                  </>
+                )) || <Loader />}
               </CardContainer>
             </div>
           </SectionBody>

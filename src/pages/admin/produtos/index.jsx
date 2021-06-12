@@ -145,7 +145,6 @@ function AdminProducts() {
                                   <ActionButton
                                     id={d.id}
                                     path="/admin/produtos"
-                                    download={d.url}
                                     onDelete={() => handleDeleteModal(d.id)}
                                   />
                                 </td>

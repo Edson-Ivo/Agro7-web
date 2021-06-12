@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
 import Link from 'next/link';
+import { Form } from '@unform/web';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -33,6 +34,7 @@ import isEmpty from '@/helpers/isEmpty';
 function CulturasInfo() {
   const router = useRouter();
   const { id, idField, idCulture } = router.query;
+  const formRef = useRef(null);
 
   const { data, error } = useFetch(`/fields/find/by/id/${idField}`);
 
@@ -153,82 +155,89 @@ function CulturasInfo() {
               <CardContainer>
                 {(data && dataCultures && (
                   <>
-                    <Select
-                      name="products"
-                      label="Produto:"
-                      options={[
-                        {
-                          value: dataCultures?.products.id,
-                          label: dataCultures?.products.name
-                        }
-                      ]}
-                      value={dataCultures?.products.id}
-                      disabled
-                    />
-                    <div className="form-group">
-                      <div>
-                        <Input
-                          type="date"
-                          label="Data inicial"
-                          name="date_start"
-                          initialValue={dateToInput(dataCultures?.date_start)}
-                          disabled
-                        />
-                      </div>
-                      <div>
-                        <Input
-                          type="date"
-                          label="Data final"
-                          name="date_finish"
-                          initialValue={dateToInput(dataCultures?.date_finish)}
-                          disabled
-                        />
-                      </div>
-                    </div>
-                    <div className="form-group">
-                      <div>
-                        <Input
-                          type="number"
-                          label="Área"
-                          name="area"
-                          initialValue={dataCultures?.area}
-                          disabled
-                        />
-                      </div>
-                      <div>
-                        <Select
-                          options={[
-                            {
-                              value: dataCultures?.type_dimension,
-                              label: dataCultures?.type_dimension
-                            }
-                          ]}
-                          label="Unidade de medida"
-                          name="type_dimension"
-                          value={dataCultures?.type_dimension}
-                          disabled
-                        />
-                      </div>
-                    </div>
-
-                    <div className="form-group buttons">
-                      <div>
-                        <Button onClick={() => router.back()}>Voltar</Button>
-                      </div>
-
-                      <div>
-                        <Button
-                          className="primary"
-                          onClick={() =>
-                            router.push(
-                              `${route.path}/${id}/talhoes/${idField}/culturas/${idCulture}/editar`
-                            )
+                    <Form
+                      ref={formRef}
+                      initialData={{
+                        ...dataCultures,
+                        date_start: dateToInput(dataCultures?.date_start),
+                        date_finish: dateToInput(dataCultures?.date_finish)
+                      }}
+                    >
+                      <Select
+                        name="products.id"
+                        label="Produto:"
+                        options={[
+                          {
+                            value: dataCultures?.products.id,
+                            label: dataCultures?.products.name
                           }
-                        >
-                          Editar
-                        </Button>
+                        ]}
+                        disabled
+                      />
+                      <div className="form-group">
+                        <div>
+                          <Input
+                            type="date"
+                            label="Data inicial"
+                            name="date_start"
+                            disabled
+                          />
+                        </div>
+                        <div>
+                          <Input
+                            type="date"
+                            label="Data final"
+                            name="date_finish"
+                            disabled
+                          />
+                        </div>
                       </div>
-                    </div>
+                      <div className="form-group">
+                        <div>
+                          <Input
+                            type="number"
+                            label="Área"
+                            name="area"
+                            disabled
+                          />
+                        </div>
+                        <div>
+                          <Select
+                            options={[
+                              {
+                                value: dataCultures?.type_dimension,
+                                label: dataCultures?.type_dimension
+                              }
+                            ]}
+                            label="Unidade de medida"
+                            name="type_dimension"
+                            disabled
+                          />
+                        </div>
+                      </div>
+
+                      <div className="form-group buttons">
+                        <div>
+                          <Button type="button" onClick={() => router.back()}>
+                            Voltar
+                          </Button>
+                        </div>
+
+                        <div>
+                          <Button
+                            type="button"
+                            className="primary"
+                            onClick={() =>
+                              router.push(
+                                `${route.path}/${id}/talhoes/${idField}/culturas/${idCulture}/editar`
+                              )
+                            }
+                          >
+                            Editar
+                          </Button>
+                        </div>
+                      </div>
+                    </Form>
                   </>
                 )) || <Loader />}
               </CardContainer>

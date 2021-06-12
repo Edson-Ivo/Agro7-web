@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
+import { Form } from '@unform/web';
 
 import Container from '@/components/Container';
 import Nav from '@/components/Nav';
@@ -21,6 +22,7 @@ import TextArea from '@/components/TextArea/index';
 
 function AdminCategoriesDetails() {
   const router = useRouter();
+  const formRef = useRef(null);
 
   const { id } = router.query;
   const { data: dataCategory, error } = useFetch(
@@ -69,45 +71,40 @@ function AdminCategoriesDetails() {
               <CardContainer>
                 {(dataCategory && (
                   <>
-                    <Input
-                      type="text"
-                      label="Nome"
-                      name="name"
-                      initialValue={dataCategory.name}
-                      disabled
-                    />
-
-                    <TextArea
-                      name="description"
-                      label="Descrição"
-                      initialValue={dataCategory.description}
-                      disabled
-                    />
-
-                    <ColorViewer
-                      fillColor={dataCategory.colors.hexadecimal}
-                      isLight={isLight(dataCategory.colors.hexadecimal)}
+                    <Form
+                      ref={formRef}
+                      initialData={{
+                        ...dataCategory
+                      }}
                     >
-                      {`${dataCategory.colors.name}`}
-                    </ColorViewer>
-                    <div className="form-group buttons">
-                      <div>
-                        <Button type="button" onClick={() => router.back()}>
-                          Voltar
-                        </Button>
+                      <Input type="text" label="Nome" name="name" disabled />
+                      <TextArea name="description" label="Descrição" disabled />
+
+                      <ColorViewer
+                        fillColor={dataCategory.colors.hexadecimal}
+                        isLight={isLight(dataCategory.colors.hexadecimal)}
+                      >
+                        {`${dataCategory.colors.name}`}
+                      </ColorViewer>
+                      <div className="form-group buttons">
+                        <div>
+                          <Button type="button" onClick={() => router.back()}>
+                            Voltar
+                          </Button>
+                        </div>
+                        <div>
+                          <Button
+                            className="primary"
+                            type="button"
+                            onClick={() =>
+                              router.push(`/admin/categorias/${id}/editar`)
+                            }
+                          >
+                            Editar Categoria
+                          </Button>
+                        </div>
                       </div>
-                      <div>
-                        <Button
-                          className="primary"
-                          type="button"
-                          onClick={() =>
-                            router.push(`/admin/categorias/${id}/editar`)
-                          }
-                        >
-                          Editar Categoria
-                        </Button>
-                      </div>
-                    </div>
+                    </Form>
                   </>
                 )) || <Loader />}
               </CardContainer>

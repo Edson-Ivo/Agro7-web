@@ -1,6 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
+import * as yup from 'yup';
+import { Form } from '@unform/web';
 
 import Container from '@/components/Container';
 import Nav from '@/components/Nav';
@@ -15,7 +17,6 @@ import Loader from '@/components/Loader';
 
 import errorMessage from '@/helpers/errorMessage';
 import { useFetch } from '@/hooks/useFetch';
-import getFormData from '@/helpers/getFormData';
 import Error from '@/components/Error/index';
 import { useSelector } from 'react-redux';
 import urlRoute from '@/helpers/urlRoute';
@@ -25,7 +26,11 @@ import CulturesActionsService, {
 } from '@/services/CulturesActionsService';
 import objectKeyExists from '@/helpers/objectKeyExists';
 import CulturesActionsForm from '@/components/CultureActionsForm';
-import { dateToISOString } from '@/helpers/date';
+import {
+  dateToInput,
+  dateToISOString,
+  removeTimeSeconds
+} from '@/helpers/date';
 
 function AcoesCulturaEditar() {
   const formRef = useRef(null);
@@ -68,45 +73,14 @@ function AcoesCulturaEditar() {
     router.back();
   };
 
-  const getData = () => {
-    if (formRef.current === undefined) {
-      return {
-        name: null,
-        value: null,
-        description: null,
-        date_start: null,
-        time_start: null,
-        date_finish: null,
-        time_finish: null,
-        supplies: null,
-        dose: null,
-        type_dose: null
-      };
-    }
-
-    return getFormData(formRef.current, {
-      name: null,
-      value: null,
-      description: null,
-      date_start: null,
-      time_start: null,
-      date_finish: null,
-      time_finish: null,
-      supplies: null,
-      dose: null,
-      type_dose: null
-    });
-  };
-
-  const handleSubmit = async e => {
-    e.preventDefault();
+  const handleSubmit = async dt => {
     setDisableButton(true);
 
     const schema = CulturesActionsService.schema(typeAction);
 
     if (schema) {
       schema
-        .validate(getData())
+        .validate(dt)
         .then(async d => {
           setAlert({
             type: 'success',
@@ -159,6 +133,12 @@ function AcoesCulturaEditar() {
         .catch(err => {
           setAlert({ type: 'error', message: err.errors[0] });
           setDisableButton(false);
+
+          if (err instanceof yup.ValidationError) {
+            const { path, message } = err;
+
+            formRef.current.setFieldError(path, message);
+          }
         });
     }
   };
@@ -243,14 +223,23 @@ function AcoesCulturaEditar() {
                 {alert.message !== '' && (
                   <Alert type={alert.type}>{alert.message}</Alert>
                 )}
-                <form
-                  id="registerForm"
-                  ref={formRef}
-                  method="post"
-                  onSubmit={event => handleSubmit(event)}
-                >
-                  {(data && dataCultures && dataActions && (
-                    <>
+                {(data && dataCultures && dataActions && (
+                  <>
+                    <Form
+                      ref={formRef}
+                      method="post"
+                      onSubmit={handleSubmit}
+                      initialData={{
+                        ...dataActions,
+                        date_start: dateToInput(dataActions?.date_start),
+                        date_finish: dateToInput(dataActions?.date_finish),
+                        time_start: removeTimeSeconds(dataActions?.time_start),
+                        time_finish: removeTimeSeconds(
+                          dataActions?.time_finish
+                        ),
+                        supplies: dataActions?.supplies?.id
+                      }}
+                    >
                       <CulturesActionsForm
                         typeAction={typeAction}
                         idCulture={idCulture}
@@ -275,9 +264,9 @@ function AcoesCulturaEditar() {
                           </Button>
                         </div>
                       </div>
-                    </>
-                  )) || <Loader />}
-                </form>
+                    </Form>
+                  </>
+                )) || <Loader />}
               </CardContainer>
             </div>
           </SectionBody>
