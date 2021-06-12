@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import * as yup from 'yup';
 import Head from 'next/head';
 import Image from 'next/image';
 import Link from 'next/link';
+import { Form } from '@unform/web';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSignInAlt } from '@fortawesome/free-solid-svg-icons';
@@ -18,8 +20,14 @@ import AuthService from '@/services/AuthService';
 import { UserAuthAction } from '@/store/modules/User/actions';
 import errorMessage from '@/helpers/errorMessage';
 
+const schema = yup.object().shape({
+  document: yup.string().required('Por favor, preencha o campo CPF ou CNPJ.'),
+  password: yup.string().required('Por favor, preencha o campo senha.')
+});
+
 export default function Login() {
-  const [formData, setFormData] = useState({ document: null, password: null });
+  const formRef = useRef(null);
+
   const [alertMsg, setAlertMsg] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -29,36 +37,41 @@ export default function Login() {
 
   if (id) Router.push('/');
 
-  const handleChange = e =>
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+  const handleSubmit = async data => {
+    setLoading(true);
+    formRef.current.setErrors({});
 
-  const handleSubmit = async e => {
-    e.preventDefault();
-    const { document, password } = formData;
+    schema
+      .validate(data)
+      .then(async d => {
+        const { document, password } = d;
 
-    if (document && password) {
-      setLoading(true);
+        await AuthService.login(document, password).then(
+          res => {
+            dispatch(
+              UserAuthAction({
+                user: res.user
+              })
+            );
 
-      await AuthService.login(document, password).then(
-        res => {
-          dispatch(
-            UserAuthAction({
-              user: res.user
-            })
-          );
+            Router.push('/');
+          },
+          error => {
+            setLoading(false);
+            setAlertMsg(errorMessage(error));
+          }
+        );
+      })
+      .catch(err => {
+        setAlertMsg(err.errors[0]);
+        setLoading(false);
 
-          Router.push('/');
-        },
-        error => {
-          const resMessage = errorMessage(error);
+        if (err instanceof yup.ValidationError) {
+          const { path, message } = err;
 
-          setLoading(false);
-          setAlertMsg(resMessage);
+          formRef.current.setFieldError(path, message);
         }
-      );
-    } else {
-      setAlertMsg('Preencha todos os campos!');
-    }
+      });
   };
 
   return (
@@ -79,15 +92,15 @@ export default function Login() {
               />
             </div>
             {alertMsg && <Alert>{alertMsg}</Alert>}
-            <form method="post" onSubmit={e => handleSubmit(e)}>
+            <Form method="post" ref={formRef} onSubmit={handleSubmit}>
               <Input
                 type="text"
                 label="CPF ou CNPJ"
                 name="document"
+                inputMode="numeric"
                 style={{ marginBottom: '16px' }}
                 mask="cpf_cnpj"
                 maxLength="18"
-                handleChange={e => handleChange(e)}
                 autoComplete="off"
                 required
               />
@@ -97,17 +110,17 @@ export default function Login() {
                 label="Senha"
                 name="password"
                 style={{ marginBottom: '10px' }}
-                handleChange={e => handleChange(e)}
                 autoComplete="off"
                 required
               />
+
               {(!loading && (
                 <Button className="primary loginButton" type="submit">
                   <FontAwesomeIcon icon={faSignInAlt} className="loginIcon" />{' '}
                   Acessar o Sistema
                 </Button>
               )) || <Loader />}
-            </form>
+            </Form>
             <p className="text">
               <Link href="/recuperar-senha">Esqueceu sua senha?</Link>
             </p>

@@ -3,6 +3,7 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { MultiStepForm as MultiStep, Step } from '@/components/Multiform';
 import * as yup from 'yup';
+import { Form } from '@unform/web';
 
 import Container from '@/components/Container';
 import Nav from '@/components/Nav';
@@ -18,12 +19,13 @@ import { Alert } from '@/components/Alert';
 import TextArea from '@/components/TextArea/index';
 import Error from '@/components/Error';
 
-import getFormData from '@/helpers/getFormData';
 import errorMessage from '@/helpers/errorMessage';
 import ProductsService from '@/services/ProductsService';
 import { useFetch } from '@/hooks/useFetch';
 import Loader from '@/components/Loader/index';
 import NutricionalService from '@/services/NutricionalService';
+import isEmpty from '@/helpers/isEmpty';
+import ImageContainer from '@/components/ImageContainer/index';
 
 const schema = yup.object().shape({
   name: yup.string().required('O campo nome é obrigatório!'),
@@ -152,70 +154,15 @@ function AdminProductsEdit() {
     setDisableButton(false);
   }, []);
 
-  const getData = () => {
-    if (formRef.current === undefined) {
-      return {
-        name: null,
-        description: null,
-        water: null,
-        calories: null,
-        protein: null,
-        carbohydrate: null,
-        dietary_fiber: null,
-        cholesterol: null,
-        lipids: null,
-        saturated_fatty_acid: null,
-        unsaturated_fatty_acid: null,
-        polyunsaturated_fatty_acid: null,
-        calcium: null,
-        phosphorus: null,
-        iron: null,
-        potassium: null,
-        sodium: null,
-        vitamin_b1: null,
-        vitamin_b2: null,
-        vitamin_b3: null,
-        vitamin_b6: null,
-        vitamin_c: null
-      };
-    }
-
-    return getFormData(formRef.current, {
-      name: null,
-      description: null,
-      water: null,
-      calories: null,
-      protein: null,
-      carbohydrate: null,
-      dietary_fiber: null,
-      cholesterol: null,
-      lipids: null,
-      saturated_fatty_acid: null,
-      unsaturated_fatty_acid: null,
-      polyunsaturated_fatty_acid: null,
-      calcium: null,
-      phosphorus: null,
-      iron: null,
-      potassium: null,
-      sodium: null,
-      vitamin_b1: null,
-      vitamin_b2: null,
-      vitamin_b3: null,
-      vitamin_b6: null,
-      vitamin_c: null
-    });
-  };
-
   const handleCancel = () => {
     router.back();
   };
 
-  const handleSubmit = async e => {
-    e.preventDefault();
+  const handleSubmit = async (d, { reset }, e) => {
     setDisableButton(true);
 
     schema
-      .validate(getData())
+      .validate(d)
       .then(async dataEdit => {
         setAlert({
           type: 'success',
@@ -254,13 +201,18 @@ function AdminProductsEdit() {
                 e.target.fileNutricional.files.length > 0;
               let editSuccess = false;
 
-              Object.keys(dataEdit).forEach(key => {
-                dataEdit[key] = String(dataEdit[key]);
+              Object.keys(dataEdit?.nutritional).forEach(key => {
+                if (isEmpty(dataEdit.nutritional[key]))
+                  delete dataEdit.nutritional[key];
+                else
+                  dataEdit.nutritional[key] = String(
+                    dataEdit?.nutritional[key]
+                  );
               });
 
               await NutricionalService.update(
                 data?.nutritional.id,
-                dataEdit
+                dataEdit.nutritional
               ).then(async res2 => {
                 if (res2.status !== 200 || res2?.statusCode) {
                   setAlert({ type: 'error', message: errorMessage(res2) });
@@ -316,6 +268,12 @@ function AdminProductsEdit() {
       .catch(err => {
         setAlert({ type: 'error', message: err.errors?.[0] });
         setDisableButton(false);
+
+        if (err instanceof yup.ValidationError) {
+          const { path, message } = err;
+
+          formRef.current.setFieldError(path, message);
+        }
       });
   };
 
@@ -354,41 +312,42 @@ function AdminProductsEdit() {
                 {alert.message !== '' && (
                   <Alert type={alert.type}>{alert.message}</Alert>
                 )}
-                <form
-                  id="registerForm"
-                  ref={formRef}
-                  method="post"
-                  onSubmit={event => handleSubmit(event)}
-                >
-                  {(data && (
-                    <>
+                {(data && (
+                  <>
+                    <Form
+                      ref={formRef}
+                      method="post"
+                      onSubmit={handleSubmit}
+                      initialData={{
+                        ...data
+                      }}
+                    >
                       <MultiStep activeStep={activeStep}>
                         <Step label="Produto" onClick={() => setActiveStep(1)}>
                           <Input
                             type="text"
                             name="name"
                             label="Nome do produto"
-                            initialValue={data.name}
                           />
                           <TextArea
                             name="description"
                             label="Descrição do produto"
-                            initialValue={data.description}
                           />
-                          <Input
-                            type="text"
-                            name="image"
-                            label="Imagem atual"
-                            initialValue={data.url}
-                            disabled
-                          />
+
                           <FileInput
                             ref={inputRef}
                             name="file"
-                            label="Selecione a Imagem do Produto"
+                            label="Selecione a nova imagem do Produto"
                             extensions={['.jpg', '.jpeg', '.png', '.gif']}
                             max={1}
                             text="Clique aqui para substituir a imagem atual ou apenas arraste-a."
+                          />
+
+                          <ImageContainer
+                            src={data?.url}
+                            alt={`Imagem atual do Produto ${data?.name}`}
+                            label={`Imagem atual do Produto ${data?.name}`}
+                            zoom
                           />
                         </Step>
                         <Step
@@ -396,22 +355,22 @@ function AdminProductsEdit() {
                           onClick={() => setActiveStep(2)}
                         >
                           <h4 className="step-title">Tabela Nutricional:</h4>
-                          <Input
-                            type="text"
-                            name="imageNutricional"
-                            label="Imagem atual"
-                            initialValue={
-                              data?.nutritional?.nutritional_images?.url
-                            }
-                            disabled
-                          />
+
                           <FileInput
                             ref={inputNutricionalRef}
                             name="fileNutricional"
-                            label="Selecione a Imagem da Tabela Nutricional"
+                            label="Selecione a nova imagem da Tabela Nutricional"
                             extensions={['.jpg', '.jpeg', '.png', '.gif']}
                             max={1}
                           />
+
+                          <ImageContainer
+                            src={data?.nutritional?.nutritional_images?.url}
+                            alt={`Tabela Nutricional atual do Produto ${data?.name}`}
+                            label={`Tabela Nutricional atual do Produto ${data?.name}`}
+                            zoom
+                          />
+
                           <h4 className="step-title">
                             Escrever Nutricional (opcional)
                           </h4>
@@ -419,17 +378,15 @@ function AdminProductsEdit() {
                             <div>
                               <Input
                                 type="number"
-                                name="water"
+                                name="nutritional.water"
                                 label="Água (%)"
-                                initialValue={data?.nutritional.water || ''}
                               />
                             </div>
                             <div>
                               <Input
                                 type="number"
-                                name="calories"
+                                name="nutritional.calories"
                                 label="Calorias (Kcal)"
-                                initialValue={data?.nutritional.calories || ''}
                               />
                             </div>
                           </div>
@@ -437,19 +394,15 @@ function AdminProductsEdit() {
                             <div>
                               <Input
                                 type="number"
-                                name="protein"
+                                name="nutritional.protein"
                                 label="Proteína (g)"
-                                initialValue={data?.nutritional.protein || ''}
                               />
                             </div>
                             <div>
                               <Input
                                 type="number"
-                                name="carbohydrate"
+                                name="nutritional.carbohydrate"
                                 label="Carboidrato (g)"
-                                initialValue={
-                                  data?.nutritional.carbohydrate || ''
-                                }
                               />
                             </div>
                           </div>
@@ -457,21 +410,15 @@ function AdminProductsEdit() {
                             <div>
                               <Input
                                 type="number"
-                                name="dietary_fiber"
+                                name="nutritional.dietary_fiber"
                                 label="Fibra Alimentar (g)"
-                                initialValue={
-                                  data?.nutritional.dietary_fiber || ''
-                                }
                               />
                             </div>
                             <div>
                               <Input
                                 type="number"
-                                name="cholesterol"
+                                name="nutritional.cholesterol"
                                 label="Colesterol (mg)"
-                                initialValue={
-                                  data?.nutritional.cholesterol || ''
-                                }
                               />
                             </div>
                           </div>
@@ -479,19 +426,15 @@ function AdminProductsEdit() {
                             <div>
                               <Input
                                 type="number"
-                                name="lipids"
+                                name="nutritional.lipids"
                                 label="Lipídios (g)"
-                                initialValue={data?.nutritional.lipids || ''}
                               />
                             </div>
                             <div>
                               <Input
                                 type="number"
-                                name="saturated_fatty_acid"
+                                name="nutritional.saturated_fatty_acid"
                                 label="Ácido Graxo Saturado (g)"
-                                initialValue={
-                                  data?.nutritional.saturated_fatty_acid || ''
-                                }
                               />
                             </div>
                           </div>
@@ -499,22 +442,15 @@ function AdminProductsEdit() {
                             <div>
                               <Input
                                 type="number"
-                                name="unsaturated_fatty_acid"
+                                name="nutritional.unsaturated_fatty_acid"
                                 label="Ácido Graxo Mono insaturado (g)"
-                                initialValue={
-                                  data?.nutritional.unsaturated_fatty_acid || ''
-                                }
                               />
                             </div>
                             <div>
                               <Input
                                 type="number"
-                                name="polyunsaturated_fatty_acid"
+                                name="nutritional.polyunsaturated_fatty_acid"
                                 label="Ácido Graxo Poli insaturado (g)"
-                                initialValue={
-                                  data?.nutritional
-                                    .polyunsaturated_fatty_acid || ''
-                                }
                               />
                             </div>
                           </div>
@@ -522,19 +458,15 @@ function AdminProductsEdit() {
                             <div>
                               <Input
                                 type="number"
-                                name="calcium"
+                                name="nutritional.calcium"
                                 label="Cálcio (mg)"
-                                initialValue={data?.nutritional.calcium || ''}
                               />
                             </div>
                             <div>
                               <Input
                                 type="number"
-                                name="phosphorus"
+                                name="nutritional.phosphorus"
                                 label="Fósforo (mg)"
-                                initialValue={
-                                  data?.nutritional.phosphorus || ''
-                                }
                               />
                             </div>
                           </div>
@@ -542,17 +474,15 @@ function AdminProductsEdit() {
                             <div>
                               <Input
                                 type="number"
-                                name="iron"
+                                name="nutritional.iron"
                                 label="Ferro (mg)"
-                                initialValue={data?.nutritional.iron || ''}
                               />
                             </div>
                             <div>
                               <Input
                                 type="number"
-                                name="potassium"
+                                name="nutritional.potassium"
                                 label="Potássio (mg)"
-                                initialValue={data?.nutritional.potassium || ''}
                               />
                             </div>
                           </div>
@@ -560,19 +490,15 @@ function AdminProductsEdit() {
                             <div>
                               <Input
                                 type="number"
-                                name="sodium"
+                                name="nutritional.sodium"
                                 label="Sódio (mg)"
-                                initialValue={data?.nutritional.sodium || ''}
                               />
                             </div>
                             <div>
                               <Input
                                 type="number"
-                                name="vitamin_b1"
+                                name="nutritional.vitamin_b1"
                                 label="Vitamina B1 (mg)"
-                                initialValue={
-                                  data?.nutritional.vitamin_b1 || ''
-                                }
                               />
                             </div>
                           </div>
@@ -580,21 +506,15 @@ function AdminProductsEdit() {
                             <div>
                               <Input
                                 type="number"
-                                name="vitamin_b2"
+                                name="nutritional.vitamin_b2"
                                 label="Vitamina B2 (mg)"
-                                initialValue={
-                                  data?.nutritional.vitamin_b2 || ''
-                                }
                               />
                             </div>
                             <div>
                               <Input
                                 type="number"
-                                name="vitamin_b3"
+                                name="nutritional.vitamin_b3"
                                 label="Vitamina B3 (mg)"
-                                initialValue={
-                                  data?.nutritional.vitamin_b3 || ''
-                                }
                               />
                             </div>
                           </div>
@@ -602,19 +522,15 @@ function AdminProductsEdit() {
                             <div>
                               <Input
                                 type="number"
-                                name="vitamin_b6"
+                                name="nutritional.vitamin_b6"
                                 label="Vitamina B6 (mg)"
-                                initialValue={
-                                  data?.nutritional.vitamin_b6 || ''
-                                }
                               />
                             </div>
                             <div>
                               <Input
                                 type="number"
-                                name="vitamin_c"
+                                name="nutritional.vitamin_c"
                                 label="Vitamina C (mg)"
-                                initialValue={data?.nutritional.vitamin_c || ''}
                               />
                             </div>
                           </div>
@@ -659,9 +575,9 @@ function AdminProductsEdit() {
                           )}
                         </div>
                       </div>
-                    </>
-                  )) || <Loader />}
-                </form>
+                    </Form>
+                  </>
+                )) || <Loader />}
               </CardContainer>
             </div>
           </SectionBody>

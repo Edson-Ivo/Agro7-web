@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import Head from 'next/head';
+
 import { useRouter } from 'next/router';
 import { MultiStepForm as MultiStep, Step } from '@/components/Multiform';
+import { Form } from '@unform/web';
 
 import Container from '@/components/Container';
 import Nav from '@/components/Nav';
@@ -18,10 +20,12 @@ import Error from '@/components/Error';
 
 import { useFetch } from '@/hooks/useFetch';
 import Loader from '@/components/Loader/index';
+import ImageContainer from '@/components/ImageContainer/index';
 
 function AdminProductsDetails() {
   const router = useRouter();
   const [activeStep, setActiveStep] = useState(1);
+  const formRef = useRef(null);
 
   const { id } = router.query;
   const { data, error } = useFetch(`/products/find/by/id/${id}`);
@@ -64,272 +68,245 @@ function AdminProductsDetails() {
               <CardContainer>
                 {(data && (
                   <>
-                    <MultiStep activeStep={activeStep}>
-                      <Step label="Produto" onClick={() => setActiveStep(1)}>
-                        <h4 className="step-title">Informações do Produto</h4>
-                        <Input
-                          type="text"
-                          name="name"
-                          label="Nome do produto"
-                          initialValue={data.name}
-                          disabled
-                        />
-                        <TextArea
-                          name="description"
-                          label="Descrição do produto"
-                          initialValue={data.description}
-                          disabled
-                        />
-                        <Input
-                          type="text"
-                          name="image"
-                          label="Imagem atual"
-                          initialValue={data.url}
-                          disabled
-                        />
-                      </Step>
-                      <Step
-                        label="Nutricional"
-                        onClick={() => setActiveStep(2)}
-                      >
-                        <h4 className="step-title">Tabela Nutricional:</h4>
-                        <Input
-                          type="text"
-                          name="imageNutricional"
-                          label="Imagem atual"
-                          initialValue={
-                            data?.nutritional?.nutritional_images?.url
-                          }
-                          disabled
-                        />
-                        <div className="form-group">
-                          <div>
-                            <Input
-                              type="number"
-                              name="water"
-                              label="Água (%)"
-                              disabled
-                              initialValue={data?.nutritional.water || ''}
-                            />
-                          </div>
-                          <div>
-                            <Input
-                              type="number"
-                              name="calories"
-                              label="Calorias (Kcal)"
-                              disabled
-                              initialValue={data?.nutritional.calories || ''}
-                            />
-                          </div>
-                        </div>
-                        <div className="form-group">
-                          <div>
-                            <Input
-                              type="number"
-                              name="protein"
-                              label="Proteína (g)"
-                              disabled
-                              initialValue={data?.nutritional.protein || ''}
-                            />
-                          </div>
-                          <div>
-                            <Input
-                              type="number"
-                              name="carbohydrate"
-                              label="Carboidrato (g)"
-                              disabled
-                              initialValue={
-                                data?.nutritional.carbohydrate || ''
-                              }
-                            />
-                          </div>
-                        </div>
-                        <div className="form-group">
-                          <div>
-                            <Input
-                              type="number"
-                              name="dietary_fiber"
-                              label="Fibra Alimentar (g)"
-                              disabled
-                              initialValue={
-                                data?.nutritional.dietary_fiber || ''
-                              }
-                            />
-                          </div>
-                          <div>
-                            <Input
-                              type="number"
-                              name="cholesterol"
-                              label="Colesterol (mg)"
-                              disabled
-                              initialValue={data?.nutritional.cholesterol || ''}
-                            />
-                          </div>
-                        </div>
-                        <div className="form-group">
-                          <div>
-                            <Input
-                              type="number"
-                              name="lipids"
-                              label="Lipídios (g)"
-                              disabled
-                              initialValue={data?.nutritional.lipids || ''}
-                            />
-                          </div>
-                          <div>
-                            <Input
-                              type="number"
-                              name="saturated_fatty_acid"
-                              label="Ácido Graxo Saturado (g)"
-                              disabled
-                              initialValue={
-                                data?.nutritional.saturated_fatty_acid || ''
-                              }
-                            />
-                          </div>
-                        </div>
-                        <div className="form-group">
-                          <div>
-                            <Input
-                              type="number"
-                              name="unsaturated_fatty_acid"
-                              label="Ácido Graxo Mono insaturado (g)"
-                              disabled
-                              initialValue={
-                                data?.nutritional.unsaturated_fatty_acid || ''
-                              }
-                            />
-                          </div>
-                          <div>
-                            <Input
-                              type="number"
-                              name="polyunsaturated_fatty_acid"
-                              label="Ácido Graxo Poli insaturado (g)"
-                              disabled
-                              initialValue={
-                                data?.nutritional.polyunsaturated_fatty_acid ||
-                                ''
-                              }
-                            />
-                          </div>
-                        </div>
-                        <div className="form-group">
-                          <div>
-                            <Input
-                              type="number"
-                              name="calcium"
-                              label="Cálcio (mg)"
-                              disabled
-                              initialValue={data?.nutritional.calcium || ''}
-                            />
-                          </div>
-                          <div>
-                            <Input
-                              type="number"
-                              name="phosphorus"
-                              label="Fósforo (mg)"
-                              disabled
-                              initialValue={data?.nutritional.phosphorus || ''}
-                            />
-                          </div>
-                        </div>
-                        <div className="form-group">
-                          <div>
-                            <Input
-                              type="number"
-                              name="iron"
-                              label="Ferro (mg)"
-                              disabled
-                              initialValue={data?.nutritional.iron || ''}
-                            />
-                          </div>
-                          <div>
-                            <Input
-                              type="number"
-                              name="potassium"
-                              label="Potássio (mg)"
-                              disabled
-                              initialValue={data?.nutritional.potassium || ''}
-                            />
-                          </div>
-                        </div>
-                        <div className="form-group">
-                          <div>
-                            <Input
-                              type="number"
-                              name="sodium"
-                              label="Sódio (mg)"
-                              disabled
-                              initialValue={data?.nutritional.sodium || ''}
-                            />
-                          </div>
-                          <div>
-                            <Input
-                              type="number"
-                              name="vitamin_b1"
-                              label="Vitamina B1 (mg)"
-                              disabled
-                              initialValue={data?.nutritional.vitamin_b1 || ''}
-                            />
-                          </div>
-                        </div>
-                        <div className="form-group">
-                          <div>
-                            <Input
-                              type="number"
-                              name="vitamin_b2"
-                              label="Vitamina B2 (mg)"
-                              disabled
-                              initialValue={data?.nutritional.vitamin_b2 || ''}
-                            />
-                          </div>
-                          <div>
-                            <Input
-                              type="number"
-                              name="vitamin_b3"
-                              label="Vitamina B3 (mg)"
-                              disabled
-                              initialValue={data?.nutritional.vitamin_b3 || ''}
-                            />
-                          </div>
-                        </div>
-                        <div className="form-group">
-                          <div>
-                            <Input
-                              type="number"
-                              name="vitamin_b6"
-                              label="Vitamina B6 (mg)"
-                              disabled
-                              initialValue={data?.nutritional.vitamin_b6 || ''}
-                            />
-                          </div>
-                          <div>
-                            <Input
-                              type="number"
-                              name="vitamin_c"
-                              label="Vitamina C (mg)"
-                              disabled
-                              initialValue={data?.nutritional.vitamin_c || ''}
-                            />
-                          </div>
-                        </div>
-                      </Step>
-                    </MultiStep>
-                    <div className="form-group buttons">
-                      <div>
-                        <Button onClick={() => router.back()}>Voltar</Button>
-                      </div>
-                      <div>
-                        <Button
-                          className="primary"
-                          onClick={() =>
-                            router.push(`/admin/produtos/${id}/editar`)
-                          }
+                    <Form
+                      ref={formRef}
+                      initialData={{
+                        ...data
+                      }}
+                    >
+                      <MultiStep activeStep={activeStep}>
+                        <Step label="Produto" onClick={() => setActiveStep(1)}>
+                          <h4 className="step-title">Informações do Produto</h4>
+                          <Input
+                            type="text"
+                            name="name"
+                            label="Nome do produto"
+                            disabled
+                          />
+
+                          <TextArea
+                            name="description"
+                            label="Descrição do produto"
+                            disabled
+                          />
+
+                          <ImageContainer
+                            src={data?.url}
+                            alt={`Imagem do Produto ${data?.name}`}
+                            label={`Imagem do Produto ${data?.name}`}
+                            zoom
+                          />
+                        </Step>
+                        <Step
+                          label="Nutricional"
+                          onClick={() => setActiveStep(2)}
                         >
-                          Editar
-                        </Button>
+                          <h4 className="step-title">Tabela Nutricional:</h4>
+
+                          <ImageContainer
+                            src={data?.nutritional?.nutritional_images?.url}
+                            alt={`Tabela Nutricional do Produto ${data?.name}`}
+                            zoom
+                          />
+
+                          <div className="form-group">
+                            <div>
+                              <Input
+                                type="number"
+                                name="nutritional.water"
+                                label="Água (%)"
+                                disabled
+                              />
+                            </div>
+                            <div>
+                              <Input
+                                type="number"
+                                name="nutritional.calories"
+                                label="Calorias (Kcal)"
+                                disabled
+                              />
+                            </div>
+                          </div>
+                          <div className="form-group">
+                            <div>
+                              <Input
+                                type="number"
+                                name="nutritional.protein"
+                                label="Proteína (g)"
+                                disabled
+                              />
+                            </div>
+                            <div>
+                              <Input
+                                type="number"
+                                name="nutritional.carbohydrate"
+                                label="Carboidrato (g)"
+                                disabled
+                              />
+                            </div>
+                          </div>
+                          <div className="form-group">
+                            <div>
+                              <Input
+                                type="number"
+                                name="nutritional.dietary_fiber"
+                                label="Fibra Alimentar (g)"
+                                disabled
+                              />
+                            </div>
+                            <div>
+                              <Input
+                                type="number"
+                                name="nutritional.cholesterol"
+                                label="Colesterol (mg)"
+                                disabled
+                              />
+                            </div>
+                          </div>
+                          <div className="form-group">
+                            <div>
+                              <Input
+                                type="number"
+                                name="nutritional.lipids"
+                                label="Lipídios (g)"
+                                disabled
+                              />
+                            </div>
+                            <div>
+                              <Input
+                                type="number"
+                                name="nutritional.saturated_fatty_acid"
+                                label="Ácido Graxo Saturado (g)"
+                                disabled
+                              />
+                            </div>
+                          </div>
+                          <div className="form-group">
+                            <div>
+                              <Input
+                                type="number"
+                                name="nutritional.unsaturated_fatty_acid"
+                                label="Ácido Graxo Mono insaturado (g)"
+                                disabled
+                              />
+                            </div>
+                            <div>
+                              <Input
+                                type="number"
+                                name="nutritional.polyunsaturated_fatty_acid"
+                                label="Ácido Graxo Poli insaturado (g)"
+                                disabled
+                              />
+                            </div>
+                          </div>
+                          <div className="form-group">
+                            <div>
+                              <Input
+                                type="number"
+                                name="nutritional.calcium"
+                                label="Cálcio (mg)"
+                                disabled
+                              />
+                            </div>
+                            <div>
+                              <Input
+                                type="number"
+                                name="nutritional.phosphorus"
+                                label="Fósforo (mg)"
+                                disabled
+                              />
+                            </div>
+                          </div>
+                          <div className="form-group">
+                            <div>
+                              <Input
+                                type="number"
+                                name="nutritional.iron"
+                                label="Ferro (mg)"
+                                disabled
+                              />
+                            </div>
+                            <div>
+                              <Input
+                                type="number"
+                                name="nutritional.potassium"
+                                label="Potássio (mg)"
+                                disabled
+                              />
+                            </div>
+                          </div>
+                          <div className="form-group">
+                            <div>
+                              <Input
+                                type="number"
+                                name="nutritional.sodium"
+                                label="Sódio (mg)"
+                                disabled
+                              />
+                            </div>
+                            <div>
+                              <Input
+                                type="number"
+                                name="nutritional.vitamin_b1"
+                                label="Vitamina B1 (mg)"
+                                disabled
+                              />
+                            </div>
+                          </div>
+                          <div className="form-group">
+                            <div>
+                              <Input
+                                type="number"
+                                name="nutritional.vitamin_b2"
+                                label="Vitamina B2 (mg)"
+                                disabled
+                              />
+                            </div>
+                            <div>
+                              <Input
+                                type="number"
+                                name="nutritional.vitamin_b3"
+                                label="Vitamina B3 (mg)"
+                                disabled
+                              />
+                            </div>
+                          </div>
+                          <div className="form-group">
+                            <div>
+                              <Input
+                                type="number"
+                                name="nutritional.vitamin_b6"
+                                label="Vitamina B6 (mg)"
+                                disabled
+                              />
+                            </div>
+                            <div>
+                              <Input
+                                type="number"
+                                name="nutritional.vitamin_c"
+                                label="Vitamina C (mg)"
+                                disabled
+                              />
+                            </div>
+                          </div>
+                        </Step>
+                      </MultiStep>
+                      <div className="form-group buttons">
+                        <div>
+                          <Button onClick={() => router.back()}>Voltar</Button>
+                        </div>
+                        <div>
+                          <Button
+                            className="primary"
+                            onClick={() =>
+                              router.push(`/admin/produtos/${id}/editar`)
+                            }
+                          >
+                            Editar
+                          </Button>
+                        </div>
                       </div>
-                    </div>
+                    </Form>
                   </>
                 )) || <Loader />}
               </CardContainer>

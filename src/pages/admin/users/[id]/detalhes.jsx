@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
+import { Form } from '@unform/web';
 
 import Container from '@/components/Container';
 import Nav from '@/components/Nav';
@@ -22,6 +23,8 @@ import capitalize from '@/helpers/capitalize';
 function AdminUsers() {
   const router = useRouter();
   const { id } = router.query;
+
+  const formRef = useRef(null);
 
   const { data, error } = useFetch(`/users/find/by/id/${id}`);
   const { data: dataTypes } = useFetch('/users/find/all/types');
@@ -64,146 +67,133 @@ function AdminUsers() {
               <CardContainer>
                 {(data && dataTypes && (
                   <>
-                    <Input
-                      type="text"
-                      label="Nome"
-                      name="name"
-                      initialValue={data.name}
-                      disabled
-                    />
-                    <Input
-                      type="text"
-                      label="E-mail"
-                      name="email"
-                      initialValue={data.email}
-                      disabled
-                    />
-                    <Input
-                      type="text"
-                      label="Documento"
-                      name="document"
-                      initialValue={data.document}
-                      disabled
-                    />
-                    <div className="form-group">
-                      <div>
-                        <Input
-                          type="text"
-                          label="Número Telefone"
-                          name="phone"
-                          mask="phone"
-                          maxLength={15}
-                          initialValue={data.phone}
-                          disabled
-                        />
+                    <Form
+                      ref={formRef}
+                      initialData={{
+                        ...data
+                      }}
+                    >
+                      <Input type="text" label="Nome" name="name" disabled />
+                      <Input type="text" label="E-mail" name="email" disabled />
+                      <Input
+                        type="text"
+                        label="Documento"
+                        name="document"
+                        disabled
+                      />
+                      <div className="form-group">
+                        <div>
+                          <Input
+                            type="text"
+                            label="Número Telefone"
+                            name="phone"
+                            mask="phone"
+                            maxLength={15}
+                            disabled
+                          />
+                        </div>
+                        <div>
+                          <Input
+                            type="text"
+                            label="Número Whatsapp"
+                            name="phone_whatsapp"
+                            mask="phone"
+                            maxLength={15}
+                            disabled
+                          />
+                        </div>
                       </div>
-                      <div>
-                        <Input
-                          type="text"
-                          label="Número Whatsapp"
-                          name="phone_whatsapp"
-                          mask="phone"
-                          maxLength={15}
-                          initialValue={data.phone_whatsapp || ''}
-                          disabled
-                        />
+                      <Select
+                        options={dataTypes?.typesUser.map(userType => ({
+                          value: userType,
+                          label: capitalize(userType)
+                        }))}
+                        label="Tipo de Usuário"
+                        name="type"
+                        disabled
+                      />
+                      <div className="form-group">
+                        <div>
+                          <Input
+                            type="text"
+                            label="CEP"
+                            name="addresses.postcode"
+                            mask="cep"
+                            disabled
+                          />
+                        </div>
+                        <div>
+                          <Input
+                            type="text"
+                            label="Estado"
+                            name="addresses.state"
+                            disabled
+                          />
+                        </div>
+                        <div>
+                          <Input
+                            type="text"
+                            label="Cidade"
+                            name="addresses.city"
+                            disabled
+                          />
+                        </div>
                       </div>
-                    </div>
-                    <Select
-                      options={dataTypes?.typesUser.map(userType => ({
-                        value: userType,
-                        label: capitalize(userType)
-                      }))}
-                      label="Tipo de Usuário"
-                      value={data.type}
-                      name="type"
-                      disabled
-                    />
-                    <div className="form-group">
-                      <div>
-                        <Input
-                          type="text"
-                          label="CEP"
-                          name="postcode"
-                          initialValue={data.addresses.postcode}
-                          mask="cep"
-                          disabled
-                        />
+                      <div className="form-group">
+                        <div>
+                          <Input
+                            type="text"
+                            label="Bairro"
+                            name="addresses.neighborhood"
+                            disabled
+                          />
+                        </div>
+                        <div>
+                          <Input
+                            type="text"
+                            label="Rua"
+                            name="addresses.street"
+                            disabled
+                          />
+                        </div>
                       </div>
-                      <div>
-                        <Input
-                          type="text"
-                          label="Estado"
-                          name="state"
-                          initialValue={data.addresses.state}
-                          disabled
-                        />
+                      <div className="form-group">
+                        <div>
+                          <Input
+                            type="text"
+                            label="Número"
+                            name="addresses.number"
+                            disabled
+                          />
+                        </div>
+                        <div>
+                          <Input
+                            type="text"
+                            label="Complementos"
+                            name="addresses.complement"
+                            disabled
+                          />
+                        </div>
                       </div>
-                      <div>
-                        <Input
-                          type="text"
-                          label="Cidade"
-                          name="city"
-                          initialValue={data.addresses.city}
-                          disabled
-                        />
+                      <div className="form-group buttons">
+                        <div>
+                          <Button type="button" onClick={() => router.back()}>
+                            Voltar
+                          </Button>
+                        </div>
+                        <div>
+                          <Button
+                            className="primary"
+                            type="button"
+                            onClick={() =>
+                              router.push(`/admin/users/${id}/editar`)
+                            }
+                          >
+                            Editar
+                          </Button>
+                        </div>
                       </div>
-                    </div>
-                    <div className="form-group">
-                      <div>
-                        <Input
-                          type="text"
-                          label="Bairro"
-                          name="neighborhood"
-                          initialValue={data.addresses.neighborhood}
-                          disabled
-                        />
-                      </div>
-                      <div>
-                        <Input
-                          type="text"
-                          label="Rua"
-                          name="street"
-                          initialValue={data.addresses.street}
-                          disabled
-                        />
-                      </div>
-                    </div>
-                    <div className="form-group">
-                      <div>
-                        <Input
-                          type="text"
-                          label="Número"
-                          name="number"
-                          initialValue={data.addresses.number}
-                          disabled
-                        />
-                      </div>
-                      <div>
-                        <Input
-                          type="text"
-                          label="Complementos"
-                          name="complement"
-                          initialValue={data.addresses.complement || ''}
-                          disabled
-                        />
-                      </div>
-                    </div>
-                    <div className="form-group buttons">
-                      <div>
-                        <Button onClick={() => router.back()}>Voltar</Button>
-                      </div>
-                      <div>
-                        <Button
-                          className="primary"
-                          onClick={() =>
-                            router.push(`/admin/users/${id}/editar`)
-                          }
-                        >
-                          Editar
-                        </Button>
-                      </div>
-                    </div>
+                    </Form>
                   </>
                 )) || <Loader />}
               </CardContainer>

@@ -1,67 +1,53 @@
-import React, { useState, forwardRef, useImperativeHandle } from 'react';
-import { masks } from './masks';
+import React, { useState, useEffect, useRef } from 'react';
+import { useField } from '@unform/core';
 
+import { masks } from './masks';
 import { InputContainer, StyledInput, Label, UpperLabel } from './styles';
 
-const Input = (
-  {
-    handleChange,
-    label,
-    name,
-    mask,
-    disabled,
-    initialValue = '',
-    type = '',
-    ...otherProps
-  },
-  ref
-) => {
-  const [value, setValue] = useState(initialValue);
-  const [hasText, setHasText] = useState(!!value);
+const Input = ({
+  handleChange,
+  label,
+  name,
+  mask,
+  disabled,
+  step = 'any',
+  type = '',
+  ...otherProps
+}) => {
+  const inputRef = useRef(null);
 
-  useImperativeHandle(ref, () => ({
-    value,
-    setValue: v => {
-      if (v !== '') {
-        setHasText(true);
+  const { fieldName, defaultValue, registerField, error } = useField(name);
+  const [hasText, setHasText] = useState(!!defaultValue || !!otherProps?.value);
+
+  useEffect(() => {
+    registerField({
+      name: fieldName,
+      ref: inputRef,
+      getValue: refs => refs.current.value,
+      setValue: (refs, value) => {
+        refs.current.value = value;
+        setHasText(!!value);
+      },
+      clearValue: refs => {
+        refs.current.value = '';
+        setHasText(false);
       }
-      setValue(v);
-    }
-  }));
+    });
+  }, [fieldName, registerField]);
 
-  const maskInput = e => {
-    if (mask === 'cpf') {
-      setValue(masks.cpf(e.target.value));
-      e.target.value = masks.cpf(e.target.value);
-    }
-    if (mask === 'cnpj') {
-      setValue(masks.cnpj(e.target.value));
-      e.target.value = masks.cnpj(e.target.value);
-    }
-    if (mask === 'cpf_cnpj') {
-      setValue(masks.cpf_cnpj(e.target.value));
-      e.target.value = masks.cpf_cnpj(e.target.value);
-    }
-    if (mask === 'phone') {
-      setValue(masks.phone(e.target.value));
-      e.target.value = masks.phone(e.target.value);
-    }
-    if (mask === 'cep') {
-      setValue(masks.cep(e.target.value));
-      e.target.value = masks.cep(e.target.value);
-    }
-    if (mask === 'money') {
-      setValue(masks.money(e.target.value));
-      e.target.value = masks.money(e.target.value);
-    }
-  };
+  const maskInput = v => masks?.[mask]?.(v) || '';
 
   const changeAction = e => {
-    if (typeof mask === 'undefined') setValue(e.target.value);
-    else maskInput(e);
+    const { value: inputValue } = e.target;
 
-    if (e.target.value !== '') setHasText(true);
-    else setHasText(false);
+    if (typeof mask !== 'undefined') {
+      const maskedValue = maskInput(inputValue);
+
+      inputRef.current.value = maskInput(maskedValue);
+      setHasText(!!maskedValue);
+    } else {
+      setHasText(!!inputValue);
+    }
 
     if (typeof handleChange !== 'undefined') handleChange(e);
   };
@@ -69,19 +55,28 @@ const Input = (
   return (
     <InputContainer>
       {label && ['date', 'time'].includes(type) && (
-        <UpperLabel className="input-label">{label}</UpperLabel>
+        <UpperLabel className={`input-label ${error ? 'label_error' : ''}`}>
+          {label}
+        </UpperLabel>
       )}
       <StyledInput
-        onChange={e => changeAction(e)}
+        id={fieldName}
         name={name}
-        value={value}
-        disabled={disabled}
+        ref={inputRef}
+        onChange={changeAction}
         type={type}
-        ref={ref}
+        defaultValue={defaultValue}
+        error={!!error}
+        disabled={disabled}
+        step={type === 'number' ? step : null}
         {...otherProps}
       />
       {label && !['date', 'time'].includes(type) && (
-        <Label className={`input-label ${hasText ? 'label_active' : ''}`}>
+        <Label
+          className={`input-label ${hasText ? 'label_active' : ''}${
+            error ? 'label_error' : ''
+          }`}
+        >
           {label}
         </Label>
       )}
@@ -89,4 +84,4 @@ const Input = (
   );
 };
 
-export default forwardRef(Input);
+export default Input;

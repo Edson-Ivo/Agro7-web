@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
 import Link from 'next/link';
+import { Form } from '@unform/web';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faLeaf } from '@fortawesome/free-solid-svg-icons';
@@ -28,6 +29,7 @@ import isEmpty from '@/helpers/isEmpty';
 
 function TalhoesInfo() {
   const router = useRouter();
+  const formRef = useRef(null);
 
   const { id, idField } = router.query;
 
@@ -110,64 +112,68 @@ function TalhoesInfo() {
               <CardContainer>
                 {(data && dataFields && (
                   <>
-                    <Input
-                      type="text"
-                      name="name"
-                      label="Nome do talhão"
-                      initialValue={dataFields.name}
-                      disabled
-                    />
-                    <div className="form-group">
-                      <div>
-                        <Input
-                          type="number"
-                          label="Área"
-                          name="area"
-                          initialValue={dataFields.area}
-                          disabled
-                        />
+                    <Form ref={formRef} initialData={{ ...dataFields }}>
+                      <Input
+                        type="text"
+                        name="name"
+                        label="Nome do talhão"
+                        initialValue={dataFields.name}
+                        disabled
+                      />
+                      <div className="form-group">
+                        <div>
+                          <Input
+                            type="number"
+                            label="Área"
+                            name="area"
+                            initialValue={dataFields.area}
+                            disabled
+                          />
+                        </div>
+                        <div>
+                          <Select
+                            options={[
+                              {
+                                value: dataFields.type_dimension,
+                                label: dataFields.type_dimension
+                              }
+                            ]}
+                            label="Unidade de medida"
+                            name="type_dimension"
+                            disabled
+                          />
+                        </div>
                       </div>
-                      <div>
-                        <Select
-                          options={[
-                            {
-                              value: dataFields.type_dimension,
-                              label: dataFields.type_dimension
+
+                      <MapActionPlotArea
+                        initialPosition={[
+                          data.coordinates.latitude,
+                          data.coordinates.longitude
+                        ]}
+                        initialPath={dataFields.coordinates}
+                      />
+
+                      <div className="form-group buttons">
+                        <div>
+                          <Button type="button" onClick={() => router.back()}>
+                            Voltar
+                          </Button>
+                        </div>
+                        <div>
+                          <Button
+                            type="button"
+                            className="primary"
+                            onClick={() =>
+                              router.push(
+                                `${route.path}/${id}/talhoes/${idField}/editar`
+                              )
                             }
-                          ]}
-                          label="Unidade de medida"
-                          name="type_dimension"
-                          value={dataFields.type_dimension}
-                          disabled
-                        />
+                          >
+                            Editar
+                          </Button>
+                        </div>
                       </div>
-                    </div>
-
-                    <MapActionPlotArea
-                      initialPosition={[
-                        data.coordinates.latitude,
-                        data.coordinates.longitude
-                      ]}
-                      initialPath={dataFields.coordinates}
-                    />
-
-                    <div className="form-group buttons">
-                      <div>
-                        <Button onClick={() => router.back()}>Voltar</Button>
-                      </div>
-                      <div>
-                        <Button
-                          className="primary"
-                          onClick={() =>
-                            router.push(
-                              `${route.path}/${id}/talhoes/${idField}/editar`
-                            )
-                          }
-                        >
-                          Editar
-                        </Button>
-                      </div>
-                    </div>
+                    </Form>
                   </>
                 )) || <Loader />}
               </CardContainer>

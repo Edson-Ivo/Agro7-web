@@ -37,6 +37,8 @@
     "react/prop-types": "off",
     "space-before-function-paren": "off",
     "no-use-before-define": "off",
+    "no-plusplus": "off",
+    "no-unused-vars": "warn",
     "no-useless-escape": "off",
     "jsx-a11y/label-has-associated-control": "off",
     "jsx-a11y/click-events-have-key-events": "off",

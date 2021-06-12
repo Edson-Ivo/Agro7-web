@@ -1,6 +1,7 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import Head from 'next/head';
+import { useRouter } from 'next/router';
+import { Form } from '@unform/web';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck } from '@fortawesome/free-solid-svg-icons';
@@ -29,6 +30,7 @@ import isEmpty from '@/helpers/isEmpty';
 
 function RelatoriosDetails() {
   const router = useRouter();
+  const formRef = useRef(null);
   const { id, idField, idCulture, idAction } = router.query;
   const [alert, setAlert] = useState({ type: '', message: '' });
   const [disableButton, setDisableButton] = useState(false);
@@ -219,38 +221,37 @@ function RelatoriosDetails() {
                 )}
                 {(data && dataCultures && dataActions && (
                   <>
-                    <TextArea
-                      name="diagnostics"
-                      label="Diagnóstico da Cultura"
-                      initialValue={dataActions?.diagnostics}
-                      disabled
-                    />
-                    <TextArea
-                      name="cultivation"
-                      label="Tratos Culturais"
-                      initialValue={dataActions?.cultivation}
-                      disabled
-                    />
-                    <TextArea
-                      name="fertilizing"
-                      label="Adubação"
-                      initialValue={dataActions?.fertilizing}
-                      disabled
-                    />
-                    <TextArea
-                      name="plant_health"
-                      label="Fitossanidade"
-                      initialValue={dataActions?.plant_health}
-                      disabled
-                    />
+                    <Form
+                      ref={formRef}
+                      initialData={{
+                        ...dataActions
+                      }}
+                    >
+                      <TextArea
+                        name="diagnostics"
+                        label="Diagnóstico da Cultura"
+                        disabled
+                      />
+                      <TextArea
+                        name="cultivation"
+                        label="Tratos Culturais"
+                        disabled
+                      />
+                      <TextArea name="fertilizing" label="Adubação" disabled />
+                      <TextArea
+                        name="plant_health"
+                        label="Fitossanidade"
+                        disabled
+                      />
 
-                    <div className="form-group buttons">
-                      <div>
-                        <Button type="button" onClick={handleCancel}>
-                          Voltar
-                        </Button>
+                      <div className="form-group buttons">
+                        <div>
+                          <Button type="button" onClick={handleCancel}>
+                            Voltar
+                          </Button>
+                        </div>
                       </div>
-                    </div>
+                    </Form>
                   </>
                 )) || <Loader />}
               </CardContainer>

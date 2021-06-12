@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
+import { Form } from '@unform/web';
 
 import Container from '@/components/Container';
 import Nav from '@/components/Nav';
@@ -20,6 +21,7 @@ import { isLight } from '@/helpers/colors';
 
 function AdminCoresDetails() {
   const router = useRouter();
+  const formRef = useRef(null);
 
   const { id } = router.query;
   const { data: dataColor, error } = useFetch(`/colors/find/by/id/${id}`);
@@ -62,38 +64,39 @@ function AdminCoresDetails() {
               <CardContainer>
                 {(dataColor && (
                   <>
-                    <Input
-                      type="text"
-                      label="Nome"
-                      name="name"
-                      initialValue={dataColor.name}
-                      disabled
-                    />
-
-                    <ColorViewer
-                      fillColor={dataColor.hexadecimal}
-                      isLight={isLight(dataColor.hexadecimal)}
+                    <Form
+                      ref={formRef}
+                      initialData={{
+                        ...dataColor
+                      }}
                     >
-                      {`#${dataColor.hexadecimal}`}
-                    </ColorViewer>
-                    <div className="form-group buttons">
-                      <div>
-                        <Button type="button" onClick={() => router.back()}>
-                          Voltar
-                        </Button>
+                      <Input type="text" label="Nome" name="name" disabled />
+
+                      <ColorViewer
+                        fillColor={dataColor.hexadecimal}
+                        isLight={isLight(dataColor.hexadecimal)}
+                      >
+                        {`#${dataColor.hexadecimal}`}
+                      </ColorViewer>
+                      <div className="form-group buttons">
+                        <div>
+                          <Button type="button" onClick={() => router.back()}>
+                            Voltar
+                          </Button>
+                        </div>
+                        <div>
+                          <Button
+                            className="primary"
+                            type="button"
+                            onClick={() =>
+                              router.push(`/admin/cores/${id}/editar`)
+                            }
+                          >
+                            Editar Cor
+                          </Button>
+                        </div>
                       </div>
-                      <div>
-                        <Button
-                          className="primary"
-                          type="button"
-                          onClick={() =>
-                            router.push(`/admin/cores/${id}/editar`)
-                          }
-                        >
-                          Editar Cor
-                        </Button>
-                      </div>
-                    </div>
+                    </Form>
                   </>
                 )) || <Loader />}
               </CardContainer>

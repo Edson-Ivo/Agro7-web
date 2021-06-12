@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 import { ShrinkedLabel } from '@/styles/mixins';
 
@@ -8,7 +8,6 @@ export const InputContainer = styled.div`
 
 export const StyledTextArea = styled.textarea`
   background-color: ${props => props.theme.colors.gray};
-  border: 1px solid ${props => props.theme.colors.gray};
   color: ${props => props.theme.colors.black};
   font: 400 1em 'Lato';
   height: 160px;
@@ -21,10 +20,23 @@ export const StyledTextArea = styled.textarea`
   transition: background 0.3s;
   resize: none;
 
+  ${props =>
+    props.error
+      ? css`
+          border: 1px solid ${props.theme.colors.red};
+        `
+      : css`
+          border: 1px solid ${props.theme.colors.gray};
+
+          &:hover,
+          &:focus {
+            border: 1px solid ${props.theme.colors.border};
+          }
+        `}
+
   &:hover,
   &:focus {
     background-color: ${props => props.theme.colors.white};
-    border: 1px solid ${props => props.theme.colors.border};
   }
 
   &:focus + .input-label {
@@ -47,5 +59,9 @@ export const Label = styled.label`
 
   &.label_active {
     ${ShrinkedLabel}
+  }
+
+  &.label_error {
+    color: ${props => props.theme.colors.red};
   }
 `;

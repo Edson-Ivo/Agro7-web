@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react';
 import Head from 'next/head';
 import * as yup from 'yup';
 import { useRouter } from 'next/router';
+import { Form } from '@unform/web';
 
 import Container from '@/components/Container';
 import Nav from '@/components/Nav';
@@ -14,7 +15,6 @@ import { Section, SectionHeader, SectionBody } from '@/components/Section';
 
 import { CardContainer } from '@/components/CardContainer';
 import { privateRoute } from '@/components/PrivateRoute';
-import getFormData from '@/helpers/getFormData';
 import errorMessage from '@/helpers/errorMessage';
 import TextArea from '@/components/TextArea/index';
 import { useFetch } from '@/hooks/useFetch';
@@ -22,7 +22,7 @@ import Error from '@/components/Error/index';
 import Select from '@/components/Select/index';
 import Loader from '@/components/Loader/index';
 import ProducerNotebookService from '@/services/ProducerNotebookService';
-import { dateToISOString } from '@/helpers/date';
+import { dateToInput, dateToISOString } from '@/helpers/date';
 
 const schema = yup.object().shape({
   name: yup.string().required('O campo nome é obrigatório!'),
@@ -37,39 +37,21 @@ function ProducerNotebookCreate() {
   const router = useRouter();
   const formRef = useRef(null);
 
-  const getData = () => {
-    if (formRef.current === undefined) {
-      return {
-        name: null,
-        description: null,
-        date: null,
-        categories: null
-      };
-    }
-
-    return getFormData(formRef.current, {
-      name: null,
-      description: null,
-      date: null,
-      categories: null
-    });
-  };
-
-  const handleSubmit = async e => {
-    e.preventDefault();
+  const handleSubmit = async data => {
     setDisableButton(true);
+
     schema
-      .validate(getData())
-      .then(async data => {
+      .validate(data)
+      .then(async d => {
         setAlert({
           type: 'success',
           message: 'Enviando...'
         });
 
-        data.date = dateToISOString(data.date);
-        data.categories = Number(data.categories);
+        d.date = dateToISOString(d.date);
+        d.categories = Number(d.categories);
 
-        await ProducerNotebookService.create(data).then(res => {
+        await ProducerNotebookService.create(d).then(res => {
           if (res.status !== 201 || res?.statusCode) {
             setAlert({ type: 'error', message: errorMessage(res) });
             setTimeout(() => {
@@ -93,6 +75,12 @@ function ProducerNotebookCreate() {
       .catch(err => {
         setAlert({ type: 'error', message: err.errors[0] });
         setDisableButton(false);
+
+        if (err instanceof yup.ValidationError) {
+          const { path, message } = err;
+
+          formRef.current.setFieldError(path, message);
+        }
       });
   };
 
@@ -134,14 +122,15 @@ function ProducerNotebookCreate() {
                 {alert.message !== '' && (
                   <Alert type={alert.type}>{alert.message}</Alert>
                 )}
-                <form
-                  id="registerForm"
-                  ref={formRef}
-                  method="post"
-                  onSubmit={event => handleSubmit(event)}
-                >
-                  {(dataCategories && (
-                    <>
+
+                {(dataCategories && (
+                  <>
+                    <Form
+                      ref={formRef}
+                      method="post"
+                      onSubmit={handleSubmit}
+                      initialData={{ date: dateToInput() }}
+                    >
                       <Input type="text" label="Nome" name="name" required />
                       <Select
                         options={dataCategories?.items.map(category => ({
@@ -170,9 +159,9 @@ function ProducerNotebookCreate() {
                           </Button>
                         </div>
                       </div>
-                    </>
-                  )) || <Loader />}
-                </form>
+                    </Form>
+                  </>
+                )) || <Loader />}
               </CardContainer>
             </div>
           </SectionBody>

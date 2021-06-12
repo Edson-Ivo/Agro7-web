@@ -8,7 +8,6 @@ export const InputContainer = styled.div`
 
 export const StyledInput = styled.input`
   background-color: ${props => props.theme.colors.gray};
-  border: 1px solid ${props => props.theme.colors.gray};
   color: ${props => props.theme.colors.black};
   font-family: ${props => props.theme.fonts.latoFamily};
   font-size: 1em;
@@ -28,10 +27,23 @@ export const StyledInput = styled.input`
       margin-top: 3px;
     `}
 
+  ${props =>
+    props.error
+      ? css`
+          border: 1px solid ${props.theme.colors.red};
+        `
+      : css`
+          border: 1px solid ${props.theme.colors.gray};
+
+          &:hover,
+          &:focus {
+            border: 1px solid ${props.theme.colors.border};
+          }
+        `}
+
   &:hover,
   &:focus {
     background-color: ${props => props.theme.colors.white};
-    border: 1px solid ${props => props.theme.colors.border};
   }
 
   ${props =>
@@ -83,6 +95,10 @@ export const Label = styled.label`
 
   &.label_active {
     ${ShrinkedLabel}
+  }
+
+  &.label_error {
+    color: ${props => props.theme.colors.red};
   }
 `;
 

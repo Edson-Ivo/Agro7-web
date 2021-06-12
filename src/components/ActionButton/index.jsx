@@ -29,16 +29,13 @@ const ActionButton = ({
 }) => (
   <ActionButtonContainer>
     {download && (
-      <a
-        href={download}
-        title="Baixar arquivo"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        <div>
-          <FontAwesomeIcon icon={faFileDownload} />
-        </div>
-      </a>
+      <Link href={download} replace passHref>
+        <a target="_blank" rel="noopener noreferrer" title="Baixar arquivo">
+          <div>
+            <FontAwesomeIcon icon={faFileDownload} />
+          </div>
+        </a>
+      </Link>
     )}
 
     {!noInfo && (

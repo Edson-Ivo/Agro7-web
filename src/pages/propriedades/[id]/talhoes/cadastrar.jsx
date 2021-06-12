@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import * as yup from 'yup';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
+import { Form } from '@unform/web';
 
 import Container from '@/components/Container';
 import Nav from '@/components/Nav';
@@ -20,7 +21,6 @@ import Loader from '@/components/Loader';
 import errorMessage from '@/helpers/errorMessage';
 import { useFetch } from '@/hooks/useFetch';
 import FieldsService from '@/services/FieldsService';
-import getFormData from '@/helpers/getFormData';
 import isEmpty from '@/helpers/isEmpty';
 import areaConversor from '@/helpers/areaConversor';
 import Error from '@/components/Error/index';
@@ -44,9 +44,7 @@ function TalhoesCadastrar() {
   const [alert, setAlert] = useState({ type: '', message: '' });
   const [disableButton, setDisableButton] = useState(false);
   const [coordinates, setCoordinates] = useState([]);
-
-  const areaRef = useRef(null);
-  const typeDimensionRef = useRef(null);
+  const [dataArea, setDataArea] = useState(0.0);
 
   const router = useRouter();
   const { id, createProperty } = router.query;
@@ -78,35 +76,23 @@ function TalhoesCadastrar() {
     else setCoordinates([]);
   };
 
-  const handleAreaCalc = area => {
-    const { value: dimension } = typeDimensionRef.current;
-
-    areaRef.current.setValue(areaConversor(area, dimension));
+  const handleChangeTypeDimension = e => {
+    handleAreaCalc(dataArea, e?.value);
   };
 
-  const getData = () => {
-    if (formRef.current === undefined) {
-      return {
-        name: null,
-        area: null,
-        type_dimension: null,
-        coordinates: []
-      };
-    }
+  const handleAreaCalc = (area, dim = null) => {
+    const dimension = dim || formRef.current.getFieldValue('type_dimension');
 
-    return getFormData(formRef.current, {
-      name: null,
-      area: null,
-      type_dimension: null,
-      coordinates: []
-    });
+    setDataArea(area);
+
+    formRef.current.setFieldValue('area', areaConversor(area, dimension));
   };
 
-  const handleSubmit = async e => {
-    e.preventDefault();
+  const handleSubmit = async dt => {
     setDisableButton(true);
+
     schema
-      .validate(getData())
+      .validate(dt)
       .then(async d => {
         if (!isEmpty(coordinates)) {
           setAlert({
@@ -152,6 +138,12 @@ function TalhoesCadastrar() {
       .catch(err => {
         setAlert({ type: 'error', message: err.errors[0] });
         setDisableButton(false);
+
+        if (err instanceof yup.ValidationError) {
+          const { path, message } = err;
+
+          formRef.current.setFieldError(path, message);
+        }
       });
   };
 
@@ -214,24 +206,19 @@ function TalhoesCadastrar() {
                 {alert.message !== '' && (
                   <Alert type={alert.type}>{alert.message}</Alert>
                 )}
-                <form
-                  id="registerForm"
-                  ref={formRef}
-                  method="post"
-                  onSubmit={event => handleSubmit(event)}
-                >
-                  {(data && dataTypeDimension && (
-                    <>
+                {(data && dataTypeDimension && (
+                  <>
+                    <Form
+                      ref={formRef}
+                      method="post"
+                      onSubmit={handleSubmit}
+                      initialData={{ type_dimension: 'ha' }}
+                    >
                       <Input type="text" name="name" label="Nome do talhão" />
 
                       <div className="form-group">
                         <div>
-                          <Input
-                            type="number"
-                            label="Área"
-                            name="area"
-                            ref={areaRef}
-                          />
+                          <Input type="number" label="Área" name="area" />
                         </div>
                         <div>
                           <Select
@@ -243,8 +230,7 @@ function TalhoesCadastrar() {
                             )}
                             label="Unidade de medida"
                             name="type_dimension"
-                            ref={typeDimensionRef}
-                            value="ha"
+                            onChange={handleChangeTypeDimension}
                           />
                         </div>
                       </div>
@@ -275,9 +261,9 @@ function TalhoesCadastrar() {
                           </Button>
                         </div>
                       </div>
-                    </>
-                  )) || <Loader />}
-                </form>
+                    </Form>
+                  </>
+                )) || <Loader />}
               </CardContainer>
             </div>
           </SectionBody>

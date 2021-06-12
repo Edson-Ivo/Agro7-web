@@ -74,12 +74,9 @@ export const Card = styled.div`
       `};
 
     .absolute_content {
-      /* svg,
-      img {
-        position: absolute;
-        right: 0;
-        top: 0;
-      } */
+      & svg {
+        height: 100%;
+      }
     }
   }
 

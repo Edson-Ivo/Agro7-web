@@ -2,6 +2,8 @@ import React, { useState, useRef } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
 import * as yup from 'yup';
+import { Form } from '@unform/web';
+
 import { useRouter } from 'next/router';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faKey } from '@fortawesome/free-solid-svg-icons';
@@ -18,7 +20,6 @@ import { Alert } from '@/components/Alert';
 
 import { CardContainer } from '@/components/CardContainer';
 import { privateRoute } from '@/components/PrivateRoute';
-import getFormData from '@/helpers/getFormData';
 import AddressesService from '@/services/AddressesService';
 import UsersService from '@/services/UsersService';
 import errorMessage from '@/helpers/errorMessage';
@@ -42,45 +43,47 @@ const schema = yup.object().shape({
   phone: yup.string().required('O campo telefone é obrigatório!'),
   phone_whatsapp: yup.string().nullable(),
   type: yup.string().required('O campo tipo de usuário é obrigatório!'),
-  state: yup
-    .string()
-    .min(2, 'O estado tem que ter no mínimo 2 caracteres')
-    .max(15, 'Você não pode ultrapassar 15 caracteres no nome do estado')
-    .required('Você precisa informar o estado da do endereço do usuário.'),
-  neighborhood: yup
-    .string()
-    .min(2, 'O nome do bairro tem que ter no mínimo 2 caracteres')
-    .max(50, 'Você não pode ultrapassar 50 caracteres no nome do bairro')
-    .required('Você precisa informar o bairro da do endereço do usuário'),
-  city: yup
-    .string()
-    .min(2, 'O nome da cidade tem que ter no mínimo 2 caracteres')
-    .max(50, 'O nome da cidade não pode ultrapassar 50 caracteres')
-    .required('Você precisa informar a cidade do endereço do usuário'),
-  postcode: yup
-    .string()
-    .min(
-      9,
-      'Você tem que digitar no mínimo e no máximo 9 caracteres, para o CEP. Ex: 00000-000'
-    )
-    .max(
-      9,
-      'Você tem que digitar no mínimo e no máximo 9 caracteres para o CEP. Ex: 00000-000'
-    )
-    .required('Você precisa informar o CEP do endereço do usuário'),
-  street: yup
-    .string()
-    .min(4, 'O nome da rua tem que ter no mínimo 4 caracteres')
-    .max(50, 'O nome da rua não pode ultrapassar 50 caracteres')
-    .required('Você precisa informar a rua do endereço do usuário'),
-  number: yup
-    .string()
-    .max(50, 'O número não pode ultrapassar 50 caracteres')
-    .required('Você precisa informar o número do endereço do usuário'),
-  complement: yup
-    .string()
-    .max(100, 'O complemento não pode ultrapassar 100 caracteres')
-    .nullable()
+  addresses: yup.object().shape({
+    state: yup
+      .string()
+      .min(2, 'O estado tem que ter no mínimo 2 caracteres')
+      .max(15, 'Você não pode ultrapassar 15 caracteres no nome do estado')
+      .required('Você precisa informar o estado da do endereço do usuário.'),
+    neighborhood: yup
+      .string()
+      .min(2, 'O nome do bairro tem que ter no mínimo 2 caracteres')
+      .max(50, 'Você não pode ultrapassar 50 caracteres no nome do bairro')
+      .required('Você precisa informar o bairro da do endereço do usuário'),
+    city: yup
+      .string()
+      .min(2, 'O nome da cidade tem que ter no mínimo 2 caracteres')
+      .max(50, 'O nome da cidade não pode ultrapassar 50 caracteres')
+      .required('Você precisa informar a cidade do endereço do usuário'),
+    postcode: yup
+      .string()
+      .min(
+        9,
+        'Você tem que digitar no mínimo e no máximo 9 caracteres, para o CEP. Ex: 00000-000'
+      )
+      .max(
+        9,
+        'Você tem que digitar no mínimo e no máximo 9 caracteres para o CEP. Ex: 00000-000'
+      )
+      .required('Você precisa informar o CEP do endereço do usuário'),
+    street: yup
+      .string()
+      .min(4, 'O nome da rua tem que ter no mínimo 4 caracteres')
+      .max(50, 'O nome da rua não pode ultrapassar 50 caracteres')
+      .required('Você precisa informar a rua do endereço do usuário'),
+    number: yup
+      .string()
+      .max(50, 'O número não pode ultrapassar 50 caracteres')
+      .required('Você precisa informar o número do endereço do usuário'),
+    complement: yup
+      .string()
+      .max(100, 'O complemento não pode ultrapassar 100 caracteres')
+      .nullable()
+  })
 });
 
 function AdminUsersEdit() {
@@ -92,52 +95,8 @@ function AdminUsersEdit() {
 
   const { id } = router.query;
 
-  const { data, error } = useFetch(`/users/find/by/id/${id}`);
+  const { data, error, mutate } = useFetch(`/users/find/by/id/${id}`);
   const { data: dataTypes } = useFetch('/users/find/all/types');
-
-  const stateRef = useRef(null);
-  const cityRef = useRef(null);
-  const neighborhoodRef = useRef(null);
-  const streetRef = useRef(null);
-  const postalcodeRef = useRef(null);
-
-  const getData = () => {
-    if (formRef.current === undefined) {
-      return {
-        name: null,
-        email: null,
-        document: null,
-        type_document: null,
-        phone: null,
-        phone_whatsapp: null,
-        type: null,
-        state: null,
-        neighborhood: null,
-        city: null,
-        postcode: null,
-        street: null,
-        number: null,
-        complement: null
-      };
-    }
-
-    return getFormData(formRef.current, {
-      name: null,
-      email: null,
-      document: null,
-      type_document: false,
-      phone: null,
-      phone_whatsapp: null,
-      type: null,
-      state: null,
-      neighborhood: null,
-      city: null,
-      postcode: null,
-      street: null,
-      number: null,
-      complement: null
-    });
-  };
 
   const handleChangeCep = e => {
     const { value } = e.target;
@@ -146,29 +105,22 @@ function AdminUsersEdit() {
       AddressesService.getCep(value.replace('-', '')).then(res => {
         if (res.data !== '') {
           const { state, city, neighborhood, street } = res.data;
-          if (!stateRef.current.value) {
-            stateRef.current.setValue(state);
-          }
-          if (!cityRef.current.value) {
-            cityRef.current.setValue(city);
-          }
-          if (!neighborhoodRef.current.value) {
-            neighborhoodRef.current.setValue(neighborhood);
-          }
-          if (!streetRef.current.value) {
-            streetRef.current.setValue(street);
-          }
+
+          formRef.current.setFieldValue('state', state);
+          formRef.current.setFieldValue('city', city);
+          formRef.current.setFieldValue('neighborhood', neighborhood);
+          formRef.current.setFieldValue('street', street);
         }
         setLoadingAddresses(false);
       });
     }
   };
 
-  const handleSubmit = async e => {
-    e.preventDefault();
+  const handleSubmit = async dt => {
     setDisableButton(true);
+
     schema
-      .validate(getData())
+      .validate(dt)
       .then(async d => {
         setAlert({
           type: 'success',
@@ -183,26 +135,6 @@ function AdminUsersEdit() {
 
         if (isEmpty(d.phone_whatsapp)) delete d.phone_whatsapp;
 
-        const {
-          state,
-          neighborhood,
-          city,
-          postcode,
-          street,
-          number,
-          complement
-        } = d;
-
-        d.addresses = {
-          state,
-          neighborhood,
-          city,
-          postcode,
-          street,
-          number,
-          complement
-        };
-
         await UsersService.updateByAdmin(id, d).then(res => {
           if (res.status !== 201 || res?.statusCode) {
             setAlert({ type: 'error', message: errorMessage(res) });
@@ -210,6 +142,8 @@ function AdminUsersEdit() {
               setDisableButton(false);
             }, 1000);
           } else {
+            mutate();
+
             setAlert({
               type: 'success',
               message: 'Usuário editado com sucesso!'
@@ -225,6 +159,12 @@ function AdminUsersEdit() {
       .catch(err => {
         setAlert({ type: 'error', message: err.errors[0] });
         setDisableButton(false);
+
+        if (err instanceof yup.ValidationError) {
+          const { path, message } = err;
+
+          formRef.current.setFieldError(path, message);
+        }
       });
   };
 
@@ -270,33 +210,20 @@ function AdminUsersEdit() {
                 {alert.message !== '' && (
                   <Alert type={alert.type}>{alert.message}</Alert>
                 )}
-                <form
-                  id="registerForm"
-                  ref={formRef}
-                  method="post"
-                  onSubmit={event => handleSubmit(event)}
-                >
-                  {(data && dataTypes && (
-                    <>
-                      <Input
-                        type="text"
-                        label="Nome"
-                        name="name"
-                        initialValue={data.name}
-                        required
-                      />
-                      <Input
-                        type="text"
-                        label="E-mail"
-                        name="email"
-                        initialValue={data.email}
-                        required
-                      />
+                {(data && dataTypes && (
+                  <>
+                    <Form
+                      ref={formRef}
+                      method="post"
+                      onSubmit={handleSubmit}
+                      initialData={{ ...data }}
+                    >
+                      <Input type="text" label="Nome" name="name" required />
+                      <Input type="text" label="E-mail" name="email" required />
                       <Input
                         type="text"
                         label="Documento"
                         name="document"
-                        initialValue={data.document}
                         required
                       />
                       <div className="form-group">
@@ -307,7 +234,6 @@ function AdminUsersEdit() {
                             name="phone"
                             mask="phone"
                             maxLength={15}
-                            initialValue={data.phone}
                             required
                           />
                         </div>
@@ -318,7 +244,6 @@ function AdminUsersEdit() {
                             name="phone_whatsapp"
                             mask="phone"
                             maxLength={15}
-                            initialValue={data.phone_whatsapp || ''}
                           />
                         </div>
                       </div>
@@ -328,7 +253,6 @@ function AdminUsersEdit() {
                           label: capitalize(userType)
                         }))}
                         label="Tipo de Usuário"
-                        value={data.type}
                         name="type"
                         required
                       />
@@ -337,11 +261,9 @@ function AdminUsersEdit() {
                           <Input
                             type="text"
                             label="CEP"
-                            name="postcode"
-                            initialValue={data.addresses.postcode}
+                            name="addresses.postcode"
                             mask="cep"
                             disabled={loadingAddresses}
-                            ref={postalcodeRef}
                             handleChange={handleChangeCep}
                             required
                           />
@@ -350,9 +272,7 @@ function AdminUsersEdit() {
                           <Input
                             type="text"
                             label="Estado"
-                            name="state"
-                            initialValue={data.addresses.state}
-                            ref={stateRef}
+                            name="addresses.state"
                             required
                           />
                         </div>
@@ -360,9 +280,7 @@ function AdminUsersEdit() {
                           <Input
                             type="text"
                             label="Cidade"
-                            name="city"
-                            initialValue={data.addresses.city}
-                            ref={cityRef}
+                            name="addresses.city"
                             required
                           />
                         </div>
@@ -372,9 +290,7 @@ function AdminUsersEdit() {
                           <Input
                             type="text"
                             label="Bairro"
-                            name="neighborhood"
-                            initialValue={data.addresses.neighborhood}
-                            ref={neighborhoodRef}
+                            name="addresses.neighborhood"
                             required
                           />
                         </div>
@@ -382,9 +298,7 @@ function AdminUsersEdit() {
                           <Input
                             type="text"
                             label="Rua"
-                            name="street"
-                            initialValue={data.addresses.street}
-                            ref={streetRef}
+                            name="addresses.street"
                             required
                           />
                         </div>
@@ -394,8 +308,7 @@ function AdminUsersEdit() {
                           <Input
                             type="text"
                             label="Número"
-                            name="number"
-                            initialValue={data.addresses.number}
+                            name="addresses.number"
                             required
                           />
                         </div>
@@ -403,8 +316,7 @@ function AdminUsersEdit() {
                           <Input
                             type="text"
                             label="Complementos"
-                            name="complement"
-                            initialValue={data.addresses.complement || ''}
+                            name="addresses.complement"
                           />
                         </div>
                       </div>
@@ -425,9 +337,9 @@ function AdminUsersEdit() {
                           </Button>
                         </div>
                       </div>
-                    </>
-                  )) || <Loader />}
-                </form>
+                    </Form>
+                  </>
+                )) || <Loader />}
               </CardContainer>
             </div>
           </SectionBody>

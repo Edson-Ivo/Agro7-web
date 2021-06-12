@@ -1,6 +1,4 @@
-import styled from 'styled-components';
-
-import { ShrinkedLabel } from '@/styles/mixins';
+import styled, { css } from 'styled-components';
 
 export const InputContainer = styled.div`
   position: relative;
@@ -8,7 +6,6 @@ export const InputContainer = styled.div`
 
   .select__control {
     background-color: ${props => props.theme.colors.gray};
-    border: 1px solid ${props => props.theme.colors.gray};
     color: ${props => props.theme.colors.black};
     font-size: 1em;
     height: 50px;
@@ -18,14 +15,23 @@ export const InputContainer = styled.div`
     margin: 5px 0px 15px;
     transition: background 0.3s;
 
+    ${props =>
+      props.error
+        ? css`
+            border: 1px solid ${props.theme.colors.red};
+          `
+        : css`
+            border: 1px solid ${props.theme.colors.gray};
+
+            &:hover,
+            &:focus {
+              border: 1px solid ${props.theme.colors.border};
+            }
+          `}
+
     &:hover,
     &:focus {
-      background-color: ${props => props.theme.colors.white};
-      border: 1px solid ${props => props.theme.colors.border};
-    }
-
-    &:focus + .input-label {
-      ${ShrinkedLabel}
+      background-color: ${props => props.theme.colors.white}!important;
     }
   }
 
@@ -63,4 +69,8 @@ export const Label = styled.label`
   text-align: left;
   transition: ease 0.2s;
   margin-left: 10px;
+
+  &.label_error {
+    color: ${props => props.theme.colors.red};
+  }
 `;

@@ -30,4 +30,5 @@ const Tooltip = ({ opened = false, handleClick, children }) => {
     )
   );
 };
+
 export default Tooltip;

@@ -1,6 +1,7 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
+import { Form } from '@unform/web';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
@@ -28,11 +29,13 @@ import UsersService from '@/services/UsersService';
 import errorMessage from '@/helpers/errorMessage';
 import Input from '@/components/Input/index';
 import isEmpty from '@/helpers/isEmpty';
+import maskString from '@/helpers/maskString';
 
 function AdminUsers() {
   const [alertMsg, setAlertMsg] = useState({ type: '', message: '' });
   const [loading, setLoading] = useState(false);
   const [searchedUser, setSearchedUser] = useState('');
+  const formRef = useRef(null);
 
   const router = useRouter();
 
@@ -124,12 +127,14 @@ function AdminUsers() {
                     marginBottom: 14
                   }}
                 >
-                  <Input
-                    type="text"
-                    name="userSelect"
-                    handleChange={searchUser}
-                    label="Pesquisar por Nome"
-                  />
+                  <Form ref={formRef} initialData={searchUser}>
+                    <Input
+                      type="text"
+                      name="userSelect"
+                      handleChange={searchUser}
+                      label="Pesquisar por Nome"
+                    />
+                  </Form>
                 </div>
                 {((data || loading) && (
                   <>
@@ -158,7 +163,7 @@ function AdminUsers() {
                                 <td>{user.name}</td>
                                 <td>{user.email}</td>
                                 <td>{user.document}</td>
-                                <td>{user.phone}</td>
+                                <td>{maskString(user.phone, 'phone')}</td>
                                 <td onClick={e => e.stopPropagation()}>
                                   <ActionButton
                                     id={user.id}

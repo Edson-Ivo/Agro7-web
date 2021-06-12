@@ -4,6 +4,7 @@ import Head from 'next/head';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
+import { Form } from '@unform/web';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
@@ -48,6 +49,7 @@ import CardBack from '@/assets/card_back.svg';
 
 function ProducerNotebook() {
   const daysRef = createRef();
+  const formRef = useRef(null);
   const router = useRouter();
 
   const ref = useRef();
@@ -110,6 +112,7 @@ function ProducerNotebook() {
     setDaysList(actualWeek);
     setActiveDate(actualDate);
     setActiveCategory('');
+    formRef?.current?.setFieldValue('types', '');
   };
 
   const handleChangeDate = date => {
@@ -213,18 +216,22 @@ function ProducerNotebook() {
                   </div>
                   {dataCategories && (
                     <div>
-                      <Select
-                        options={dataCategories?.items.map(category => ({
-                          value: category.id,
-                          label: category.name
-                        }))}
-                        label="Filtrar por categoria"
-                        name="types"
-                        clearable
-                        noLabel
-                        onChange={handleChangeCategory}
-                        initialValue={activeCategory}
-                      />
+                      <Form
+                        ref={formRef}
+                        initialData={{ types: activeCategory }}
+                      >
+                        <Select
+                          options={dataCategories?.items.map(category => ({
+                            value: category.id,
+                            label: category.name
+                          }))}
+                          label="Filtrar por categoria"
+                          name="types"
+                          clearable
+                          noLabel
+                          onChange={handleChangeCategory}
+                        />
+                      </Form>
                     </div>
                   )}
                 </div>

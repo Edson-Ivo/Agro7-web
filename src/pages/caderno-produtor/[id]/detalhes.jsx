@@ -1,7 +1,8 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import { Form } from '@unform/web';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
@@ -30,6 +31,7 @@ import { useModal } from '@/hooks/useModal';
 function ProducerNotebookDetails() {
   const [alert, setAlert] = useState({ type: '', message: '' });
   const router = useRouter();
+  const formRef = useRef(null);
 
   const { addModal, removeModal } = useModal();
 
@@ -141,36 +143,23 @@ function ProducerNotebookDetails() {
                 )}
                 {(data && dataCategories && (
                   <>
-                    <Input
-                      type="text"
-                      label="Nome"
-                      name="name"
-                      initialValue={data.name}
-                      disabled
-                    />
-                    <Select
-                      options={dataCategories?.items.map(category => ({
-                        value: category.id,
-                        label: category.name
-                      }))}
-                      label="Categoria"
-                      name="categories"
-                      value={data.categories.id}
-                      disabled
-                    />
-                    <Input
-                      type="date"
-                      label="Data"
-                      name="date"
-                      initialValue={dateToInput(data?.date)}
-                      disabled
-                    />
-                    <TextArea
-                      name="description"
-                      label="Descrição"
-                      initialValue={data?.description}
-                      disabled
-                    />
+                    <Form
+                      ref={formRef}
+                      initialData={{ ...data, date: dateToInput(data?.date) }}
+                    >
+                      <Input type="text" label="Nome" name="name" disabled />
+                      <Select
+                        options={dataCategories?.items.map(category => ({
+                          value: category.id,
+                          label: category.name
+                        }))}
+                        label="Categoria"
+                        name="categories.id"
+                        disabled
+                      />
+                      <Input type="date" label="Data" name="date" disabled />
+                      <TextArea name="description" label="Descrição" disabled />
+                    </Form>
                     <div className="form-group buttons">
                       <div>
                         <Button type="button" onClick={() => router.back()}>

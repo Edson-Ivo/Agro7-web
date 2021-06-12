@@ -1,6 +1,8 @@
 import React, { useState, useRef } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
+import * as yup from 'yup';
+import { Form } from '@unform/web';
 
 import Container from '@/components/Container';
 import Nav from '@/components/Nav';
@@ -17,72 +19,59 @@ import Loader from '@/components/Loader';
 
 import UsersService from '@/services/UsersService';
 import errorMessage from '@/helpers/errorMessage';
-import getFormData from '@/helpers/getFormData';
+
+const schema = yup.object().shape({
+  password: yup.string().required('O campo Senha nova é obrigatório!'),
+  repeat_password: yup
+    .string()
+    .oneOf([yup.ref('password'), null], 'Confirme a nova senha corretamente!')
+    .required('O campo Confirme a Nova senha é obrigatório!'),
+  old_password: yup.string().required('O campo Senha atual é obrigatório!')
+});
 
 function ConfiguracoesSenha() {
   const [alertMsg, setAlertMsg] = useState({ type: '', message: '' });
   const [loading, setLoading] = useState(false);
   const formRef = useRef(null);
 
-  const getData = () => {
-    if (formRef.current === undefined) {
-      return {
-        old_password: null,
-        password: null,
-        repeat_password: null
-      };
-    }
+  const handleSubmit = async dt => {
+    setLoading(true);
 
-    return getFormData(formRef.current, {
-      old_password: null,
-      password: null,
-      repeat_password: null
-    });
-  };
+    schema
+      .validate(dt)
+      .then(async d => {
+        setAlertMsg({
+          type: 'success',
+          message: 'Enviando...'
+        });
 
-  const handleSubmit = async event => {
-    event.preventDefault();
-
-    const formData = getData();
-
-    if (
-      formData.old_password &&
-      formData.password &&
-      formData.repeat_password
-    ) {
-      if (formData.password === formData.repeat_password) {
         setLoading(true);
 
-        delete formData.repeat_password;
+        delete d.repeat_password;
 
-        await UsersService.updatePasswordByOwner(formData)
-          .then(res => {
-            if (res.status !== 200 || res?.statusCode) {
-              setAlertMsg({ type: 'error', message: errorMessage(res) });
-            } else {
-              setAlertMsg({
-                type: 'success',
-                message: 'Senha alterada com sucesso!'
-              });
-            }
+        await UsersService.updatePasswordByOwner(d).then(res => {
+          if (res.status !== 200 || res?.statusCode) {
+            setAlertMsg({ type: 'error', message: errorMessage(res) });
+          } else {
+            setAlertMsg({
+              type: 'success',
+              message: 'Senha alterada com sucesso!'
+            });
+          }
 
-            setLoading(false);
-          })
-          .catch(err => {
-            setAlertMsg({ type: 'error', message: err.errors[0] });
-          });
-      } else {
-        setAlertMsg({
-          type: 'error',
-          message: 'Confirme a nova senha corretamente.'
+          setLoading(false);
         });
-      }
-    } else {
-      setAlertMsg({
-        type: 'error',
-        message: 'Preencha todos os campos requeridos.'
+      })
+      .catch(err => {
+        setAlertMsg({ type: 'error', message: err.errors[0] });
+        setLoading(false);
+
+        if (err instanceof yup.ValidationError) {
+          const { path, message } = err;
+
+          formRef.current.setFieldError(path, message);
+        }
       });
-    }
   };
 
   return (
@@ -115,11 +104,7 @@ function ConfiguracoesSenha() {
                   <Alert type={alertMsg.type}>{alertMsg.message}</Alert>
                 )}
 
-                <form
-                  method="post"
-                  ref={formRef}
-                  onSubmit={event => handleSubmit(event)}
-                >
+                <Form method="post" ref={formRef} onSubmit={handleSubmit}>
                   <Input
                     type="password"
                     label="Senha atual"
@@ -147,12 +132,12 @@ function ConfiguracoesSenha() {
                       </div>
                       <div>
                         <Button className="primary" type="submit">
-                          Salvar
+                          Salvar nova senha
                         </Button>
                       </div>
                     </div>
                   )) || <Loader />}
-                </form>
+                </Form>
               </CardContainer>
             </div>
           </SectionBody>

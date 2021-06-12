@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import Head from 'next/head';
-
 import Link from 'next/link';
+import { Form } from '@unform/web';
+
 import Container from '@/components/Container';
 import Nav from '@/components/Nav';
 import Navbar from '@/components/Navbar';
@@ -20,6 +21,7 @@ import { useFetch } from '@/hooks/useFetch';
 
 function Configuracoes() {
   const { data, error } = useFetch(`/users/find/by/logged`);
+  const formRef = useRef(null);
 
   if (error) return <Error error={error} />;
 
@@ -53,119 +55,111 @@ function Configuracoes() {
               <CardContainer>
                 {(data && (
                   <>
-                    <Input
-                      type="text"
-                      label="Nome"
-                      name="name"
-                      initialValue={data.name}
-                      disabled
-                    />
-                    <div className="form-group">
-                      <div>
-                        <Input
-                          type="text"
-                          label="Número Telefone"
-                          name="phone"
-                          mask="phone"
-                          maxLength={15}
-                          initialValue={data.phone}
-                          disabled
-                        />
+                    <Form
+                      ref={formRef}
+                      initialData={{
+                        ...data
+                      }}
+                    >
+                      <Input type="text" label="Nome" name="name" disabled />
+                      <div className="form-group">
+                        <div>
+                          <Input
+                            type="text"
+                            label="Número Telefone"
+                            name="phone"
+                            mask="phone"
+                            maxLength={15}
+                            disabled
+                          />
+                        </div>
+                        <div>
+                          <Input
+                            type="text"
+                            label="Número Whatsapp"
+                            name="phone_whatsapp"
+                            mask="phone"
+                            maxLength={15}
+                            disabled
+                          />
+                        </div>
                       </div>
-                      <div>
-                        <Input
-                          type="text"
-                          label="Número Whatsapp"
-                          name="phone_whatsapp"
-                          mask="phone"
-                          maxLength={15}
-                          initialValue={data?.phone_whatsapp || ''}
-                          disabled
-                        />
+                      <div className="form-group">
+                        <div>
+                          <Input
+                            type="text"
+                            label="CEP"
+                            name="addresses.postcode"
+                            mask="cep"
+                            disabled
+                          />
+                        </div>
+                        <div>
+                          <Input
+                            type="text"
+                            label="Estado"
+                            name="addresses.state"
+                            disabled
+                          />
+                        </div>
+                        <div>
+                          <Input
+                            type="text"
+                            label="Cidade"
+                            name="addresses.city"
+                            disabled
+                          />
+                        </div>
                       </div>
-                    </div>
-                    <div className="form-group">
-                      <div>
-                        <Input
-                          type="text"
-                          label="CEP"
-                          name="postcode"
-                          initialValue={data.addresses.postcode}
-                          mask="cep"
-                          disabled
-                        />
+                      <div className="form-group">
+                        <div>
+                          <Input
+                            type="text"
+                            label="Bairro"
+                            name="addresses.neighborhood"
+                            disabled
+                          />
+                        </div>
+                        <div>
+                          <Input
+                            type="text"
+                            label="Rua"
+                            name="addresses.street"
+                            disabled
+                          />
+                        </div>
                       </div>
-                      <div>
-                        <Input
-                          type="text"
-                          label="Estado"
-                          name="state"
-                          initialValue={data.addresses.state}
-                          disabled
-                        />
+                      <div className="form-group">
+                        <div>
+                          <Input
+                            type="text"
+                            label="Número"
+                            name="addresses.number"
+                            disabled
+                          />
+                        </div>
+                        <div>
+                          <Input
+                            type="text"
+                            label="Complementos"
+                            name="addresses.complement"
+                            disabled
+                          />
+                        </div>
                       </div>
-                      <div>
-                        <Input
-                          type="text"
-                          label="Cidade"
-                          name="city"
-                          initialValue={data.addresses.city}
-                          disabled
-                        />
+                      <div className="form-group buttons">
+                        <div>
+                          <Link href="configuracoes/editar">
+                            <Button type="button">Editar Dados</Button>
+                          </Link>
+                        </div>
+                        <div>
+                          <Link href="configuracoes/senha">
+                            <Button type="button">Alterar Senha</Button>
+                          </Link>
+                        </div>
                       </div>
-                    </div>
-                    <div className="form-group">
-                      <div>
-                        <Input
-                          type="text"
-                          label="Bairro"
-                          name="neighborhood"
-                          initialValue={data.addresses.neighborhood}
-                          disabled
-                        />
-                      </div>
-                      <div>
-                        <Input
-                          type="text"
-                          label="Rua"
-                          name="street"
-                          initialValue={data.addresses.street}
-                          disabled
-                        />
-                      </div>
-                    </div>
-                    <div className="form-group">
-                      <div>
-                        <Input
-                          type="text"
-                          label="Número"
-                          name="number"
-                          initialValue={data.addresses.number}
-                          disabled
-                        />
-                      </div>
-                      <div>
-                        <Input
-                          type="text"
-                          label="Complementos"
-                          name="complement"
-                          initialValue={data.addresses.complement || ''}
-                          disabled
-                        />
-                      </div>
-                    </div>
-                    <div className="form-group buttons">
-                      <div>
-                        <Link href="configuracoes/editar">
-                          <Button type="button">Editar Dados</Button>
-                        </Link>
-                      </div>
-                      <div>
-                        <Link href="configuracoes/senha">
-                          <Button type="button">Alterar Senha</Button>
-                        </Link>
-                      </div>
-                    </div>
+                    </Form>
                   </>
                 )) || <Loader />}
               </CardContainer>

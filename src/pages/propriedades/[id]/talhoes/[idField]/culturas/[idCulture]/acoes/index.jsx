@@ -1,6 +1,8 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
+import { Form } from '@unform/web';
+
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 
@@ -35,6 +37,8 @@ import objectKeyExists from '@/helpers/objectKeyExists';
 
 function AcoesCultura() {
   const router = useRouter();
+  const formRef = useRef(null);
+
   const {
     id,
     idField,
@@ -200,16 +204,17 @@ function AcoesCultura() {
                   {alertMsg.message && (
                     <Alert type={alertMsg.type}>{alertMsg.message}</Alert>
                   )}
-                  <Select
-                    options={Object.keys(actionsList).map(action => ({
-                      value: actionsList[action].value,
-                      label: actionsList[action].label
-                    }))}
-                    label="Filtrar por Ação"
-                    name="types"
-                    onChange={handleChangeTypeAction}
-                    value={typeAction}
-                  />
+                  <Form ref={formRef} initialData={{ types: typeAction }}>
+                    <Select
+                      options={Object.keys(actionsList).map(action => ({
+                        value: actionsList[action].value,
+                        label: actionsList[action].label
+                      }))}
+                      label="Filtrar por Ação"
+                      name="types"
+                      onChange={handleChangeTypeAction}
+                    />
+                  </Form>
                   {(((!isEmpty(typeAction) &&
                     data &&
                     dataCultures &&
