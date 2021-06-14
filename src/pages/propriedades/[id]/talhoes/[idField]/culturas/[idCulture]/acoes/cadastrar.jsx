@@ -1,11 +1,13 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { useRouter } from 'next/router';
 import Head from 'next/head';
+import { useRouter } from 'next/router';
+import * as yup from 'yup';
+import { Form } from '@unform/web';
 
 import Container from '@/components/Container';
 import Nav from '@/components/Nav';
 import Navbar from '@/components/Navbar';
-import Breadcrumb from '@/components/Breadcrumb';
+
 import Button from '@/components/Button';
 import { Section, SectionHeader, SectionBody } from '@/components/Section';
 import { CardContainer } from '@/components/CardContainer';
@@ -15,7 +17,6 @@ import Loader from '@/components/Loader';
 
 import errorMessage from '@/helpers/errorMessage';
 import { useFetch } from '@/hooks/useFetch';
-import getFormData from '@/helpers/getFormData';
 import Error from '@/components/Error/index';
 import { useSelector } from 'react-redux';
 import urlRoute from '@/helpers/urlRoute';
@@ -27,6 +28,7 @@ import CulturesActionsService, {
 import objectKeyExists from '@/helpers/objectKeyExists';
 import CulturesActionsForm from '@/components/CultureActionsForm/index';
 import { dateToISOString } from '@/helpers/date';
+import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 
 function AcoesCulturaCadastrar() {
   const formRef = useRef(null);
@@ -62,45 +64,14 @@ function AcoesCulturaCadastrar() {
     router.back();
   };
 
-  const getData = () => {
-    if (formRef.current === undefined) {
-      return {
-        name: null,
-        value: null,
-        description: null,
-        date_start: null,
-        time_start: null,
-        date_finish: null,
-        time_finish: null,
-        supplies: null,
-        dose: null,
-        type_dose: null
-      };
-    }
-
-    return getFormData(formRef.current, {
-      name: null,
-      value: null,
-      description: null,
-      date_start: null,
-      time_start: null,
-      date_finish: null,
-      time_finish: null,
-      supplies: null,
-      dose: null,
-      type_dose: null
-    });
-  };
-
-  const handleSubmit = async e => {
-    e.preventDefault();
+  const handleSubmit = async dt => {
     setDisableButton(true);
 
     const schema = CulturesActionsService.schema(typeAction);
 
     if (schema) {
       schema
-        .validate(getData())
+        .validate(dt)
         .then(async d => {
           setAlert({
             type: 'success',
@@ -149,6 +120,12 @@ function AcoesCulturaCadastrar() {
         .catch(err => {
           setAlert({ type: 'error', message: err.errors[0] });
           setDisableButton(false);
+
+          if (err instanceof yup.ValidationError) {
+            const { path, message } = err;
+
+            formRef.current.setFieldError(path, message);
+          }
         });
     }
   };
@@ -177,58 +154,48 @@ function AcoesCulturaCadastrar() {
         <Nav />
         <Section>
           <SectionHeader>
-            <div className="SectionHeader__content">
-              {data && dataCultures && (
-                <Breadcrumb
-                  path={[
-                    { route: '/', name: 'Home' },
-                    {
-                      route: '/admin',
-                      name: 'Painel Administrativo',
-                      active:
-                        type === 'administrador' && route?.permission === type
-                    },
-                    { route: `${route.path}`, name: 'Propriedades' },
-                    {
-                      route: `${route.path}/${id}/detalhes`,
-                      name: `${data?.properties.name}`
-                    },
-                    {
-                      route: `${route.path}/${id}/talhoes`,
-                      name: `Talhões`
-                    },
-                    {
-                      route: `${route.path}/${id}/talhoes/${idField}/detalhes`,
-                      name: `${data?.name}`
-                    },
-                    {
-                      route: `${route.path}/${id}/talhoes/${idField}/culturas`,
-                      name: `Culturas`
-                    },
-                    {
-                      route: `${route.path}/${id}/talhoes/${idField}/culturas/${idCulture}/detalhes`,
-                      name: `${dataCultures?.products.name}`
-                    },
-                    {
-                      route: `${route.path}/${id}/talhoes/${idField}/culturas/${idCulture}/acoes`,
-                      name: `Ações`
-                    },
-                    {
-                      route: `${route.path}/${id}/talhoes/${idField}/culturas/${idCulture}/acoes/cadastrar`,
-                      name: `Registrar`
-                    }
-                  ]}
-                />
-              )}
-              <h2>
-                Registrar Ação na Cultura de {dataCultures?.products.name}
-              </h2>
-              <p>
-                Aqui você irá registrar uma ação na cultura de{' '}
-                {dataCultures?.products.name} do talhão{' '}
-                {`${data?.name} da propriedade ${data?.properties.name}`}.
-              </p>
-            </div>
+            <SectionHeaderContent
+              breadcrumb={[
+                { route: '/', name: 'Home' },
+                {
+                  route: '/admin',
+                  name: 'Painel Administrativo',
+                  active: type === 'administrador' && route?.permission === type
+                },
+                { route: `${route.path}`, name: 'Propriedades' },
+                {
+                  route: `${route.path}/${id}/detalhes`,
+                  name: `${data?.properties?.name}`
+                },
+                {
+                  route: `${route.path}/${id}/talhoes`,
+                  name: `Talhões`
+                },
+                {
+                  route: `${route.path}/${id}/talhoes/${idField}/detalhes`,
+                  name: `${data?.name}`
+                },
+                {
+                  route: `${route.path}/${id}/talhoes/${idField}/culturas`,
+                  name: `Culturas`
+                },
+                {
+                  route: `${route.path}/${id}/talhoes/${idField}/culturas/${idCulture}/detalhes`,
+                  name: `${dataCultures?.products?.name}`
+                },
+                {
+                  route: `${route.path}/${id}/talhoes/${idField}/culturas/${idCulture}/acoes`,
+                  name: `Ações`
+                },
+                {
+                  route: `${route.path}/${id}/talhoes/${idField}/culturas/${idCulture}/acoes/cadastrar`,
+                  name: `Registrar`
+                }
+              ]}
+              title={`Registrar Ação na Cultura de ${dataCultures?.products?.name}`}
+              description={`Aqui você irá registrar uma ação na cultura de ${dataCultures?.products?.name} do talhão ${data?.name} da propriedade ${data?.properties?.name}.`}
+              isLoading={isEmpty(data) || isEmpty(dataCultures)}
+            />
           </SectionHeader>
           <SectionBody>
             <div className="SectionBody__content">
@@ -236,14 +203,14 @@ function AcoesCulturaCadastrar() {
                 {alert.message !== '' && (
                   <Alert type={alert.type}>{alert.message}</Alert>
                 )}
-                <form
-                  id="registerForm"
-                  ref={formRef}
-                  method="post"
-                  onSubmit={event => handleSubmit(event)}
-                >
-                  {(data && dataCultures && (
-                    <>
+                {(data && dataCultures && (
+                  <>
+                    <Form
+                      ref={formRef}
+                      method="post"
+                      onSubmit={handleSubmit}
+                      initialData={{ types: typeAction }}
+                    >
                       <Select
                         options={Object.keys(actionsList).map(action => ({
                           value: actionsList[action].value,
@@ -252,7 +219,6 @@ function AcoesCulturaCadastrar() {
                         label="Selecione a Ação"
                         name="types"
                         onChange={handleChangeTypeAction}
-                        value={typeAction}
                       />
 
                       {typeAction && (
@@ -285,9 +251,9 @@ function AcoesCulturaCadastrar() {
                           </Button>
                         </div>
                       </div>
-                    </>
-                  )) || <Loader />}
-                </form>
+                    </Form>
+                  </>
+                )) || <Loader />}
               </CardContainer>
             </div>
           </SectionBody>

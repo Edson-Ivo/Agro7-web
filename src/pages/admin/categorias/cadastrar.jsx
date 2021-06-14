@@ -3,11 +3,11 @@ import Head from 'next/head';
 import { MultiStepForm as MultiStep, Step } from '@/components/Multiform';
 import * as yup from 'yup';
 import { useRouter } from 'next/router';
+import { Form } from '@unform/web';
 
 import Container from '@/components/Container';
 import Nav from '@/components/Nav';
 import Navbar from '@/components/Navbar';
-import Breadcrumb from '@/components/Breadcrumb';
 import Input from '@/components/Input';
 import Button from '@/components/Button';
 import { Alert } from '@/components/Alert';
@@ -16,7 +16,6 @@ import { Section, SectionHeader, SectionBody } from '@/components/Section';
 import { CardContainer } from '@/components/CardContainer';
 import { privateRoute } from '@/components/PrivateRoute';
 import Error from '@/components/Error';
-import getFormData from '@/helpers/getFormData';
 import errorMessage from '@/helpers/errorMessage';
 import CategoriesService from '@/services/CategoriesService';
 import { useFetch } from '@/hooks/useFetch';
@@ -24,6 +23,7 @@ import Loader from '@/components/Loader/index';
 import TextArea from '@/components/TextArea/index';
 import Pagination from '@/components/Pagination/index';
 import ColorsContainer, { ColorsGrid } from '@/components/ColorsContainer';
+import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 
 const schema = yup.object().shape({
   name: yup.string().required('O campo nome é obrigatório!'),
@@ -47,32 +47,16 @@ function AdminCategoriesCreate() {
     `/colors/find/all?limit=${perPage}&page=${pageColors}`
   );
 
-  const getData = () => {
-    if (formRef.current === undefined) {
-      return {
-        name: null,
-        description: null,
-        colors: null
-      };
-    }
-
-    return getFormData(formRef.current, {
-      name: null,
-      description: null,
-      colors: null
-    });
-  };
-
   const handleColors = colorId => {
     setSelectedColor(colorId);
   };
 
-  const handleSubmit = async e => {
-    e.preventDefault();
+  const handleSubmit = async data => {
     setDisableButton(true);
+
     schema
-      .validate(getData())
-      .then(async data => {
+      .validate(data)
+      .then(async d => {
         setAlert({
           type: 'success',
           message: 'Enviando...'
@@ -84,8 +68,9 @@ function AdminCategoriesCreate() {
             message: 'Selecione uma cor!'
           });
         } else {
-          data.colors = selectedColor;
-          await CategoriesService.create(data).then(res => {
+          d.colors = selectedColor;
+
+          await CategoriesService.create(d).then(res => {
             if (res.status !== 201 || res?.statusCode) {
               setAlert({ type: 'error', message: errorMessage(res) });
               setTimeout(() => {
@@ -108,6 +93,12 @@ function AdminCategoriesCreate() {
       .catch(err => {
         setAlert({ type: 'error', message: err.errors[0] });
         setDisableButton(false);
+
+        if (err instanceof yup.ValidationError) {
+          const { path, message } = err;
+
+          formRef.current.setFieldError(path, message);
+        }
       });
   };
 
@@ -124,21 +115,19 @@ function AdminCategoriesCreate() {
         <Nav />
         <Section>
           <SectionHeader>
-            <div className="SectionHeader__content">
-              <Breadcrumb
-                path={[
-                  { route: '/', name: 'Home' },
-                  { route: '/admin', name: 'Painel Administrativo' },
-                  { route: '/admin/categorias', name: 'Categorias' },
-                  {
-                    route: '/admin/categorias/cadastrar',
-                    name: 'Cadastrar'
-                  }
-                ]}
-              />
-              <h2>Cadastre uma Categoria</h2>
-              <p>Aqui você irá cadastrar uma categoria no seu sistema</p>
-            </div>
+            <SectionHeaderContent
+              breadcrumb={[
+                { route: '/', name: 'Home' },
+                { route: '/admin', name: 'Painel Administrativo' },
+                { route: '/admin/categorias', name: 'Categorias' },
+                {
+                  route: '/admin/categorias/cadastrar',
+                  name: 'Cadastrar'
+                }
+              ]}
+              title="Cadastre uma Categoria"
+              description="Aqui você irá cadastrar uma categoria no seu sistema"
+            />
           </SectionHeader>
           <SectionBody>
             <div className="SectionBody__content">
@@ -146,15 +135,11 @@ function AdminCategoriesCreate() {
                 {alert.message !== '' && (
                   <Alert type={alert.type}>{alert.message}</Alert>
                 )}
-                <form
-                  id="registerForm"
-                  ref={formRef}
-                  method="post"
-                  onSubmit={event => handleSubmit(event)}
-                >
+                <Form ref={formRef} method="post" onSubmit={handleSubmit}>
                   <MultiStep activeStep={activeStep}>
                     <Step label="Dados" onClick={() => setActiveStep(1)}>
                       <h4 className="step-title">Dados da Categoria</h4>
+
                       <Input type="text" label="Nome" name="name" />
                       <TextArea name="description" label="Descrição" />
                     </Step>
@@ -233,7 +218,7 @@ function AdminCategoriesCreate() {
                       )}
                     </div>
                   </div>
-                </form>
+                </Form>
               </CardContainer>
             </div>
           </SectionBody>

@@ -1,7 +1,8 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import { Form } from '@unform/web';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
@@ -9,7 +10,7 @@ import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
 import Container from '@/components/Container';
 import Nav from '@/components/Nav';
 import Navbar from '@/components/Navbar';
-import Breadcrumb from '@/components/Breadcrumb';
+
 import Input from '@/components/Input';
 import Button from '@/components/Button';
 import { Alert } from '@/components/Alert';
@@ -26,10 +27,13 @@ import Loader from '@/components/Loader/index';
 import ProducerNotebookService from '@/services/ProducerNotebookService';
 import { dateConversor, dateToInput } from '@/helpers/date';
 import { useModal } from '@/hooks/useModal';
+import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
+import isEmpty from '@/helpers/isEmpty';
 
 function ProducerNotebookDetails() {
   const [alert, setAlert] = useState({ type: '', message: '' });
   const router = useRouter();
+  const formRef = useRef(null);
 
   const { addModal, removeModal } = useModal();
 
@@ -89,32 +93,28 @@ function ProducerNotebookDetails() {
         <Nav />
         <Section>
           <SectionHeader>
-            <div className="SectionHeader__content">
-              {data && (
-                <Breadcrumb
-                  path={[
-                    { route: '/', name: 'Home' },
-                    { route: '/caderno-produtor', name: 'Caderno do Produtor' },
-                    {
-                      route: `/caderno-produtor?searchDate=${dateToInput(
-                        data.date
-                      )}`,
-                      name: `${dateConversor(data.date, false)}`
-                    },
-                    {
-                      route: `/caderno-produtor/${id}/detalhes`,
-                      name: 'Anotação'
-                    }
-                  ]}
-                />
-              )}
-              <h2>Anotação</h2>
-              <p>
-                Você está visualizando a anotação &quot;{data?.name}&quot; do
-                dia {dateConversor(data?.date, false)} do seu Caderno do
-                Produtor.
-              </p>
-              {data && !data.is_log && (
+            <SectionHeaderContent
+              breadcrumb={[
+                { route: '/', name: 'Home' },
+                { route: '/caderno-produtor', name: 'Caderno do Produtor' },
+                {
+                  route: `/caderno-produtor?searchDate=${dateToInput(
+                    data?.date
+                  )}`,
+                  name: `${dateConversor(data?.date, false)}`
+                },
+                {
+                  route: `/caderno-produtor/${id}/detalhes`,
+                  name: 'Anotação'
+                }
+              ]}
+              title="Anotação"
+              description={`Você está visualizando a anotação "${data?.name}" do
+                dia ${dateConversor(data?.date, false)} do seu Caderno do
+                Produtor.`}
+              isLoading={isEmpty(data)}
+            >
+              {!isEmpty(data) && !data.is_log && (
                 <div className="buttons__container">
                   <Link href={`/caderno-produtor/${id}/editar`}>
                     <Button className="primary">
@@ -131,7 +131,7 @@ function ProducerNotebookDetails() {
                   </Button>
                 </div>
               )}
-            </div>
+            </SectionHeaderContent>
           </SectionHeader>
           <SectionBody>
             <div className="SectionBody__content">
@@ -141,36 +141,23 @@ function ProducerNotebookDetails() {
                 )}
                 {(data && dataCategories && (
                   <>
-                    <Input
-                      type="text"
-                      label="Nome"
-                      name="name"
-                      initialValue={data.name}
-                      disabled
-                    />
-                    <Select
-                      options={dataCategories?.items.map(category => ({
-                        value: category.id,
-                        label: category.name
-                      }))}
-                      label="Categoria"
-                      name="categories"
-                      value={data.categories.id}
-                      disabled
-                    />
-                    <Input
-                      type="date"
-                      label="Data"
-                      name="date"
-                      initialValue={dateToInput(data?.date)}
-                      disabled
-                    />
-                    <TextArea
-                      name="description"
-                      label="Descrição"
-                      initialValue={data?.description}
-                      disabled
-                    />
+                    <Form
+                      ref={formRef}
+                      initialData={{ ...data, date: dateToInput(data?.date) }}
+                    >
+                      <Input type="text" label="Nome" name="name" disabled />
+                      <Select
+                        options={dataCategories?.items.map(category => ({
+                          value: category.id,
+                          label: category.name
+                        }))}
+                        label="Categoria"
+                        name="categories.id"
+                        disabled
+                      />
+                      <Input type="date" label="Data" name="date" disabled />
+                      <TextArea name="description" label="Descrição" disabled />
+                    </Form>
                     <div className="form-group buttons">
                       <div>
                         <Button type="button" onClick={() => router.back()}>

@@ -1,49 +1,64 @@
-import React, { useState, forwardRef, useImperativeHandle } from 'react';
+import React, { useRef, useEffect } from 'react';
 import ReactSelect from 'react-select';
+import { useField } from '@unform/core';
 
 import { InputContainer, Label } from './styles';
 
-const Select = (
-  {
-    name,
-    options,
-    label,
-    value,
-    disabled,
-    searchable = false,
-    clearable = false,
-    onChange = null,
-    noLabel = false,
-    ...rest
-  },
-  ref
-) => {
-  const [valueChange, setValueChange] = useState(value);
+const Select = ({
+  name,
+  options,
+  label,
+  disabled,
+  searchable = false,
+  clearable = false,
+  onChange = null,
+  noLabel = false,
+  ...rest
+}) => {
+  const selectRef = useRef(null);
+  const { fieldName, defaultValue, registerField, error } = useField(name);
+
+  useEffect(() => {
+    registerField({
+      name: fieldName,
+      ref: selectRef.current,
+      getValue: ref => {
+        if (rest.isMulti) {
+          if (!ref.state.value) return [];
+
+          return ref.state.value.map(option => option.value);
+        }
+
+        if (!ref.state.value) return '';
+
+        return ref.state.value.value;
+      },
+      setValue: (ref, value) => {
+        ref.select.setValue(value || null);
+      }
+    });
+  }, [fieldName, registerField, rest.isMulti]);
 
   const handleChange = e => {
-    setValueChange(e?.value || '');
-
     if (onChange !== null) onChange(e);
   };
 
-  useImperativeHandle(ref, () => ({
-    value: valueChange,
-    setValue: v => {
-      const val = {
-        value: v
-      };
-      handleChange(val);
-    }
-  }));
-
   return (
-    <InputContainer>
-      {label && !noLabel && <Label className="input-label">{label}</Label>}
+    <InputContainer error={error}>
+      {label && !noLabel && (
+        <Label className={`input-label ${error ? ' label_error' : ''}`}>
+          {label}
+        </Label>
+      )}
       <ReactSelect
+        name={name}
         options={options}
         classNamePrefix="select"
         placeholder={label}
-        value={options.filter(option => option.value === valueChange) || null}
+        defaultValue={
+          defaultValue && options.find(option => option.value === defaultValue)
+        }
+        ref={selectRef}
         onChange={e => handleChange(e)}
         isDisabled={disabled}
         noOptionsMessage={() => 'Não há dados'}
@@ -62,14 +77,8 @@ const Select = (
         })}
         {...rest}
       />
-      <input
-        type="hidden"
-        tabIndex={-1}
-        name={name}
-        value={valueChange || ''}
-      />
     </InputContainer>
   );
 };
 
-export default forwardRef(Select);
+export default Select;

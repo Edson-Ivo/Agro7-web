@@ -11,10 +11,11 @@ import { Card } from '@/components/Card/index';
 import Container from '@/components/Container';
 import Nav from '@/components/Nav';
 import Navbar from '@/components/Navbar';
-import Breadcrumb from '@/components/Breadcrumb';
+
 import { Section, SectionHeader, SectionBody } from '@/components/Section';
 
 import { privateRoute } from '@/components/PrivateRoute';
+import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 
 const data = [
   {
@@ -47,21 +48,17 @@ function TechnichianHome() {
         <Nav />
         <Section>
           <SectionHeader>
-            <div className="SectionHeader__content">
-              <Breadcrumb
-                path={[
-                  { route: '/', name: 'Home' },
-                  { route: '/tecnico', name: 'Painel Técnico' }
-                ]}
-              />
-              <h2>Painel Técnico</h2>
-              <p>
-                Olá {name}! Esse é seu painel de técnico, aqui você pode
+            <SectionHeaderContent
+              breadcrumb={[
+                { route: '/', name: 'Home' },
+                { route: '/tecnico', name: 'Painel Técnico' }
+              ]}
+              title="Painel Técnico"
+              description={`Olá ${name}! Esse é seu painel de técnico, aqui você pode
                 gerenciar suas solicitações para trabalhar em uma propriedade,
                 como também, gerenciar as propriedades que você já está
-                relacionado!
-              </p>
-            </div>
+                relacionado!`}
+            />
           </SectionHeader>
           <SectionBody>
             <div className="SectionBody__content">

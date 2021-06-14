@@ -1,6 +1,8 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
+import { Form } from '@unform/web';
+
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faThumbtack, faUserFriends } from '@fortawesome/free-solid-svg-icons';
 
@@ -8,7 +10,7 @@ import Container from '@/components/Container';
 import { MapActionGetLatLng } from '@/components/MapApp';
 import Nav from '@/components/Nav';
 import Navbar from '@/components/Navbar';
-import Breadcrumb from '@/components/Breadcrumb';
+
 import Loader from '@/components/Loader';
 import Input from '@/components/Input';
 import Button from '@/components/Button';
@@ -32,9 +34,11 @@ import Error from '@/components/Error/index';
 import { useSelector } from 'react-redux';
 import urlRoute from '@/helpers/urlRoute';
 import isEmpty from '@/helpers/isEmpty';
+import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 
 function PropertieInfo() {
   const [activeStep, setActiveStep] = useState(1);
+  const formRef = useRef(null);
 
   const router = useRouter();
   const { id } = router.query;
@@ -124,35 +128,30 @@ function PropertieInfo() {
         <Nav />
         <Section>
           <SectionHeader>
-            <div className="SectionHeader__content">
-              {data && (
-                <Breadcrumb
-                  path={[
-                    { route: '/', name: 'Home' },
-                    {
-                      route: '/tecnico',
-                      name: 'Painel Técnico',
-                      active: type === 'tecnico' && route?.permission === type
-                    },
-                    {
-                      route: '/admin',
-                      name: 'Painel Administrativo',
-                      active:
-                        type === 'administrador' && route?.permission === type
-                    },
-                    { route: `${route.path}`, name: 'Propriedades' },
-                    {
-                      route: `${route.path}/${id}/detalhes`,
-                      name: `${data?.name}`
-                    }
-                  ]}
-                />
-              )}
-              <h2>Informações da propriedade {data && `(${data.name})`}</h2>
-              <p>
-                Aqui você irá ver informações detalhadas da propriedade em
-                questão
-              </p>
+            <SectionHeaderContent
+              breadcrumb={[
+                { route: '/', name: 'Home' },
+                {
+                  route: '/tecnico',
+                  name: 'Painel Técnico',
+                  active: type === 'tecnico' && route?.permission === type
+                },
+                {
+                  route: '/admin',
+                  name: 'Painel Administrativo',
+                  active: type === 'administrador' && route?.permission === type
+                },
+                { route: `${route.path}`, name: 'Propriedades' },
+                {
+                  route: `${route.path}/${id}/detalhes`,
+                  name: `${data?.name}`
+                }
+              ]}
+              title={`Informações da propriedade ${data?.name}`}
+              description="Aqui você irá ver informações detalhadas da propriedade em
+                questão"
+              isLoading={isEmpty(data)}
+            >
               {loadingWillAccess && (
                 <div className="buttons__container">
                   <Link href={`${route.path}/${id}/talhoes/`}>
@@ -169,7 +168,7 @@ function PropertieInfo() {
                   )}
                 </div>
               )}
-            </div>
+            </SectionHeaderContent>
           </SectionHeader>
           <SectionBody>
             <div className="SectionBody__content">
@@ -181,147 +180,150 @@ function PropertieInfo() {
                         label="Informações"
                         onClick={() => setActiveStep(1)}
                       >
-                        <div className="form-group">
+                        <Form
+                          ref={formRef}
+                          initialData={{
+                            ...data
+                          }}
+                        >
+                          <div className="form-group">
+                            <div>
+                              <Input
+                                type="text"
+                                label="Nome da propriedade"
+                                name="name"
+                                disabled
+                              />
+                            </div>
+                            <div>
+                              <Select
+                                options={dataTypeOwner?.typesOwner.map(
+                                  owner => ({
+                                    value: owner,
+                                    label: capitalize(owner)
+                                  })
+                                )}
+                                label="Quem é você para esta propriedade?"
+                                name="type_owner"
+                                disabled
+                              />
+                            </div>
+                          </div>
+                          <div className="form-group">
+                            <div>
+                              <Input
+                                type="number"
+                                label="Área"
+                                name="area"
+                                disabled
+                              />
+                            </div>
+                            <div>
+                              <Select
+                                options={dataTypeDimension?.typesDimension.map(
+                                  dimension => ({
+                                    value: dimension,
+                                    label: dimension
+                                  })
+                                )}
+                                label="Unidade de medida"
+                                name="type_dimension"
+                                disabled
+                              />
+                            </div>
+                          </div>
+                          <div className="form-group">
+                            <div>
+                              <Input
+                                type="text"
+                                label="CEP"
+                                name="addresses.postcode"
+                                mask="cep"
+                                disabled
+                              />
+                            </div>
+                            <div>
+                              <Input
+                                type="text"
+                                label="Estado"
+                                name="addresses.state"
+                                disabled
+                              />
+                            </div>
+                            <div>
+                              <Input
+                                type="text"
+                                label="Cidade"
+                                name="addresses.city"
+                                disabled
+                              />
+                            </div>
+                          </div>
                           <div>
                             <Input
                               type="text"
-                              label="Nome da propriedade"
-                              name="name"
-                              initialValue={data.name}
-                              disabled
-                            />
-                          </div>
-                          <div>
-                            <Select
-                              options={dataTypeOwner?.typesOwner.map(owner => ({
-                                value: owner,
-                                label: capitalize(owner)
-                              }))}
-                              label="Quem é você para esta propriedade?"
-                              value={data.type_owner}
-                              name="type_owner"
-                              disabled
-                            />
-                          </div>
-                        </div>
-                        <div className="form-group">
-                          <div>
-                            <Input
-                              type="number"
-                              label="Área"
-                              name="area"
-                              initialValue={data.area}
-                              disabled
-                            />
-                          </div>
-                          <div>
-                            <Select
-                              options={dataTypeDimension?.typesDimension.map(
-                                dimension => ({
-                                  value: dimension,
-                                  label: dimension
-                                })
-                              )}
-                              label="Unidade de medida"
-                              value={data.type_dimension}
-                              name="type_dimension"
-                              disabled
-                            />
-                          </div>
-                        </div>
-                        <div className="form-group">
-                          <div>
-                            <Input
-                              type="text"
-                              label="CEP"
-                              name="postcode"
-                              initialValue={data.addresses.postcode}
-                              mask="cep"
+                              label="Logradouro"
+                              name="addresses.locality"
                               disabled
                             />
                           </div>
                           <div>
                             <Input
                               type="text"
-                              label="Estado"
-                              name="state"
-                              initialValue={data.addresses.state}
+                              label="Acesso"
+                              name="addresses.access"
                               disabled
                             />
                           </div>
-                          <div>
-                            <Input
-                              type="text"
-                              label="Cidade"
-                              name="city"
-                              initialValue={data.addresses.city}
-                              disabled
-                            />
-                          </div>
-                        </div>
-                        <div>
-                          <Input
-                            type="text"
-                            label="Logradouro"
-                            name="locality"
-                            initialValue={data?.addresses?.locality}
-                          />
-                        </div>
-                        <div>
-                          <Input
-                            type="text"
-                            label="Acesso"
-                            name="access"
-                            initialValue={data?.addresses?.access || ''}
-                            disabled
-                          />
-                        </div>
 
-                        <div className="form-group">
-                          <div>
-                            <Input
-                              type="number"
-                              label="Latitude"
-                              name="latitude"
-                              initialValue={data.coordinates.latitude}
-                              disabled
+                          <div className="form-group">
+                            <div>
+                              <Input
+                                type="number"
+                                label="Latitude"
+                                name="coordinates.latitude"
+                                disabled
+                              />
+                            </div>
+                            <div>
+                              <Input
+                                type="number"
+                                label="Longitude"
+                                name="coordinates.longitude"
+                                disabled
+                              />
+                            </div>
+                          </div>
+                          <div style={{ marginBottom: '20px' }}>
+                            <MapActionGetLatLng
+                              positions={[
+                                data.coordinates.latitude,
+                                data.coordinates.longitude
+                              ]}
                             />
                           </div>
-                          <div>
-                            <Input
-                              type="number"
-                              label="Longitude"
-                              name="longitude"
-                              initialValue={data.coordinates.longitude}
-                              disabled
-                            />
+                          <div className="form-group buttons">
+                            <div>
+                              <Button
+                                type="button"
+                                onClick={() => router.back()}
+                              >
+                                Voltar
+                              </Button>
+                            </div>
+                            <div>
+                              <Button
+                                type="button"
+                                className="primary"
+                                onClick={() =>
+                                  router.push(`${route.path}/${id}/editar`)
+                                }
+                              >
+                                Editar
+                              </Button>
+                            </div>
                           </div>
-                        </div>
-                        <div style={{ marginBottom: '20px' }}>
-                          <MapActionGetLatLng
-                            positions={[
-                              data.coordinates.latitude,
-                              data.coordinates.longitude
-                            ]}
-                          />
-                        </div>
-                        <div className="form-group buttons">
-                          <div>
-                            <Button onClick={() => router.back()}>
-                              Voltar
-                            </Button>
-                          </div>
-                          <div>
-                            <Button
-                              className="primary"
-                              onClick={() =>
-                                router.push(`${route.path}/${id}/editar`)
-                              }
-                            >
-                              Editar
-                            </Button>
-                          </div>
-                        </div>
+                        </Form>
                       </Step>
                       <Step label="Documentos" onClick={() => setActiveStep(2)}>
                         {errorDocs && (
@@ -379,12 +381,13 @@ function PropertieInfo() {
                         )) || <Loader />}
                         <div className="form-group buttons">
                           <div>
-                            <Button onClick={() => router.back()}>
+                            <Button type="button" onClick={() => router.back()}>
                               Voltar
                             </Button>
                           </div>
                           <div>
                             <Button
+                              type="button"
                               className="primary"
                               onClick={() =>
                                 router.push(

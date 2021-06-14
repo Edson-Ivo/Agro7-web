@@ -1,13 +1,15 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
+import { Form } from '@unform/web';
+
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 
 import Container from '@/components/Container';
 import Nav from '@/components/Nav';
 import Navbar from '@/components/Navbar';
-import Breadcrumb from '@/components/Breadcrumb';
+
 import Loader from '@/components/Loader';
 import Button from '@/components/Button';
 import Table from '@/components/Table';
@@ -32,9 +34,12 @@ import CulturesActionsService, {
   actionsList
 } from '@/services/CulturesActionsService';
 import objectKeyExists from '@/helpers/objectKeyExists';
+import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 
 function AcoesCultura() {
   const router = useRouter();
+  const formRef = useRef(null);
+
   const {
     id,
     idField,
@@ -138,60 +143,50 @@ function AcoesCultura() {
         <Nav />
         <Section>
           <SectionHeader>
-            <div className="SectionHeader__content">
-              {data && dataCultures && (
-                <Breadcrumb
-                  path={[
-                    { route: '/', name: 'Home' },
-                    {
-                      route: '/admin',
-                      name: 'Painel Administrativo',
-                      active:
-                        type === 'administrador' && route?.permission === type
-                    },
-                    { route: `${route.path}`, name: 'Propriedades' },
-                    {
-                      route: `${route.path}/${id}/detalhes`,
-                      name: `${data?.properties.name}`
-                    },
-                    {
-                      route: `${route.path}/${id}/talhoes`,
-                      name: `Talhões`
-                    },
-                    {
-                      route: `${route.path}/${id}/talhoes/${idField}/detalhes`,
-                      name: `${data?.name}`
-                    },
-                    {
-                      route: `${route.path}/${id}/talhoes/${idField}/culturas`,
-                      name: `Culturas`
-                    },
-                    {
-                      route: `${route.path}/${id}/talhoes/${idField}/culturas/${idCulture}/detalhes`,
-                      name: `${dataCultures?.products.name}`
-                    },
-                    {
-                      route: `${route.path}/${id}/talhoes/${idField}/culturas/${idCulture}/acoes`,
-                      name: `Ações`
-                    }
-                  ]}
-                />
-              )}
-              <h2>
-                Ações na Cultura de {dataCultures?.products.name} do Talhão{' '}
-                {data && data.name}
-              </h2>
-              <p>
-                Aqui você irá ver as ações na cultura de{' '}
-                {dataCultures?.products.name} do talhão{' '}
-                {`${data?.name} da propriedade ${data?.properties.name}`}.
-              </p>
+            <SectionHeaderContent
+              breadcrumb={[
+                { route: '/', name: 'Home' },
+                {
+                  route: '/admin',
+                  name: 'Painel Administrativo',
+                  active: type === 'administrador' && route?.permission === type
+                },
+                { route: `${route.path}`, name: 'Propriedades' },
+                {
+                  route: `${route.path}/${id}/detalhes`,
+                  name: `${data?.properties?.name}`
+                },
+                {
+                  route: `${route.path}/${id}/talhoes`,
+                  name: `Talhões`
+                },
+                {
+                  route: `${route.path}/${id}/talhoes/${idField}/detalhes`,
+                  name: `${data?.name}`
+                },
+                {
+                  route: `${route.path}/${id}/talhoes/${idField}/culturas`,
+                  name: `Culturas`
+                },
+                {
+                  route: `${route.path}/${id}/talhoes/${idField}/culturas/${idCulture}/detalhes`,
+                  name: `${dataCultures?.products?.name}`
+                },
+                {
+                  route: `${route.path}/${id}/talhoes/${idField}/culturas/${idCulture}/acoes`,
+                  name: `Ações`
+                }
+              ]}
+              title={`Ações na Cultura de ${dataCultures?.products?.name} do Talhão ${data?.name}`}
+              description={`Aqui você irá ver as ações na cultura de ${dataCultures?.products?.name} do talhão ${data?.name} da propriedade ${data?.properties?.name}.`}
+              isLoading={isEmpty(data)}
+            >
               <Link href={`${baseUrl}/cadastrar`}>
                 <Button className="primary">
                   <FontAwesomeIcon icon={faPlus} /> Registrar Ação
                 </Button>
               </Link>
-            </div>
+            </SectionHeaderContent>
           </SectionHeader>
           <SectionBody>
             <div className="SectionBody__content">
@@ -200,16 +195,17 @@ function AcoesCultura() {
                   {alertMsg.message && (
                     <Alert type={alertMsg.type}>{alertMsg.message}</Alert>
                   )}
-                  <Select
-                    options={Object.keys(actionsList).map(action => ({
-                      value: actionsList[action].value,
-                      label: actionsList[action].label
-                    }))}
-                    label="Filtrar por Ação"
-                    name="types"
-                    onChange={handleChangeTypeAction}
-                    value={typeAction}
-                  />
+                  <Form ref={formRef} initialData={{ types: typeAction }}>
+                    <Select
+                      options={Object.keys(actionsList).map(action => ({
+                        value: actionsList[action].value,
+                        label: actionsList[action].label
+                      }))}
+                      label="Filtrar por Ação"
+                      name="types"
+                      onChange={handleChangeTypeAction}
+                    />
+                  </Form>
                   {(((!isEmpty(typeAction) &&
                     data &&
                     dataCultures &&

@@ -2,11 +2,12 @@ import React, { useState, useRef } from 'react';
 import Head from 'next/head';
 import * as yup from 'yup';
 import { useRouter } from 'next/router';
+import { Form } from '@unform/web';
 
 import Container from '@/components/Container';
 import Nav from '@/components/Nav';
 import Navbar from '@/components/Navbar';
-import Breadcrumb from '@/components/Breadcrumb';
+
 import Input from '@/components/Input';
 import Button from '@/components/Button';
 import { Alert } from '@/components/Alert';
@@ -14,7 +15,6 @@ import { Section, SectionHeader, SectionBody } from '@/components/Section';
 
 import { CardContainer } from '@/components/CardContainer';
 import { privateRoute } from '@/components/PrivateRoute';
-import getFormData from '@/helpers/getFormData';
 import errorMessage from '@/helpers/errorMessage';
 import TextArea from '@/components/TextArea/index';
 import { useFetch } from '@/hooks/useFetch';
@@ -23,6 +23,7 @@ import Select from '@/components/Select/index';
 import Loader from '@/components/Loader/index';
 import ProducerNotebookService from '@/services/ProducerNotebookService';
 import { dateToInput, dateToISOString } from '@/helpers/date';
+import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 
 const schema = yup.object().shape({
   name: yup.string().required('O campo nome é obrigatório!'),
@@ -38,33 +39,15 @@ function ProducerNotebookEdit() {
   const formRef = useRef(null);
 
   const { id } = router.query;
-  const { data, error, mutate } = useFetch(
+  const { data: dataProducerNotebook, error, mutate } = useFetch(
     `/producer-notebook/find/by/id/${id}`
   );
 
-  const getData = () => {
-    if (formRef.current === undefined) {
-      return {
-        name: null,
-        description: null,
-        date: null,
-        categories: null
-      };
-    }
-
-    return getFormData(formRef.current, {
-      name: null,
-      description: null,
-      date: null,
-      categories: null
-    });
-  };
-
-  const handleSubmit = async e => {
-    e.preventDefault();
+  const handleSubmit = async data => {
     setDisableButton(true);
+
     schema
-      .validate(getData())
+      .validate(data)
       .then(async d => {
         setAlert({
           type: 'success',
@@ -97,6 +80,12 @@ function ProducerNotebookEdit() {
       .catch(err => {
         setAlert({ type: 'error', message: err.errors[0] });
         setDisableButton(false);
+
+        if (err instanceof yup.ValidationError) {
+          const { path, message } = err;
+
+          formRef.current.setFieldError(path, message);
+        }
       });
   };
 
@@ -107,7 +96,7 @@ function ProducerNotebookEdit() {
   if (errorCategories || error)
     return <Error error={errorCategories || error} />;
 
-  if (data?.is_log) return <Error error={404} />;
+  if (dataProducerNotebook?.is_log) return <Error error={404} />;
 
   return (
     <>
@@ -120,22 +109,18 @@ function ProducerNotebookEdit() {
         <Nav />
         <Section>
           <SectionHeader>
-            <div className="SectionHeader__content">
-              <Breadcrumb
-                path={[
-                  { route: '/', name: 'Home' },
-                  { route: '/caderno-produtor', name: 'Caderno do Produtor' },
-                  {
-                    route: `/caderno-produtor/${id}/editar`,
-                    name: 'Editar Anotação'
-                  }
-                ]}
-              />
-              <h2>Editar Anotação</h2>
-              <p>
-                Aqui você irá editar uma anotação do seu Caderno do Produtor
-              </p>
-            </div>
+            <SectionHeaderContent
+              breadcrumb={[
+                { route: '/', name: 'Home' },
+                { route: '/caderno-produtor', name: 'Caderno do Produtor' },
+                {
+                  route: `/caderno-produtor/${id}/editar`,
+                  name: 'Editar Anotação'
+                }
+              ]}
+              title="Editar Anotação"
+              description="Aqui você irá editar uma anotação do seu Caderno do Produtor"
+            />
           </SectionHeader>
           <SectionBody>
             <div className="SectionBody__content">
@@ -143,21 +128,20 @@ function ProducerNotebookEdit() {
                 {alert.message !== '' && (
                   <Alert type={alert.type}>{alert.message}</Alert>
                 )}
-                <form
-                  id="registerForm"
-                  ref={formRef}
-                  method="post"
-                  onSubmit={event => handleSubmit(event)}
-                >
-                  {(data && dataCategories && (
-                    <>
-                      <Input
-                        type="text"
-                        label="Nome"
-                        name="name"
-                        initialValue={data.name}
-                        required
-                      />
+
+                {(dataProducerNotebook && dataCategories && (
+                  <>
+                    <Form
+                      ref={formRef}
+                      method="post"
+                      onSubmit={handleSubmit}
+                      initialData={{
+                        ...dataProducerNotebook,
+                        categories: dataProducerNotebook.categories.id,
+                        date: dateToInput(dataProducerNotebook?.date)
+                      }}
+                    >
+                      <Input type="text" label="Nome" name="name" required />
                       <Select
                         options={dataCategories?.items.map(category => ({
                           value: category.id,
@@ -165,22 +149,10 @@ function ProducerNotebookEdit() {
                         }))}
                         label="Selecionar categoria"
                         name="categories"
-                        value={data.categories.id}
                         required
                       />
-                      <Input
-                        type="date"
-                        label="Data"
-                        name="date"
-                        initialValue={dateToInput(data?.date)}
-                        required
-                      />
-                      <TextArea
-                        name="description"
-                        label="Descrição"
-                        initialValue={data?.description}
-                        required
-                      />
+                      <Input type="date" label="Data" name="date" required />
+                      <TextArea name="description" label="Descrição" required />
                       <div className="form-group buttons">
                         <div>
                           <Button type="button" onClick={() => router.back()}>
@@ -197,9 +169,9 @@ function ProducerNotebookEdit() {
                           </Button>
                         </div>
                       </div>
-                    </>
-                  )) || <Loader />}
-                </form>
+                    </Form>
+                  </>
+                )) || <Loader />}
               </CardContainer>
             </div>
           </SectionBody>

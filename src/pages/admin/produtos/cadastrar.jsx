@@ -2,11 +2,11 @@ import React, { useEffect, useRef, useState } from 'react';
 import Head from 'next/head';
 import { MultiStepForm as MultiStep, Step } from '@/components/Multiform';
 import * as yup from 'yup';
+import { Form } from '@unform/web';
 
 import Container from '@/components/Container';
 import Nav from '@/components/Nav';
 import Navbar from '@/components/Navbar';
-import Breadcrumb from '@/components/Breadcrumb';
 import Input from '@/components/Input';
 import Button from '@/components/Button';
 import FileInput from '@/components/FileInput';
@@ -17,12 +17,12 @@ import { privateRoute } from '@/components/PrivateRoute';
 import { Alert } from '@/components/Alert';
 
 import errorMessage from '@/helpers/errorMessage';
-import getFormData from '@/helpers/getFormData';
 
 import ProductsService from '@/services/ProductsService';
 import { useRouter } from 'next/router';
 import TextArea from '@/components/TextArea/index';
 import NutricionalService from '@/services/NutricionalService';
+import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 
 const schema = yup.object().shape({
   name: yup.string().required('O campo nome é obrigatório!'),
@@ -137,6 +137,7 @@ function AdminProductsCreate() {
   const formRef = useRef(null);
   const inputRef = useRef(null);
   const inputNutricionalRef = useRef(null);
+
   const [activeStep, setActiveStep] = useState(1);
   const [alert, setAlert] = useState({ type: '', message: '' });
   const [disableButton, setDisableButton] = useState(false);
@@ -148,70 +149,15 @@ function AdminProductsCreate() {
     setDisableButton(false);
   }, []);
 
-  const getData = () => {
-    if (formRef.current === undefined) {
-      return {
-        name: null,
-        description: null,
-        water: null,
-        calories: null,
-        protein: null,
-        carbohydrate: null,
-        dietary_fiber: null,
-        cholesterol: null,
-        lipids: null,
-        saturated_fatty_acid: null,
-        unsaturated_fatty_acid: null,
-        polyunsaturated_fatty_acid: null,
-        calcium: null,
-        phosphorus: null,
-        iron: null,
-        potassium: null,
-        sodium: null,
-        vitamin_b1: null,
-        vitamin_b2: null,
-        vitamin_b3: null,
-        vitamin_b6: null,
-        vitamin_c: null
-      };
-    }
-
-    return getFormData(formRef.current, {
-      name: null,
-      description: null,
-      water: null,
-      calories: null,
-      protein: null,
-      carbohydrate: null,
-      dietary_fiber: null,
-      cholesterol: null,
-      lipids: null,
-      saturated_fatty_acid: null,
-      unsaturated_fatty_acid: null,
-      polyunsaturated_fatty_acid: null,
-      calcium: null,
-      phosphorus: null,
-      iron: null,
-      potassium: null,
-      sodium: null,
-      vitamin_b1: null,
-      vitamin_b2: null,
-      vitamin_b3: null,
-      vitamin_b6: null,
-      vitamin_c: null
-    });
-  };
-
   const handleCancel = () => {
     router.back();
   };
 
-  const handleSubmit = async e => {
-    e.preventDefault();
+  const handleSubmit = async (d, { reset }, e) => {
     setDisableButton(true);
 
     schema
-      .validate(getData())
+      .validate(d)
       .then(async data => {
         setAlert({
           type: 'success',
@@ -284,6 +230,12 @@ function AdminProductsCreate() {
       .catch(err => {
         setAlert({ type: 'error', message: err.errors[0] });
         setDisableButton(false);
+
+        if (err instanceof yup.ValidationError) {
+          const { path, message } = err;
+
+          formRef.current.setFieldError(path, message);
+        }
       });
   };
 
@@ -298,21 +250,19 @@ function AdminProductsCreate() {
         <Nav />
         <Section>
           <SectionHeader>
-            <div className="SectionHeader__content">
-              <Breadcrumb
-                path={[
-                  { route: '/', name: 'Home' },
-                  { route: '/admin', name: 'Painel Administrativo' },
-                  { route: '/admin/produtos', name: 'Produtos' },
-                  {
-                    route: '/admin/produtos/cadastrar',
-                    name: 'Cadastrar'
-                  }
-                ]}
-              />
-              <h2>Cadastrar Produtos</h2>
-              <p>Aqui você irá cadastrar um produto no sistema</p>
-            </div>
+            <SectionHeaderContent
+              breadcrumb={[
+                { route: '/', name: 'Home' },
+                { route: '/admin', name: 'Painel Administrativo' },
+                { route: '/admin/produtos', name: 'Produtos' },
+                {
+                  route: '/admin/produtos/cadastrar',
+                  name: 'Cadastrar'
+                }
+              ]}
+              title="Cadastrar Produtos"
+              description="Aqui você irá cadastrar um produto no sistema"
+            />
           </SectionHeader>
           <SectionBody>
             <div className="SectionBody__content">
@@ -320,12 +270,7 @@ function AdminProductsCreate() {
                 {alert.message !== '' && (
                   <Alert type={alert.type}>{alert.message}</Alert>
                 )}
-                <form
-                  id="registerForm"
-                  ref={formRef}
-                  method="post"
-                  onSubmit={event => handleSubmit(event)}
-                >
+                <Form ref={formRef} method="post" onSubmit={handleSubmit}>
                   <MultiStep activeStep={activeStep}>
                     <Step label="Produto" onClick={() => setActiveStep(1)}>
                       <h4 className="step-title">Dados do Produto</h4>
@@ -547,7 +492,7 @@ function AdminProductsCreate() {
                       )}
                     </div>
                   </div>
-                </form>
+                </Form>
               </CardContainer>
             </div>
           </SectionBody>

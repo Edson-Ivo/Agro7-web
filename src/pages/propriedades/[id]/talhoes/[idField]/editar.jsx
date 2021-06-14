@@ -1,12 +1,13 @@
 import React, { useEffect, useRef, useState } from 'react';
-import * as yup from 'yup';
-import { useRouter } from 'next/router';
 import Head from 'next/head';
+import { useRouter } from 'next/router';
+import * as yup from 'yup';
+import { Form } from '@unform/web';
 
 import Container from '@/components/Container';
 import Nav from '@/components/Nav';
 import Navbar from '@/components/Navbar';
-import Breadcrumb from '@/components/Breadcrumb';
+
 import Input from '@/components/Input';
 import Button from '@/components/Button';
 import Select from '@/components/Select';
@@ -18,7 +19,6 @@ import { Alert } from '@/components/Alert';
 import errorMessage from '@/helpers/errorMessage';
 import { useFetch } from '@/hooks/useFetch';
 import FieldsService from '@/services/FieldsService';
-import getFormData from '@/helpers/getFormData';
 import { MapActionPlotArea } from '@/components/MapApp';
 import isEmpty from '@/helpers/isEmpty';
 import Loader from '@/components/Loader';
@@ -26,6 +26,7 @@ import areaConversor from '@/helpers/areaConversor';
 import Error from '@/components/Error/index';
 import urlRoute from '@/helpers/urlRoute';
 import { useSelector } from 'react-redux';
+import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 
 const schema = yup.object().shape({
   name: yup.string().required('O campo nome é obrigatório!'),
@@ -44,9 +45,7 @@ function TalhoesEdit() {
   const [alert, setAlert] = useState({ type: '', message: '' });
   const [disableButton, setDisableButton] = useState(false);
   const [coordinates, setCoordinates] = useState([]);
-
-  const areaRef = useRef(null);
-  const typeDimensionRef = useRef(null);
+  const [dataArea, setDataArea] = useState(0.0);
 
   const router = useRouter();
   const { id, idField } = router.query;
@@ -81,35 +80,23 @@ function TalhoesEdit() {
     else setCoordinates([]);
   };
 
-  const handleAreaCalc = area => {
-    const { value: dimension } = typeDimensionRef.current;
-
-    areaRef.current.setValue(areaConversor(area, dimension));
+  const handleChangeTypeDimension = e => {
+    handleAreaCalc(dataArea, e?.value);
   };
 
-  const getData = () => {
-    if (formRef.current === undefined) {
-      return {
-        name: null,
-        area: null,
-        type_dimension: null,
-        coordinates: []
-      };
-    }
+  const handleAreaCalc = (area, dim = null) => {
+    const dimension = dim || formRef.current.getFieldValue('type_dimension');
 
-    return getFormData(formRef.current, {
-      name: null,
-      area: null,
-      type_dimension: null,
-      coordinates: []
-    });
+    setDataArea(area);
+
+    formRef.current.setFieldValue('area', areaConversor(area, dimension));
   };
 
-  const handleSubmit = async e => {
-    e.preventDefault();
+  const handleSubmit = async dt => {
     setDisableButton(true);
+
     schema
-      .validate(getData())
+      .validate(dt)
       .then(async d => {
         setAlert({
           type: 'success',
@@ -144,6 +131,12 @@ function TalhoesEdit() {
       .catch(err => {
         setAlert({ type: 'error', message: err.errors[0] });
         setDisableButton(false);
+
+        if (err instanceof yup.ValidationError) {
+          const { path, message } = err;
+
+          formRef.current.setFieldError(path, message);
+        }
       });
   };
 
@@ -161,44 +154,37 @@ function TalhoesEdit() {
         <Nav />
         <Section>
           <SectionHeader>
-            <div className="SectionHeader__content">
-              {data && (
-                <Breadcrumb
-                  path={[
-                    { route: '/', name: 'Home' },
-                    {
-                      route: '/tecnico',
-                      name: 'Painel Técnico',
-                      active: type === 'tecnico' && route?.permission === type
-                    },
-                    {
-                      route: '/admin',
-                      name: 'Painel Administrativo',
-                      active:
-                        type === 'administrador' && route?.permission === type
-                    },
-                    { route: `${route.path}`, name: 'Propriedades' },
-                    {
-                      route: `${route.path}/${id}/detalhes`,
-                      name: `${data?.name}`
-                    },
-                    {
-                      route: `${route.path}/${id}/talhoes`,
-                      name: `Talhões`
-                    },
-                    {
-                      route: `${route.path}/${id}/talhoes/${idField}/editar`,
-                      name: `Editar`
-                    }
-                  ]}
-                />
-              )}
-              <h2>Editar Talhão {`(${dataFields && dataFields.name})`}</h2>
-              <p>
-                Você está editando o talhão {dataFields && dataFields.name} da
-                propriedade {data && data.name}.
-              </p>
-            </div>
+            <SectionHeaderContent
+              breadcrumb={[
+                { route: '/', name: 'Home' },
+                {
+                  route: '/tecnico',
+                  name: 'Painel Técnico',
+                  active: type === 'tecnico' && route?.permission === type
+                },
+                {
+                  route: '/admin',
+                  name: 'Painel Administrativo',
+                  active: type === 'administrador' && route?.permission === type
+                },
+                { route: `${route.path}`, name: 'Propriedades' },
+                {
+                  route: `${route.path}/${id}/detalhes`,
+                  name: `${data?.name}`
+                },
+                {
+                  route: `${route.path}/${id}/talhoes`,
+                  name: `Talhões`
+                },
+                {
+                  route: `${route.path}/${id}/talhoes/${idField}/editar`,
+                  name: `Editar`
+                }
+              ]}
+              title={`Editar Talhão ${dataFields?.name}`}
+              description={`Você está editando o talhão ${dataFields?.name} da propriedade ${data?.name}.`}
+              isLoading={isEmpty(data) || isEmpty(dataFields)}
+            />
           </SectionHeader>
           <SectionBody>
             <div className="SectionBody__content">
@@ -206,29 +192,19 @@ function TalhoesEdit() {
                 {alert.message !== '' && (
                   <Alert type={alert.type}>{alert.message}</Alert>
                 )}
-                <form
-                  id="registerForm"
-                  ref={formRef}
-                  method="post"
-                  onSubmit={event => handleSubmit(event)}
-                >
-                  {(data && dataTypeDimension && dataFields && (
-                    <>
-                      <Input
-                        type="text"
-                        name="name"
-                        label="Nome do talhão"
-                        initialValue={dataFields.name}
-                      />
+
+                {(data && dataTypeDimension && dataFields && (
+                  <>
+                    <Form
+                      ref={formRef}
+                      method="post"
+                      onSubmit={handleSubmit}
+                      initialData={{ ...dataFields }}
+                    >
+                      <Input type="text" name="name" label="Nome do talhão" />
                       <div className="form-group">
                         <div>
-                          <Input
-                            type="number"
-                            label="Área"
-                            name="area"
-                            ref={areaRef}
-                            initialValue={dataFields.area}
-                          />
+                          <Input type="number" label="Área" name="area" />
                         </div>
                         <div>
                           <Select
@@ -240,8 +216,7 @@ function TalhoesEdit() {
                             )}
                             label="Unidade de medida"
                             name="type_dimension"
-                            ref={typeDimensionRef}
-                            value={dataFields.type_dimension}
+                            onChange={handleChangeTypeDimension}
                           />
                         </div>
                       </div>
@@ -272,9 +247,9 @@ function TalhoesEdit() {
                           </Button>
                         </div>
                       </div>
-                    </>
-                  )) || <Loader />}
-                </form>
+                    </Form>
+                  </>
+                )) || <Loader />}
               </CardContainer>
             </div>
           </SectionBody>

@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
+import { Form } from '@unform/web';
 
 import Container from '@/components/Container';
 import Nav from '@/components/Nav';
 import Navbar from '@/components/Navbar';
-import Breadcrumb from '@/components/Breadcrumb';
 import Input from '@/components/Input';
 import Button from '@/components/Button';
 import { Section, SectionHeader, SectionBody } from '@/components/Section';
@@ -18,9 +18,12 @@ import Loader from '@/components/Loader/index';
 import { ColorViewer } from '@/components/ColorsContainer/index';
 import { isLight } from '@/helpers/colors';
 import TextArea from '@/components/TextArea/index';
+import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
+import isEmpty from '@/helpers/isEmpty';
 
 function AdminCategoriesDetails() {
   const router = useRouter();
+  const formRef = useRef(null);
 
   const { id } = router.query;
   const { data: dataCategory, error } = useFetch(
@@ -43,71 +46,60 @@ function AdminCategoriesDetails() {
         <Nav />
         <Section>
           <SectionHeader>
-            <div className="SectionHeader__content">
-              {dataCategory && (
-                <Breadcrumb
-                  path={[
-                    { route: '/', name: 'Home' },
-                    { route: '/admin', name: 'Painel Administrativo' },
-                    { route: '/admin/categorias', name: 'Categorias' },
-                    {
-                      route: `/admin/categorias/${id}/detalhes`,
-                      name: `Categoria ${dataCategory?.name}`
-                    }
-                  ]}
-                />
-              )}
-              <h2>
-                Informações da Categoria{' '}
-                {dataCategory && `(${dataCategory.name})`}
-              </h2>
-              <p>Aqui você irá ver informações da categoria em questão</p>
-            </div>
+            <SectionHeaderContent
+              breadcrumb={[
+                { route: '/', name: 'Home' },
+                { route: '/admin', name: 'Painel Administrativo' },
+                { route: '/admin/categorias', name: 'Categorias' },
+                {
+                  route: `/admin/categorias/${id}/detalhes`,
+                  name: `Categoria ${dataCategory?.name}`
+                }
+              ]}
+              title={`Informações da Categoria ${dataCategory?.name}`}
+              description="Aqui você irá ver informações da categoria em questão"
+              isLoading={isEmpty(dataCategory)}
+            />
           </SectionHeader>
           <SectionBody>
             <div className="SectionBody__content">
               <CardContainer>
                 {(dataCategory && (
                   <>
-                    <Input
-                      type="text"
-                      label="Nome"
-                      name="name"
-                      initialValue={dataCategory.name}
-                      disabled
-                    />
-
-                    <TextArea
-                      name="description"
-                      label="Descrição"
-                      initialValue={dataCategory.description}
-                      disabled
-                    />
-
-                    <ColorViewer
-                      fillColor={dataCategory.colors.hexadecimal}
-                      isLight={isLight(dataCategory.colors.hexadecimal)}
+                    <Form
+                      ref={formRef}
+                      initialData={{
+                        ...dataCategory
+                      }}
                     >
-                      {`${dataCategory.colors.name}`}
-                    </ColorViewer>
-                    <div className="form-group buttons">
-                      <div>
-                        <Button type="button" onClick={() => router.back()}>
-                          Voltar
-                        </Button>
+                      <Input type="text" label="Nome" name="name" disabled />
+                      <TextArea name="description" label="Descrição" disabled />
+
+                      <ColorViewer
+                        fillColor={dataCategory.colors.hexadecimal}
+                        isLight={isLight(dataCategory.colors.hexadecimal)}
+                      >
+                        {`${dataCategory.colors.name}`}
+                      </ColorViewer>
+                      <div className="form-group buttons">
+                        <div>
+                          <Button type="button" onClick={() => router.back()}>
+                            Voltar
+                          </Button>
+                        </div>
+                        <div>
+                          <Button
+                            className="primary"
+                            type="button"
+                            onClick={() =>
+                              router.push(`/admin/categorias/${id}/editar`)
+                            }
+                          >
+                            Editar Categoria
+                          </Button>
+                        </div>
                       </div>
-                      <div>
-                        <Button
-                          className="primary"
-                          type="button"
-                          onClick={() =>
-                            router.push(`/admin/categorias/${id}/editar`)
-                          }
-                        >
-                          Editar Categoria
-                        </Button>
-                      </div>
-                    </div>
+                    </Form>
                   </>
                 )) || <Loader />}
               </CardContainer>

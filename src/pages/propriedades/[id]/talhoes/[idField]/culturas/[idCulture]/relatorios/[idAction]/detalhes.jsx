@@ -1,6 +1,7 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import Head from 'next/head';
+import { useRouter } from 'next/router';
+import { Form } from '@unform/web';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck } from '@fortawesome/free-solid-svg-icons';
@@ -8,7 +9,7 @@ import { faCheck } from '@fortawesome/free-solid-svg-icons';
 import Container from '@/components/Container';
 import Nav from '@/components/Nav';
 import Navbar from '@/components/Navbar';
-import Breadcrumb from '@/components/Breadcrumb';
+
 import Button from '@/components/Button';
 import TextArea from '@/components/TextArea';
 import Loader from '@/components/Loader';
@@ -26,9 +27,11 @@ import Error from '@/components/Error/index';
 import { useSelector } from 'react-redux';
 import urlRoute from '@/helpers/urlRoute';
 import isEmpty from '@/helpers/isEmpty';
+import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 
 function RelatoriosDetails() {
   const router = useRouter();
+  const formRef = useRef(null);
   const { id, idField, idCulture, idAction } = router.query;
   const [alert, setAlert] = useState({ type: '', message: '' });
   const [disableButton, setDisableButton] = useState(false);
@@ -128,65 +131,62 @@ function RelatoriosDetails() {
         <Nav />
         <Section>
           <SectionHeader>
-            <div className="SectionHeader__content">
-              {data && dataCultures && (
-                <Breadcrumb
-                  path={[
-                    { route: '/', name: 'Home' },
-                    {
-                      route: '/tecnico',
-                      name: 'Painel Técnico',
-                      active: type === 'tecnico' && route?.permission === type
-                    },
-                    {
-                      route: '/admin',
-                      name: 'Painel Administrativo',
-                      active:
-                        type === 'administrador' && route?.permission === type
-                    },
-                    { route: `${route.path}`, name: 'Propriedades' },
-                    {
-                      route: `${route.path}/${id}/detalhes`,
-                      name: `${data?.properties.name}`
-                    },
-                    {
-                      route: `${route.path}/${id}/talhoes`,
-                      name: `Talhões`
-                    },
-                    {
-                      route: `${route.path}/${id}/talhoes/${idField}/detalhes`,
-                      name: `${data?.name}`
-                    },
-                    {
-                      route: `${route.path}/${id}/talhoes/${idField}/culturas`,
-                      name: `Culturas`
-                    },
-                    {
-                      route: `${route.path}/${id}/talhoes/${idField}/culturas/${idCulture}/detalhes`,
-                      name: `${dataCultures?.products.name}`
-                    },
-                    {
-                      route: `${route.path}/${id}/talhoes/${idField}/culturas/${idCulture}/relatorios`,
-                      name: `Relatórios`
-                    },
-                    {
-                      route: `${route.path}/${id}/talhoes/${idField}/culturas/${idCulture}/relatorios/${idAction}/detalhes`,
-                      name: `Detalhes`
-                    }
-                  ]}
-                />
-              )}
-              <h2>
-                Relatório da Cultura de {dataCultures?.products.name} -{' '}
-                {dataActions && dateConversor(dataActions?.created_at, false)}
-              </h2>
-              <p>
-                Aqui você vendo o relatório técnico do dia{' '}
-                {dataActions && dateConversor(dataActions?.created_at, false)}{' '}
-                da cultura de {dataCultures?.products.name} do talhão{' '}
-                {`${data?.name} na propriedade ${data?.properties.name}`}.
-              </p>
-
+            <SectionHeaderContent
+              breadcrumb={[
+                { route: '/', name: 'Home' },
+                {
+                  route: '/tecnico',
+                  name: 'Painel Técnico',
+                  active: type === 'tecnico' && route?.permission === type
+                },
+                {
+                  route: '/admin',
+                  name: 'Painel Administrativo',
+                  active: type === 'administrador' && route?.permission === type
+                },
+                { route: `${route.path}`, name: 'Propriedades' },
+                {
+                  route: `${route.path}/${id}/detalhes`,
+                  name: `${data?.properties?.name}`
+                },
+                {
+                  route: `${route.path}/${id}/talhoes`,
+                  name: `Talhões`
+                },
+                {
+                  route: `${route.path}/${id}/talhoes/${idField}/detalhes`,
+                  name: `${data?.name}`
+                },
+                {
+                  route: `${route.path}/${id}/talhoes/${idField}/culturas`,
+                  name: `Culturas`
+                },
+                {
+                  route: `${route.path}/${id}/talhoes/${idField}/culturas/${idCulture}/detalhes`,
+                  name: `${dataCultures?.products?.name}`
+                },
+                {
+                  route: `${route.path}/${id}/talhoes/${idField}/culturas/${idCulture}/relatorios`,
+                  name: `Relatórios`
+                },
+                {
+                  route: `${route.path}/${id}/talhoes/${idField}/culturas/${idCulture}/relatorios/${idAction}/detalhes`,
+                  name: `Detalhes`
+                }
+              ]}
+              title={`Relatório da Cultura de ${
+                dataCultures?.products?.name
+              } - ${dateConversor(dataActions?.created_at, false)}`}
+              description={`Aqui você vendo o relatório técnico do dia ${dateConversor(
+                dataActions?.created_at,
+                false
+              )} da cultura de ${dataCultures?.products?.name} do talhão ${
+                data?.name
+              } na propriedade ${data?.properties?.name}.`}
+              isLoading={
+                isEmpty(data) || isEmpty(dataCultures) || isEmpty(dataActions)
+              }
+            >
               {dataActions && (
                 <>
                   {(!dataActions?.concluded && (
@@ -209,7 +209,7 @@ function RelatoriosDetails() {
                   )}
                 </>
               )}
-            </div>
+            </SectionHeaderContent>
           </SectionHeader>
           <SectionBody>
             <div className="SectionBody__content">
@@ -219,38 +219,37 @@ function RelatoriosDetails() {
                 )}
                 {(data && dataCultures && dataActions && (
                   <>
-                    <TextArea
-                      name="diagnostics"
-                      label="Diagnóstico da Cultura"
-                      initialValue={dataActions?.diagnostics}
-                      disabled
-                    />
-                    <TextArea
-                      name="cultivation"
-                      label="Tratos Culturais"
-                      initialValue={dataActions?.cultivation}
-                      disabled
-                    />
-                    <TextArea
-                      name="fertilizing"
-                      label="Adubação"
-                      initialValue={dataActions?.fertilizing}
-                      disabled
-                    />
-                    <TextArea
-                      name="plant_health"
-                      label="Fitossanidade"
-                      initialValue={dataActions?.plant_health}
-                      disabled
-                    />
+                    <Form
+                      ref={formRef}
+                      initialData={{
+                        ...dataActions
+                      }}
+                    >
+                      <TextArea
+                        name="diagnostics"
+                        label="Diagnóstico da Cultura"
+                        disabled
+                      />
+                      <TextArea
+                        name="cultivation"
+                        label="Tratos Culturais"
+                        disabled
+                      />
+                      <TextArea name="fertilizing" label="Adubação" disabled />
+                      <TextArea
+                        name="plant_health"
+                        label="Fitossanidade"
+                        disabled
+                      />
 
-                    <div className="form-group buttons">
-                      <div>
-                        <Button type="button" onClick={handleCancel}>
-                          Voltar
-                        </Button>
+                      <div className="form-group buttons">
+                        <div>
+                          <Button type="button" onClick={handleCancel}>
+                            Voltar
+                          </Button>
+                        </div>
                       </div>
-                    </div>
+                    </Form>
                   </>
                 )) || <Loader />}
               </CardContainer>

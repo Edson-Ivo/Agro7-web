@@ -4,7 +4,7 @@ import Head from 'next/head';
 import Container from '@/components/Container';
 import Nav from '@/components/Nav';
 import Navbar from '@/components/Navbar';
-import Breadcrumb from '@/components/Breadcrumb';
+
 import { Section, SectionHeader, SectionBody } from '@/components/Section';
 
 import { CardContainer } from '@/components/CardContainer';
@@ -24,6 +24,7 @@ import errorMessage from '@/helpers/errorMessage';
 import PropertiesService from '@/services/PropertiesService';
 import { Alert } from '@/components/Alert/index';
 import isEmpty from '@/helpers/isEmpty';
+import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 
 function PropertiesTechnichian() {
   const [alertMsg, setAlertMsg] = useState({ type: '', message: '' });
@@ -92,23 +93,19 @@ function PropertiesTechnichian() {
         <Nav />
         <Section>
           <SectionHeader>
-            <div className="SectionHeader__content">
-              <Breadcrumb
-                path={[
-                  { route: '/', name: 'Home' },
-                  { route: '/tecnico', name: 'Painel Técnico' },
-                  {
-                    route: '/tecnico/propriedades',
-                    name: 'Propriedades'
-                  }
-                ]}
-              />
-              <h2>Propriedades Relacionadas</h2>
-              <p>
-                Aqui você irá ver todas as propriedades que estão relacionadas
-                com seu usuário de técnico.
-              </p>
-            </div>
+            <SectionHeaderContent
+              breadcrumb={[
+                { route: '/', name: 'Home' },
+                { route: '/tecnico', name: 'Painel Técnico' },
+                {
+                  route: '/tecnico/propriedades',
+                  name: 'Propriedades'
+                }
+              ]}
+              title="Propriedades Relacionadas"
+              description="Aqui você irá ver todas as propriedades que estão relacionadas
+                com seu usuário de técnico."
+            />
           </SectionHeader>
           <SectionBody>
             <div className="SectionBody__content">

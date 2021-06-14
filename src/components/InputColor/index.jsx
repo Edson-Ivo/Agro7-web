@@ -17,10 +17,9 @@ const InputColor = ({ initialValue = '#000', name, hidden = false }) => {
       {!hidden ? (
         <Input
           label="Selecione a cor"
+          value={color}
           type="text"
           name={name}
-          initialValue={color}
-          value={color}
           handleChange={handleChange}
           maxLength="7"
         />

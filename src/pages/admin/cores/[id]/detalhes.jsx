@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
+import { Form } from '@unform/web';
 
 import Container from '@/components/Container';
 import Nav from '@/components/Nav';
 import Navbar from '@/components/Navbar';
-import Breadcrumb from '@/components/Breadcrumb';
 import Input from '@/components/Input';
 import Button from '@/components/Button';
 import { Section, SectionHeader, SectionBody } from '@/components/Section';
@@ -17,9 +17,12 @@ import { useFetch } from '@/hooks/useFetch';
 import Loader from '@/components/Loader/index';
 import { ColorViewer } from '@/components/ColorsContainer/index';
 import { isLight } from '@/helpers/colors';
+import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
+import isEmpty from '@/helpers/isEmpty';
 
 function AdminCoresDetails() {
   const router = useRouter();
+  const formRef = useRef(null);
 
   const { id } = router.query;
   const { data: dataColor, error } = useFetch(`/colors/find/by/id/${id}`);
@@ -39,61 +42,59 @@ function AdminCoresDetails() {
         <Nav />
         <Section>
           <SectionHeader>
-            <div className="SectionHeader__content">
-              {dataColor && (
-                <Breadcrumb
-                  path={[
-                    { route: '/', name: 'Home' },
-                    { route: '/admin', name: 'Painel Administrativo' },
-                    { route: '/admin/cores', name: 'Cores para Categorias' },
-                    {
-                      route: `/admin/cores/${id}/detalhes`,
-                      name: `Cor ${dataColor?.name}`
-                    }
-                  ]}
-                />
-              )}
-              <h2>Informações da Cor {dataColor && `(${dataColor.name})`}</h2>
-              <p>Aqui você irá ver informações da cor em questão</p>
-            </div>
+            <SectionHeaderContent
+              breadcrumb={[
+                { route: '/', name: 'Home' },
+                { route: '/admin', name: 'Painel Administrativo' },
+                { route: '/admin/cores', name: 'Cores para Categorias' },
+                {
+                  route: `/admin/cores/${id}/detalhes`,
+                  name: `Cor ${dataColor?.name}`
+                }
+              ]}
+              title={`Informações da Cor ${dataColor?.name}`}
+              description="Aqui você irá ver informações da cor em questão"
+              isLoading={isEmpty(dataColor)}
+            />
           </SectionHeader>
           <SectionBody>
             <div className="SectionBody__content">
               <CardContainer>
                 {(dataColor && (
                   <>
-                    <Input
-                      type="text"
-                      label="Nome"
-                      name="name"
-                      initialValue={dataColor.name}
-                      disabled
-                    />
-
-                    <ColorViewer
-                      fillColor={dataColor.hexadecimal}
-                      isLight={isLight(dataColor.hexadecimal)}
+                    <Form
+                      ref={formRef}
+                      initialData={{
+                        ...dataColor
+                      }}
                     >
-                      {`#${dataColor.hexadecimal}`}
-                    </ColorViewer>
-                    <div className="form-group buttons">
-                      <div>
-                        <Button type="button" onClick={() => router.back()}>
-                          Voltar
-                        </Button>
+                      <Input type="text" label="Nome" name="name" disabled />
+
+                      <ColorViewer
+                        fillColor={dataColor.hexadecimal}
+                        isLight={isLight(dataColor.hexadecimal)}
+                      >
+                        {`#${dataColor.hexadecimal}`}
+                      </ColorViewer>
+                      <div className="form-group buttons">
+                        <div>
+                          <Button type="button" onClick={() => router.back()}>
+                            Voltar
+                          </Button>
+                        </div>
+                        <div>
+                          <Button
+                            className="primary"
+                            type="button"
+                            onClick={() =>
+                              router.push(`/admin/cores/${id}/editar`)
+                            }
+                          >
+                            Editar Cor
+                          </Button>
+                        </div>
                       </div>
-                      <div>
-                        <Button
-                          className="primary"
-                          type="button"
-                          onClick={() =>
-                            router.push(`/admin/cores/${id}/editar`)
-                          }
-                        >
-                          Editar Cor
-                        </Button>
-                      </div>
-                    </div>
+                    </Form>
                   </>
                 )) || <Loader />}
               </CardContainer>

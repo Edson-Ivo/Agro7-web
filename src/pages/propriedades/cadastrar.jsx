@@ -1,14 +1,15 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Head from 'next/head';
 import * as yup from 'yup';
-import { MultiStepForm as MultiStep, Step } from '@/components/Multiform';
+import { Form } from '@unform/web';
 
+import { MultiStepForm as MultiStep, Step } from '@/components/Multiform';
 import { MapActionGetLatLng } from '@/components/MapApp';
 
 import Container from '@/components/Container';
 import Nav from '@/components/Nav';
 import Navbar from '@/components/Navbar';
-import Breadcrumb from '@/components/Breadcrumb';
+
 import Input from '@/components/Input';
 import Button from '@/components/Button';
 import Select from '@/components/Select';
@@ -16,7 +17,6 @@ import { Section, SectionHeader, SectionBody } from '@/components/Section';
 import { CardContainer } from '@/components/CardContainer';
 
 import { privateRoute } from '@/components/PrivateRoute';
-import getFormData from '@/helpers/getFormData';
 import { Alert } from '@/components/Alert/index';
 
 import errorMessage from '@/helpers/errorMessage';
@@ -28,12 +28,10 @@ import AddressesService from '@/services/AddressesService';
 import { useFetch } from '@/hooks/useFetch';
 import Loader from '@/components/Loader/index';
 import isEmpty from '@/helpers/isEmpty';
+import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 
 const schema = yup.object().shape({
-  name: yup
-    .string()
-    .min(4, 'O nome precisa ter no mínimo 4 caracteres')
-    .required('O campo nome é obrigatório!'),
+  name: yup.string().required('O campo nome é obrigatório!'),
   area: yup
     .number()
     .transform(value => (Number.isNaN(value) ? undefined : value))
@@ -90,59 +88,18 @@ function Properties() {
   const [loadingAddresses, setLoadingAddresses] = useState(false);
   const router = useRouter();
 
-  const stateRef = useRef(null);
-  const cityRef = useRef(null);
-  const postalcodeRef = useRef(null);
-  const latitudeRef = useRef(null);
-  const longitudeRef = useRef(null);
-
   const { data: dataTypeOwner } = useFetch('/properties/find/all/types-owner');
 
   const { data: dataTypeDimension } = useFetch(
     '/properties/find/all/types-dimension'
   );
 
-  useEffect(
-    () => () => {
-      setAlert({ type: '', message: '' });
-      setDisableButton(false);
-      setActiveStep(1);
-      setLoadingAddresses(false);
-    },
-    []
-  );
-
-  const getData = () => {
-    if (formRef.current === undefined) {
-      return {
-        name: null,
-        area: null,
-        type_dimension: 'm',
-        type_owner: 'proprietario',
-        latitude: null,
-        longitude: null,
-        state: null,
-        city: null,
-        postcode: null,
-        locality: null,
-        access: null
-      };
-    }
-
-    return getFormData(formRef.current, {
-      name: null,
-      area: null,
-      type_dimension: 'm',
-      type_owner: 'proprietario',
-      latitude: null,
-      longitude: null,
-      state: null,
-      city: null,
-      postcode: null,
-      locality: null,
-      access: null
-    });
-  };
+  useEffect(() => {
+    setAlert({ type: '', message: '' });
+    setDisableButton(false);
+    setActiveStep(1);
+    setLoadingAddresses(false);
+  }, []);
 
   const handleChangeCep = e => {
     const { value } = e.target;
@@ -153,8 +110,9 @@ function Properties() {
         ({ data: dataAddressCep }) => {
           if (!isEmpty(dataAddressCep)) {
             const { state, city } = dataAddressCep;
-            if (!stateRef.current.value) stateRef.current.setValue(state);
-            if (!cityRef.current.value) cityRef.current.setValue(city);
+
+            formRef.current.setFieldValue('state', state);
+            formRef.current.setFieldValue('city', city);
           }
 
           setLoadingAddresses(false);
@@ -169,15 +127,15 @@ function Properties() {
   };
 
   const handleLatLng = positions => {
-    latitudeRef.current.setValue(positions[0]);
-    longitudeRef.current.setValue(positions[1]);
+    formRef.current.setFieldValue('latitude', positions[0]);
+    formRef.current.setFieldValue('longitude', positions[1]);
   };
 
-  const handleSubmit = async e => {
-    e.preventDefault();
+  const handleSubmit = async d => {
     setDisableButton(true);
+
     schema
-      .validate(getData())
+      .validate(d)
       .then(async data => {
         setAlert({
           type: 'success',
@@ -208,6 +166,12 @@ function Properties() {
       .catch(err => {
         setAlert({ type: 'error', message: err.errors[0] });
         setDisableButton(false);
+
+        if (err instanceof yup.ValidationError) {
+          const { path, message } = err;
+
+          formRef.current.setFieldError(path, message);
+        }
       });
   };
 
@@ -222,17 +186,15 @@ function Properties() {
         <Nav />
         <Section>
           <SectionHeader>
-            <div className="SectionHeader__content">
-              <Breadcrumb
-                path={[
-                  { route: '/', name: 'Home' },
-                  { route: '/propriedades', name: 'Propriedades' },
-                  { route: '/propriedades/cadastrar', name: 'Cadastrar' }
-                ]}
-              />
-              <h2>Cadastre uma propriedade</h2>
-              <p>Aqui você irá cadastrar uma propriedade</p>
-            </div>
+            <SectionHeaderContent
+              breadcrumb={[
+                { route: '/', name: 'Home' },
+                { route: '/propriedades', name: 'Propriedades' },
+                { route: '/propriedades/cadastrar', name: 'Cadastrar' }
+              ]}
+              title="Cadastre uma propriedade"
+              description="Aqui você irá cadastrar uma propriedade"
+            />
           </SectionHeader>
           <SectionBody>
             <div className="SectionBody__content">
@@ -240,14 +202,10 @@ function Properties() {
                 {alert.message !== '' && (
                   <Alert type={alert.type}>{alert.message}</Alert>
                 )}
-                <form
-                  id="registerForm"
-                  ref={formRef}
-                  method="post"
-                  onSubmit={event => handleSubmit(event)}
-                >
-                  {(dataTypeDimension && dataTypeOwner && (
-                    <>
+
+                {(dataTypeDimension && dataTypeOwner && (
+                  <>
+                    <Form ref={formRef} method="post" onSubmit={handleSubmit}>
                       <MultiStep activeStep={activeStep}>
                         <Step label="Dados" onClick={() => setActiveStep(1)}>
                           <h4 className="step-title">Dados da Propriedade</h4>
@@ -258,7 +216,6 @@ function Properties() {
                                 type="text"
                                 label="Nome da propriedade"
                                 name="name"
-                                initialValue=""
                               />
                             </div>
                             <div>
@@ -276,12 +233,7 @@ function Properties() {
                           </div>
                           <div className="form-group">
                             <div>
-                              <Input
-                                type="number"
-                                label="Área"
-                                name="area"
-                                initialValue=""
-                              />
+                              <Input type="number" label="Área" name="area" />
                             </div>
                             <div>
                               <Select
@@ -302,30 +254,16 @@ function Properties() {
                                 type="text"
                                 label="CEP"
                                 name="postcode"
-                                initialValue=""
                                 mask="cep"
                                 disabled={loadingAddresses}
-                                ref={postalcodeRef}
                                 handleChange={handleChangeCep}
                               />
                             </div>
                             <div>
-                              <Input
-                                type="text"
-                                label="Estado"
-                                name="state"
-                                initialValue=""
-                                ref={stateRef}
-                              />
+                              <Input type="text" label="Estado" name="state" />
                             </div>
                             <div>
-                              <Input
-                                type="text"
-                                label="Cidade"
-                                name="city"
-                                initialValue=""
-                                ref={cityRef}
-                              />
+                              <Input type="text" label="Cidade" name="city" />
                             </div>
                           </div>
                           <div>
@@ -333,16 +271,10 @@ function Properties() {
                               type="text"
                               label="Logradouro"
                               name="locality"
-                              initialValue=""
                             />
                           </div>
                           <div>
-                            <Input
-                              type="text"
-                              label="Acesso"
-                              name="access"
-                              initialValue=""
-                            />
+                            <Input type="text" label="Acesso" name="access" />
                           </div>
                         </Step>
                         <Step
@@ -357,8 +289,6 @@ function Properties() {
                                 type="number"
                                 label="Latitude"
                                 name="latitude"
-                                initialValue=""
-                                ref={latitudeRef}
                               />
                             </div>
                             <div>
@@ -366,8 +296,6 @@ function Properties() {
                                 type="number"
                                 label="Longitude"
                                 name="longitude"
-                                initialValue=""
-                                ref={longitudeRef}
                               />
                             </div>
                           </div>
@@ -417,9 +345,9 @@ function Properties() {
                           )}
                         </div>
                       </div>
-                    </>
-                  )) || <Loader />}
-                </form>
+                    </Form>
+                  </>
+                )) || <Loader />}
               </CardContainer>
             </div>
           </SectionBody>

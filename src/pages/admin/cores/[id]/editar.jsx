@@ -2,11 +2,11 @@ import React, { useState, useRef } from 'react';
 import Head from 'next/head';
 import * as yup from 'yup';
 import { useRouter } from 'next/router';
+import { Form } from '@unform/web';
 
 import Container from '@/components/Container';
 import Nav from '@/components/Nav';
 import Navbar from '@/components/Navbar';
-import Breadcrumb from '@/components/Breadcrumb';
 import Input from '@/components/Input';
 import Button from '@/components/Button';
 import { Alert } from '@/components/Alert';
@@ -15,12 +15,12 @@ import { Section, SectionHeader, SectionBody } from '@/components/Section';
 import { CardContainer } from '@/components/CardContainer';
 import { privateRoute } from '@/components/PrivateRoute';
 import Error from '@/components/Error';
-import getFormData from '@/helpers/getFormData';
 import errorMessage from '@/helpers/errorMessage';
 import ColorsService from '@/services/ColorsService';
 import { useFetch } from '@/hooks/useFetch';
 import Loader from '@/components/Loader/index';
 import InputColor from '@/components/InputColor/index';
+import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 
 const schema = yup.object().shape({
   name: yup.string().required('O campo nome é obrigatório!'),
@@ -44,34 +44,20 @@ function AdminCoresEdit() {
     `/colors/find/by/id/${id}`
   );
 
-  const getData = () => {
-    if (formRef.current === undefined) {
-      return {
-        name: null,
-        hexadecimal: null
-      };
-    }
-
-    return getFormData(formRef.current, {
-      name: null,
-      hexadecimal: null
-    });
-  };
-
-  const handleSubmit = async e => {
-    e.preventDefault();
+  const handleSubmit = async data => {
     setDisableButton(true);
+
     schema
-      .validate(getData())
-      .then(async data => {
+      .validate(data)
+      .then(async d => {
         setAlert({
           type: 'success',
           message: 'Enviando...'
         });
 
-        data.hexadecimal = data.hexadecimal.replaceAll('#', '');
+        d.hexadecimal = d.hexadecimal.replaceAll('#', '');
 
-        await ColorsService.update(id, data).then(res => {
+        await ColorsService.update(id, d).then(res => {
           if (res.status !== 200 || res?.statusCode) {
             setAlert({ type: 'error', message: errorMessage(res) });
             setTimeout(() => {
@@ -111,21 +97,19 @@ function AdminCoresEdit() {
         <Nav />
         <Section>
           <SectionHeader>
-            <div className="SectionHeader__content">
-              <Breadcrumb
-                path={[
-                  { route: '/', name: 'Home' },
-                  { route: '/admin', name: 'Painel Administrativo' },
-                  { route: '/admin/cores', name: 'Cores para Categorias' },
-                  {
-                    route: `/admin/cores/${id}/editar`,
-                    name: 'Editar'
-                  }
-                ]}
-              />
-              <h2>Editar Cor</h2>
-              <p>Aqui você irá editar a cor em questão</p>
-            </div>
+            <SectionHeaderContent
+              breadcrumb={[
+                { route: '/', name: 'Home' },
+                { route: '/admin', name: 'Painel Administrativo' },
+                { route: '/admin/cores', name: 'Cores para Categorias' },
+                {
+                  route: `/admin/cores/${id}/editar`,
+                  name: 'Editar'
+                }
+              ]}
+              title="Editar Cor"
+              description="Aqui você irá editar a cor em questão"
+            />
           </SectionHeader>
           <SectionBody>
             <div className="SectionBody__content">
@@ -133,21 +117,17 @@ function AdminCoresEdit() {
                 {alert.message !== '' && (
                   <Alert type={alert.type}>{alert.message}</Alert>
                 )}
-                <form
-                  id="registerForm"
-                  ref={formRef}
-                  method="post"
-                  onSubmit={event => handleSubmit(event)}
-                >
-                  {(dataColor && (
-                    <>
-                      <Input
-                        type="text"
-                        label="Nome"
-                        name="name"
-                        initialValue={dataColor.name}
-                        required
-                      />
+                {(dataColor && (
+                  <>
+                    <Form
+                      ref={formRef}
+                      method="post"
+                      onSubmit={handleSubmit}
+                      initialData={{
+                        ...dataColor
+                      }}
+                    >
+                      <Input type="text" label="Nome" name="name" required />
                       <InputColor
                         name="hexadecimal"
                         initialValue={`#${dataColor.hexadecimal}`}
@@ -165,13 +145,13 @@ function AdminCoresEdit() {
                             className="primary"
                             type="submit"
                           >
-                            Salvar
+                            Salvar Edição
                           </Button>
                         </div>
                       </div>
-                    </>
-                  )) || <Loader />}
-                </form>
+                    </Form>
+                  </>
+                )) || <Loader />}
               </CardContainer>
             </div>
           </SectionBody>

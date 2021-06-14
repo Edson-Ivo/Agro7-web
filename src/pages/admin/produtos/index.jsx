@@ -10,7 +10,6 @@ import { useRouter } from 'next/router';
 import Container from '@/components/Container';
 import Nav from '@/components/Nav';
 import Navbar from '@/components/Navbar';
-import Breadcrumb from '@/components/Breadcrumb';
 import { Alert } from '@/components/Alert';
 import { Section, SectionHeader, SectionBody } from '@/components/Section';
 
@@ -29,6 +28,7 @@ import errorMessage from '@/helpers/errorMessage';
 import truncate from '@/helpers/truncate';
 import { dateConversor } from '@/helpers/date';
 import isEmpty from '@/helpers/isEmpty';
+import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 
 function AdminProducts() {
   const [alertMsg, setAlertMsg] = useState({ type: '', message: '' });
@@ -93,21 +93,20 @@ function AdminProducts() {
         <Nav />
         <Section>
           <SectionHeader>
-            <div className="SectionHeader__content">
-              <Breadcrumb
-                path={[
-                  { route: '/', name: 'Home' },
-                  { route: '/admin', name: 'Painel Administrativo' },
-                  { route: '/admin/produtos', name: 'Produtos' }
-                ]}
-              />
-              <h2>Gerenciar Produtos</h2>
+            <SectionHeaderContent
+              breadcrumb={[
+                { route: '/', name: 'Home' },
+                { route: '/admin', name: 'Painel Administrativo' },
+                { route: '/admin/produtos', name: 'Produtos' }
+              ]}
+              title="Gerenciar Produtos"
+            >
               <Link href="/admin/produtos/cadastrar">
                 <Button className="primary">
                   <FontAwesomeIcon icon={faPlus} /> Novo Produto
                 </Button>
               </Link>
-            </div>
+            </SectionHeaderContent>
           </SectionHeader>
           <SectionBody>
             <div className="SectionBody__content">
@@ -145,7 +144,6 @@ function AdminProducts() {
                                   <ActionButton
                                     id={d.id}
                                     path="/admin/produtos"
-                                    download={d.url}
                                     onDelete={() => handleDeleteModal(d.id)}
                                   />
                                 </td>

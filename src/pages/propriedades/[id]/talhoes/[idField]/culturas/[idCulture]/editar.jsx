@@ -1,12 +1,13 @@
 import React, { useEffect, useRef, useState } from 'react';
-import * as yup from 'yup';
-import { useRouter } from 'next/router';
 import Head from 'next/head';
+import { useRouter } from 'next/router';
+import * as yup from 'yup';
+import { Form } from '@unform/web';
 
 import Container from '@/components/Container';
 import Nav from '@/components/Nav';
 import Navbar from '@/components/Navbar';
-import Breadcrumb from '@/components/Breadcrumb';
+
 import Input from '@/components/Input';
 import Button from '@/components/Button';
 import Select from '@/components/Select';
@@ -18,7 +19,6 @@ import Loader from '@/components/Loader';
 
 import errorMessage from '@/helpers/errorMessage';
 import { useFetch } from '@/hooks/useFetch';
-import getFormData from '@/helpers/getFormData';
 import CulturesService from '@/services/CulturesService';
 import SearchSelect from '@/components/SearchSelect/index';
 import { dateToInput, dateToISOString } from '@/helpers/date';
@@ -26,6 +26,7 @@ import Error from '@/components/Error/index';
 import { useSelector } from 'react-redux';
 import urlRoute from '@/helpers/urlRoute';
 import isEmpty from '@/helpers/isEmpty';
+import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 
 const schema = yup.object().shape({
   date_start: yup.string().required('O campo data inicial é obrigatório!'),
@@ -77,31 +78,11 @@ function CulturasEdit() {
     router.back();
   };
 
-  const getData = () => {
-    if (formRef.current === undefined) {
-      return {
-        date_start: null,
-        date_finish: null,
-        area: null,
-        type_dimension: null,
-        products: null
-      };
-    }
-
-    return getFormData(formRef.current, {
-      date_start: null,
-      date_finish: null,
-      area: null,
-      type_dimension: null,
-      products: null
-    });
-  };
-
-  const handleSubmit = async e => {
-    e.preventDefault();
+  const handleSubmit = async dt => {
     setDisableButton(true);
+
     schema
-      .validate(getData())
+      .validate(dt)
       .then(async d => {
         setAlert({
           type: 'success',
@@ -138,6 +119,12 @@ function CulturasEdit() {
       .catch(err => {
         setAlert({ type: 'error', message: err.errors[0] });
         setDisableButton(false);
+
+        if (err instanceof yup.ValidationError) {
+          const { path, message } = err;
+
+          formRef.current.setFieldError(path, message);
+        }
       });
   };
 
@@ -156,57 +143,49 @@ function CulturasEdit() {
         <Nav />
         <Section>
           <SectionHeader>
-            <div className="SectionHeader__content">
-              {data && dataCultures && (
-                <Breadcrumb
-                  path={[
-                    { route: '/', name: 'Home' },
-                    {
-                      route: '/tecnico',
-                      name: 'Painel Técnico',
-                      active: type === 'tecnico' && route?.permission === type
-                    },
-                    {
-                      route: '/admin',
-                      name: 'Painel Administrativo',
-                      active:
-                        type === 'administrador' && route?.permission === type
-                    },
-                    { route: `${route.path}`, name: 'Propriedades' },
-                    {
-                      route: `${route.path}/${id}/detalhes`,
-                      name: `${data?.properties.name}`
-                    },
-                    {
-                      route: `${route.path}/${id}/talhoes`,
-                      name: `Talhões`
-                    },
-                    {
-                      route: `${route.path}/${id}/talhoes/${idField}/detalhes`,
-                      name: `${data?.name}`
-                    },
-                    {
-                      route: `${route.path}/${id}/talhoes/${idField}/culturas`,
-                      name: `Culturas`
-                    },
-                    {
-                      route: `${route.path}/${id}/talhoes/${idField}/culturas/${idCulture}/detalhes`,
-                      name: `${dataCultures?.products.name}`
-                    },
-                    {
-                      route: `${route.path}/${id}/talhoes/${idField}/culturas/${idCulture}/editar`,
-                      name: `Editar`
-                    }
-                  ]}
-                />
-              )}
-              <h2>Editar Cultura {`(${dataCultures?.products.name})`}</h2>
-              <p>
-                Aqui você irá editar a cultura de {dataCultures?.products.name}{' '}
-                no talhão{' '}
-                {`${data?.name} da propriedade ${data?.properties.name}`}.
-              </p>
-            </div>
+            <SectionHeaderContent
+              breadcrumb={[
+                { route: '/', name: 'Home' },
+                {
+                  route: '/tecnico',
+                  name: 'Painel Técnico',
+                  active: type === 'tecnico' && route?.permission === type
+                },
+                {
+                  route: '/admin',
+                  name: 'Painel Administrativo',
+                  active: type === 'administrador' && route?.permission === type
+                },
+                { route: `${route.path}`, name: 'Propriedades' },
+                {
+                  route: `${route.path}/${id}/detalhes`,
+                  name: `${data?.properties?.name}`
+                },
+                {
+                  route: `${route.path}/${id}/talhoes`,
+                  name: `Talhões`
+                },
+                {
+                  route: `${route.path}/${id}/talhoes/${idField}/detalhes`,
+                  name: `${data?.name}`
+                },
+                {
+                  route: `${route.path}/${id}/talhoes/${idField}/culturas`,
+                  name: `Culturas`
+                },
+                {
+                  route: `${route.path}/${id}/talhoes/${idField}/culturas/${idCulture}/detalhes`,
+                  name: `${dataCultures?.products?.name}`
+                },
+                {
+                  route: `${route.path}/${id}/talhoes/${idField}/culturas/${idCulture}/editar`,
+                  name: `Editar`
+                }
+              ]}
+              title={`Editar Cultura ${dataCultures?.products?.name}`}
+              description={`Aqui você irá editar a cultura de ${dataCultures?.products?.name} no talhão ${data?.name} da propriedade ${data?.properties?.name}`}
+              isLoading={isEmpty(data) || isEmpty(dataCultures)}
+            />
           </SectionHeader>
           <SectionBody>
             <div className="SectionBody__content">
@@ -214,19 +193,23 @@ function CulturasEdit() {
                 {alert.message !== '' && (
                   <Alert type={alert.type}>{alert.message}</Alert>
                 )}
-                <form
-                  id="registerForm"
-                  ref={formRef}
-                  method="post"
-                  onSubmit={event => handleSubmit(event)}
-                >
-                  {(data && dataCultures && dataTypeDimension && (
-                    <>
+                {(data && dataCultures && dataTypeDimension && (
+                  <>
+                    <Form
+                      ref={formRef}
+                      method="post"
+                      onSubmit={handleSubmit}
+                      initialData={{
+                        ...dataCultures,
+                        products: dataCultures?.products.id,
+                        date_start: dateToInput(dataCultures?.date_start),
+                        date_finish: dateToInput(dataCultures?.date_finish)
+                      }}
+                    >
                       <SearchSelect
                         name="products"
                         label="Digite o nome do produto:"
                         url="/products/find/all"
-                        value={dataCultures?.products.id}
                         options={[
                           {
                             value: dataCultures?.products.id,
@@ -240,7 +223,6 @@ function CulturasEdit() {
                             type="date"
                             label="Data inicial"
                             name="date_start"
-                            initialValue={dateToInput(dataCultures?.date_start)}
                           />
                         </div>
                         <div>
@@ -248,20 +230,12 @@ function CulturasEdit() {
                             type="date"
                             label="Data final"
                             name="date_finish"
-                            initialValue={dateToInput(
-                              dataCultures?.date_finish
-                            )}
                           />
                         </div>
                       </div>
                       <div className="form-group">
                         <div>
-                          <Input
-                            type="number"
-                            label="Área"
-                            name="area"
-                            initialValue={dataCultures?.area}
-                          />
+                          <Input type="number" label="Área" name="area" />
                         </div>
                         <div>
                           <Select
@@ -273,7 +247,6 @@ function CulturasEdit() {
                             )}
                             label="Unidade de medida"
                             name="type_dimension"
-                            value={dataCultures?.type_dimension}
                           />
                         </div>
                       </div>
@@ -291,13 +264,13 @@ function CulturasEdit() {
                             className="primary"
                             type="submit"
                           >
-                            Editar Cultura
+                            Salvar Cultura
                           </Button>
                         </div>
                       </div>
-                    </>
-                  )) || <Loader />}
-                </form>
+                    </Form>
+                  </>
+                )) || <Loader />}
               </CardContainer>
             </div>
           </SectionBody>

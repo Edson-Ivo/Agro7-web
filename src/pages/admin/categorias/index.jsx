@@ -10,7 +10,6 @@ import { useRouter } from 'next/router';
 import Container from '@/components/Container';
 import Nav from '@/components/Nav';
 import Navbar from '@/components/Navbar';
-import Breadcrumb from '@/components/Breadcrumb';
 import { Alert } from '@/components/Alert';
 import { Section, SectionHeader, SectionBody } from '@/components/Section';
 
@@ -28,6 +27,7 @@ import errorMessage from '@/helpers/errorMessage';
 import ColorsContainer from '@/components/ColorsContainer/index';
 import truncate from '@/helpers/truncate';
 import CategoriesService from '@/services/CategoriesService';
+import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 
 function AdminCategories() {
   const [alertMsg, setAlertMsg] = useState({ type: '', message: '' });
@@ -95,24 +95,21 @@ function AdminCategories() {
         <Nav />
         <Section>
           <SectionHeader>
-            <div className="SectionHeader__content">
-              <Breadcrumb
-                path={[
-                  { route: '/', name: 'Home' },
-                  { route: '/admin', name: 'Painel Administrativo' },
-                  { route: baseUrl, name: 'Categorias' }
-                ]}
-              />
-              <h2>Gerenciar Categorias</h2>
-              <p>
-                Aqui você poderá gerenciar todas as categorias de seu sistema
-              </p>
+            <SectionHeaderContent
+              breadcrumb={[
+                { route: '/', name: 'Home' },
+                { route: '/admin', name: 'Painel Administrativo' },
+                { route: baseUrl, name: 'Categorias' }
+              ]}
+              title="Gerenciar Categorias"
+              description="Aqui você poderá gerenciar todas as categorias de seu sistema"
+            >
               <Link href={`${baseUrl}/cadastrar`}>
                 <Button className="primary">
                   <FontAwesomeIcon icon={faPlus} /> Nova Categoria
                 </Button>
               </Link>
-            </div>
+            </SectionHeaderContent>
           </SectionHeader>
           <SectionBody>
             <div className="SectionBody__content">

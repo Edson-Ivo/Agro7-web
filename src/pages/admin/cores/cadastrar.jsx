@@ -2,11 +2,11 @@ import React, { useState, useRef } from 'react';
 import Head from 'next/head';
 import * as yup from 'yup';
 import { useRouter } from 'next/router';
+import { Form } from '@unform/web';
 
 import Container from '@/components/Container';
 import Nav from '@/components/Nav';
 import Navbar from '@/components/Navbar';
-import Breadcrumb from '@/components/Breadcrumb';
 import Input from '@/components/Input';
 import Button from '@/components/Button';
 import { Alert } from '@/components/Alert';
@@ -14,10 +14,10 @@ import { Section, SectionHeader, SectionBody } from '@/components/Section';
 
 import { CardContainer } from '@/components/CardContainer';
 import { privateRoute } from '@/components/PrivateRoute';
-import getFormData from '@/helpers/getFormData';
 import errorMessage from '@/helpers/errorMessage';
 import ColorsService from '@/services/ColorsService';
 import InputColor from '@/components/InputColor/index';
+import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 
 const schema = yup.object().shape({
   name: yup.string().required('O campo nome é obrigatório!'),
@@ -36,34 +36,20 @@ function AdminCoresCreate() {
   const router = useRouter();
   const formRef = useRef(null);
 
-  const getData = () => {
-    if (formRef.current === undefined) {
-      return {
-        name: null,
-        hexadecimal: null
-      };
-    }
-
-    return getFormData(formRef.current, {
-      name: null,
-      hexadecimal: null
-    });
-  };
-
-  const handleSubmit = async e => {
-    e.preventDefault();
+  const handleSubmit = async data => {
     setDisableButton(true);
+
     schema
-      .validate(getData())
-      .then(async data => {
+      .validate(data)
+      .then(async d => {
         setAlert({
           type: 'success',
           message: 'Enviando...'
         });
 
-        data.hexadecimal = data.hexadecimal.replaceAll('#', '');
+        d.hexadecimal = d.hexadecimal.replaceAll('#', '');
 
-        await ColorsService.create(data).then(res => {
+        await ColorsService.create(d).then(res => {
           if (res.status !== 201 || res?.statusCode) {
             setAlert({ type: 'error', message: errorMessage(res) });
             setTimeout(() => {
@@ -99,24 +85,20 @@ function AdminCoresCreate() {
         <Nav />
         <Section>
           <SectionHeader>
-            <div className="SectionHeader__content">
-              <Breadcrumb
-                path={[
-                  { route: '/', name: 'Home' },
-                  { route: '/admin', name: 'Painel Administrativo' },
-                  { route: '/admin/cores', name: 'Cores para Categorias' },
-                  {
-                    route: '/admin/cores/cadastrar',
-                    name: 'Cadastrar'
-                  }
-                ]}
-              />
-              <h2>Cadastre uma Cor</h2>
-              <p>
-                Aqui você irá cadastrar uma cor para utilizar nas categorias do
-                sistema
-              </p>
-            </div>
+            <SectionHeaderContent
+              breadcrumb={[
+                { route: '/', name: 'Home' },
+                { route: '/admin', name: 'Painel Administrativo' },
+                { route: '/admin/cores', name: 'Cores para Categorias' },
+                {
+                  route: '/admin/cores/cadastrar',
+                  name: 'Cadastrar'
+                }
+              ]}
+              title="Cadastre uma Cor"
+              description=" Aqui você irá cadastrar uma cor para utilizar nas categorias do
+                sistema"
+            />
           </SectionHeader>
           <SectionBody>
             <div className="SectionBody__content">
@@ -124,12 +106,7 @@ function AdminCoresCreate() {
                 {alert.message !== '' && (
                   <Alert type={alert.type}>{alert.message}</Alert>
                 )}
-                <form
-                  id="registerForm"
-                  ref={formRef}
-                  method="post"
-                  onSubmit={event => handleSubmit(event)}
-                >
+                <Form ref={formRef} method="post" onSubmit={handleSubmit}>
                   <Input type="text" label="Nome" name="name" required />
                   <InputColor name="hexadecimal" />
 
@@ -149,7 +126,7 @@ function AdminCoresCreate() {
                       </Button>
                     </div>
                   </div>
-                </form>
+                </Form>
               </CardContainer>
             </div>
           </SectionBody>

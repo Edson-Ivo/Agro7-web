@@ -4,6 +4,7 @@ import Head from 'next/head';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
+import { Form } from '@unform/web';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
@@ -11,7 +12,7 @@ import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import Container from '@/components/Container';
 import Nav from '@/components/Nav';
 import Navbar from '@/components/Navbar';
-import Breadcrumb from '@/components/Breadcrumb';
+
 import Error from '@/components/Error';
 import Loader from '@/components/Loader';
 import Select from '@/components/Select';
@@ -45,9 +46,11 @@ import useOnScreen from '@/hooks/useOnScreen';
 import { useInfiniteFetch } from '@/hooks/useInfiniteFetch';
 
 import CardBack from '@/assets/card_back.svg';
+import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 
 function ProducerNotebook() {
   const daysRef = createRef();
+  const formRef = useRef(null);
   const router = useRouter();
 
   const ref = useRef();
@@ -110,6 +113,7 @@ function ProducerNotebook() {
     setDaysList(actualWeek);
     setActiveDate(actualDate);
     setActiveCategory('');
+    formRef?.current?.setFieldValue('types', '');
   };
 
   const handleChangeDate = date => {
@@ -135,24 +139,24 @@ function ProducerNotebook() {
         <Nav />
         <Section>
           <SectionHeader>
-            <div className="SectionHeader__content">
-              <Breadcrumb
-                path={[
-                  { route: '/', name: 'Home' },
-                  { route: '/caderno-produtor', name: 'Caderno do Produtor' }
-                ]}
-              />
-              <h2>Caderno do Produtor - {dateConversor(activeDate, false)}</h2>
-              <p>
-                Aqui você poderá visualizar suas ações realizadas no sistema
-                pela data ou categorias.
-              </p>
+            <SectionHeaderContent
+              breadcrumb={[
+                { route: '/', name: 'Home' },
+                { route: '/caderno-produtor', name: 'Caderno do Produtor' }
+              ]}
+              title={`Caderno do Produtor - ${dateConversor(
+                activeDate,
+                false
+              )}`}
+              description="Aqui você poderá visualizar suas ações realizadas no sistema
+                pela data ou categorias."
+            >
               <Link href="/caderno-produtor/cadastrar">
                 <Button className="primary">
                   <FontAwesomeIcon icon={faPlus} /> Anotar no Caderno
                 </Button>
               </Link>
-            </div>
+            </SectionHeaderContent>
           </SectionHeader>
           <SectionBody>
             <div className="SectionBody__content">
@@ -213,18 +217,22 @@ function ProducerNotebook() {
                   </div>
                   {dataCategories && (
                     <div>
-                      <Select
-                        options={dataCategories?.items.map(category => ({
-                          value: category.id,
-                          label: category.name
-                        }))}
-                        label="Filtrar por categoria"
-                        name="types"
-                        clearable
-                        noLabel
-                        onChange={handleChangeCategory}
-                        initialValue={activeCategory}
-                      />
+                      <Form
+                        ref={formRef}
+                        initialData={{ types: activeCategory }}
+                      >
+                        <Select
+                          options={dataCategories?.items.map(category => ({
+                            value: category.id,
+                            label: category.name
+                          }))}
+                          label="Filtrar por categoria"
+                          name="types"
+                          clearable
+                          noLabel
+                          onChange={handleChangeCategory}
+                        />
+                      </Form>
                     </div>
                   )}
                 </div>

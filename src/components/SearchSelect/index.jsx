@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import AsyncSelect from 'react-select/async';
+import { useField } from '@unform/core';
 
 import { InputContainer, Label } from '@/components/Select/styles';
 import { api } from '@/services/api';
@@ -8,40 +9,72 @@ const SearchSelect = ({
   name,
   options = [],
   label,
-  value,
   disabled,
   url,
+  onChange = null,
   searchField = 'name',
+  limit = 20,
   ...rest
 }) => {
-  const [valueChange, setValueChange] = useState(value);
+  const selectRef = useRef(null);
+  const { fieldName, defaultValue, registerField, error } = useField(name);
+
+  useEffect(() => {
+    registerField({
+      name: fieldName,
+      ref: selectRef.current,
+      getValue: ref => {
+        if (rest.isMulti) {
+          if (!ref.select.state.value) return [];
+
+          return ref.select.state.value.map(option => option.value);
+        }
+
+        if (!ref.select.state.value) return '';
+
+        return ref.select.state.value.value;
+      },
+      setValue: (ref, val) => {
+        ref.select.setValue(val || null);
+      }
+    });
+  }, [fieldName, registerField, rest.isMulti]);
 
   const handleChange = e => {
-    setValueChange(e.value);
+    if (onChange !== null) onChange(e);
   };
 
   const loadOptions = async (inputText, callback) => {
-    const json = await api.get(`${url}?limit=20&${searchField}=${inputText}`);
+    const json = await api.get(
+      `${url}?limit=${limit}&${searchField}=${inputText}`
+    );
 
     if (json?.data)
       callback(json.data.items.map(i => ({ label: i.name, value: i.id })));
   };
 
   return (
-    <InputContainer>
-      {label && <Label className="input-label">{label}</Label>}
+    <InputContainer error={error}>
+      {label && (
+        <Label className={`input-label ${error ? ' label_error' : ''}`}>
+          {label}
+        </Label>
+      )}
       <AsyncSelect
+        cacheOptions
+        name={name}
         defaultOptions={options}
         loadOptions={loadOptions}
         classNamePrefix="select"
-        cacheOptions
         placeholder={label}
-        defaultValue={options.filter(option => option.value === value)}
+        defaultValue={
+          defaultValue && options.find(option => option.value === defaultValue)
+        }
+        ref={selectRef}
         onChange={e => handleChange(e)}
         noOptionsMessage={() => 'Não há dados relacionados a sua pesquisa'}
         loadingMessage={() => 'Buscando...'}
         isDisabled={disabled}
-        {...rest}
         theme={theme => ({
           ...theme,
           colors: {
@@ -53,12 +86,7 @@ const SearchSelect = ({
             neutral0: '#fff'
           }
         })}
-      />
-      <input
-        type="hidden"
-        tabIndex={-1}
-        name={name}
-        value={valueChange || ''}
+        {...rest}
       />
     </InputContainer>
   );

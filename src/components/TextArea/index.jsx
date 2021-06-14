@@ -1,29 +1,34 @@
-import React, { useState, forwardRef, useImperativeHandle } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import { useField } from '@unform/core';
 
 import { InputContainer, StyledTextArea, Label } from './styles';
 
-const Input = (
-  { handleChange, label, name, disabled, initialValue = '', ...otherProps },
-  ref
-) => {
-  const [value, setValue] = useState(initialValue);
-  const [hasText, setHasText] = useState(!!value);
+const TextArea = ({ handleChange, label, name, disabled, ...otherProps }) => {
+  const inputRef = useRef(null);
 
-  useImperativeHandle(ref, () => ({
-    value,
-    setValue: v => {
-      if (v !== '') {
-        setHasText(true);
+  const { fieldName, defaultValue, registerField, error } = useField(name);
+  const [hasText, setHasText] = useState(!!defaultValue);
+
+  useEffect(() => {
+    registerField({
+      name: fieldName,
+      ref: inputRef,
+      getValue: refs => refs.current.value,
+      setValue: (refs, value) => {
+        refs.current.value = value;
+        setHasText(!!value);
+      },
+      clearValue: refs => {
+        refs.current.value = '';
+        setHasText(false);
       }
-      setValue(v);
-    }
-  }));
+    });
+  }, [fieldName, registerField]);
 
   const changeAction = e => {
-    setValue(e.target.value);
+    const { value: inputValue } = e.target;
 
-    if (e.target.value !== '') setHasText(true);
-    else setHasText(false);
+    setHasText(!!inputValue);
 
     if (typeof handleChange !== 'undefined') handleChange(e);
   };
@@ -31,15 +36,20 @@ const Input = (
   return (
     <InputContainer>
       <StyledTextArea
-        onChange={e => changeAction(e)}
+        onChange={changeAction}
         name={name}
-        value={value}
         disabled={disabled}
+        ref={inputRef}
+        defaultValue={defaultValue}
+        id={fieldName}
+        error={!!error}
         {...otherProps}
-        ref={ref}
       />
       {label && (
-        <Label className={`input-label ${hasText ? 'label_active' : ''}`}>
+        <Label
+          className={`input-label ${hasText ? 'label_active' : ''}
+                    ${error ? ' label_error' : ''}`}
+        >
           {label}
         </Label>
       )}
@@ -47,4 +57,4 @@ const Input = (
   );
 };
 
-export default forwardRef(Input);
+export default TextArea;

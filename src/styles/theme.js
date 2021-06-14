@@ -11,7 +11,7 @@ const theme = {
     secondary: 'rgba(87, 229, 199, 0.5)',
     green: '#27AB8F',
     green_75: 'rgba(39, 171, 143, 0.75)',
-    red: '#E15441',
+    red: '#D5412D',
     black_75: 'rgba(38, 48, 46, 0.75)',
     black_50: 'rgba(38, 48, 46, 0.5)',
     black_25: 'rgba(38, 48, 46, 0.25)',
