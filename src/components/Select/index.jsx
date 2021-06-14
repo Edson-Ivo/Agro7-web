@@ -46,7 +46,7 @@ const Select = ({
   return (
     <InputContainer error={error}>
       {label && !noLabel && (
-        <Label className={`input-label ${error ? 'label_error' : ''}`}>
+        <Label className={`input-label ${error ? ' label_error' : ''}`}>
           {label}
         </Label>
       )}

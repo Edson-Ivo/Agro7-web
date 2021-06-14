@@ -7,7 +7,6 @@ import { Form } from '@unform/web';
 import Container from '@/components/Container';
 import Nav from '@/components/Nav';
 import Navbar from '@/components/Navbar';
-import Breadcrumb from '@/components/Breadcrumb';
 import Input from '@/components/Input';
 import Button from '@/components/Button';
 import FileInput from '@/components/FileInput';
@@ -23,6 +22,7 @@ import ProductsService from '@/services/ProductsService';
 import { useRouter } from 'next/router';
 import TextArea from '@/components/TextArea/index';
 import NutricionalService from '@/services/NutricionalService';
+import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 
 const schema = yup.object().shape({
   name: yup.string().required('O campo nome é obrigatório!'),
@@ -250,21 +250,19 @@ function AdminProductsCreate() {
         <Nav />
         <Section>
           <SectionHeader>
-            <div className="SectionHeader__content">
-              <Breadcrumb
-                path={[
-                  { route: '/', name: 'Home' },
-                  { route: '/admin', name: 'Painel Administrativo' },
-                  { route: '/admin/produtos', name: 'Produtos' },
-                  {
-                    route: '/admin/produtos/cadastrar',
-                    name: 'Cadastrar'
-                  }
-                ]}
-              />
-              <h2>Cadastrar Produtos</h2>
-              <p>Aqui você irá cadastrar um produto no sistema</p>
-            </div>
+            <SectionHeaderContent
+              breadcrumb={[
+                { route: '/', name: 'Home' },
+                { route: '/admin', name: 'Painel Administrativo' },
+                { route: '/admin/produtos', name: 'Produtos' },
+                {
+                  route: '/admin/produtos/cadastrar',
+                  name: 'Cadastrar'
+                }
+              ]}
+              title="Cadastrar Produtos"
+              description="Aqui você irá cadastrar um produto no sistema"
+            />
           </SectionHeader>
           <SectionBody>
             <div className="SectionBody__content">

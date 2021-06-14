@@ -7,7 +7,7 @@ import { Form } from '@unform/web';
 import Container from '@/components/Container';
 import Nav from '@/components/Nav';
 import Navbar from '@/components/Navbar';
-import Breadcrumb from '@/components/Breadcrumb';
+
 import Input from '@/components/Input';
 import Button from '@/components/Button';
 import { Alert } from '@/components/Alert';
@@ -19,6 +19,7 @@ import Loader from '@/components/Loader';
 
 import UsersService from '@/services/UsersService';
 import errorMessage from '@/helpers/errorMessage';
+import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 
 const schema = yup.object().shape({
   password: yup.string().required('O campo Senha nova é obrigatório!'),
@@ -85,17 +86,15 @@ function ConfiguracoesSenha() {
         <Nav />
         <Section>
           <SectionHeader>
-            <div className="SectionHeader__content">
-              <Breadcrumb
-                path={[
-                  { route: '/', name: 'Home' },
-                  { route: '/configuracoes', name: 'Configurações' },
-                  { route: '/configuracoes/senha', name: 'Alterar senha' }
-                ]}
-              />
-              <h2>Alterar senha</h2>
-              <p>Modifique sua senha abaixo.</p>
-            </div>
+            <SectionHeaderContent
+              breadcrumb={[
+                { route: '/', name: 'Home' },
+                { route: '/configuracoes', name: 'Configurações' },
+                { route: '/configuracoes/senha', name: 'Alterar senha' }
+              ]}
+              title="Alterar senha"
+              description="Modifique sua senha abaixo."
+            />
           </SectionHeader>
           <SectionBody>
             <div className="SectionBody__content">

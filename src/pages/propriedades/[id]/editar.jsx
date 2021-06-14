@@ -8,7 +8,7 @@ import { MultiStepForm as MultiStep, Step } from '@/components/Multiform';
 import Container from '@/components/Container';
 import Nav from '@/components/Nav';
 import Navbar from '@/components/Navbar';
-import Breadcrumb from '@/components/Breadcrumb';
+
 import Input from '@/components/Input';
 import Button from '@/components/Button';
 import Select from '@/components/Select';
@@ -33,12 +33,10 @@ import Error from '@/components/Error/index';
 import urlRoute from '@/helpers/urlRoute';
 import { useSelector } from 'react-redux';
 import isEmpty from '@/helpers/isEmpty';
+import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 
 const schema = yup.object().shape({
-  name: yup
-    .string()
-    .min(4, 'O nome precisa ter no mínimo 4 caracteres')
-    .required('O campo nome é obrigatório!'),
+  name: yup.string().required('O campo nome é obrigatório!'),
   area: yup
     .number()
     .transform(value => (Number.isNaN(value) ? undefined : value))
@@ -223,28 +221,26 @@ function PropertiesEdit() {
         <Nav />
         <Section>
           <SectionHeader>
-            <div className="SectionHeader__content">
-              <Breadcrumb
-                path={[
-                  { route: '/', name: 'Home' },
-                  {
-                    route: '/tecnico',
-                    name: 'Painel Técnico',
-                    active: type === 'tecnico' && route?.permission === type
-                  },
-                  {
-                    route: '/admin',
-                    name: 'Painel Administrativo',
-                    active:
-                      type === 'administrador' && route?.permission === type
-                  },
-                  { route: `${route.path}`, name: 'Propriedades' },
-                  { route: `${route.path}/${id}/editar`, name: 'Editar' }
-                ]}
-              />
-              <h2>Editar propriedade {`(${data && data.name})`}</h2>
-              <p>Aqui você irá editar a propriedade em questão</p>
-            </div>
+            <SectionHeaderContent
+              breadcrumb={[
+                { route: '/', name: 'Home' },
+                {
+                  route: '/tecnico',
+                  name: 'Painel Técnico',
+                  active: type === 'tecnico' && route?.permission === type
+                },
+                {
+                  route: '/admin',
+                  name: 'Painel Administrativo',
+                  active: type === 'administrador' && route?.permission === type
+                },
+                { route: `${route.path}`, name: 'Propriedades' },
+                { route: `${route.path}/${id}/editar`, name: 'Editar' }
+              ]}
+              title={`Editar propriedade ${data?.name}`}
+              description="Aqui você irá editar a propriedade em questão"
+              isLoading={isEmpty(data)}
+            />
           </SectionHeader>
           <SectionBody>
             <div className="SectionBody__content">
@@ -331,7 +327,6 @@ function PropertiesEdit() {
                                 type="text"
                                 label="Logradouro"
                                 name="locality"
-                                required
                               />
                             </div>
                             <div>

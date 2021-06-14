@@ -7,7 +7,7 @@ import { faPlus, faUserSecret } from '@fortawesome/free-solid-svg-icons';
 import Container from '@/components/Container';
 import Nav from '@/components/Nav';
 import Navbar from '@/components/Navbar';
-import Breadcrumb from '@/components/Breadcrumb';
+
 import Loader from '@/components/Loader';
 import Button from '@/components/Button';
 import Table from '@/components/Table';
@@ -28,6 +28,7 @@ import { useSelector } from 'react-redux';
 import urlRoute from '@/helpers/urlRoute';
 import PropertiesService from '@/services/PropertiesService';
 import { dateConversor } from '@/helpers/date';
+import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 
 function Tecnicos() {
   const router = useRouter();
@@ -120,42 +121,34 @@ function Tecnicos() {
         <Nav />
         <Section>
           <SectionHeader>
-            <div className="SectionHeader__content">
-              {data && (
-                <Breadcrumb
-                  path={[
-                    { route: '/', name: 'Home' },
-                    {
-                      route: '/tecnico',
-                      name: 'Painel Técnico',
-                      active: type === 'tecnico' && route?.permission === type
-                    },
-                    {
-                      route: '/admin',
-                      name: 'Painel Administrativo',
-                      active:
-                        type === 'administrador' && route?.permission === type
-                    },
-                    { route: `${route.path}`, name: 'Propriedades' },
-                    {
-                      route: `${route.path}/${id}/detalhes`,
-                      name: `${data?.name}`
-                    },
-                    {
-                      route: `${route.path}/${id}/tecnicos`,
-                      name: `Técnicos Relacionados`
-                    }
-                  ]}
-                />
-              )}
-              <h2>
-                Técnicos relacionados a propriedade {data && `(${data.name})`}
-              </h2>
-              <p>
-                Aqui você irá ver os técnicos relacionados da propriedade em
-                questão
-              </p>
-
+            <SectionHeaderContent
+              breadcrumb={[
+                { route: '/', name: 'Home' },
+                {
+                  route: '/tecnico',
+                  name: 'Painel Técnico',
+                  active: type === 'tecnico' && route?.permission === type
+                },
+                {
+                  route: '/admin',
+                  name: 'Painel Administrativo',
+                  active: type === 'administrador' && route?.permission === type
+                },
+                { route: `${route.path}`, name: 'Propriedades' },
+                {
+                  route: `${route.path}/${id}/detalhes`,
+                  name: `${data?.name}`
+                },
+                {
+                  route: `${route.path}/${id}/tecnicos`,
+                  name: `Técnicos Relacionados`
+                }
+              ]}
+              title={`Técnicos relacionados a propriedade ${data?.name}`}
+              description="Aqui você irá ver os técnicos relacionados da propriedade em
+                questão"
+              isLoading={isEmpty(data)}
+            >
               <div className="buttons__container">
                 <Link href={`${baseUrl}/solicitacoes`}>
                   <Button className="primary">
@@ -169,7 +162,7 @@ function Tecnicos() {
                   </Button>
                 </Link>
               </div>
-            </div>
+            </SectionHeaderContent>
           </SectionHeader>
           <SectionBody>
             <div className="SectionBody__content">

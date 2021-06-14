@@ -10,7 +10,7 @@ import { faLeaf } from '@fortawesome/free-solid-svg-icons';
 import Container from '@/components/Container';
 import Nav from '@/components/Nav';
 import Navbar from '@/components/Navbar';
-import Breadcrumb from '@/components/Breadcrumb';
+
 import Input from '@/components/Input';
 import Button from '@/components/Button';
 import Select from '@/components/Select';
@@ -26,6 +26,7 @@ import Error from '@/components/Error/index';
 import { useSelector } from 'react-redux';
 import urlRoute from '@/helpers/urlRoute';
 import isEmpty from '@/helpers/isEmpty';
+import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 
 function TalhoesInfo() {
   const router = useRouter();
@@ -60,52 +61,43 @@ function TalhoesInfo() {
         <Nav />
         <Section>
           <SectionHeader>
-            <div className="SectionHeader__content">
-              {data && dataFields && (
-                <Breadcrumb
-                  path={[
-                    { route: '/', name: 'Home' },
-                    {
-                      route: '/tecnico',
-                      name: 'Painel Técnico',
-                      active: type === 'tecnico' && route?.permission === type
-                    },
-                    {
-                      route: '/admin',
-                      name: 'Painel Administrativo',
-                      active:
-                        type === 'administrador' && route?.permission === type
-                    },
-                    { route: `${route.path}`, name: 'Propriedades' },
-                    {
-                      route: `${route.path}/${id}/detalhes`,
-                      name: `${data?.name}`
-                    },
-                    {
-                      route: `${route.path}/${id}/talhoes`,
-                      name: `Talhões`
-                    },
-                    {
-                      route: `${route.path}/${id}/talhoes/${idField}/detalhes`,
-                      name: `${dataFields?.name}`
-                    }
-                  ]}
-                />
-              )}
-              <h2>
-                Informações do Talhão {`(${dataFields && dataFields.name})`}
-              </h2>
-              <p>
-                Você está vendo informações detalhadas do talhão{' '}
-                {dataFields && dataFields.name} da propriedade{' '}
-                {dataFields && dataFields.properties.name}.
-              </p>
+            <SectionHeaderContent
+              breadcrumb={[
+                { route: '/', name: 'Home' },
+                {
+                  route: '/tecnico',
+                  name: 'Painel Técnico',
+                  active: type === 'tecnico' && route?.permission === type
+                },
+                {
+                  route: '/admin',
+                  name: 'Painel Administrativo',
+                  active: type === 'administrador' && route?.permission === type
+                },
+                { route: `${route.path}`, name: 'Propriedades' },
+                {
+                  route: `${route.path}/${id}/detalhes`,
+                  name: `${data?.name}`
+                },
+                {
+                  route: `${route.path}/${id}/talhoes`,
+                  name: `Talhões`
+                },
+                {
+                  route: `${route.path}/${id}/talhoes/${idField}/detalhes`,
+                  name: `${dataFields?.name}`
+                }
+              ]}
+              title={`Informações do Talhão ${dataFields?.name}`}
+              description={`Você está vendo informações detalhadas do talhão ${dataFields?.name} da propriedade ${dataFields?.properties?.name}.`}
+              isLoading={isEmpty(data) || isEmpty(dataFields)}
+            >
               <Link href={`${route.path}/${id}/talhoes/${idField}/culturas`}>
                 <Button className="primary">
                   <FontAwesomeIcon icon={faLeaf} /> Culturas
                 </Button>
               </Link>
-            </div>
+            </SectionHeaderContent>
           </SectionHeader>
           <SectionBody>
             <div className="SectionBody__content">
@@ -117,7 +109,6 @@ function TalhoesInfo() {
                         type="text"
                         name="name"
                         label="Nome do talhão"
-                        initialValue={dataFields.name}
                         disabled
                       />
                       <div className="form-group">
@@ -126,7 +117,6 @@ function TalhoesInfo() {
                             type="number"
                             label="Área"
                             name="area"
-                            initialValue={dataFields.area}
                             disabled
                           />
                         </div>

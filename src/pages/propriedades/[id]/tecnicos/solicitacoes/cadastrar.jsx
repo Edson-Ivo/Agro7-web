@@ -7,7 +7,7 @@ import { Form } from '@unform/web';
 import Container from '@/components/Container';
 import Nav from '@/components/Nav';
 import Navbar from '@/components/Navbar';
-import Breadcrumb from '@/components/Breadcrumb';
+
 import Button from '@/components/Button';
 import { Section, SectionHeader, SectionBody } from '@/components/Section';
 import { CardContainer } from '@/components/CardContainer';
@@ -23,6 +23,7 @@ import { useSelector } from 'react-redux';
 import urlRoute from '@/helpers/urlRoute';
 import PropertiesService from '@/services/PropertiesService';
 import SearchSelect from '@/components/SearchSelect/index';
+import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 
 const schema = yup.object().shape({
   technicians: yup.string().required('Selecione um técnico primeiro.')
@@ -117,44 +118,37 @@ function TecnicosCadastrar() {
         <Nav />
         <Section>
           <SectionHeader>
-            <div className="SectionHeader__content">
-              {data && (
-                <Breadcrumb
-                  path={[
-                    { route: '/', name: 'Home' },
-                    {
-                      route: '/tecnico',
-                      name: 'Painel Técnico',
-                      active: type === 'tecnico' && route?.permission === type
-                    },
-                    {
-                      route: '/admin',
-                      name: 'Painel Administrativo',
-                      active:
-                        type === 'administrador' && route?.permission === type
-                    },
-                    { route: `${route.path}`, name: 'Propriedades' },
-                    {
-                      route: `${route.path}/${id}/detalhes`,
-                      name: `${data?.name}`
-                    },
-                    {
-                      route: `${route.path}/${id}/tecnicos`,
-                      name: `Técnicos Relacionados`
-                    },
-                    {
-                      route: `${route.path}/${id}/tecnicos/solicitacoes/cadastrar`,
-                      name: `Solicitar Técnico`
-                    }
-                  ]}
-                />
-              )}
-              <h2>Solicitar Técnico {`(${data && data.name})`}</h2>
-              <p>
-                Aqui você irá solicitar um técnico para gerenciar a propriedade{' '}
-                {data && data.name}
-              </p>
-            </div>
+            <SectionHeaderContent
+              breadcrumb={[
+                { route: '/', name: 'Home' },
+                {
+                  route: '/tecnico',
+                  name: 'Painel Técnico',
+                  active: type === 'tecnico' && route?.permission === type
+                },
+                {
+                  route: '/admin',
+                  name: 'Painel Administrativo',
+                  active: type === 'administrador' && route?.permission === type
+                },
+                { route: `${route.path}`, name: 'Propriedades' },
+                {
+                  route: `${route.path}/${id}/detalhes`,
+                  name: `${data?.name}`
+                },
+                {
+                  route: `${route.path}/${id}/tecnicos`,
+                  name: `Técnicos Relacionados`
+                },
+                {
+                  route: `${route.path}/${id}/tecnicos/solicitacoes/cadastrar`,
+                  name: `Solicitar Técnico`
+                }
+              ]}
+              title={`Solicitar Técnico em ${data?.name}`}
+              description={`Aqui você irá solicitar um técnico para gerenciar a propriedade ${data?.name}`}
+              isLoading={isEmpty(data)}
+            />
           </SectionHeader>
           <SectionBody>
             <div className="SectionBody__content">

@@ -55,7 +55,7 @@ const Input = ({
   return (
     <InputContainer>
       {label && ['date', 'time'].includes(type) && (
-        <UpperLabel className={`input-label ${error ? 'label_error' : ''}`}>
+        <UpperLabel className={`input-label ${error ? ' label_error' : ''}`}>
           {label}
         </UpperLabel>
       )}
@@ -74,7 +74,7 @@ const Input = ({
       {label && !['date', 'time'].includes(type) && (
         <Label
           className={`input-label ${hasText ? 'label_active' : ''}${
-            error ? 'label_error' : ''
+            error ? ' label_error' : ''
           }`}
         >
           {label}

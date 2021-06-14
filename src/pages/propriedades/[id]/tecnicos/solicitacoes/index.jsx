@@ -4,7 +4,7 @@ import Head from 'next/head';
 import Container from '@/components/Container';
 import Nav from '@/components/Nav';
 import Navbar from '@/components/Navbar';
-import Breadcrumb from '@/components/Breadcrumb';
+
 import Loader from '@/components/Loader';
 import Table from '@/components/Table';
 import { Alert } from '@/components/Alert';
@@ -24,6 +24,7 @@ import { useSelector } from 'react-redux';
 import urlRoute from '@/helpers/urlRoute';
 import PropertiesService from '@/services/PropertiesService';
 import { dateConversor } from '@/helpers/date';
+import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 
 function SolicitacoesTecnicos() {
   const router = useRouter();
@@ -116,47 +117,39 @@ function SolicitacoesTecnicos() {
         <Nav />
         <Section>
           <SectionHeader>
-            <div className="SectionHeader__content">
-              {data && (
-                <Breadcrumb
-                  path={[
-                    { route: '/', name: 'Home' },
-                    {
-                      route: '/tecnico',
-                      name: 'Painel Técnico',
-                      active: type === 'tecnico' && route?.permission === type
-                    },
-                    {
-                      route: '/admin',
-                      name: 'Painel Administrativo',
-                      active:
-                        type === 'administrador' && route?.permission === type
-                    },
-                    { route: `${route.path}`, name: 'Propriedades' },
-                    {
-                      route: `${route.path}/${id}/detalhes`,
-                      name: `${data?.name}`
-                    },
-                    {
-                      route: `${route.path}/${id}/tecnicos`,
-                      name: `Técnicos Relacionados`
-                    },
-                    {
-                      route: `${route.path}/${id}/tecnicos/solicitacoes`,
-                      name: `Solicitações`
-                    }
-                  ]}
-                />
-              )}
-              <h2>
-                Solicitações de Técnicos na propriedade{' '}
-                {data && `(${data.name})`}
-              </h2>
-              <p>
-                Aqui você irá ver as solicitações de técnicos para relacioná-los
-                a propriedade em questão
-              </p>
-            </div>
+            <SectionHeaderContent
+              breadcrumb={[
+                { route: '/', name: 'Home' },
+                {
+                  route: '/tecnico',
+                  name: 'Painel Técnico',
+                  active: type === 'tecnico' && route?.permission === type
+                },
+                {
+                  route: '/admin',
+                  name: 'Painel Administrativo',
+                  active: type === 'administrador' && route?.permission === type
+                },
+                { route: `${route.path}`, name: 'Propriedades' },
+                {
+                  route: `${route.path}/${id}/detalhes`,
+                  name: `${data?.name}`
+                },
+                {
+                  route: `${route.path}/${id}/tecnicos`,
+                  name: `Técnicos Relacionados`
+                },
+                {
+                  route: `${route.path}/${id}/tecnicos/solicitacoes`,
+                  name: `Solicitações`
+                }
+              ]}
+              title={`Solicitações de Técnicos na propriedade
+                ${data?.name}`}
+              description="Aqui você irá ver as solicitações de técnicos para relacioná-los
+                a propriedade em questão"
+              isLoading={isEmpty(data)}
+            />
           </SectionHeader>
           <SectionBody>
             <div className="SectionBody__content">

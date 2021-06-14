@@ -9,7 +9,7 @@ import { MapActionGetLatLng } from '@/components/MapApp';
 import Container from '@/components/Container';
 import Nav from '@/components/Nav';
 import Navbar from '@/components/Navbar';
-import Breadcrumb from '@/components/Breadcrumb';
+
 import Input from '@/components/Input';
 import Button from '@/components/Button';
 import Select from '@/components/Select';
@@ -28,12 +28,10 @@ import AddressesService from '@/services/AddressesService';
 import { useFetch } from '@/hooks/useFetch';
 import Loader from '@/components/Loader/index';
 import isEmpty from '@/helpers/isEmpty';
+import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 
 const schema = yup.object().shape({
-  name: yup
-    .string()
-    .min(4, 'O nome precisa ter no mínimo 4 caracteres')
-    .required('O campo nome é obrigatório!'),
+  name: yup.string().required('O campo nome é obrigatório!'),
   area: yup
     .number()
     .transform(value => (Number.isNaN(value) ? undefined : value))
@@ -188,17 +186,15 @@ function Properties() {
         <Nav />
         <Section>
           <SectionHeader>
-            <div className="SectionHeader__content">
-              <Breadcrumb
-                path={[
-                  { route: '/', name: 'Home' },
-                  { route: '/propriedades', name: 'Propriedades' },
-                  { route: '/propriedades/cadastrar', name: 'Cadastrar' }
-                ]}
-              />
-              <h2>Cadastre uma propriedade</h2>
-              <p>Aqui você irá cadastrar uma propriedade</p>
-            </div>
+            <SectionHeaderContent
+              breadcrumb={[
+                { route: '/', name: 'Home' },
+                { route: '/propriedades', name: 'Propriedades' },
+                { route: '/propriedades/cadastrar', name: 'Cadastrar' }
+              ]}
+              title="Cadastre uma propriedade"
+              description="Aqui você irá cadastrar uma propriedade"
+            />
           </SectionHeader>
           <SectionBody>
             <div className="SectionBody__content">

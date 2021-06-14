@@ -73,7 +73,7 @@ export default function Error({ error }) {
                 <div style={{ marginTop: '20px' }}>
                   <Link href={dataError?.link ? dataError.link : '/'}>
                     <a>
-                      <Button className="primary loginButton">
+                      <Button type="button" className="primary loginButton">
                         <FontAwesomeIcon
                           icon={faSignInAlt}
                           className="loginIcon"

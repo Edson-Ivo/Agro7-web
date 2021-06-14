@@ -9,7 +9,7 @@ import { Alert } from '@/components/Alert';
 import Container from '@/components/Container';
 import Nav from '@/components/Nav';
 import Navbar from '@/components/Navbar';
-import Breadcrumb from '@/components/Breadcrumb';
+
 import Input from '@/components/Input';
 import Button from '@/components/Button';
 import Error from '@/components/Error';
@@ -24,12 +24,10 @@ import AddressesService from '@/services/AddressesService';
 import UsersService from '@/services/UsersService';
 import errorMessage from '@/helpers/errorMessage';
 import extractNumbers from '@/helpers/extractNumbers';
+import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 
 const schema = yup.object().shape({
-  name: yup
-    .string()
-    .min(4, 'O nome precisa ter no mínimo 4 caracteres')
-    .required('O campo nome é obrigatório!'),
+  name: yup.string().required('O campo nome é obrigatório!'),
   phone: yup.string().required('O campo telefone é obrigatório!'),
   phone_whatsapp: yup.string().nullable(),
   addresses: yup.object().shape({
@@ -61,7 +59,6 @@ const schema = yup.object().shape({
       .required('Você precisa informar o CEP do endereço do usuário'),
     street: yup
       .string()
-      .min(4, 'O nome da rua tem que ter no mínimo 4 caracteres')
       .max(50, 'O nome da rua não pode ultrapassar 50 caracteres')
       .required('Você precisa informar a rua do endereço do usuário'),
     number: yup
@@ -172,17 +169,15 @@ function ConfiguracoesEdit() {
         <Nav />
         <Section>
           <SectionHeader>
-            <div className="SectionHeader__content">
-              <Breadcrumb
-                path={[
-                  { route: '/', name: 'Home' },
-                  { route: '/configuracoes', name: 'Configurações' },
-                  { route: '/configuracoes/editar', name: 'Editar meus dados' }
-                ]}
-              />
-              <h2>Editar dados</h2>
-              <p>Edite abaixo os dados de sua conta.</p>
-            </div>
+            <SectionHeaderContent
+              breadcrumb={[
+                { route: '/', name: 'Home' },
+                { route: '/configuracoes', name: 'Configurações' },
+                { route: '/configuracoes/editar', name: 'Editar meus dados' }
+              ]}
+              title="Editar Dados"
+              description="Edite abaixo os dados de sua conta."
+            />
           </SectionHeader>
           <SectionBody>
             <div className="SectionBody__content">

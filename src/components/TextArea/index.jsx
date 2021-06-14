@@ -48,7 +48,7 @@ const TextArea = ({ handleChange, label, name, disabled, ...otherProps }) => {
       {label && (
         <Label
           className={`input-label ${hasText ? 'label_active' : ''}
-                    ${error ? 'label_error' : ''}`}
+                    ${error ? ' label_error' : ''}`}
         >
           {label}
         </Label>

@@ -6,7 +6,7 @@ import Head from 'next/head';
 import Container from '@/components/Container';
 import Nav from '@/components/Nav';
 import Navbar from '@/components/Navbar';
-import Breadcrumb from '@/components/Breadcrumb';
+
 import Input from '@/components/Input';
 import Button from '@/components/Button';
 import { Section, SectionHeader, SectionBody } from '@/components/Section';
@@ -17,13 +17,13 @@ import Loader from '@/components/Loader';
 
 import errorMessage from '@/helpers/errorMessage';
 import { useFetch } from '@/hooks/useFetch';
-import getFormData from '@/helpers/getFormData';
 import { dateToISOString } from '@/helpers/date';
 import HarvestsService from '@/services/HarvestsService';
 import Error from '@/components/Error/index';
 import { useSelector } from 'react-redux';
 import urlRoute from '@/helpers/urlRoute';
 import isEmpty from '@/helpers/isEmpty';
+import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 
 const schema = yup.object().shape({
   date: yup.string().required('O campo data é obrigatório!'),
@@ -67,31 +67,11 @@ function ColheitasCreate() {
     router.back();
   };
 
-  const getData = () => {
-    if (formRef.current === undefined) {
-      return {
-        date: null,
-        forecast: null,
-        quantity: null,
-        quantity_forecast: null,
-        cultures: null
-      };
-    }
-
-    return getFormData(formRef.current, {
-      date: null,
-      forecast: null,
-      quantity: null,
-      quantity_forecast: null,
-      cultures: null
-    });
-  };
-
   const handleSubmit = async e => {
     e.preventDefault();
     setDisableButton(true);
     schema
-      .validate(getData())
+      .validate(e)
       .then(async d => {
         setAlert({
           type: 'success',
@@ -146,63 +126,53 @@ function ColheitasCreate() {
         <Nav />
         <Section>
           <SectionHeader>
-            <div className="SectionHeader__content">
-              {data && dataCultures && (
-                <Breadcrumb
-                  path={[
-                    { route: '/', name: 'Home' },
-                    {
-                      route: '/tecnico',
-                      name: 'Painel Técnico',
-                      active: type === 'tecnico' && route?.permission === type
-                    },
-                    {
-                      route: '/admin',
-                      name: 'Painel Administrativo',
-                      active:
-                        type === 'administrador' && route?.permission === type
-                    },
-                    { route: `${route.path}`, name: 'Propriedades' },
-                    {
-                      route: `/propriedades/${id}/detalhes`,
-                      name: `${data?.properties.name}`
-                    },
-                    {
-                      route: `/propriedades/${id}/talhoes`,
-                      name: `Talhões`
-                    },
-                    {
-                      route: `/propriedades/${id}/talhoes/${idField}/detalhes`,
-                      name: `${data?.name}`
-                    },
-                    {
-                      route: `/propriedades/${id}/talhoes/${idField}/culturas`,
-                      name: `Culturas`
-                    },
-                    {
-                      route: `/propriedades/${id}/talhoes/${idField}/culturas/${idCulture}/detalhes`,
-                      name: `${dataCultures?.products.name}`
-                    },
-                    {
-                      route: `/propriedades/${id}/talhoes/${idField}/culturas/${idCulture}/relatorios`,
-                      name: `Relatórios`
-                    },
-                    {
-                      route: `/propriedades/${id}/talhoes/${idField}/culturas/${idCulture}/colheitas/cadastrar`,
-                      name: `Registrar`
-                    }
-                  ]}
-                />
-              )}
-              <h2>
-                Registrar Colheita na Cultura de {dataCultures?.products.name}
-              </h2>
-              <p>
-                Aqui você irá registrar uma colheita para cultura de{' '}
-                {dataCultures?.products.name} do talhão{' '}
-                {`${data?.name} da propriedade ${data?.properties.name}`}.
-              </p>
-            </div>
+            <SectionHeaderContent
+              breadcrumb={[
+                { route: '/', name: 'Home' },
+                {
+                  route: '/tecnico',
+                  name: 'Painel Técnico',
+                  active: type === 'tecnico' && route?.permission === type
+                },
+                {
+                  route: '/admin',
+                  name: 'Painel Administrativo',
+                  active: type === 'administrador' && route?.permission === type
+                },
+                { route: `${route.path}`, name: 'Propriedades' },
+                {
+                  route: `/propriedades/${id}/detalhes`,
+                  name: `${data?.properties.name}`
+                },
+                {
+                  route: `/propriedades/${id}/talhoes`,
+                  name: `Talhões`
+                },
+                {
+                  route: `/propriedades/${id}/talhoes/${idField}/detalhes`,
+                  name: `${data?.name}`
+                },
+                {
+                  route: `/propriedades/${id}/talhoes/${idField}/culturas`,
+                  name: `Culturas`
+                },
+                {
+                  route: `/propriedades/${id}/talhoes/${idField}/culturas/${idCulture}/detalhes`,
+                  name: `${dataCultures?.products.name}`
+                },
+                {
+                  route: `/propriedades/${id}/talhoes/${idField}/culturas/${idCulture}/relatorios`,
+                  name: `Relatórios`
+                },
+                {
+                  route: `/propriedades/${id}/talhoes/${idField}/culturas/${idCulture}/colheitas/cadastrar`,
+                  name: `Registrar`
+                }
+              ]}
+              title={`Registrar Colheita na Cultura de ${dataCultures?.products?.name}`}
+              description={`Aqui você irá registrar uma colheita para cultura de ${dataCultures?.products?.name} do talhão ${data?.name} da propriedade ${data?.properties?.name}.`}
+              isLoading={isEmpty(data) || isEmpty(dataCultures)}
+            />
           </SectionHeader>
           <SectionBody>
             <div className="SectionBody__content">

@@ -8,7 +8,7 @@ import { Form } from '@unform/web';
 import Container from '@/components/Container';
 import Nav from '@/components/Nav';
 import Navbar from '@/components/Navbar';
-import Breadcrumb from '@/components/Breadcrumb';
+
 import Input from '@/components/Input';
 import Button from '@/components/Button';
 import { Section, SectionHeader, SectionBody } from '@/components/Section';
@@ -21,6 +21,8 @@ import Error from '@/components/Error';
 import { useFetch } from '@/hooks/useFetch';
 import Loader from '@/components/Loader/index';
 import ImageContainer from '@/components/ImageContainer/index';
+import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
+import isEmpty from '@/helpers/isEmpty';
 
 function AdminProductsDetails() {
   const router = useRouter();
@@ -45,23 +47,20 @@ function AdminProductsDetails() {
         <Nav />
         <Section>
           <SectionHeader>
-            <div className="SectionHeader__content">
-              {data && (
-                <Breadcrumb
-                  path={[
-                    { route: '/', name: 'Home' },
-                    { route: '/admin', name: 'Painel Administrativo' },
-                    { route: '/admin/produtos', name: 'Produtos' },
-                    {
-                      route: `/admin/produtos/${id}/detalhes`,
-                      name: `${data?.name}`
-                    }
-                  ]}
-                />
-              )}
-              <h2>Informações do Produto {data && `(${data.name})`}</h2>
-              <p>Aqui você irá ver informações do produto em questão</p>
-            </div>
+            <SectionHeaderContent
+              breadcrumb={[
+                { route: '/', name: 'Home' },
+                { route: '/admin', name: 'Painel Administrativo' },
+                { route: '/admin/produtos', name: 'Produtos' },
+                {
+                  route: `/admin/produtos/${id}/detalhes`,
+                  name: `${data?.name}`
+                }
+              ]}
+              title={`Informações do Produto ${data?.name}`}
+              description="Aqui você irá ver informações do produto em questão"
+              isLoading={isEmpty(data)}
+            />
           </SectionHeader>
           <SectionBody>
             <div className="SectionBody__content">
@@ -293,10 +292,13 @@ function AdminProductsDetails() {
                       </MultiStep>
                       <div className="form-group buttons">
                         <div>
-                          <Button onClick={() => router.back()}>Voltar</Button>
+                          <Button type="button" onClick={() => router.back()}>
+                            Voltar
+                          </Button>
                         </div>
                         <div>
                           <Button
+                            type="button"
                             className="primary"
                             onClick={() =>
                               router.push(`/admin/produtos/${id}/editar`)

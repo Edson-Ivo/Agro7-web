@@ -6,7 +6,7 @@ import { Form } from '@unform/web';
 import Container from '@/components/Container';
 import Nav from '@/components/Nav';
 import Navbar from '@/components/Navbar';
-import Breadcrumb from '@/components/Breadcrumb';
+
 import Input from '@/components/Input';
 import Button from '@/components/Button';
 import { Section, SectionHeader, SectionBody } from '@/components/Section';
@@ -18,6 +18,7 @@ import { privateRoute } from '@/components/PrivateRoute';
 import Loader from '@/components/Loader';
 
 import { useFetch } from '@/hooks/useFetch';
+import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 
 function Configuracoes() {
   const { data, error } = useFetch(`/users/find/by/logged`);
@@ -36,19 +37,15 @@ function Configuracoes() {
         <Nav />
         <Section>
           <SectionHeader>
-            <div className="SectionHeader__content">
-              <Breadcrumb
-                path={[
-                  { route: '/', name: 'Home' },
-                  { route: '/configuracoes', name: 'Configurações' }
-                ]}
-              />
-              <h2>Meus Dados</h2>
-              <p>
-                Esses são os dados de sua conta, aqui você pode os editar ou
-                alterar sua senha.
-              </p>
-            </div>
+            <SectionHeaderContent
+              breadcrumb={[
+                { route: '/', name: 'Home' },
+                { route: '/configuracoes', name: 'Configurações' }
+              ]}
+              title="Meus Dados"
+              description="Esses são os dados de sua conta, aqui você pode os editar ou
+                alterar sua senha."
+            />
           </SectionHeader>
           <SectionBody>
             <div className="SectionBody__content">

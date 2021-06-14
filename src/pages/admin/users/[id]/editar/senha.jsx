@@ -7,7 +7,6 @@ import { Form } from '@unform/web';
 import Container from '@/components/Container';
 import Nav from '@/components/Nav';
 import Navbar from '@/components/Navbar';
-import Breadcrumb from '@/components/Breadcrumb';
 import Input from '@/components/Input';
 import Button from '@/components/Button';
 import { Alert } from '@/components/Alert';
@@ -20,6 +19,8 @@ import errorMessage from '@/helpers/errorMessage';
 import Loader from '@/components/Loader/index';
 import { useFetch } from '@/hooks/useFetch';
 import Error from '@/components/Error/index';
+import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
+import isEmpty from '@/helpers/isEmpty';
 
 const schema = yup.object().shape({
   password: yup.string().required('O campo Senha nova é obrigatório!'),
@@ -97,26 +98,24 @@ function AdminUsersEditPassword() {
         <Nav />
         <Section>
           <SectionHeader>
-            <div className="SectionHeader__content">
-              <Breadcrumb
-                path={[
-                  { route: '/', name: 'Home' },
-                  { route: '/admin', name: 'Painel Administrativo' },
-                  { route: '/admin/users', name: 'Usuários' },
-                  {
-                    route: `/admin/users/${id}/editar`,
-                    name: `Editar`
-                  },
-                  {
-                    route: `/admin/users/${id}/editar/senha`,
-                    name: `Alterar senha`
-                  }
-                ]}
-              />
-
-              <h2>Alterar Senha do Usuário {data && `(${data.name})`}</h2>
-              <p>Aqui você irá alterar a senha do usuário em questão</p>
-            </div>
+            <SectionHeaderContent
+              breadcrumb={[
+                { route: '/', name: 'Home' },
+                { route: '/admin', name: 'Painel Administrativo' },
+                { route: '/admin/users', name: 'Usuários' },
+                {
+                  route: `/admin/users/${id}/editar`,
+                  name: `Editar`
+                },
+                {
+                  route: `/admin/users/${id}/editar/senha`,
+                  name: `Alterar senha`
+                }
+              ]}
+              title={`Alterar Senha do Usuário ${data?.name}`}
+              description="Aqui você irá alterar a senha do usuário em questão"
+              isLoading={isEmpty(data)}
+            />
           </SectionHeader>
           <SectionBody>
             <div className="SectionBody__content">

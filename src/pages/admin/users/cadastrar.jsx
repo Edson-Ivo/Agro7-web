@@ -7,7 +7,7 @@ import { Form } from '@unform/web';
 import Container from '@/components/Container';
 import Nav from '@/components/Nav';
 import Navbar from '@/components/Navbar';
-import Breadcrumb from '@/components/Breadcrumb';
+
 import Input from '@/components/Input';
 import Select from '@/components/Select';
 import Button from '@/components/Button';
@@ -24,12 +24,10 @@ import { useFetch } from '@/hooks/useFetch';
 import capitalize from '@/helpers/capitalize';
 import Loader from '@/components/Loader/index';
 import isEmpty from '@/helpers/isEmpty';
+import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 
 const schema = yup.object().shape({
-  name: yup
-    .string()
-    .min(4, 'O nome precisa ter no mínimo 4 caracteres')
-    .required('O campo nome é obrigatório!'),
+  name: yup.string().required('O campo nome é obrigatório!'),
   email: yup
     .string()
     .email('O e-mail precisa ser um e-mail válido')
@@ -67,7 +65,6 @@ const schema = yup.object().shape({
     .required('Você precisa informar o CEP do endereço do usuário'),
   street: yup
     .string()
-    .min(4, 'O nome da rua tem que ter no mínimo 4 caracteres')
     .max(50, 'O nome da rua não pode ultrapassar 50 caracteres')
     .required('Você precisa informar a rua do endereço do usuário'),
   number: yup
@@ -169,21 +166,20 @@ function AdminUsers() {
         <Nav />
         <Section>
           <SectionHeader>
-            <div className="SectionHeader__content">
-              <Breadcrumb
-                path={[
-                  { route: '/', name: 'Home' },
-                  { route: '/admin', name: 'Painel Administrativo' },
-                  { route: '/admin/users', name: 'Usuários' },
-                  {
-                    route: '/admin/users/cadastrar',
-                    name: 'Cadastrar'
-                  }
-                ]}
-              />
-              <h2>Cadastre um usuário</h2>
-              <p>Aqui você irá cadastrar um usuário para o sistema</p>
-            </div>
+            <SectionHeaderContent
+              breadcrumb={[
+                { route: '/', name: 'Home' },
+                { route: '/admin', name: 'Painel Administrativo' },
+                { route: '/admin/users', name: 'Usuários' },
+                {
+                  route: '/admin/users/cadastrar',
+                  name: 'Cadastrar'
+                }
+              ]}
+              title="Cadastre um usuário"
+              description="Aqui você irá cadastrar um usuário para o sistema"
+              isLoading={false}
+            />
           </SectionHeader>
           <SectionBody>
             <div className="SectionBody__content">

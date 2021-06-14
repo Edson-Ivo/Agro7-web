@@ -7,7 +7,7 @@ import { Form } from '@unform/web';
 import Container from '@/components/Container';
 import Nav from '@/components/Nav';
 import Navbar from '@/components/Navbar';
-import Breadcrumb from '@/components/Breadcrumb';
+
 import Input from '@/components/Input';
 import Button from '@/components/Button';
 import FileInput from '@/components/FileInput';
@@ -25,6 +25,7 @@ import Error from '@/components/Error/index';
 import urlRoute from '@/helpers/urlRoute';
 import { useSelector } from 'react-redux';
 import isEmpty from '@/helpers/isEmpty';
+import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 
 const schema = yup.object().shape({
   name: yup.string().required('Você precisa dar um nome para o documento')
@@ -117,38 +118,33 @@ function DocumentosEdit() {
         <Nav />
         <Section>
           <SectionHeader>
-            <div className="SectionHeader__content">
-              <Breadcrumb
-                path={[
-                  { route: '/', name: 'Home' },
-                  {
-                    route: '/tecnico',
-                    name: 'Painel Técnico',
-                    active: type === 'tecnico' && route?.permission === type
-                  },
-                  {
-                    route: '/admin',
-                    name: 'Painel Administrativo',
-                    active:
-                      type === 'administrador' && route?.permission === type
-                  },
-                  { route: `${route.path}`, name: 'Propriedades' },
-                  {
-                    route: `/propriedades/${id}/detalhes`,
-                    name: `${data?.name}`
-                  },
-                  {
-                    route: `/propriedades/${id}/documentos/${idDoc}/cadastrar`,
-                    name: 'Editar Documento'
-                  }
-                ]}
-              />
-              <h2>Editar Documento {dataDocs && dataDocs.name}</h2>
-              <p>
-                Você está editando o documento {dataDocs && dataDocs.name} da
-                propriedade {data && data.name}.
-              </p>
-            </div>
+            <SectionHeaderContent
+              breadcrumb={[
+                { route: '/', name: 'Home' },
+                {
+                  route: '/tecnico',
+                  name: 'Painel Técnico',
+                  active: type === 'tecnico' && route?.permission === type
+                },
+                {
+                  route: '/admin',
+                  name: 'Painel Administrativo',
+                  active: type === 'administrador' && route?.permission === type
+                },
+                { route: `${route.path}`, name: 'Propriedades' },
+                {
+                  route: `/propriedades/${id}/detalhes`,
+                  name: `${data?.name}`
+                },
+                {
+                  route: `/propriedades/${id}/documentos/${idDoc}/cadastrar`,
+                  name: 'Editar Documento'
+                }
+              ]}
+              title={`Editar Documento ${dataDocs?.name}`}
+              description={`Você está editando o documento ${dataDocs?.name} da
+                propriedade ${data?.name}.`}
+            />
           </SectionHeader>
           <SectionBody>
             <div className="SectionBody__content">

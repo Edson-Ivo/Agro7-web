@@ -15,11 +15,12 @@ import { Card } from '@/components/Card/index';
 import Container from '@/components/Container';
 import Nav from '@/components/Nav';
 import Navbar from '@/components/Navbar';
-import Breadcrumb from '@/components/Breadcrumb';
+
 import { Section, SectionHeader, SectionBody } from '@/components/Section';
 
 import { privateRoute } from '@/components/PrivateRoute';
 import { greetings } from '@/helpers/greetings';
+import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 
 const data = [
   {
@@ -57,16 +58,11 @@ function Home() {
         <Nav />
         <Section>
           <SectionHeader>
-            <div className="SectionHeader__content">
-              <Breadcrumb path={[{ route: '/', name: 'Home' }]} />
-              <h2>
-                {greeting}
-                {name}!
-              </h2>
-              <p>
-                Navegue por suas funcionalidades abaixo ou pelas abas ao lado.
-              </p>
-            </div>
+            <SectionHeaderContent
+              breadcrumb={[{ route: '/', name: 'Home' }]}
+              title={`${greeting} ${name}!`}
+              description="Navegue por suas funcionalidades abaixo ou pelas abas ao lado."
+            />
           </SectionHeader>
           <SectionBody>
             <div className="SectionBody__content">

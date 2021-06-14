@@ -8,7 +8,6 @@ import { Form } from '@unform/web';
 import Container from '@/components/Container';
 import Nav from '@/components/Nav';
 import Navbar from '@/components/Navbar';
-import Breadcrumb from '@/components/Breadcrumb';
 import Input from '@/components/Input';
 import Button from '@/components/Button';
 import { Alert } from '@/components/Alert';
@@ -24,6 +23,8 @@ import Loader from '@/components/Loader/index';
 import TextArea from '@/components/TextArea/index';
 import Pagination from '@/components/Pagination/index';
 import ColorsContainer, { ColorsGrid } from '@/components/ColorsContainer';
+import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
+import isEmpty from '@/helpers/isEmpty';
 
 const schema = yup.object().shape({
   name: yup.string().required('O campo nome é obrigatório!'),
@@ -125,21 +126,20 @@ function AdminCategoriesEdit() {
         <Nav />
         <Section>
           <SectionHeader>
-            <div className="SectionHeader__content">
-              <Breadcrumb
-                path={[
-                  { route: '/', name: 'Home' },
-                  { route: '/admin', name: 'Painel Administrativo' },
-                  { route: '/admin/categorias', name: 'Categorias' },
-                  {
-                    route: `/admin/categorias/${id}/detalhes`,
-                    name: `Categoria ${dataCategory?.name}`
-                  }
-                ]}
-              />
-              <h2>Editar Categoria {dataCategory && dataCategory.name}</h2>
-              <p>Aqui você irá editar a categoria em questão</p>
-            </div>
+            <SectionHeaderContent
+              breadcrumb={[
+                { route: '/', name: 'Home' },
+                { route: '/admin', name: 'Painel Administrativo' },
+                { route: '/admin/categorias', name: 'Categorias' },
+                {
+                  route: `/admin/categorias/${id}/detalhes`,
+                  name: `${dataCategory?.name}`
+                }
+              ]}
+              title={`Editar Categoria ${dataCategory?.name}`}
+              description="Aqui você irá editar a categoria em questão"
+              isLoading={isEmpty(dataCategory)}
+            />
           </SectionHeader>
           <SectionBody>
             <div className="SectionBody__content">

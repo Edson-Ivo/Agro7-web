@@ -17,10 +17,11 @@ import { Card } from '@/components/Card/index';
 import Container from '@/components/Container';
 import Nav from '@/components/Nav';
 import Navbar from '@/components/Navbar';
-import Breadcrumb from '@/components/Breadcrumb';
+
 import { Section, SectionHeader, SectionBody } from '@/components/Section';
 
 import { privateRoute } from '@/components/PrivateRoute';
+import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 
 const data = [
   {
@@ -73,19 +74,15 @@ function AdminHome() {
         <Nav />
         <Section>
           <SectionHeader>
-            <div className="SectionHeader__content">
-              <Breadcrumb
-                path={[
-                  { route: '/', name: 'Home' },
-                  { route: '/admin', name: 'Painel Administrativo' }
-                ]}
-              />
-              <h2>Painel Administrativo</h2>
-              <p>
-                Olá {name}! Esse é seu painel, aqui você pode gerenciar o
-                controle de sua aplicação!
-              </p>
-            </div>
+            <SectionHeaderContent
+              breadcrumb={[
+                { route: '/', name: 'Home' },
+                { route: '/admin', name: 'Painel Administrativo' }
+              ]}
+              title="Painel Administrativo"
+              description={`Olá ${name}! Esse é seu painel, aqui você pode gerenciar o
+                controle de sua aplicação!`}
+            />
           </SectionHeader>
           <SectionBody>
             <div className="SectionBody__content">

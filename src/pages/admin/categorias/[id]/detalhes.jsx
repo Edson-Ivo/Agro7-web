@@ -6,7 +6,6 @@ import { Form } from '@unform/web';
 import Container from '@/components/Container';
 import Nav from '@/components/Nav';
 import Navbar from '@/components/Navbar';
-import Breadcrumb from '@/components/Breadcrumb';
 import Input from '@/components/Input';
 import Button from '@/components/Button';
 import { Section, SectionHeader, SectionBody } from '@/components/Section';
@@ -19,6 +18,8 @@ import Loader from '@/components/Loader/index';
 import { ColorViewer } from '@/components/ColorsContainer/index';
 import { isLight } from '@/helpers/colors';
 import TextArea from '@/components/TextArea/index';
+import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
+import isEmpty from '@/helpers/isEmpty';
 
 function AdminCategoriesDetails() {
   const router = useRouter();
@@ -45,26 +46,20 @@ function AdminCategoriesDetails() {
         <Nav />
         <Section>
           <SectionHeader>
-            <div className="SectionHeader__content">
-              {dataCategory && (
-                <Breadcrumb
-                  path={[
-                    { route: '/', name: 'Home' },
-                    { route: '/admin', name: 'Painel Administrativo' },
-                    { route: '/admin/categorias', name: 'Categorias' },
-                    {
-                      route: `/admin/categorias/${id}/detalhes`,
-                      name: `Categoria ${dataCategory?.name}`
-                    }
-                  ]}
-                />
-              )}
-              <h2>
-                Informações da Categoria{' '}
-                {dataCategory && `(${dataCategory.name})`}
-              </h2>
-              <p>Aqui você irá ver informações da categoria em questão</p>
-            </div>
+            <SectionHeaderContent
+              breadcrumb={[
+                { route: '/', name: 'Home' },
+                { route: '/admin', name: 'Painel Administrativo' },
+                { route: '/admin/categorias', name: 'Categorias' },
+                {
+                  route: `/admin/categorias/${id}/detalhes`,
+                  name: `Categoria ${dataCategory?.name}`
+                }
+              ]}
+              title={`Informações da Categoria ${dataCategory?.name}`}
+              description="Aqui você irá ver informações da categoria em questão"
+              isLoading={isEmpty(dataCategory)}
+            />
           </SectionHeader>
           <SectionBody>
             <div className="SectionBody__content">
