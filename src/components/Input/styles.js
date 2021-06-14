@@ -110,4 +110,8 @@ export const UpperLabel = styled.label`
   text-align: left;
   transition: ease 0.2s;
   margin-left: 10px;
+
+  &.label_error {
+    color: ${props => props.theme.colors.red};
+  }
 `;

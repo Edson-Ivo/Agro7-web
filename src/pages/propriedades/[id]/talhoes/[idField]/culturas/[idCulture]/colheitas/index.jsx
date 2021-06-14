@@ -7,7 +7,7 @@ import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import Container from '@/components/Container';
 import Nav from '@/components/Nav';
 import Navbar from '@/components/Navbar';
-import Breadcrumb from '@/components/Breadcrumb';
+
 import Loader from '@/components/Loader';
 import Button from '@/components/Button';
 import Table from '@/components/Table';
@@ -28,6 +28,7 @@ import { dateConversor } from '@/helpers/date';
 import Error from '@/components/Error/index';
 import { useSelector } from 'react-redux';
 import urlRoute from '@/helpers/urlRoute';
+import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 
 function Colheitas() {
   const router = useRouter();
@@ -124,65 +125,55 @@ function Colheitas() {
         <Nav />
         <Section>
           <SectionHeader>
-            <div className="SectionHeader__content">
-              {data && dataCultures && (
-                <Breadcrumb
-                  path={[
-                    { route: '/', name: 'Home' },
-                    {
-                      route: '/tecnico',
-                      name: 'Painel Técnico',
-                      active: type === 'tecnico' && route?.permission === type
-                    },
-                    {
-                      route: '/admin',
-                      name: 'Painel Administrativo',
-                      active:
-                        type === 'administrador' && route?.permission === type
-                    },
-                    { route: `${route.path}`, name: 'Propriedades' },
-                    {
-                      route: `${route.path}/${id}/detalhes`,
-                      name: `${data?.properties.name}`
-                    },
-                    {
-                      route: `${route.path}/${id}/talhoes`,
-                      name: `Talhões`
-                    },
-                    {
-                      route: `${route.path}/${id}/talhoes/${idField}/detalhes`,
-                      name: `${data?.name}`
-                    },
-                    {
-                      route: `${route.path}/${id}/talhoes/${idField}/culturas`,
-                      name: `Culturas`
-                    },
-                    {
-                      route: `${route.path}/${id}/talhoes/${idField}/culturas/${idCulture}/detalhes`,
-                      name: `${dataCultures?.products.name}`
-                    },
-                    {
-                      route: `${route.path}/${id}/talhoes/${idField}/culturas/${idCulture}/colheitas`,
-                      name: `Colheitas`
-                    }
-                  ]}
-                />
-              )}
-              <h2>
-                Colheitas da Cultura de {dataCultures?.products.name} do Talhão{' '}
-                {data && data.name}
-              </h2>
-              <p>
-                Aqui você irá ver as colheitas da cultura de{' '}
-                {dataCultures?.products.name} do talhão{' '}
-                {`${data?.name} da propriedade ${data?.properties.name}`}.
-              </p>
+            <SectionHeaderContent
+              breadcrumb={[
+                { route: '/', name: 'Home' },
+                {
+                  route: '/tecnico',
+                  name: 'Painel Técnico',
+                  active: type === 'tecnico' && route?.permission === type
+                },
+                {
+                  route: '/admin',
+                  name: 'Painel Administrativo',
+                  active: type === 'administrador' && route?.permission === type
+                },
+                { route: `${route.path}`, name: 'Propriedades' },
+                {
+                  route: `${route.path}/${id}/detalhes`,
+                  name: `${data?.properties?.name}`
+                },
+                {
+                  route: `${route.path}/${id}/talhoes`,
+                  name: `Talhões`
+                },
+                {
+                  route: `${route.path}/${id}/talhoes/${idField}/detalhes`,
+                  name: `${data?.name}`
+                },
+                {
+                  route: `${route.path}/${id}/talhoes/${idField}/culturas`,
+                  name: `Culturas`
+                },
+                {
+                  route: `${route.path}/${id}/talhoes/${idField}/culturas/${idCulture}/detalhes`,
+                  name: `${dataCultures?.products?.name}`
+                },
+                {
+                  route: `${route.path}/${id}/talhoes/${idField}/culturas/${idCulture}/colheitas`,
+                  name: `Colheitas`
+                }
+              ]}
+              title={`Colheitas da Cultura de ${dataCultures?.products?.name} do Talhão ${data?.name}`}
+              description={`Aqui você irá ver as colheitas da cultura de ${dataCultures?.products?.name} do talhão ${data?.name} da propriedade ${data?.properties?.name}.`}
+              isLoading={isEmpty(data) || isEmpty(dataCultures)}
+            >
               <Link href={`${baseUrl}/cadastrar`}>
                 <Button className="primary">
                   <FontAwesomeIcon icon={faPlus} /> Registrar Colheita
                 </Button>
               </Link>
-            </div>
+            </SectionHeaderContent>
           </SectionHeader>
           <SectionBody>
             <div className="SectionBody__content">

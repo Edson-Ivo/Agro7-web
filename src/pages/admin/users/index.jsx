@@ -11,7 +11,7 @@ import { useRouter } from 'next/router';
 import Container from '@/components/Container';
 import Nav from '@/components/Nav';
 import Navbar from '@/components/Navbar';
-import Breadcrumb from '@/components/Breadcrumb';
+
 import { Alert } from '@/components/Alert';
 import { Section, SectionHeader, SectionBody } from '@/components/Section';
 
@@ -30,6 +30,7 @@ import errorMessage from '@/helpers/errorMessage';
 import Input from '@/components/Input/index';
 import isEmpty from '@/helpers/isEmpty';
 import maskString from '@/helpers/maskString';
+import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 
 function AdminUsers() {
   const [alertMsg, setAlertMsg] = useState({ type: '', message: '' });
@@ -98,21 +99,22 @@ function AdminUsers() {
         <Nav />
         <Section>
           <SectionHeader>
-            <div className="SectionHeader__content">
-              <Breadcrumb
-                path={[
-                  { route: '/', name: 'Home' },
-                  { route: '/admin', name: 'Painel Administrativo' },
-                  { route: '/admin/users', name: 'Usuários' }
-                ]}
-              />
-              <h2>Gerenciar Usuários</h2>
+            <SectionHeaderContent
+              breadcrumb={[
+                { route: '/', name: 'Home' },
+                { route: '/admin', name: 'Painel Administrativo' },
+                { route: '/admin/users', name: 'Usuários' }
+              ]}
+              title="Gerenciar Usuários"
+              description="Aqui você poderá gerenciar todos os usuários de seu sistema"
+              isLoading={false}
+            >
               <Link href="/admin/users/cadastrar">
                 <Button className="primary">
                   <FontAwesomeIcon icon={faPlus} /> Novo Usuário
                 </Button>
               </Link>
-            </div>
+            </SectionHeaderContent>
           </SectionHeader>
           <SectionBody>
             <div className="SectionBody__content">

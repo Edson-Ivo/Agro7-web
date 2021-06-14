@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import AsyncSelect from 'react-select/async';
 import { useField } from '@unform/core';
 
@@ -13,6 +13,7 @@ const SearchSelect = ({
   url,
   onChange = null,
   searchField = 'name',
+  limit = 20,
   ...rest
 }) => {
   const selectRef = useRef(null);
@@ -44,7 +45,9 @@ const SearchSelect = ({
   };
 
   const loadOptions = async (inputText, callback) => {
-    const json = await api.get(`${url}?limit=20&${searchField}=${inputText}`);
+    const json = await api.get(
+      `${url}?limit=${limit}&${searchField}=${inputText}`
+    );
 
     if (json?.data)
       callback(json.data.items.map(i => ({ label: i.name, value: i.id })));
@@ -53,7 +56,7 @@ const SearchSelect = ({
   return (
     <InputContainer error={error}>
       {label && (
-        <Label className={`input-label ${error ? 'label_error' : ''}`}>
+        <Label className={`input-label ${error ? ' label_error' : ''}`}>
           {label}
         </Label>
       )}

@@ -6,7 +6,7 @@ import { Form } from '@unform/web';
 import Container from '@/components/Container';
 import Nav from '@/components/Nav';
 import Navbar from '@/components/Navbar';
-import Breadcrumb from '@/components/Breadcrumb';
+
 import Input from '@/components/Input';
 import Select from '@/components/Select';
 import Button from '@/components/Button';
@@ -19,6 +19,8 @@ import Error from '@/components/Error';
 import Loader from '@/components/Loader';
 import { useFetch } from '@/hooks/useFetch';
 import capitalize from '@/helpers/capitalize';
+import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
+import isEmpty from '@/helpers/isEmpty';
 
 function AdminUsers() {
   const router = useRouter();
@@ -42,25 +44,20 @@ function AdminUsers() {
         <Nav />
         <Section>
           <SectionHeader>
-            <div className="SectionHeader__content">
-              {data && (
-                <Breadcrumb
-                  path={[
-                    { route: '/', name: 'Home' },
-                    { route: '/admin', name: 'Painel Administrativo' },
-                    { route: '/admin/users', name: 'Usuários' },
-                    {
-                      route: `/admin/users/${id}/detalhes`,
-                      name: `${data?.name}`
-                    }
-                  ]}
-                />
-              )}
-              <h2>Informações do Usuário {data && `(${data.name})`}</h2>
-              <p>
-                Aqui você irá ver informações detalhadas do usuário em questão
-              </p>
-            </div>
+            <SectionHeaderContent
+              breadcrumb={[
+                { route: '/', name: 'Home' },
+                { route: '/admin', name: 'Painel Administrativo' },
+                { route: '/admin/users', name: 'Usuários' },
+                {
+                  route: `/admin/users/${id}/detalhes`,
+                  name: `${data?.name}`
+                }
+              ]}
+              title={`Informações do Usuário ${data?.name}`}
+              description="Aqui você irá ver informações detalhadas do usuário em questão"
+              isLoading={isEmpty(data)}
+            />
           </SectionHeader>
           <SectionBody>
             <div className="SectionBody__content">

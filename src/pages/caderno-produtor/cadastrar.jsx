@@ -7,7 +7,7 @@ import { Form } from '@unform/web';
 import Container from '@/components/Container';
 import Nav from '@/components/Nav';
 import Navbar from '@/components/Navbar';
-import Breadcrumb from '@/components/Breadcrumb';
+
 import Input from '@/components/Input';
 import Button from '@/components/Button';
 import { Alert } from '@/components/Alert';
@@ -23,6 +23,7 @@ import Select from '@/components/Select/index';
 import Loader from '@/components/Loader/index';
 import ProducerNotebookService from '@/services/ProducerNotebookService';
 import { dateToInput, dateToISOString } from '@/helpers/date';
+import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 
 const schema = yup.object().shape({
   name: yup.string().required('O campo nome é obrigatório!'),
@@ -101,20 +102,18 @@ function ProducerNotebookCreate() {
         <Nav />
         <Section>
           <SectionHeader>
-            <div className="SectionHeader__content">
-              <Breadcrumb
-                path={[
-                  { route: '/', name: 'Home' },
-                  { route: '/caderno-produtor', name: 'Caderno do Produtor' },
-                  {
-                    route: '/caderno-produtor/cadastrar',
-                    name: 'Anotação'
-                  }
-                ]}
-              />
-              <h2>Anotar no Caderno</h2>
-              <p>Aqui você irá fazer uma anotação no seu Caderno do Produtor</p>
-            </div>
+            <SectionHeaderContent
+              breadcrumb={[
+                { route: '/', name: 'Home' },
+                { route: '/caderno-produtor', name: 'Caderno do Produtor' },
+                {
+                  route: '/caderno-produtor/cadastrar',
+                  name: 'Anotação'
+                }
+              ]}
+              title="Anotar no Caderno"
+              description="Aqui você irá fazer uma anotação no seu Caderno do Produtor"
+            />
           </SectionHeader>
           <SectionBody>
             <div className="SectionBody__content">

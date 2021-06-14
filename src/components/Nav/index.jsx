@@ -122,7 +122,11 @@ const NavButton = ({ link, icon, text }) => {
 
   return (
     <Link href={link}>
-      <Button className={`navlist_button ${active}`} onClick={handleClick}>
+      <Button
+        type="button"
+        className={`navlist_button ${active}`}
+        onClick={handleClick}
+      >
         <FontAwesomeIcon icon={icon} className="navlist_button__icon" />
         <span className="navlist_button__description">{text}</span>
       </Button>

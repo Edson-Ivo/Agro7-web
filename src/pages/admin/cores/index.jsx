@@ -10,7 +10,6 @@ import { useRouter } from 'next/router';
 import Container from '@/components/Container';
 import Nav from '@/components/Nav';
 import Navbar from '@/components/Navbar';
-import Breadcrumb from '@/components/Breadcrumb';
 import { Alert } from '@/components/Alert';
 import { Section, SectionHeader, SectionBody } from '@/components/Section';
 
@@ -27,6 +26,7 @@ import { useModal } from '@/hooks/useModal';
 import errorMessage from '@/helpers/errorMessage';
 import ColorsContainer from '@/components/ColorsContainer/index';
 import ColorsService from '@/services/ColorsService';
+import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 
 function AdminColors() {
   const [alertMsg, setAlertMsg] = useState({ type: '', message: '' });
@@ -96,25 +96,22 @@ function AdminColors() {
         <Nav />
         <Section>
           <SectionHeader>
-            <div className="SectionHeader__content">
-              <Breadcrumb
-                path={[
-                  { route: '/', name: 'Home' },
-                  { route: '/admin', name: 'Painel Administrativo' },
-                  { route: baseUrl, name: 'Cores para Categorias' }
-                ]}
-              />
-              <h2>Gerenciar Cores</h2>
-              <p>
-                Aqui você poderá gerenciar todas as cores para utilizá-las nas
-                categorias
-              </p>
+            <SectionHeaderContent
+              breadcrumb={[
+                { route: '/', name: 'Home' },
+                { route: '/admin', name: 'Painel Administrativo' },
+                { route: baseUrl, name: 'Cores para Categorias' }
+              ]}
+              title="Gerenciar Cores"
+              description="Aqui você poderá gerenciar todas as cores para utilizá-las nas
+                categorias"
+            >
               <Link href={`${baseUrl}/cadastrar`}>
                 <Button className="primary">
                   <FontAwesomeIcon icon={faPlus} /> Nova Cor
                 </Button>
               </Link>
-            </div>
+            </SectionHeaderContent>
           </SectionHeader>
           <SectionBody>
             <div className="SectionBody__content">

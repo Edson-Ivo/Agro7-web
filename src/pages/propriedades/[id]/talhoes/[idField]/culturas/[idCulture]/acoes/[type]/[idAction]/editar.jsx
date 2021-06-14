@@ -7,7 +7,6 @@ import { Form } from '@unform/web';
 import Container from '@/components/Container';
 import Nav from '@/components/Nav';
 import Navbar from '@/components/Navbar';
-import Breadcrumb from '@/components/Breadcrumb';
 import Button from '@/components/Button';
 import { Section, SectionHeader, SectionBody } from '@/components/Section';
 import { CardContainer } from '@/components/CardContainer';
@@ -31,6 +30,7 @@ import {
   dateToISOString,
   removeTimeSeconds
 } from '@/helpers/date';
+import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 
 function AcoesCulturaEditar() {
   const formRef = useRef(null);
@@ -162,60 +162,56 @@ function AcoesCulturaEditar() {
         <Nav />
         <Section>
           <SectionHeader>
-            <div className="SectionHeader__content">
-              {data && dataCultures && (
-                <Breadcrumb
-                  path={[
-                    { route: '/', name: 'Home' },
-                    {
-                      route: '/admin',
-                      name: 'Painel Administrativo',
-                      active:
-                        type === 'administrador' && route?.permission === type
-                    },
-                    { route: `${route.path}`, name: 'Propriedades' },
-                    {
-                      route: `${route.path}/${id}/detalhes`,
-                      name: `${data?.properties.name}`
-                    },
-                    {
-                      route: `${route.path}/${id}/talhoes`,
-                      name: `Talhões`
-                    },
-                    {
-                      route: `${route.path}/${id}/talhoes/${idField}/detalhes`,
-                      name: `${data?.name}`
-                    },
-                    {
-                      route: `${route.path}/${id}/talhoes/${idField}/culturas`,
-                      name: `Culturas`
-                    },
-                    {
-                      route: `${route.path}/${id}/talhoes/${idField}/culturas/${idCulture}/detalhes`,
-                      name: `${dataCultures?.products.name}`
-                    },
-                    {
-                      route: `${route.path}/${id}/talhoes/${idField}/culturas/${idCulture}/acoes`,
-                      name: `Ações`
-                    },
-                    {
-                      route: `${route.path}/${id}/talhoes/${idField}/culturas/${idCulture}/acoes/${typeAction}/${idAction}/editar`,
-                      name: `Editar`
-                    }
-                  ]}
-                />
-              )}
-              <h2>
-                Editar Ação de {actionsList[typeAction]?.label} na Cultura de{' '}
-                {dataCultures?.products.name}
-              </h2>
-              <p>
-                Aqui você irá editar a ação{' '}
-                {actionsList[typeAction]?.label.toLowerCase()} em questão na
-                cultura de {dataCultures?.products.name} do talhão{' '}
-                {`${data?.name} da propriedade ${data?.properties.name}`}.
-              </p>
-            </div>
+            <SectionHeaderContent
+              breadcrumb={[
+                { route: '/', name: 'Home' },
+                {
+                  route: '/admin',
+                  name: 'Painel Administrativo',
+                  active: type === 'administrador' && route?.permission === type
+                },
+                { route: `${route.path}`, name: 'Propriedades' },
+                {
+                  route: `${route.path}/${id}/detalhes`,
+                  name: `${data?.properties?.name}`
+                },
+                {
+                  route: `${route.path}/${id}/talhoes`,
+                  name: `Talhões`
+                },
+                {
+                  route: `${route.path}/${id}/talhoes/${idField}/detalhes`,
+                  name: `${data?.name}`
+                },
+                {
+                  route: `${route.path}/${id}/talhoes/${idField}/culturas`,
+                  name: `Culturas`
+                },
+                {
+                  route: `${route.path}/${id}/talhoes/${idField}/culturas/${idCulture}/detalhes`,
+                  name: `${dataCultures?.products?.name}`
+                },
+                {
+                  route: `${route.path}/${id}/talhoes/${idField}/culturas/${idCulture}/acoes`,
+                  name: `Ações`
+                },
+                {
+                  route: `${route.path}/${id}/talhoes/${idField}/culturas/${idCulture}/acoes/${typeAction}/${idAction}/editar`,
+                  name: `Editar`
+                }
+              ]}
+              title={`Editar Ação de ${actionsList[typeAction]?.label} na Cultura de ${dataCultures?.products?.name}`}
+              description={`Aqui você irá editar a ação ${actionsList[
+                typeAction
+              ]?.label.toLowerCase()} em questão na cultura de ${
+                dataCultures?.products?.name
+              } do talhão ${data?.name} da propriedade ${
+                data?.properties?.name
+              }.`}
+              isLoading={
+                isEmpty(data) || isEmpty(dataCultures) || isEmpty(dataActions)
+              }
+            />
           </SectionHeader>
           <SectionBody>
             <div className="SectionBody__content">

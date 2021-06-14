@@ -4,7 +4,7 @@ import Head from 'next/head';
 import Container from '@/components/Container';
 import Nav from '@/components/Nav';
 import Navbar from '@/components/Navbar';
-import Breadcrumb from '@/components/Breadcrumb';
+
 import { Section, SectionHeader, SectionBody } from '@/components/Section';
 
 import { CardContainer } from '@/components/CardContainer';
@@ -23,6 +23,7 @@ import PropertiesService from '@/services/PropertiesService';
 import { Alert } from '@/components/Alert/index';
 import Pagination from '@/components/Pagination/index';
 import isEmpty from '@/helpers/isEmpty';
+import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 
 function Properties() {
   const [alertMsg, setAlertMsg] = useState({ type: '', message: '' });
@@ -88,16 +89,14 @@ function Properties() {
         <Nav />
         <Section>
           <SectionHeader>
-            <div className="SectionHeader__content">
-              <Breadcrumb
-                path={[
-                  { route: '/', name: 'Home' },
-                  { route: '/admin', name: 'Painel Administrativo' },
-                  { route: '/admin/propriedades', name: 'Propriedades' }
-                ]}
-              />
-              <h2>Gerenciar Propriedades</h2>
-            </div>
+            <SectionHeaderContent
+              breadcrumb={[
+                { route: '/', name: 'Home' },
+                { route: '/admin', name: 'Painel Administrativo' },
+                { route: '/admin/propriedades', name: 'Propriedades' }
+              ]}
+              title="Gerenciar Propriedades"
+            />
           </SectionHeader>
           <SectionBody>
             <div className="SectionBody__content">

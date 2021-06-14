@@ -7,7 +7,6 @@ import { Form } from '@unform/web';
 import Container from '@/components/Container';
 import Nav from '@/components/Nav';
 import Navbar from '@/components/Navbar';
-import Breadcrumb from '@/components/Breadcrumb';
 import Input from '@/components/Input';
 import Button from '@/components/Button';
 import { Alert } from '@/components/Alert';
@@ -18,6 +17,7 @@ import { privateRoute } from '@/components/PrivateRoute';
 import errorMessage from '@/helpers/errorMessage';
 import ColorsService from '@/services/ColorsService';
 import InputColor from '@/components/InputColor/index';
+import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 
 const schema = yup.object().shape({
   name: yup.string().required('O campo nome é obrigatório!'),
@@ -85,24 +85,20 @@ function AdminCoresCreate() {
         <Nav />
         <Section>
           <SectionHeader>
-            <div className="SectionHeader__content">
-              <Breadcrumb
-                path={[
-                  { route: '/', name: 'Home' },
-                  { route: '/admin', name: 'Painel Administrativo' },
-                  { route: '/admin/cores', name: 'Cores para Categorias' },
-                  {
-                    route: '/admin/cores/cadastrar',
-                    name: 'Cadastrar'
-                  }
-                ]}
-              />
-              <h2>Cadastre uma Cor</h2>
-              <p>
-                Aqui você irá cadastrar uma cor para utilizar nas categorias do
-                sistema
-              </p>
-            </div>
+            <SectionHeaderContent
+              breadcrumb={[
+                { route: '/', name: 'Home' },
+                { route: '/admin', name: 'Painel Administrativo' },
+                { route: '/admin/cores', name: 'Cores para Categorias' },
+                {
+                  route: '/admin/cores/cadastrar',
+                  name: 'Cadastrar'
+                }
+              ]}
+              title="Cadastre uma Cor"
+              description=" Aqui você irá cadastrar uma cor para utilizar nas categorias do
+                sistema"
+            />
           </SectionHeader>
           <SectionBody>
             <div className="SectionBody__content">

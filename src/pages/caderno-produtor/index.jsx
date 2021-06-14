@@ -12,7 +12,7 @@ import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import Container from '@/components/Container';
 import Nav from '@/components/Nav';
 import Navbar from '@/components/Navbar';
-import Breadcrumb from '@/components/Breadcrumb';
+
 import Error from '@/components/Error';
 import Loader from '@/components/Loader';
 import Select from '@/components/Select';
@@ -46,6 +46,7 @@ import useOnScreen from '@/hooks/useOnScreen';
 import { useInfiniteFetch } from '@/hooks/useInfiniteFetch';
 
 import CardBack from '@/assets/card_back.svg';
+import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 
 function ProducerNotebook() {
   const daysRef = createRef();
@@ -138,24 +139,24 @@ function ProducerNotebook() {
         <Nav />
         <Section>
           <SectionHeader>
-            <div className="SectionHeader__content">
-              <Breadcrumb
-                path={[
-                  { route: '/', name: 'Home' },
-                  { route: '/caderno-produtor', name: 'Caderno do Produtor' }
-                ]}
-              />
-              <h2>Caderno do Produtor - {dateConversor(activeDate, false)}</h2>
-              <p>
-                Aqui você poderá visualizar suas ações realizadas no sistema
-                pela data ou categorias.
-              </p>
+            <SectionHeaderContent
+              breadcrumb={[
+                { route: '/', name: 'Home' },
+                { route: '/caderno-produtor', name: 'Caderno do Produtor' }
+              ]}
+              title={`Caderno do Produtor - ${dateConversor(
+                activeDate,
+                false
+              )}`}
+              description="Aqui você poderá visualizar suas ações realizadas no sistema
+                pela data ou categorias."
+            >
               <Link href="/caderno-produtor/cadastrar">
                 <Button className="primary">
                   <FontAwesomeIcon icon={faPlus} /> Anotar no Caderno
                 </Button>
               </Link>
-            </div>
+            </SectionHeaderContent>
           </SectionHeader>
           <SectionBody>
             <div className="SectionBody__content">
