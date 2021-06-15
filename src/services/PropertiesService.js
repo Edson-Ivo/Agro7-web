@@ -85,7 +85,8 @@ class PropertiesService {
         area: data.area,
         type_dimension: data.type_dimension,
         type_owner: data.type_owner,
-        addresses: data.addresses
+        addresses: data.addresses,
+        coordinates: data.coordinates
       });
       return response;
     } catch (error) {
