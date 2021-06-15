@@ -1,7 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
+import Head from 'next/head';
 import * as yup from 'yup';
 import { useRouter } from 'next/router';
-import Head from 'next/head';
+import { Form } from '@unform/web';
 
 import Container from '@/components/Container';
 import Nav from '@/components/Nav';
@@ -9,6 +10,7 @@ import Navbar from '@/components/Navbar';
 
 import Input from '@/components/Input';
 import Button from '@/components/Button';
+import Select from '@/components/Select';
 import { Section, SectionHeader, SectionBody } from '@/components/Section';
 import { CardContainer } from '@/components/CardContainer';
 import { privateRoute } from '@/components/PrivateRoute';
@@ -17,8 +19,9 @@ import Loader from '@/components/Loader';
 
 import errorMessage from '@/helpers/errorMessage';
 import { useFetch } from '@/hooks/useFetch';
+import CulturesService from '@/services/CulturesService';
+import SearchSelect from '@/components/SearchSelect/index';
 import { dateToISOString } from '@/helpers/date';
-import HarvestsService from '@/services/HarvestsService';
 import Error from '@/components/Error/index';
 import { useSelector } from 'react-redux';
 import urlRoute from '@/helpers/urlRoute';
@@ -26,36 +29,38 @@ import isEmpty from '@/helpers/isEmpty';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 
 const schema = yup.object().shape({
-  date: yup.string().required('O campo data é obrigatório!'),
-  forecast: yup.string().required('O campo data previsão é obrigatório!'),
-  quantity: yup
+  date_start: yup.string().required('O campo data inicial é obrigatório!'),
+  date_finish: yup.string().required('O campo data final é obrigatório!'),
+  area: yup
     .number()
     .transform(value => (Number.isNaN(value) ? undefined : value))
-    .required('A quantidade precisa ser definida')
-    .positive('A quantidade precisa ser um valor positivo'),
-  quantity_forecast: yup
+    .required('A área precisa ser definida')
+    .positive('A área precisa ter um valor positivo'),
+  type_dimension: yup
+    .string()
+    .required('Unidade de medida precisa ser definida'),
+  products: yup
     .number()
     .transform(value => (Number.isNaN(value) ? undefined : value))
-    .required('A quantidade prevista precisa ser definida')
-    .positive('A quantidade prevista precisa ser um valor positivo')
+    .required('O produto tem que ser escolhido')
 });
 
-function ColheitasCreate() {
+function CulturasCreate() {
   const formRef = useRef(null);
   const [alert, setAlert] = useState({ type: '', message: '' });
   const [disableButton, setDisableButton] = useState(false);
 
   const router = useRouter();
-  const { id, idField, idCulture } = router.query;
-
-  const { data, error } = useFetch(`/fields/find/by/id/${idField}`);
-
-  const { data: dataCultures, error: errorCultures } = useFetch(
-    `/cultures/find/by/id/${idCulture}`
-  );
+  const { id, fieldId } = router.query;
 
   const { type } = useSelector(state => state.user);
   const [route, setRoute] = useState({});
+
+  const { data, error } = useFetch(`/fields/find/by/id/${fieldId}`);
+
+  const { data: dataTypeDimension } = useFetch(
+    '/cultures/find/all/types-dimension'
+  );
 
   useEffect(() => {
     setAlert({ type: '', message: '' });
@@ -67,22 +72,22 @@ function ColheitasCreate() {
     router.back();
   };
 
-  const handleSubmit = async e => {
-    e.preventDefault();
+  const handleSubmit = async dt => {
     setDisableButton(true);
+
     schema
-      .validate(e)
+      .validate(dt)
       .then(async d => {
         setAlert({
           type: 'success',
           message: 'Enviando...'
         });
 
-        d.date = dateToISOString(d.date_start);
-        d.forecast = dateToISOString(d.date_finish);
-        d.cultures = Number(idCulture);
+        d.date_start = dateToISOString(d.date_start);
+        d.date_finish = dateToISOString(d.date_finish);
+        d.fields = Number(fieldId);
 
-        await HarvestsService.create(d).then(res => {
+        await CulturesService.create(d).then(res => {
           if (res.status !== 201 || res?.statusCode) {
             setAlert({ type: 'error', message: errorMessage(res) });
             setTimeout(() => {
@@ -91,12 +96,12 @@ function ColheitasCreate() {
           } else {
             setAlert({
               type: 'success',
-              message: 'Colheita registrada com sucesso!'
+              message: 'Cultura cadastrada com sucesso!'
             });
 
             setTimeout(() => {
               router.push(
-                `/propriedades/${id}/talhoes/${idField}/culturas/${idCulture}/colheitas`
+                `${route.path}/${id}/talhoes/${fieldId}/culturas/${res.data.id}/detalhes`
               );
               setDisableButton(false);
             }, 1000);
@@ -106,19 +111,23 @@ function ColheitasCreate() {
       .catch(err => {
         setAlert({ type: 'error', message: err.errors[0] });
         setDisableButton(false);
+
+        if (err instanceof yup.ValidationError) {
+          const { path, message } = err;
+
+          formRef.current.setFieldError(path, message);
+        }
       });
   };
 
-  if (error || errorCultures) return <Error error={error || errorCultures} />;
+  if (error) return <Error error={error} />;
   if (data && id !== String(data?.properties?.id)) return <Error error={404} />;
-  if (dataCultures && idField !== String(dataCultures?.fields?.id))
-    return <Error error={404} />;
   if (!isEmpty(route) && !route.hasPermission) return <Error error={404} />;
 
   return (
     <>
       <Head>
-        <title>Registrar Colheita - Agro7</title>
+        <title>Adicionar Cultura - Agro7</title>
       </Head>
 
       <Navbar />
@@ -141,37 +150,29 @@ function ColheitasCreate() {
                 },
                 { route: `${route.path}`, name: 'Propriedades' },
                 {
-                  route: `/propriedades/${id}/detalhes`,
+                  route: `${route.path}/${id}/detalhes`,
                   name: `${data?.properties.name}`
                 },
                 {
-                  route: `/propriedades/${id}/talhoes`,
+                  route: `${route.path}/${id}/talhoes`,
                   name: `Talhões`
                 },
                 {
-                  route: `/propriedades/${id}/talhoes/${idField}/detalhes`,
+                  route: `${route.path}/${id}/talhoes/${fieldId}/detalhes`,
                   name: `${data?.name}`
                 },
                 {
-                  route: `/propriedades/${id}/talhoes/${idField}/culturas`,
+                  route: `${route.path}/${id}/talhoes/${fieldId}/culturas`,
                   name: `Culturas`
                 },
                 {
-                  route: `/propriedades/${id}/talhoes/${idField}/culturas/${idCulture}/detalhes`,
-                  name: `${dataCultures?.products.name}`
-                },
-                {
-                  route: `/propriedades/${id}/talhoes/${idField}/culturas/${idCulture}/relatorios`,
-                  name: `Relatórios`
-                },
-                {
-                  route: `/propriedades/${id}/talhoes/${idField}/culturas/${idCulture}/colheitas/cadastrar`,
-                  name: `Registrar`
+                  route: `${route.path}/${id}/talhoes/${fieldId}/culturas/cadastrar`,
+                  name: `Cadastrar`
                 }
               ]}
-              title={`Registrar Colheita na Cultura de ${dataCultures?.products?.name}`}
-              description={`Aqui você irá registrar uma colheita para cultura de ${dataCultures?.products?.name} do talhão ${data?.name} da propriedade ${data?.properties?.name}.`}
-              isLoading={isEmpty(data) || isEmpty(dataCultures)}
+              title={`Adicionar Cultura ${data?.name}`}
+              description={`Aqui você irá adicionar uma cultura para o talhão ${data?.name} da propriedade ${data?.properties?.name}.`}
+              isLoading={isEmpty(data)}
             />
           </SectionHeader>
           <SectionBody>
@@ -180,39 +181,44 @@ function ColheitasCreate() {
                 {alert.message !== '' && (
                   <Alert type={alert.type}>{alert.message}</Alert>
                 )}
-                <form
-                  id="registerForm"
-                  ref={formRef}
-                  method="post"
-                  onSubmit={event => handleSubmit(event)}
-                >
-                  {(data && dataCultures && (
-                    <>
+                {(data && dataTypeDimension && (
+                  <>
+                    <Form ref={formRef} method="post" onSubmit={handleSubmit}>
+                      <SearchSelect
+                        name="products"
+                        label="Digite o nome do produto:"
+                        url="/products/find/all"
+                      />
                       <div className="form-group">
                         <div>
-                          <Input type="date" label="Data" name="date" />
+                          <Input
+                            type="date"
+                            label="Data inicial"
+                            name="date_start"
+                          />
                         </div>
                         <div>
                           <Input
-                            type="number"
-                            label="Quantidade (kg)"
-                            name="quantity"
+                            type="date"
+                            label="Data final"
+                            name="date_finish"
                           />
                         </div>
                       </div>
                       <div className="form-group">
                         <div>
-                          <Input
-                            type="date"
-                            label="Data de Previsão"
-                            name="forecast"
-                          />
+                          <Input type="number" label="Área" name="area" />
                         </div>
                         <div>
-                          <Input
-                            type="number"
-                            label="Quantidade Prevista (kg)"
-                            name="quantity_forecast"
+                          <Select
+                            options={dataTypeDimension?.typesDimension.map(
+                              dimension => ({
+                                value: dimension,
+                                label: dimension
+                              })
+                            )}
+                            label="Unidade de medida"
+                            name="type_dimension"
                           />
                         </div>
                       </div>
@@ -230,13 +236,13 @@ function ColheitasCreate() {
                             className="primary"
                             type="submit"
                           >
-                            Registrar Colheita
+                            Adicionar Cultura
                           </Button>
                         </div>
                       </div>
-                    </>
-                  )) || <Loader />}
-                </form>
+                    </Form>
+                  </>
+                )) || <Loader />}
               </CardContainer>
             </div>
           </SectionBody>
@@ -246,4 +252,4 @@ function ColheitasCreate() {
   );
 }
 
-export default privateRoute()(ColheitasCreate);
+export default privateRoute()(CulturasCreate);

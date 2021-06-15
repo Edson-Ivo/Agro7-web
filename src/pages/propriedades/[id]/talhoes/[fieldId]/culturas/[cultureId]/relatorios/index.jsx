@@ -1,4 +1,5 @@
 import React, { useState, useCallback, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import Head from 'next/head';
 import Link from 'next/link';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -19,19 +20,23 @@ import { CardContainer } from '@/components/CardContainer';
 import { useFetch } from '@/hooks/useFetch';
 import { privateRoute } from '@/components/PrivateRoute';
 import { useRouter } from 'next/router';
-import ActionButton from '@/components/ActionButton/index';
+import ActionButton from '@/components/ActionButton';
 import errorMessage from '@/helpers/errorMessage';
 import isEmpty from '@/helpers/isEmpty';
-import Pagination from '@/components/Pagination/index';
-import CulturesService from '@/services/CulturesService';
+import Pagination from '@/components/Pagination';
+import TechnicianActionsService from '@/services/TechnicianActionsService';
+import truncate from '@/helpers/truncate';
+import { dateConversor } from '@/helpers/date';
 import Error from '@/components/Error/index';
-import { useSelector } from 'react-redux';
 import urlRoute from '@/helpers/urlRoute';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 
-function Culturas() {
+function Relatorios() {
+  const [willCreate, setWillCreate] = useState(false);
   const router = useRouter();
-  const { id, idField, page = 1 } = router.query;
+  const { type, id: userId } = useSelector(state => state.user);
+
+  const { id, fieldId, cultureId, page = 1 } = router.query;
 
   const perPage = 10;
 
@@ -39,9 +44,20 @@ function Culturas() {
   const { addModal, removeModal } = useModal();
   const [loading, setLoading] = useState(false);
 
-  const { data, error } = useFetch(`/fields/find/by/id/${idField}`);
+  const { data, error } = useFetch(`/fields/find/by/id/${fieldId}`);
 
-  const { type } = useSelector(state => state.user);
+  const { data: dataCultures, error: errorCultures } = useFetch(
+    `/cultures/find/by/id/${cultureId}`
+  );
+
+  const {
+    data: dataTechActions,
+    error: errorTechActions,
+    mutate: mutateTechActions
+  } = useFetch(
+    `/technician-actions/find/by/culture/${cultureId}?limit=${perPage}&page=${page}`
+  );
+
   const [route, setRoute] = useState({});
   const [baseUrl, setBaseUrl] = useState('');
 
@@ -50,31 +66,33 @@ function Culturas() {
   }, []);
 
   useEffect(() => {
-    setBaseUrl(`${route.path}/${id}/talhoes/${idField}/culturas`);
+    setBaseUrl(
+      `${route.path}/${id}/talhoes/${fieldId}/culturas/${cultureId}/relatorios`
+    );
   }, [route]);
 
-  const {
-    data: dataCultures,
-    error: errorCultures,
-    mutate: mutateCultures
-  } = useFetch(
-    `/cultures/find/by/field/${idField}?limit=${perPage}&page=${page}`
-  );
+  useEffect(() => {
+    if (data)
+      setWillCreate(
+        ['tecnico', 'administrador'].includes(type) &&
+          data?.properties?.users?.id !== userId
+      );
+  }, [data]);
 
   const handleDelete = useCallback(
     async identifier => {
       removeModal();
       setLoading(true);
 
-      await CulturesService.delete(identifier).then(res => {
+      await TechnicianActionsService.delete(identifier).then(res => {
         if (res.status >= 400 || res?.statusCode) {
           setAlertMsg({ type: 'error', message: errorMessage(res) });
         } else {
-          mutateCultures();
+          mutateTechActions();
 
           setAlertMsg({
             type: 'success',
-            message: 'A cultura foi deletada com sucesso!'
+            message: 'O relatório técnico foi deletado com sucesso!'
           });
         }
       });
@@ -87,8 +105,8 @@ function Culturas() {
   const handleDeleteModal = useCallback(
     identifier => {
       addModal({
-        title: `Deletar essa Cultura?`,
-        text: `Deseja realmente deletar essa cultura?`,
+        title: `Deletar esse Relatório?`,
+        text: `Deseja realmente deletar esse relatório?`,
         confirm: true,
         onConfirm: () => handleDelete(identifier),
         onCancel: removeModal
@@ -97,14 +115,20 @@ function Culturas() {
     [addModal, removeModal]
   );
 
-  if (error || errorCultures) return <Error error={error || errorCultures} />;
+  if (error || errorCultures || errorTechActions)
+    return <Error error={error || errorCultures || errorTechActions} />;
   if (data && id !== String(data?.properties?.id)) return <Error error={404} />;
+  if (dataCultures && fieldId !== String(dataCultures?.fields?.id))
+    return <Error error={404} />;
   if (!isEmpty(route) && !route.hasPermission) return <Error error={404} />;
 
   return (
     <>
       <Head>
-        <title>Culturas do Talhão {data && data.name} - Agro7</title>
+        <title>
+          Relatório Técnico da Cultura de {dataCultures?.products.name} do
+          Talhão {data && data.name} - Agro7
+        </title>
       </Head>
 
       <Navbar />
@@ -128,30 +152,40 @@ function Culturas() {
                 { route: `${route.path}`, name: 'Propriedades' },
                 {
                   route: `${route.path}/${id}/detalhes`,
-                  name: `${data?.properties.name}`
+                  name: `${data?.properties?.name}`
                 },
                 {
                   route: `${route.path}/${id}/talhoes`,
                   name: `Talhões`
                 },
                 {
-                  route: `${route.path}/${id}/talhoes/${idField}/detalhes`,
+                  route: `${route.path}/${id}/talhoes/${fieldId}/detalhes`,
                   name: `${data?.name}`
                 },
                 {
-                  route: `${route.path}/${id}/talhoes/${idField}/culturas`,
+                  route: `${route.path}/${id}/talhoes/${fieldId}/culturas`,
                   name: `Culturas`
+                },
+                {
+                  route: `${route.path}/${id}/talhoes/${fieldId}/culturas/${cultureId}/detalhes`,
+                  name: `${dataCultures?.products?.name}`
+                },
+                {
+                  route: `${route.path}/${id}/talhoes/${fieldId}/culturas/${cultureId}/relatorios`,
+                  name: `Relatórios`
                 }
               ]}
-              title={`Culturas do Talhão ${data?.name}`}
-              description={`Aqui você irá ver as culturas do talhão ${data?.name} da propriedade ${data?.properties?.name}.`}
-              isLoading={isEmpty(data)}
+              title={`Relatório Técnico da Cultura de ${dataCultures?.products?.name} do Talhão ${data?.name}`}
+              description={`Aqui você irá ver os relatórios do técnico da cultura de ${dataCultures?.products?.name} do talhão ${data?.name} da propriedade ${data?.properties?.name}.`}
+              isLoading={isEmpty(data) || isEmpty(dataCultures)}
             >
-              <Link href={`${baseUrl}/cadastrar`}>
-                <Button className="primary">
-                  <FontAwesomeIcon icon={faPlus} /> Nova Cultura
-                </Button>
-              </Link>
+              {willCreate && (
+                <Link href={`${baseUrl}/cadastrar`}>
+                  <Button className="primary">
+                    <FontAwesomeIcon icon={faPlus} /> Adicionar Relatório
+                  </Button>
+                </Link>
+              )}
             </SectionHeaderContent>
           </SectionHeader>
           <SectionBody>
@@ -161,40 +195,50 @@ function Culturas() {
                   {alertMsg.message && (
                     <Alert type={alertMsg.type}>{alertMsg.message}</Alert>
                   )}
-                  {(((data && dataCultures) || loading) && (
+                  {(((data && dataCultures && dataTechActions) || loading) && (
                     <>
                       <div className="table-responsive">
                         <Table>
                           <thead>
                             <tr>
-                              <th>Cultura</th>
-                              <th>Área</th>
+                              <th>Data</th>
+                              <th>Concluído</th>
+                              <th>Diagnóstico</th>
+                              <th>Tratos Culturais</th>
+                              <th>Adubação</th>
+                              <th>Fitossanidade</th>
                               <th>Ações</th>
                             </tr>
                           </thead>
                           <tbody>
-                            {(!isEmpty(dataCultures?.items) &&
-                              dataCultures.items.map(d => (
+                            {(!isEmpty(dataTechActions?.items) &&
+                              dataTechActions.items.map(d => (
                                 <tr
                                   key={d.id}
                                   onClick={() =>
                                     router.push(`${baseUrl}/${d.id}/detalhes`)
                                   }
                                 >
-                                  <td>{d?.products?.name}</td>
-                                  <td>{`${d.area}${d.type_dimension}`}</td>
+                                  <td>{dateConversor(d?.created_at, false)}</td>
+                                  <td>{d?.concluded ? 'Sim' : 'Não'}</td>
+                                  <td>{truncate(d?.diagnostics, 30)}</td>
+                                  <td>{truncate(d?.cultivation, 30)}</td>
+                                  <td>{truncate(d?.fertilizing, 30)}</td>
+                                  <td>{truncate(d?.cultivation, 30)}</td>
                                   <td onClick={e => e.stopPropagation()}>
                                     <ActionButton
                                       id={d.id}
                                       path={baseUrl}
+                                      noEdit
+                                      noDelete={!willCreate}
                                       onDelete={() => handleDeleteModal(d.id)}
                                     />
                                   </td>
                                 </tr>
                               ))) || (
                               <tr>
-                                <td colSpan="3">
-                                  Não há culturas nesse talhão
+                                <td colSpan="7">
+                                  Não há relatórios registrados nessa cultura
                                 </td>
                               </tr>
                             )}
@@ -205,7 +249,7 @@ function Culturas() {
                         url={`${baseUrl}`}
                         currentPage={page}
                         itemsPerPage={perPage}
-                        totalPages={dataCultures.meta.totalPages}
+                        totalPages={dataTechActions.meta.totalPages}
                       />
                     </>
                   )) || <Loader />}
@@ -219,4 +263,4 @@ function Culturas() {
   );
 }
 
-export default privateRoute()(Culturas);
+export default privateRoute()(Relatorios);

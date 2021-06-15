@@ -13,7 +13,7 @@ const nextConfig = {
     domains: ['dev.agrofind.com.br']
   },
 
-  rewrites: () => {
+  rewrites: async () => {
     return [
       {
         source: '/tecnico/propriedades/:path*',
@@ -36,6 +36,7 @@ module.exports = withPlugins(
     [
       withPWA,
       {
+        future: { webpack5: true },
         pwa: {
           dest: 'public',
           disable: process.env.NODE_ENV === 'development'
