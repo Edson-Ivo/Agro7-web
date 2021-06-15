@@ -32,12 +32,12 @@ function TalhoesInfo() {
   const router = useRouter();
   const formRef = useRef(null);
 
-  const { id, idField } = router.query;
+  const { id, fieldId } = router.query;
 
   const { data, error } = useFetch(`/properties/find/by/id/${id}`);
 
   const { data: dataFields, error: errorFields } = useFetch(
-    `/fields/find/by/id/${idField}`
+    `/fields/find/by/id/${fieldId}`
   );
 
   const { type } = useSelector(state => state.user);
@@ -84,7 +84,7 @@ function TalhoesInfo() {
                   name: `Talhões`
                 },
                 {
-                  route: `${route.path}/${id}/talhoes/${idField}/detalhes`,
+                  route: `${route.path}/${id}/talhoes/${fieldId}/detalhes`,
                   name: `${dataFields?.name}`
                 }
               ]}
@@ -92,7 +92,7 @@ function TalhoesInfo() {
               description={`Você está vendo informações detalhadas do talhão ${dataFields?.name} da propriedade ${dataFields?.properties?.name}.`}
               isLoading={isEmpty(data) || isEmpty(dataFields)}
             >
-              <Link href={`${route.path}/${id}/talhoes/${idField}/culturas`}>
+              <Link href={`${route.path}/${id}/talhoes/${fieldId}/culturas`}>
                 <Button className="primary">
                   <FontAwesomeIcon icon={faLeaf} /> Culturas
                 </Button>
@@ -155,7 +155,7 @@ function TalhoesInfo() {
                             className="primary"
                             onClick={() =>
                               router.push(
-                                `${route.path}/${id}/talhoes/${idField}/editar`
+                                `${route.path}/${id}/talhoes/${fieldId}/editar`
                               )
                             }
                           >

@@ -48,7 +48,7 @@ function TalhoesEdit() {
   const [dataArea, setDataArea] = useState(0.0);
 
   const router = useRouter();
-  const { id, idField } = router.query;
+  const { id, fieldId } = router.query;
 
   const { data, error } = useFetch(`/properties/find/by/id/${id}`);
 
@@ -56,7 +56,7 @@ function TalhoesEdit() {
     data: dataFields,
     error: errorFields,
     mutate: mutateFields
-  } = useFetch(`/fields/find/by/id/${idField}`);
+  } = useFetch(`/fields/find/by/id/${fieldId}`);
 
   const { data: dataTypeDimension } = useFetch(
     '/fields/find/all/types-dimension'
@@ -107,7 +107,7 @@ function TalhoesEdit() {
           ? coordinates
           : dataFields.coordinates;
 
-        await FieldsService.update(idField, d).then(res => {
+        await FieldsService.update(fieldId, d).then(res => {
           if (res.status !== 200 || res?.statusCode) {
             setAlert({ type: 'error', message: errorMessage(res) });
             setTimeout(() => {
@@ -122,7 +122,7 @@ function TalhoesEdit() {
             });
 
             setTimeout(() => {
-              router.push(`${route.path}/${id}/talhoes/${idField}/detalhes`);
+              router.push(`${route.path}/${id}/talhoes/${fieldId}/detalhes`);
               setDisableButton(false);
             }, 1000);
           }
@@ -177,7 +177,7 @@ function TalhoesEdit() {
                   name: `Talhões`
                 },
                 {
-                  route: `${route.path}/${id}/talhoes/${idField}/editar`,
+                  route: `${route.path}/${id}/talhoes/${fieldId}/editar`,
                   name: `Editar`
                 }
               ]}

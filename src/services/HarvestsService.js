@@ -9,8 +9,8 @@ class HarvestsService {
     return api.get(`/harvests/find/by/id/${id}`);
   }
 
-  static async findByCulture(idCulture) {
-    return api.get(`/harvests/find/by/culture/${idCulture}`);
+  static async findByCulture(cultureId) {
+    return api.get(`/harvests/find/by/culture/${cultureId}`);
   }
 
   static async create(data) {

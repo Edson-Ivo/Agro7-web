@@ -17,11 +17,11 @@ import Loader from '@/components/Loader';
 
 import errorMessage from '@/helpers/errorMessage';
 import { useFetch } from '@/hooks/useFetch';
-import { dateToInput, dateToISOString } from '@/helpers/date';
+import { dateToISOString } from '@/helpers/date';
 import HarvestsService from '@/services/HarvestsService';
 import Error from '@/components/Error/index';
-import urlRoute from '@/helpers/urlRoute';
 import { useSelector } from 'react-redux';
+import urlRoute from '@/helpers/urlRoute';
 import isEmpty from '@/helpers/isEmpty';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 
@@ -40,25 +40,19 @@ const schema = yup.object().shape({
     .positive('A quantidade prevista precisa ser um valor positivo')
 });
 
-function ColheitasEdit() {
+function ColheitasCreate() {
   const formRef = useRef(null);
   const [alert, setAlert] = useState({ type: '', message: '' });
   const [disableButton, setDisableButton] = useState(false);
 
   const router = useRouter();
-  const { id, idField, idCulture, idHarvest } = router.query;
+  const { id, fieldId, cultureId } = router.query;
 
-  const { data, error } = useFetch(`/fields/find/by/id/${idField}`);
+  const { data, error } = useFetch(`/fields/find/by/id/${fieldId}`);
 
   const { data: dataCultures, error: errorCultures } = useFetch(
-    `/cultures/find/by/id/${idCulture}`
+    `/cultures/find/by/id/${cultureId}`
   );
-
-  const {
-    data: dataHarvests,
-    error: errorHarvests,
-    mutate: mutateHarvests
-  } = useFetch(`/harvests/find/by/id/${idHarvest}`);
 
   const { type } = useSelector(state => state.user);
   const [route, setRoute] = useState({});
@@ -86,24 +80,23 @@ function ColheitasEdit() {
 
         d.date = dateToISOString(d.date_start);
         d.forecast = dateToISOString(d.date_finish);
+        d.cultures = Number(cultureId);
 
-        await HarvestsService.update(idHarvest, d).then(res => {
-          if (res.status !== 200 || res?.statusCode) {
+        await HarvestsService.create(d).then(res => {
+          if (res.status !== 201 || res?.statusCode) {
             setAlert({ type: 'error', message: errorMessage(res) });
             setTimeout(() => {
               setDisableButton(false);
             }, 1000);
           } else {
-            mutateHarvests();
-
             setAlert({
               type: 'success',
-              message: 'Colheita editada com sucesso!'
+              message: 'Colheita registrada com sucesso!'
             });
 
             setTimeout(() => {
               router.push(
-                `/propriedades/${id}/talhoes/${idField}/culturas/${idCulture}/colheitas`
+                `/propriedades/${id}/talhoes/${fieldId}/culturas/${cultureId}/colheitas`
               );
               setDisableButton(false);
             }, 1000);
@@ -116,17 +109,16 @@ function ColheitasEdit() {
       });
   };
 
-  if (error || errorCultures || errorHarvests)
-    return <Error error={error || errorCultures || errorHarvests} />;
+  if (error || errorCultures) return <Error error={error || errorCultures} />;
   if (data && id !== String(data?.properties?.id)) return <Error error={404} />;
-  if (dataCultures && idField !== String(dataCultures?.fields?.id))
+  if (dataCultures && fieldId !== String(dataCultures?.fields?.id))
     return <Error error={404} />;
   if (!isEmpty(route) && !route.hasPermission) return <Error error={404} />;
 
   return (
     <>
       <Head>
-        <title>Editar Colheita - Agro7</title>
+        <title>Registrar Colheita - Agro7</title>
       </Head>
 
       <Navbar />
@@ -150,38 +142,36 @@ function ColheitasEdit() {
                 { route: `${route.path}`, name: 'Propriedades' },
                 {
                   route: `/propriedades/${id}/detalhes`,
-                  name: `${data?.properties?.name}`
+                  name: `${data?.properties.name}`
                 },
                 {
                   route: `/propriedades/${id}/talhoes`,
                   name: `Talhões`
                 },
                 {
-                  route: `/propriedades/${id}/talhoes/${idField}/detalhes`,
+                  route: `/propriedades/${id}/talhoes/${fieldId}/detalhes`,
                   name: `${data?.name}`
                 },
                 {
-                  route: `/propriedades/${id}/talhoes/${idField}/culturas`,
+                  route: `/propriedades/${id}/talhoes/${fieldId}/culturas`,
                   name: `Culturas`
                 },
                 {
-                  route: `/propriedades/${id}/talhoes/${idField}/culturas/${idCulture}/detalhes`,
-                  name: `${dataCultures?.products?.name}`
+                  route: `/propriedades/${id}/talhoes/${fieldId}/culturas/${cultureId}/detalhes`,
+                  name: `${dataCultures?.products.name}`
                 },
                 {
-                  route: `/propriedades/${id}/talhoes/${idField}/culturas/${idCulture}/relatorios`,
+                  route: `/propriedades/${id}/talhoes/${fieldId}/culturas/${cultureId}/relatorios`,
                   name: `Relatórios`
                 },
                 {
-                  route: `/propriedades/${id}/talhoes/${idField}/culturas/${idCulture}/colheitas/${idHarvest}/editar`,
-                  name: `Editar`
+                  route: `/propriedades/${id}/talhoes/${fieldId}/culturas/${cultureId}/colheitas/cadastrar`,
+                  name: `Registrar`
                 }
               ]}
-              title={`Editar Colheita na Cultura de ${dataCultures?.products?.name}`}
-              description={`Aqui você irá editar a colheita da cultura de ${dataCultures?.products?.name} do talhão ${data?.name} da propriedade ${data?.properties.name}.`}
-              isLoading={
-                isEmpty(data) || isEmpty(dataCultures) || isEmpty(dataHarvests)
-              }
+              title={`Registrar Colheita na Cultura de ${dataCultures?.products?.name}`}
+              description={`Aqui você irá registrar uma colheita para cultura de ${dataCultures?.products?.name} do talhão ${data?.name} da propriedade ${data?.properties?.name}.`}
+              isLoading={isEmpty(data) || isEmpty(dataCultures)}
             />
           </SectionHeader>
           <SectionBody>
@@ -196,23 +186,17 @@ function ColheitasEdit() {
                   method="post"
                   onSubmit={event => handleSubmit(event)}
                 >
-                  {(data && dataCultures && dataHarvests && (
+                  {(data && dataCultures && (
                     <>
                       <div className="form-group">
                         <div>
-                          <Input
-                            type="date"
-                            label="Data"
-                            name="date"
-                            initialValue={dateToInput(dataHarvests?.date)}
-                          />
+                          <Input type="date" label="Data" name="date" />
                         </div>
                         <div>
                           <Input
                             type="number"
                             label="Quantidade (kg)"
                             name="quantity"
-                            initialValue={dataHarvests?.quantity}
                           />
                         </div>
                       </div>
@@ -222,7 +206,6 @@ function ColheitasEdit() {
                             type="date"
                             label="Data de Previsão"
                             name="forecast"
-                            initialValue={dateToInput(dataHarvests?.forecast)}
                           />
                         </div>
                         <div>
@@ -230,7 +213,6 @@ function ColheitasEdit() {
                             type="number"
                             label="Quantidade Prevista (kg)"
                             name="quantity_forecast"
-                            initialValue={dataHarvests?.quantity_forecast}
                           />
                         </div>
                       </div>
@@ -248,7 +230,7 @@ function ColheitasEdit() {
                             className="primary"
                             type="submit"
                           >
-                            Editar Colheita
+                            Registrar Colheita
                           </Button>
                         </div>
                       </div>
@@ -264,4 +246,4 @@ function ColheitasEdit() {
   );
 }
 
-export default privateRoute()(ColheitasEdit);
+export default privateRoute()(ColheitasCreate);

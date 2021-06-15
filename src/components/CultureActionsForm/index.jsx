@@ -12,7 +12,7 @@ import isEmpty from '@/helpers/isEmpty';
 
 const CulturesActionsForm = ({
   typeAction,
-  idCulture,
+  cultureId,
   dataAction = null,
   editForm = false,
   details = false
@@ -140,7 +140,7 @@ const CulturesActionsForm = ({
             <SearchSelect
               name="supplies"
               label="Digite o nome do Insumo:"
-              url={`/cultures-supplies/find/by/culture/${idCulture}`}
+              url={`/cultures-supplies/find/by/culture/${cultureId}`}
               required
               disabled={disabled}
             />
