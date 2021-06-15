@@ -38,12 +38,12 @@ function RelatoriosCreate() {
   const [disableButton, setDisableButton] = useState(false);
 
   const router = useRouter();
-  const { id, idField, idCulture } = router.query;
+  const { id, fieldId, cultureId } = router.query;
 
-  const { data, error } = useFetch(`/fields/find/by/id/${idField}`);
+  const { data, error } = useFetch(`/fields/find/by/id/${fieldId}`);
 
   const { data: dataCultures, error: errorCultures } = useFetch(
-    `/cultures/find/by/id/${idCulture}`
+    `/cultures/find/by/id/${cultureId}`
   );
 
   const { type, id: userId } = useSelector(state => state.user);
@@ -70,7 +70,7 @@ function RelatoriosCreate() {
           message: 'Enviando...'
         });
 
-        d.cultures = Number(idCulture);
+        d.cultures = Number(cultureId);
 
         await TechnicianActionsService.create(d).then(res => {
           if (res.status !== 201 || res?.statusCode) {
@@ -86,7 +86,7 @@ function RelatoriosCreate() {
 
             setTimeout(() => {
               router.push(
-                `${route.path}/${id}/talhoes/${idField}/culturas/${idCulture}/relatorios/${res.data.id}/detalhes`
+                `${route.path}/${id}/talhoes/${fieldId}/culturas/${cultureId}/relatorios/${res.data.id}/detalhes`
               );
               setDisableButton(false);
             }, 1000);
@@ -107,7 +107,7 @@ function RelatoriosCreate() {
 
   if (error || errorCultures) return <Error error={error || errorCultures} />;
   if (data && id !== String(data?.properties?.id)) return <Error error={404} />;
-  if (dataCultures && idField !== String(dataCultures?.fields?.id))
+  if (dataCultures && fieldId !== String(dataCultures?.fields?.id))
     return <Error error={404} />;
   if (!isEmpty(route) && !route.hasPermission) return <Error error={404} />;
   if (data && data?.properties?.users?.id === userId)
@@ -147,23 +147,23 @@ function RelatoriosCreate() {
                   name: `Talhões`
                 },
                 {
-                  route: `${route.path}/${id}/talhoes/${idField}/detalhes`,
+                  route: `${route.path}/${id}/talhoes/${fieldId}/detalhes`,
                   name: `${data?.name}`
                 },
                 {
-                  route: `${route.path}/${id}/talhoes/${idField}/culturas`,
+                  route: `${route.path}/${id}/talhoes/${fieldId}/culturas`,
                   name: `Culturas`
                 },
                 {
-                  route: `${route.path}/${id}/talhoes/${idField}/culturas/${idCulture}/detalhes`,
+                  route: `${route.path}/${id}/talhoes/${fieldId}/culturas/${cultureId}/detalhes`,
                   name: `${dataCultures?.products?.name}`
                 },
                 {
-                  route: `${route.path}/${id}/talhoes/${idField}/culturas/${idCulture}/relatorios`,
+                  route: `${route.path}/${id}/talhoes/${fieldId}/culturas/${cultureId}/relatorios`,
                   name: `Relatórios`
                 },
                 {
-                  route: `${route.path}/${id}/talhoes/${idField}/culturas/${idCulture}/relatorios/cadastrar`,
+                  route: `${route.path}/${id}/talhoes/${fieldId}/culturas/${cultureId}/relatorios/cadastrar`,
                   name: `Adicionar`
                 }
               ]}

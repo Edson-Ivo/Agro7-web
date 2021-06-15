@@ -32,22 +32,22 @@ import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 function RelatoriosDetails() {
   const router = useRouter();
   const formRef = useRef(null);
-  const { id, idField, idCulture, idAction } = router.query;
+  const { id, fieldId, cultureId, actionId } = router.query;
   const [alert, setAlert] = useState({ type: '', message: '' });
   const [disableButton, setDisableButton] = useState(false);
   const { addModal, removeModal } = useModal();
 
-  const { data, error } = useFetch(`/fields/find/by/id/${idField}`);
+  const { data, error } = useFetch(`/fields/find/by/id/${fieldId}`);
 
   const { data: dataCultures, error: errorCultures } = useFetch(
-    `/cultures/find/by/id/${idCulture}`
+    `/cultures/find/by/id/${cultureId}`
   );
 
   const {
     data: dataActions,
     error: errorActions,
     mutate: mutateActions
-  } = useFetch(`/technician-actions/find/by/id/${idAction}`);
+  } = useFetch(`/technician-actions/find/by/id/${actionId}`);
 
   const { type } = useSelector(state => state.user);
   const [route, setRoute] = useState({});
@@ -64,7 +64,7 @@ function RelatoriosDetails() {
 
     const d = {
       concluded,
-      cultures: idCulture
+      cultures: cultureId
     };
 
     setAlert({
@@ -72,7 +72,7 @@ function RelatoriosDetails() {
       message
     });
 
-    await TechnicianActionsService.update(idAction, d).then(res => {
+    await TechnicianActionsService.update(actionId, d).then(res => {
       if (res.status !== 200 || res?.statusCode) {
         setAlert({ type: 'error', message: errorMessage(res) });
         setTimeout(() => {
@@ -116,7 +116,7 @@ function RelatoriosDetails() {
   if (error || errorCultures || errorActions)
     return <Error error={error || errorCultures || errorActions} />;
   if (data && id !== String(data?.properties?.id)) return <Error error={404} />;
-  if (dataCultures && idField !== String(dataCultures?.fields?.id))
+  if (dataCultures && fieldId !== String(dataCultures?.fields?.id))
     return <Error error={404} />;
   if (!isEmpty(route) && !route.hasPermission) return <Error error={404} />;
 
@@ -154,23 +154,23 @@ function RelatoriosDetails() {
                   name: `Talhões`
                 },
                 {
-                  route: `${route.path}/${id}/talhoes/${idField}/detalhes`,
+                  route: `${route.path}/${id}/talhoes/${fieldId}/detalhes`,
                   name: `${data?.name}`
                 },
                 {
-                  route: `${route.path}/${id}/talhoes/${idField}/culturas`,
+                  route: `${route.path}/${id}/talhoes/${fieldId}/culturas`,
                   name: `Culturas`
                 },
                 {
-                  route: `${route.path}/${id}/talhoes/${idField}/culturas/${idCulture}/detalhes`,
+                  route: `${route.path}/${id}/talhoes/${fieldId}/culturas/${cultureId}/detalhes`,
                   name: `${dataCultures?.products?.name}`
                 },
                 {
-                  route: `${route.path}/${id}/talhoes/${idField}/culturas/${idCulture}/relatorios`,
+                  route: `${route.path}/${id}/talhoes/${fieldId}/culturas/${cultureId}/relatorios`,
                   name: `Relatórios`
                 },
                 {
-                  route: `${route.path}/${id}/talhoes/${idField}/culturas/${idCulture}/relatorios/${idAction}/detalhes`,
+                  route: `${route.path}/${id}/talhoes/${fieldId}/culturas/${cultureId}/relatorios/${actionId}/detalhes`,
                   name: `Detalhes`
                 }
               ]}

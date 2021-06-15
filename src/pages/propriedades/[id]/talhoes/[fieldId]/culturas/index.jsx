@@ -19,20 +19,19 @@ import { CardContainer } from '@/components/CardContainer';
 import { useFetch } from '@/hooks/useFetch';
 import { privateRoute } from '@/components/PrivateRoute';
 import { useRouter } from 'next/router';
-import ActionButton from '@/components/ActionButton';
+import ActionButton from '@/components/ActionButton/index';
 import errorMessage from '@/helpers/errorMessage';
 import isEmpty from '@/helpers/isEmpty';
-import Pagination from '@/components/Pagination';
-import HarvestsService from '@/services/HarvestsService';
-import { dateConversor } from '@/helpers/date';
+import Pagination from '@/components/Pagination/index';
+import CulturesService from '@/services/CulturesService';
 import Error from '@/components/Error/index';
 import { useSelector } from 'react-redux';
 import urlRoute from '@/helpers/urlRoute';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 
-function Colheitas() {
+function Culturas() {
   const router = useRouter();
-  const { id, idField, idCulture, page = 1 } = router.query;
+  const { id, fieldId, page = 1 } = router.query;
 
   const perPage = 10;
 
@@ -40,19 +39,7 @@ function Colheitas() {
   const { addModal, removeModal } = useModal();
   const [loading, setLoading] = useState(false);
 
-  const { data, error } = useFetch(`/fields/find/by/id/${idField}`);
-
-  const { data: dataCultures, error: errorCultures } = useFetch(
-    `/cultures/find/by/id/${idCulture}`
-  );
-
-  const {
-    data: dataHarvests,
-    error: errorHarvests,
-    mutate: mutateHarvests
-  } = useFetch(
-    `/harvests/find/by/culture/${idCulture}?limit=${perPage}&page=${page}`
-  );
+  const { data, error } = useFetch(`/fields/find/by/id/${fieldId}`);
 
   const { type } = useSelector(state => state.user);
   const [route, setRoute] = useState({});
@@ -63,25 +50,31 @@ function Colheitas() {
   }, []);
 
   useEffect(() => {
-    setBaseUrl(
-      `${route.path}/${id}/talhoes/${idField}/culturas/${idCulture}/colheitas`
-    );
+    setBaseUrl(`${route.path}/${id}/talhoes/${fieldId}/culturas`);
   }, [route]);
+
+  const {
+    data: dataCultures,
+    error: errorCultures,
+    mutate: mutateCultures
+  } = useFetch(
+    `/cultures/find/by/field/${fieldId}?limit=${perPage}&page=${page}`
+  );
 
   const handleDelete = useCallback(
     async identifier => {
       removeModal();
       setLoading(true);
 
-      await HarvestsService.delete(identifier).then(res => {
+      await CulturesService.delete(identifier).then(res => {
         if (res.status >= 400 || res?.statusCode) {
           setAlertMsg({ type: 'error', message: errorMessage(res) });
         } else {
-          mutateHarvests();
+          mutateCultures();
 
           setAlertMsg({
             type: 'success',
-            message: 'A colheita foi deletada com sucesso!'
+            message: 'A cultura foi deletada com sucesso!'
           });
         }
       });
@@ -94,8 +87,8 @@ function Colheitas() {
   const handleDeleteModal = useCallback(
     identifier => {
       addModal({
-        title: `Deletar essa Colheita?`,
-        text: `Deseja realmente deletar essa colheita?`,
+        title: `Deletar essa Cultura?`,
+        text: `Deseja realmente deletar essa cultura?`,
         confirm: true,
         onConfirm: () => handleDelete(identifier),
         onCancel: removeModal
@@ -104,20 +97,14 @@ function Colheitas() {
     [addModal, removeModal]
   );
 
-  if (error || errorCultures || errorHarvests)
-    return <Error error={error || errorCultures || errorHarvests} />;
+  if (error || errorCultures) return <Error error={error || errorCultures} />;
   if (data && id !== String(data?.properties?.id)) return <Error error={404} />;
-  if (dataCultures && idField !== String(dataCultures?.fields?.id))
-    return <Error error={404} />;
   if (!isEmpty(route) && !route.hasPermission) return <Error error={404} />;
 
   return (
     <>
       <Head>
-        <title>
-          Colheitas da Cultura de {dataCultures?.products.name} do Talhão{' '}
-          {data && data.name} - Agro7
-        </title>
+        <title>Culturas do Talhão {data && data.name} - Agro7</title>
       </Head>
 
       <Navbar />
@@ -141,36 +128,28 @@ function Colheitas() {
                 { route: `${route.path}`, name: 'Propriedades' },
                 {
                   route: `${route.path}/${id}/detalhes`,
-                  name: `${data?.properties?.name}`
+                  name: `${data?.properties.name}`
                 },
                 {
                   route: `${route.path}/${id}/talhoes`,
                   name: `Talhões`
                 },
                 {
-                  route: `${route.path}/${id}/talhoes/${idField}/detalhes`,
+                  route: `${route.path}/${id}/talhoes/${fieldId}/detalhes`,
                   name: `${data?.name}`
                 },
                 {
-                  route: `${route.path}/${id}/talhoes/${idField}/culturas`,
+                  route: `${route.path}/${id}/talhoes/${fieldId}/culturas`,
                   name: `Culturas`
-                },
-                {
-                  route: `${route.path}/${id}/talhoes/${idField}/culturas/${idCulture}/detalhes`,
-                  name: `${dataCultures?.products?.name}`
-                },
-                {
-                  route: `${route.path}/${id}/talhoes/${idField}/culturas/${idCulture}/colheitas`,
-                  name: `Colheitas`
                 }
               ]}
-              title={`Colheitas da Cultura de ${dataCultures?.products?.name} do Talhão ${data?.name}`}
-              description={`Aqui você irá ver as colheitas da cultura de ${dataCultures?.products?.name} do talhão ${data?.name} da propriedade ${data?.properties?.name}.`}
-              isLoading={isEmpty(data) || isEmpty(dataCultures)}
+              title={`Culturas do Talhão ${data?.name}`}
+              description={`Aqui você irá ver as culturas do talhão ${data?.name} da propriedade ${data?.properties?.name}.`}
+              isLoading={isEmpty(data)}
             >
               <Link href={`${baseUrl}/cadastrar`}>
                 <Button className="primary">
-                  <FontAwesomeIcon icon={faPlus} /> Registrar Colheita
+                  <FontAwesomeIcon icon={faPlus} /> Nova Cultura
                 </Button>
               </Link>
             </SectionHeaderContent>
@@ -182,40 +161,40 @@ function Colheitas() {
                   {alertMsg.message && (
                     <Alert type={alertMsg.type}>{alertMsg.message}</Alert>
                   )}
-                  {(((data && dataCultures && dataHarvests) || loading) && (
+                  {(((data && dataCultures) || loading) && (
                     <>
                       <div className="table-responsive">
                         <Table>
                           <thead>
                             <tr>
-                              <th>Data</th>
-                              <th>Quantidade</th>
-                              <th>Previsão</th>
-                              <th>Quantidade Prevista</th>
+                              <th>Cultura</th>
+                              <th>Área</th>
                               <th>Ações</th>
                             </tr>
                           </thead>
                           <tbody>
-                            {(!isEmpty(dataHarvests?.items) &&
-                              dataHarvests.items.map(d => (
-                                <tr key={d.id}>
-                                  <td>{dateConversor(d?.date, false)}</td>
-                                  <td>{`${d?.quantity}kg`}</td>
-                                  <td>{dateConversor(d?.forecast, false)}</td>
-                                  <td>{`${d?.quantity_forecast}kg`}</td>
-                                  <td>
+                            {(!isEmpty(dataCultures?.items) &&
+                              dataCultures.items.map(d => (
+                                <tr
+                                  key={d.id}
+                                  onClick={() =>
+                                    router.push(`${baseUrl}/${d.id}/detalhes`)
+                                  }
+                                >
+                                  <td>{d?.products?.name}</td>
+                                  <td>{`${d.area}${d.type_dimension}`}</td>
+                                  <td onClick={e => e.stopPropagation()}>
                                     <ActionButton
                                       id={d.id}
                                       path={baseUrl}
-                                      noInfo
                                       onDelete={() => handleDeleteModal(d.id)}
                                     />
                                   </td>
                                 </tr>
                               ))) || (
                               <tr>
-                                <td colSpan="5">
-                                  Não há colheitas registradas nessa cultura
+                                <td colSpan="3">
+                                  Não há culturas nesse talhão
                                 </td>
                               </tr>
                             )}
@@ -226,7 +205,7 @@ function Colheitas() {
                         url={`${baseUrl}`}
                         currentPage={page}
                         itemsPerPage={perPage}
-                        totalPages={dataHarvests.meta.totalPages}
+                        totalPages={dataCultures.meta.totalPages}
                       />
                     </>
                   )) || <Loader />}
@@ -240,4 +219,4 @@ function Colheitas() {
   );
 }
 
-export default privateRoute()(Colheitas);
+export default privateRoute()(Culturas);

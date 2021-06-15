@@ -1,8 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
-import Head from 'next/head';
 import * as yup from 'yup';
 import { useRouter } from 'next/router';
-import { Form } from '@unform/web';
+import Head from 'next/head';
 
 import Container from '@/components/Container';
 import Nav from '@/components/Nav';
@@ -10,7 +9,6 @@ import Navbar from '@/components/Navbar';
 
 import Input from '@/components/Input';
 import Button from '@/components/Button';
-import Select from '@/components/Select';
 import { Section, SectionHeader, SectionBody } from '@/components/Section';
 import { CardContainer } from '@/components/CardContainer';
 import { privateRoute } from '@/components/PrivateRoute';
@@ -19,48 +17,51 @@ import Loader from '@/components/Loader';
 
 import errorMessage from '@/helpers/errorMessage';
 import { useFetch } from '@/hooks/useFetch';
-import CulturesService from '@/services/CulturesService';
-import SearchSelect from '@/components/SearchSelect/index';
-import { dateToISOString } from '@/helpers/date';
+import { dateToInput, dateToISOString } from '@/helpers/date';
+import HarvestsService from '@/services/HarvestsService';
 import Error from '@/components/Error/index';
-import { useSelector } from 'react-redux';
 import urlRoute from '@/helpers/urlRoute';
+import { useSelector } from 'react-redux';
 import isEmpty from '@/helpers/isEmpty';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 
 const schema = yup.object().shape({
-  date_start: yup.string().required('O campo data inicial é obrigatório!'),
-  date_finish: yup.string().required('O campo data final é obrigatório!'),
-  area: yup
+  date: yup.string().required('O campo data é obrigatório!'),
+  forecast: yup.string().required('O campo data previsão é obrigatório!'),
+  quantity: yup
     .number()
     .transform(value => (Number.isNaN(value) ? undefined : value))
-    .required('A área precisa ser definida')
-    .positive('A área precisa ter um valor positivo'),
-  type_dimension: yup
-    .string()
-    .required('Unidade de medida precisa ser definida'),
-  products: yup
+    .required('A quantidade precisa ser definida')
+    .positive('A quantidade precisa ser um valor positivo'),
+  quantity_forecast: yup
     .number()
     .transform(value => (Number.isNaN(value) ? undefined : value))
-    .required('O produto tem que ser escolhido')
+    .required('A quantidade prevista precisa ser definida')
+    .positive('A quantidade prevista precisa ser um valor positivo')
 });
 
-function CulturasCreate() {
+function ColheitasEdit() {
   const formRef = useRef(null);
   const [alert, setAlert] = useState({ type: '', message: '' });
   const [disableButton, setDisableButton] = useState(false);
 
   const router = useRouter();
-  const { id, idField } = router.query;
+  const { id, fieldId, cultureId, harvestId } = router.query;
+
+  const { data, error } = useFetch(`/fields/find/by/id/${fieldId}`);
+
+  const { data: dataCultures, error: errorCultures } = useFetch(
+    `/cultures/find/by/id/${cultureId}`
+  );
+
+  const {
+    data: dataHarvests,
+    error: errorHarvests,
+    mutate: mutateHarvests
+  } = useFetch(`/harvests/find/by/id/${harvestId}`);
 
   const { type } = useSelector(state => state.user);
   const [route, setRoute] = useState({});
-
-  const { data, error } = useFetch(`/fields/find/by/id/${idField}`);
-
-  const { data: dataTypeDimension } = useFetch(
-    '/cultures/find/all/types-dimension'
-  );
 
   useEffect(() => {
     setAlert({ type: '', message: '' });
@@ -72,36 +73,37 @@ function CulturasCreate() {
     router.back();
   };
 
-  const handleSubmit = async dt => {
+  const handleSubmit = async e => {
+    e.preventDefault();
     setDisableButton(true);
-
     schema
-      .validate(dt)
+      .validate(e)
       .then(async d => {
         setAlert({
           type: 'success',
           message: 'Enviando...'
         });
 
-        d.date_start = dateToISOString(d.date_start);
-        d.date_finish = dateToISOString(d.date_finish);
-        d.fields = Number(idField);
+        d.date = dateToISOString(d.date_start);
+        d.forecast = dateToISOString(d.date_finish);
 
-        await CulturesService.create(d).then(res => {
-          if (res.status !== 201 || res?.statusCode) {
+        await HarvestsService.update(harvestId, d).then(res => {
+          if (res.status !== 200 || res?.statusCode) {
             setAlert({ type: 'error', message: errorMessage(res) });
             setTimeout(() => {
               setDisableButton(false);
             }, 1000);
           } else {
+            mutateHarvests();
+
             setAlert({
               type: 'success',
-              message: 'Cultura cadastrada com sucesso!'
+              message: 'Colheita editada com sucesso!'
             });
 
             setTimeout(() => {
               router.push(
-                `${route.path}/${id}/talhoes/${idField}/culturas/${res.data.id}/detalhes`
+                `/propriedades/${id}/talhoes/${fieldId}/culturas/${cultureId}/colheitas`
               );
               setDisableButton(false);
             }, 1000);
@@ -111,23 +113,20 @@ function CulturasCreate() {
       .catch(err => {
         setAlert({ type: 'error', message: err.errors[0] });
         setDisableButton(false);
-
-        if (err instanceof yup.ValidationError) {
-          const { path, message } = err;
-
-          formRef.current.setFieldError(path, message);
-        }
       });
   };
 
-  if (error) return <Error error={error} />;
+  if (error || errorCultures || errorHarvests)
+    return <Error error={error || errorCultures || errorHarvests} />;
   if (data && id !== String(data?.properties?.id)) return <Error error={404} />;
+  if (dataCultures && fieldId !== String(dataCultures?.fields?.id))
+    return <Error error={404} />;
   if (!isEmpty(route) && !route.hasPermission) return <Error error={404} />;
 
   return (
     <>
       <Head>
-        <title>Adicionar Cultura - Agro7</title>
+        <title>Editar Colheita - Agro7</title>
       </Head>
 
       <Navbar />
@@ -150,29 +149,39 @@ function CulturasCreate() {
                 },
                 { route: `${route.path}`, name: 'Propriedades' },
                 {
-                  route: `${route.path}/${id}/detalhes`,
-                  name: `${data?.properties.name}`
+                  route: `/propriedades/${id}/detalhes`,
+                  name: `${data?.properties?.name}`
                 },
                 {
-                  route: `${route.path}/${id}/talhoes`,
+                  route: `/propriedades/${id}/talhoes`,
                   name: `Talhões`
                 },
                 {
-                  route: `${route.path}/${id}/talhoes/${idField}/detalhes`,
+                  route: `/propriedades/${id}/talhoes/${fieldId}/detalhes`,
                   name: `${data?.name}`
                 },
                 {
-                  route: `${route.path}/${id}/talhoes/${idField}/culturas`,
+                  route: `/propriedades/${id}/talhoes/${fieldId}/culturas`,
                   name: `Culturas`
                 },
                 {
-                  route: `${route.path}/${id}/talhoes/${idField}/culturas/cadastrar`,
-                  name: `Cadastrar`
+                  route: `/propriedades/${id}/talhoes/${fieldId}/culturas/${cultureId}/detalhes`,
+                  name: `${dataCultures?.products?.name}`
+                },
+                {
+                  route: `/propriedades/${id}/talhoes/${fieldId}/culturas/${cultureId}/relatorios`,
+                  name: `Relatórios`
+                },
+                {
+                  route: `/propriedades/${id}/talhoes/${fieldId}/culturas/${cultureId}/colheitas/${harvestId}/editar`,
+                  name: `Editar`
                 }
               ]}
-              title={`Adicionar Cultura ${data?.name}`}
-              description={`Aqui você irá adicionar uma cultura para o talhão ${data?.name} da propriedade ${data?.properties?.name}.`}
-              isLoading={isEmpty(data)}
+              title={`Editar Colheita na Cultura de ${dataCultures?.products?.name}`}
+              description={`Aqui você irá editar a colheita da cultura de ${dataCultures?.products?.name} do talhão ${data?.name} da propriedade ${data?.properties.name}.`}
+              isLoading={
+                isEmpty(data) || isEmpty(dataCultures) || isEmpty(dataHarvests)
+              }
             />
           </SectionHeader>
           <SectionBody>
@@ -181,44 +190,47 @@ function CulturasCreate() {
                 {alert.message !== '' && (
                   <Alert type={alert.type}>{alert.message}</Alert>
                 )}
-                {(data && dataTypeDimension && (
-                  <>
-                    <Form ref={formRef} method="post" onSubmit={handleSubmit}>
-                      <SearchSelect
-                        name="products"
-                        label="Digite o nome do produto:"
-                        url="/products/find/all"
-                      />
+                <form
+                  id="registerForm"
+                  ref={formRef}
+                  method="post"
+                  onSubmit={event => handleSubmit(event)}
+                >
+                  {(data && dataCultures && dataHarvests && (
+                    <>
                       <div className="form-group">
                         <div>
                           <Input
                             type="date"
-                            label="Data inicial"
-                            name="date_start"
+                            label="Data"
+                            name="date"
+                            initialValue={dateToInput(dataHarvests?.date)}
                           />
                         </div>
                         <div>
                           <Input
-                            type="date"
-                            label="Data final"
-                            name="date_finish"
+                            type="number"
+                            label="Quantidade (kg)"
+                            name="quantity"
+                            initialValue={dataHarvests?.quantity}
                           />
                         </div>
                       </div>
                       <div className="form-group">
                         <div>
-                          <Input type="number" label="Área" name="area" />
+                          <Input
+                            type="date"
+                            label="Data de Previsão"
+                            name="forecast"
+                            initialValue={dateToInput(dataHarvests?.forecast)}
+                          />
                         </div>
                         <div>
-                          <Select
-                            options={dataTypeDimension?.typesDimension.map(
-                              dimension => ({
-                                value: dimension,
-                                label: dimension
-                              })
-                            )}
-                            label="Unidade de medida"
-                            name="type_dimension"
+                          <Input
+                            type="number"
+                            label="Quantidade Prevista (kg)"
+                            name="quantity_forecast"
+                            initialValue={dataHarvests?.quantity_forecast}
                           />
                         </div>
                       </div>
@@ -236,13 +248,13 @@ function CulturasCreate() {
                             className="primary"
                             type="submit"
                           >
-                            Adicionar Cultura
+                            Editar Colheita
                           </Button>
                         </div>
                       </div>
-                    </Form>
-                  </>
-                )) || <Loader />}
+                    </>
+                  )) || <Loader />}
+                </form>
               </CardContainer>
             </div>
           </SectionBody>
@@ -252,4 +264,4 @@ function CulturasCreate() {
   );
 }
 
-export default privateRoute()(CulturasCreate);
+export default privateRoute()(ColheitasEdit);

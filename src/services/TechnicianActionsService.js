@@ -9,8 +9,8 @@ class TechnicianActionsService {
     return api.get(`/technician-actions/find/by/id/${id}`);
   }
 
-  static async findByCulture(idCulture) {
-    return api.get(`/technician-actions/find/by/culture/${idCulture}`);
+  static async findByCulture(cultureId) {
+    return api.get(`/technician-actions/find/by/culture/${cultureId}`);
   }
 
   static async create(data) {

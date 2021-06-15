@@ -38,11 +38,11 @@ function DocumentosEdit() {
   const [disableButton, setDisableButton] = useState(false);
 
   const router = useRouter();
-  const { id, idDoc } = router.query;
+  const { id, docId } = router.query;
 
   const { data, error } = useFetch(`/properties/find/by/id/${id}`);
   const { data: dataDocs, error: errorDocs } = useFetch(
-    `/properties-documents/find/by/id/${idDoc}`
+    `/properties-documents/find/by/id/${docId}`
   );
 
   const { type } = useSelector(state => state.user);
@@ -80,7 +80,7 @@ function DocumentosEdit() {
           if (e.target.file.files.length > 0)
             formData.append('file', e.target.file.files[0]);
 
-          await DocumentsService.update(idDoc, formData).then(() => {
+          await DocumentsService.update(docId, formData).then(() => {
             setAlert({
               type: 'success',
               message: 'Documento editado com sucesso!'
@@ -137,7 +137,7 @@ function DocumentosEdit() {
                   name: `${data?.name}`
                 },
                 {
-                  route: `/propriedades/${id}/documentos/${idDoc}/cadastrar`,
+                  route: `/propriedades/${id}/documentos/${docId}/cadastrar`,
                   name: 'Editar Documento'
                 }
               ]}

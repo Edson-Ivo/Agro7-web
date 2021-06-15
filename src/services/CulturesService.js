@@ -9,8 +9,8 @@ class CulturesService {
     return api.get(`/cultures/find/by/id/${id}`);
   }
 
-  static async findByField(idField) {
-    return api.get(`/cultures/find/by/field/${idField}`);
+  static async findByField(fieldId) {
+    return api.get(`/cultures/find/by/field/${fieldId}`);
   }
 
   static async create(data) {
