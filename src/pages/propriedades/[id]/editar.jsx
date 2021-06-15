@@ -24,7 +24,6 @@ import { Alert } from '@/components/Alert/index';
 import errorMessage from '@/helpers/errorMessage';
 
 import PropertiesService from '@/services/PropertiesService';
-import CoordinatesService from '@/services/CoordinatesService';
 import { useRouter } from 'next/router';
 import { useFetch } from '@/hooks/useFetch';
 import AddressesService from '@/services/AddressesService';
@@ -166,32 +165,17 @@ function PropertiesEdit() {
               setDisableButton(false);
             }, 1000);
           } else {
-            CoordinatesService.propertiesUpdate(
-              data.coordinates.id,
-              d.coordinates
-            ).then(async res3 => {
-              if (res3.status >= 400 || res3?.statusCode) {
-                setAlert({
-                  type: 'error',
-                  message: errorMessage(res3)
-                });
-                setTimeout(() => {
-                  setDisableButton(false);
-                }, 1000);
-              } else {
-                mutate();
+            mutate();
 
-                setAlert({
-                  type: 'success',
-                  message: 'Propriedade atualizada com sucesso!'
-                });
-
-                setTimeout(() => {
-                  router.push(`${route.path}/${id}/detalhes`);
-                  setDisableButton(false);
-                }, 1000);
-              }
+            setAlert({
+              type: 'success',
+              message: 'Propriedade atualizada com sucesso!'
             });
+
+            setTimeout(() => {
+              router.push(`${route.path}/${id}/detalhes`);
+              setDisableButton(false);
+            }, 1000);
           }
         });
       })

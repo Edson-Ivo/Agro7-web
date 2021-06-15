@@ -123,25 +123,17 @@ function ConfiguracoesEdit() {
           if (res.status >= 400 || res?.statusCode) {
             setAlert({ type: 'error', message: errorMessage(res) });
           } else {
-            await AddressesService.usersUpdate(data.addresses.id, dataReq).then(
-              async res2 => {
-                if (res2.status >= 400 || res2?.statusCode) {
-                  setAlert({ type: 'error', message: errorMessage(res2) });
-                } else {
-                  mutate();
+            mutate();
 
-                  setAlert({
-                    type: 'success',
-                    message: 'Dados alterados com sucesso!'
-                  });
+            setAlert({
+              type: 'success',
+              message: 'Dados alterados com sucesso!'
+            });
 
-                  setTimeout(() => {
-                    router.push(`/configuracoes/`);
-                    setDisableButton(false);
-                  }, 1000);
-                }
-              }
-            );
+            setTimeout(() => {
+              router.push(`/configuracoes/`);
+              setDisableButton(false);
+            }, 1000);
           }
 
           setLoading(false);
