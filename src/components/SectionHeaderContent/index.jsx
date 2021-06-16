@@ -45,7 +45,16 @@ export const SectionHeaderContent = ({
     )}
 
     {children && (
-      <>{isLoading ? <Skeleton style={skeletonStyle} count={2} /> : children}</>
+      <>
+        {isLoading ? (
+          <Skeleton
+            style={{ ...skeletonStyle, marginBottom: '8px' }}
+            count={2}
+          />
+        ) : (
+          children
+        )}
+      </>
     )}
   </StyledSectionHeaderContent>
 );
