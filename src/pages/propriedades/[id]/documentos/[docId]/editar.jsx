@@ -87,7 +87,7 @@ function DocumentosEdit() {
             });
 
             setTimeout(() => {
-              router.push(`/propriedades/${id}/detalhes`);
+              router.push(`${route.path}/${id}/detalhes`);
             }, 1000);
           });
         }
@@ -133,11 +133,11 @@ function DocumentosEdit() {
                 },
                 { route: `${route.path}`, name: 'Propriedades' },
                 {
-                  route: `/propriedades/${id}/detalhes`,
+                  route: `${route.path}/${id}/detalhes`,
                   name: `${data?.name}`
                 },
                 {
-                  route: `/propriedades/${id}/documentos/${docId}/cadastrar`,
+                  route: `${route.path}/${id}/documentos/${docId}/cadastrar`,
                   name: 'Editar Documento'
                 }
               ]}

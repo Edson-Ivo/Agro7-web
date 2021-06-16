@@ -1,8 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
-import * as yup from 'yup';
-import { useRouter } from 'next/router';
 import Head from 'next/head';
+import { useRouter } from 'next/router';
 import { Form } from '@unform/web';
+import Link from 'next/link';
+
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faBox } from '@fortawesome/free-solid-svg-icons';
 
 import Container from '@/components/Container';
 import Nav from '@/components/Nav';
@@ -13,46 +16,22 @@ import Button from '@/components/Button';
 import { Section, SectionHeader, SectionBody } from '@/components/Section';
 import { CardContainer } from '@/components/CardContainer';
 import { privateRoute } from '@/components/PrivateRoute';
-import { Alert } from '@/components/Alert';
 import Loader from '@/components/Loader';
 import Select from '@/components/Select';
 
-import errorMessage from '@/helpers/errorMessage';
 import { useFetch } from '@/hooks/useFetch';
-import { dateToISOString } from '@/helpers/date';
-import HarvestsService from '@/services/HarvestsService';
+import { dateToInput } from '@/helpers/date';
 import Error from '@/components/Error/index';
-import { useSelector } from 'react-redux';
 import urlRoute from '@/helpers/urlRoute';
+import { useSelector } from 'react-redux';
 import isEmpty from '@/helpers/isEmpty';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 
-const schema = yup.object().shape({
-  date: yup.string().required('O campo data é obrigatório!'),
-  forecast: yup.string().required('O campo data previsão é obrigatório!'),
-  quantity: yup
-    .number()
-    .transform(value => (Number.isNaN(value) ? undefined : value))
-    .required('A quantidade precisa ser definida')
-    .positive('A quantidade precisa ser um valor positivo'),
-  quantity_forecast: yup
-    .number()
-    .transform(value => (Number.isNaN(value) ? undefined : value))
-    .required('A quantidade prevista precisa ser definida')
-    .positive('A quantidade prevista precisa ser um valor positivo'),
-  type: yup.string().required('Unidade de medida obrigatória!'),
-  is_green: yup
-    .boolean()
-    .required('Deve selecionar se o produto está verde ou não!')
-});
-
-function ColheitasCreate() {
+function ColheitasDetalhes() {
   const formRef = useRef(null);
-  const [alert, setAlert] = useState({ type: '', message: '' });
-  const [disableButton, setDisableButton] = useState(false);
-
   const router = useRouter();
-  const { id, fieldId, cultureId } = router.query;
+
+  const { id, fieldId, cultureId, harvestId } = router.query;
 
   const { data, error } = useFetch(`/fields/find/by/id/${fieldId}`);
 
@@ -60,14 +39,14 @@ function ColheitasCreate() {
     `/cultures/find/by/id/${cultureId}`
   );
 
-  const { data: dataType } = useFetch('/harvests/find/all/types');
+  const { data: dataHarvests, error: errorHarvests } = useFetch(
+    `/harvests/find/by/id/${harvestId}`
+  );
 
   const { type } = useSelector(state => state.user);
   const [route, setRoute] = useState({});
 
   useEffect(() => {
-    setAlert({ type: '', message: '' });
-    setDisableButton(false);
     setRoute(urlRoute(router, type, ['tecnico']));
   }, []);
 
@@ -75,55 +54,8 @@ function ColheitasCreate() {
     router.back();
   };
 
-  const handleSubmit = async dt => {
-    setDisableButton(true);
-
-    schema
-      .validate(dt)
-      .then(async d => {
-        setAlert({
-          type: 'success',
-          message: 'Enviando...'
-        });
-
-        d.date = dateToISOString(d.date_start);
-        d.forecast = dateToISOString(d.date_finish);
-        d.cultures = Number(cultureId);
-
-        await HarvestsService.create(d).then(res => {
-          if (res.status !== 201 || res?.statusCode) {
-            setAlert({ type: 'error', message: errorMessage(res) });
-            setTimeout(() => {
-              setDisableButton(false);
-            }, 1000);
-          } else {
-            setAlert({
-              type: 'success',
-              message: 'Colheita registrada com sucesso!'
-            });
-
-            setTimeout(() => {
-              router.push(
-                `${route.path}/${id}/talhoes/${fieldId}/culturas/${cultureId}/colheitas`
-              );
-              setDisableButton(false);
-            }, 1000);
-          }
-        });
-      })
-      .catch(err => {
-        setAlert({ type: 'error', message: err.errors[0] });
-        setDisableButton(false);
-
-        if (err instanceof yup.ValidationError) {
-          const { path, message } = err;
-
-          formRef.current.setFieldError(path, message);
-        }
-      });
-  };
-
-  if (error || errorCultures) return <Error error={error || errorCultures} />;
+  if (error || errorCultures || errorHarvests)
+    return <Error error={error || errorCultures || errorHarvests} />;
   if (data && id !== String(data?.properties?.id)) return <Error error={404} />;
   if (dataCultures && fieldId !== String(dataCultures?.fields?.id))
     return <Error error={404} />;
@@ -132,7 +64,7 @@ function ColheitasCreate() {
   return (
     <>
       <Head>
-        <title>Registrar Colheita - Agro7</title>
+        <title>Detalhes da Colheita - Agro7</title>
       </Head>
 
       <Navbar />
@@ -156,7 +88,7 @@ function ColheitasCreate() {
                 { route: `${route.path}`, name: 'Propriedades' },
                 {
                   route: `${route.path}/${id}/detalhes`,
-                  name: `${data?.properties.name}`
+                  name: `${data?.properties?.name}`
                 },
                 {
                   route: `${route.path}/${id}/talhoes`,
@@ -179,34 +111,56 @@ function ColheitasCreate() {
                   name: `Colheitas`
                 },
                 {
-                  route: `${route.path}/${id}/talhoes/${fieldId}/culturas/${cultureId}/colheitas/cadastrar`,
-                  name: `Registrar`
+                  route: `${route.path}/${id}/talhoes/${fieldId}/culturas/${cultureId}/colheitas/${harvestId}/detalhes`,
+                  name: `Detalhes`
                 }
               ]}
-              title={`Registrar Colheita na Cultura de ${dataCultures?.products?.name}`}
-              description={`Aqui você irá registrar uma colheita para cultura de ${dataCultures?.products?.name} do talhão ${data?.name} da propriedade ${data?.properties?.name}.`}
-              isLoading={isEmpty(data) || isEmpty(dataCultures)}
-            />
+              title={`Detalhes da Colheita na Cultura de ${dataCultures?.products?.name}`}
+              description={`Aqui você irá ver detalhes da colheita da cultura de ${dataCultures?.products?.name} do talhão ${data?.name} da propriedade ${data?.properties.name}.`}
+              isLoading={
+                isEmpty(data) || isEmpty(dataCultures) || isEmpty(dataHarvests)
+              }
+            >
+              <Link
+                href={`${route.path}/${id}/talhoes/${fieldId}/culturas/${cultureId}/colheitas/${harvestId}/detalhes/estoque`}
+              >
+                <Button className="primary">
+                  <FontAwesomeIcon icon={faBox} /> Estoque
+                </Button>
+              </Link>
+            </SectionHeaderContent>
           </SectionHeader>
           <SectionBody>
             <div className="SectionBody__content">
               <CardContainer>
-                {alert.message !== '' && (
-                  <Alert type={alert.type}>{alert.message}</Alert>
-                )}
-
-                {(data && dataCultures && dataType && (
+                {(data && dataCultures && dataHarvests && (
                   <>
-                    <Form ref={formRef} method="post" onSubmit={handleSubmit}>
+                    <Form
+                      ref={formRef}
+                      initialData={{
+                        ...dataHarvests,
+                        date: dateToInput(dataHarvests?.date),
+                        forecast: dateToInput(dataHarvests?.forecast),
+                        quantity: `${dataHarvests?.quantity}${dataHarvests?.type}`,
+                        quantity_forecast: `${dataHarvests?.quantity}${dataHarvests?.type}`,
+                        is_green: String(dataHarvests?.is_green)
+                      }}
+                    >
                       <div className="form-group">
                         <div>
-                          <Input type="date" label="Data" name="date" />
+                          <Input
+                            type="date"
+                            label="Data"
+                            name="date"
+                            disabled
+                          />
                         </div>
                         <div>
                           <Input
-                            type="number"
+                            type="text"
                             label="Quantidade"
                             name="quantity"
+                            disabled
                           />
                         </div>
                       </div>
@@ -216,57 +170,41 @@ function ColheitasCreate() {
                             type="date"
                             label="Data de Previsão"
                             name="forecast"
+                            disabled
                           />
                         </div>
                         <div>
                           <Input
-                            type="number"
+                            type="text"
                             label="Quantidade Prevista"
                             name="quantity_forecast"
+                            disabled
                           />
                         </div>
                       </div>
-                      <div>
-                        <Select
-                          options={dataType?.typesHarvest.map(typeHarvest => ({
-                            value: typeHarvest,
-                            label: typeHarvest
-                          }))}
-                          label="Unidadede de Medida"
-                          name="type"
-                        />
-                      </div>
+
                       <div>
                         <Select
                           options={[
                             {
-                              value: true,
+                              value: 'true',
                               label: 'Sim'
                             },
                             {
-                              value: false,
+                              value: 'false',
                               label: 'Não'
                             }
                           ]}
                           label="O produto está verde?"
                           name="is_green"
+                          disabled
                         />
                       </div>
 
                       <div className="form-group buttons">
                         <div>
                           <Button type="button" onClick={handleCancel}>
-                            Cancelar
-                          </Button>
-                        </div>
-
-                        <div>
-                          <Button
-                            disabled={disableButton}
-                            className="primary"
-                            type="submit"
-                          >
-                            Registrar Colheita
+                            Voltar
                           </Button>
                         </div>
                       </div>
@@ -282,4 +220,4 @@ function ColheitasCreate() {
   );
 }
 
-export default privateRoute()(ColheitasCreate);
+export default privateRoute()(ColheitasDetalhes);
