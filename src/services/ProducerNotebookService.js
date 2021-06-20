@@ -19,6 +19,18 @@ class ProducerNotebookService {
     }
   }
 
+  static async createAdmin(id, data) {
+    try {
+      const response = await api.post(`/producer-notebook/create/user/${id}`, {
+        ...data
+      });
+
+      return response;
+    } catch (error) {
+      return error.response;
+    }
+  }
+
   static async delete(id) {
     try {
       const response = await api.delete(`/producer-notebook/${id}`);

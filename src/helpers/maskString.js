@@ -1,11 +1,15 @@
 const maskString = (value, pattern) => {
-  let i = 0;
-  let pat = pattern;
-  const v = value.toString();
+  if (value) {
+    let i = 0;
+    let pat = pattern;
+    const v = value.toString();
 
-  if (pat === 'phone') pat = '(##) #####-####';
+    if (pat === 'phone') pat = '(##) #####-####';
 
-  return pat.replace(/#/g, () => v[i++] || '');
+    return pat.replace(/#/g, () => v[i++] || '');
+  }
+
+  return '';
 };
 
 export default maskString;

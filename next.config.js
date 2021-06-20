@@ -16,16 +16,22 @@ const nextConfig = {
   rewrites: async () => {
     return [
       {
-        source: '/tecnico/propriedades/:path*',
-        destination: '/propriedades/:path*'
+        source: '/tecnico/propriedades/:id(\\d{1,})/:path*',
+        destination: '/propriedades/:id(\\d{1,})/:path*'
       },
       {
-        source: '/admin/propriedades/:path*',
-        destination: '/propriedades/:path*'
+        source: '/admin/propriedades/:id(\\d{1,})/:path*',
+        destination: '/propriedades/:id(\\d{1,})/:path*'
       },
       {
-        source: '/user/:slug/propriedades/:path*',
-        destination: '/propriedades/:path*'
+        source:
+          '/admin/users/:userId(\\d{1,})/propriedades/:id(\\d{1,})/:path*',
+        destination: '/propriedades/:id(\\d{1,})/:path*?userId=:userId'
+      },
+      {
+        source:
+          '/admin/users/:userId(\\d{1,})/caderno-produtor/:id(\\d{1,})/:path*',
+        destination: '/caderno-produtor/:id(\\d{1,})/:path*?userId=:userId'
       }
     ];
   }

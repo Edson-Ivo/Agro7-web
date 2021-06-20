@@ -25,6 +25,7 @@ import UsersService from '@/services/UsersService';
 import errorMessage from '@/helpers/errorMessage';
 import extractNumbers from '@/helpers/extractNumbers';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
+import maskString from '@/helpers/maskString';
 
 const schema = yup.object().shape({
   name: yup.string().required('O campo nome é obrigatório!'),
@@ -183,7 +184,10 @@ function ConfiguracoesEdit() {
                     method="post"
                     onSubmit={handleSubmit}
                     initialData={{
-                      ...data
+                      ...data,
+                      phone: maskString(data?.phone, 'phone') || '',
+                      phone_whatsapp:
+                        maskString(data?.phone_whatsapp, 'phone') || ''
                     }}
                   >
                     <Input type="text" label="Nome" name="name" required />

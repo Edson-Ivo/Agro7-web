@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -29,6 +29,8 @@ import { dateConversor, dateToInput } from '@/helpers/date';
 import { useModal } from '@/hooks/useModal';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 import isEmpty from '@/helpers/isEmpty';
+import urlRoute from '@/helpers/urlRoute';
+import { useSelector } from 'react-redux';
 
 function ProducerNotebookDetails() {
   const [alert, setAlert] = useState({ type: '', message: '' });
@@ -46,6 +48,13 @@ function ProducerNotebookDetails() {
   const { data: dataCategories, error: errorCategories } = useFetch(
     `/categories/find/all?limit=30`
   );
+
+  const { id: userId, type } = useSelector(state => state.user);
+  const [route, setRoute] = useState({});
+
+  useEffect(() => {
+    setRoute(urlRoute(router, type));
+  }, []);
 
   const handleDelete = useCallback(
     async identifier => {
@@ -81,6 +90,7 @@ function ProducerNotebookDetails() {
 
   if (errorCategories || error)
     return <Error error={errorCategories || error} />;
+  if (!isEmpty(route) && !route.hasPermission) return <Error error={404} />;
 
   return (
     <>
@@ -116,7 +126,7 @@ function ProducerNotebookDetails() {
             >
               {!isEmpty(data) && !data.is_log && (
                 <div className="buttons__container">
-                  <Link href={`/caderno-produtor/${id}/editar`}>
+                  <Link href={`${route.path}/${id}/editar`}>
                     <Button className="primary">
                       <FontAwesomeIcon icon={faEdit} /> Editar Anotação
                     </Button>
@@ -156,7 +166,12 @@ function ProducerNotebookDetails() {
                         disabled
                       />
                       <Input type="date" label="Data" name="date" disabled />
-                      <TextArea name="description" label="Descrição" disabled />
+                      <TextArea
+                        name="description"
+                        label="Descrição"
+                        style={{ minHeight: 350 }}
+                        disabled
+                      />
                     </Form>
                     <div className="form-group buttons">
                       <div>

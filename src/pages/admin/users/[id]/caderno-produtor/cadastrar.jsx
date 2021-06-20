@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import Head from 'next/head';
 import * as yup from 'yup';
 import { useRouter } from 'next/router';
@@ -24,8 +24,6 @@ import Loader from '@/components/Loader/index';
 import ProducerNotebookService from '@/services/ProducerNotebookService';
 import { dateToInput, dateToISOString } from '@/helpers/date';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
-import { useSelector } from 'react-redux';
-import urlRoute from '@/helpers/urlRoute';
 import isEmpty from '@/helpers/isEmpty';
 
 const schema = yup.object().shape({
@@ -35,23 +33,17 @@ const schema = yup.object().shape({
   categories: yup.string().required('Selecione uma categoria')
 });
 
-function ProducerNotebookEdit() {
+function UserProducerNotebookCreate() {
   const [alert, setAlert] = useState({ type: '', message: '' });
   const [disableButton, setDisableButton] = useState(false);
   const router = useRouter();
   const formRef = useRef(null);
 
   const { id } = router.query;
-  const { data: dataProducerNotebook, error, mutate } = useFetch(
-    `/producer-notebook/find/by/id/${id}`
+
+  const { data: dataUser, error: errorUser } = useFetch(
+    `/users/find/by/id/${id}`
   );
-
-  const { id: userId, type } = useSelector(state => state.user);
-  const [route, setRoute] = useState({});
-
-  useEffect(() => {
-    setRoute(urlRoute(router, type));
-  }, []);
 
   const handleSubmit = async data => {
     setDisableButton(true);
@@ -67,21 +59,24 @@ function ProducerNotebookEdit() {
         d.date = dateToISOString(d.date);
         d.categories = Number(d.categories);
 
-        await ProducerNotebookService.update(id, d).then(res => {
-          if (res.status !== 200 || res?.statusCode) {
+        await ProducerNotebookService.createAdmin(id, d).then(res => {
+          if (res.status !== 201 || res?.statusCode) {
             setAlert({ type: 'error', message: errorMessage(res) });
             setTimeout(() => {
               setDisableButton(false);
             }, 1000);
           } else {
-            mutate();
             setAlert({
               type: 'success',
-              message: 'Anotação editada com sucesso!'
+              message: 'Anotação cadastrada com sucesso!'
             });
 
             setTimeout(() => {
-              router.push(`${route.path}/${id}/detalhes/`);
+              router.push(
+                `/admin/users/${id}/caderno-produtor?searchDate=${
+                  data.date.split('T')[0]
+                }`
+              );
               setDisableButton(false);
             }, 1000);
           }
@@ -103,10 +98,8 @@ function ProducerNotebookEdit() {
     `/categories/find/all?limit=30`
   );
 
-  if (errorCategories || error)
-    return <Error error={errorCategories || error} />;
-  if (dataProducerNotebook?.is_log) return <Error error={404} />;
-  if (!isEmpty(route) && !route.hasPermission) return <Error error={404} />;
+  if (errorCategories || errorUser)
+    return <Error error={errorCategories || errorUser} />;
 
   return (
     <>
@@ -124,12 +117,13 @@ function ProducerNotebookEdit() {
                 { route: '/', name: 'Home' },
                 { route: '/caderno-produtor', name: 'Caderno do Produtor' },
                 {
-                  route: `/caderno-produtor/${id}/editar`,
-                  name: 'Editar Anotação'
+                  route: '/caderno-produtor/cadastrar',
+                  name: 'Anotação'
                 }
               ]}
-              title="Editar Anotação"
-              description="Aqui você irá editar uma anotação do seu Caderno do Produtor"
+              title="Anotar no Caderno"
+              description={`Aqui você irá fazer uma anotação no Caderno do Produtor de ${dataUser?.name}`}
+              isLoading={isEmpty(dataUser)}
             />
           </SectionHeader>
           <SectionBody>
@@ -139,17 +133,13 @@ function ProducerNotebookEdit() {
                   <Alert type={alert.type}>{alert.message}</Alert>
                 )}
 
-                {(dataProducerNotebook && dataCategories && (
+                {(dataCategories && (
                   <>
                     <Form
                       ref={formRef}
                       method="post"
                       onSubmit={handleSubmit}
-                      initialData={{
-                        ...dataProducerNotebook,
-                        categories: dataProducerNotebook.categories.id,
-                        date: dateToInput(dataProducerNotebook?.date)
-                      }}
+                      initialData={{ date: dateToInput() }}
                     >
                       <Input type="text" label="Nome" name="name" required />
                       <Select
@@ -175,7 +165,7 @@ function ProducerNotebookEdit() {
                             className="primary"
                             type="submit"
                           >
-                            Salvar Edição
+                            Adicionar Anotação
                           </Button>
                         </div>
                       </div>
@@ -191,4 +181,4 @@ function ProducerNotebookEdit() {
   );
 }
 
-export default privateRoute()(ProducerNotebookEdit);
+export default privateRoute(['administrador'])(UserProducerNotebookCreate);
