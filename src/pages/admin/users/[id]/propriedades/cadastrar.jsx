@@ -2,9 +2,10 @@ import React, { useEffect, useRef, useState } from 'react';
 import Head from 'next/head';
 import * as yup from 'yup';
 import { Form } from '@unform/web';
-import { Scope } from '@unform/core';
 
 import { MultiStepForm as MultiStep, Step } from '@/components/Multiform';
+import { MapActionGetLatLng } from '@/components/MapApp';
+
 import Container from '@/components/Container';
 import Nav from '@/components/Nav';
 import Navbar from '@/components/Navbar';
@@ -15,24 +16,20 @@ import Select from '@/components/Select';
 import { Section, SectionHeader, SectionBody } from '@/components/Section';
 import { CardContainer } from '@/components/CardContainer';
 
-import { MapActionGetLatLng } from '@/components/MapApp';
-
 import { privateRoute } from '@/components/PrivateRoute';
-import capitalize from '@/helpers/capitalize';
 import { Alert } from '@/components/Alert/index';
 
 import errorMessage from '@/helpers/errorMessage';
+import capitalize from '@/helpers/capitalize';
 
 import PropertiesService from '@/services/PropertiesService';
 import { useRouter } from 'next/router';
-import { useFetch } from '@/hooks/useFetch';
 import AddressesService from '@/services/AddressesService';
+import { useFetch } from '@/hooks/useFetch';
 import Loader from '@/components/Loader/index';
-import Error from '@/components/Error/index';
-import urlRoute from '@/helpers/urlRoute';
-import { useSelector } from 'react-redux';
 import isEmpty from '@/helpers/isEmpty';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
+import Error from '@/components/Error/index';
 
 const schema = yup.object().shape({
   name: yup.string().required('O campo nome é obrigatório!'),
@@ -45,54 +42,54 @@ const schema = yup.object().shape({
     .string()
     .required('Unidade de medida precisa ser definida'),
   type_owner: yup.string().min(1).required(),
-  coordinates: yup.object().shape({
-    latitude: yup
-      .number()
-      .transform(value => (Number.isNaN(value) ? undefined : value))
-      .required('A latitute é obrigatória'),
-    longitude: yup
-      .number()
-      .transform(value => (Number.isNaN(value) ? undefined : value))
-      .required('A longitude é obrigatória')
-  }),
-  addresses: yup.object().shape({
-    state: yup
-      .string()
-      .min(2, 'O estado tem que ter no mínimo 2 caracteres')
-      .max(15, 'Você não pode ultrapassar 15 caracteres no nome do estado')
-      .required('Você precisa informar o estado da propriedade.'),
-    city: yup
-      .string()
-      .min(2, 'O nome da cidade tem que ter no mínimo 2 caracteres')
-      .max(50, 'O nome da cidade não pode ultrapassar 50 caracteres')
-      .required('Você precisa informar a cidade da propriedade'),
-    postcode: yup
-      .string()
-      .min(
-        9,
-        'Você tem que digitar no mínimo e no máximo 9 caracteres para o CEP. Ex: 00000-000'
-      )
-      .max(
-        9,
-        'Você tem que digitar no mínimo e no máximo 9 caracteres para o CEP. Ex: 00000-000'
-      )
-      .required('Você precisa informar o CEP da propriedade'),
-    locality: yup
-      .string()
-      .max(250, 'O logradouro não pode ultrapassar 250 caracteres')
-      .required('Você precisa informar o logradouro da propriedade'),
-    access: yup
-      .string()
-      .max(250, 'O acesso não pode ultrapassar 250 caracteres')
-      .nullable()
-  })
+  latitude: yup
+    .number()
+    .transform(value => (Number.isNaN(value) ? undefined : value))
+    .required('A latitute é obrigatória'),
+  longitude: yup
+    .number()
+    .transform(value => (Number.isNaN(value) ? undefined : value))
+    .required('A longitude é obrigatória'),
+  state: yup
+    .string()
+    .min(2, 'O estado tem que ter no mínimo 2 caracteres')
+    .max(15, 'Você não pode ultrapassar 15 caracteres no nome do estado')
+    .required('Você precisa informar o estado da propriedade.'),
+  city: yup
+    .string()
+    .min(2, 'O nome da cidade tem que ter no mínimo 2 caracteres')
+    .max(50, 'O nome da cidade não pode ultrapassar 50 caracteres')
+    .required('Você precisa informar a cidade da propriedade'),
+  postcode: yup
+    .string()
+    .min(
+      9,
+      'Você tem que digitar no mínimo e no máximo 9 caracteres para o CEP. Ex: 00000-000'
+    )
+    .max(
+      9,
+      'Você tem que digitar no mínimo e no máximo 9 caracteres para o CEP. Ex: 00000-000'
+    )
+    .required('Você precisa informar o CEP da propriedade'),
+  locality: yup
+    .string()
+    .max(250, 'O logradouro não pode ultrapassar 250 caracteres')
+    .required('Você precisa informar o logradouro da propriedade'),
+  access: yup
+    .string()
+    .max(250, 'O acesso não pode ultrapassar 250 caracteres')
+    .nullable()
 });
 
-function PropertiesEdit() {
+function Properties() {
+  const formRef = useRef(null);
+  const [alert, setAlert] = useState({ type: '', message: '' });
+  const [disableButton, setDisableButton] = useState(false);
+  const [activeStep, setActiveStep] = useState(1);
+  const [loadingAddresses, setLoadingAddresses] = useState(false);
   const router = useRouter();
-  const { id } = router.query;
 
-  const { data, error, mutate } = useFetch(`/properties/find/by/id/${id}`);
+  const { id } = router.query;
 
   const { data: dataTypeOwner } = useFetch('/properties/find/all/types-owner');
 
@@ -100,21 +97,15 @@ function PropertiesEdit() {
     '/properties/find/all/types-dimension'
   );
 
-  const formRef = useRef(null);
-  const [alert, setAlert] = useState({ type: '', message: '' });
-  const [disableButton, setDisableButton] = useState(false);
-  const [activeStep, setActiveStep] = useState(1);
-  const [loadingAddresses, setLoadingAddresses] = useState(false);
-
-  const { type } = useSelector(state => state.user);
-  const [route, setRoute] = useState({});
+  const { data: dataUser, error: errorUser } = useFetch(
+    `/users/find/by/id/${id}`
+  );
 
   useEffect(() => {
     setAlert({ type: '', message: '' });
     setDisableButton(false);
     setActiveStep(1);
     setLoadingAddresses(false);
-    setRoute(urlRoute(router, type));
   }, []);
 
   const handleChangeCep = e => {
@@ -137,43 +128,43 @@ function PropertiesEdit() {
     }
   };
 
-  const handleLatLng = positions => {
-    formRef.current.setFieldValue('coordinates.latitude', positions[0]);
-    formRef.current.setFieldValue('coordinates.longitude', positions[1]);
-  };
-
-  const handleCancelEdit = e => {
+  const handleCancel = e => {
     e.preventDefault();
     router.back();
   };
 
-  const handleSubmit = async dt => {
+  const handleLatLng = positions => {
+    formRef.current.setFieldValue('latitude', positions[0]);
+    formRef.current.setFieldValue('longitude', positions[1]);
+  };
+
+  const handleSubmit = async d => {
     setDisableButton(true);
 
     schema
-      .validate(dt)
-      .then(async d => {
+      .validate(d)
+      .then(async data => {
         setAlert({
           type: 'success',
           message: 'Enviando...'
         });
 
-        await PropertiesService.update(id, d).then(async res => {
-          if (res.status >= 400 || res?.statusCode) {
+        await PropertiesService.createAdmin(id, data).then(res => {
+          if (res.status !== 201 || res?.statusCode) {
             setAlert({ type: 'error', message: errorMessage(res) });
             setTimeout(() => {
               setDisableButton(false);
             }, 1000);
           } else {
-            mutate();
-
             setAlert({
               type: 'success',
-              message: 'Propriedade atualizada com sucesso!'
+              message: 'Propriedade cadastrada com sucesso!'
             });
 
             setTimeout(() => {
-              router.push(`${route.path}/${id}/detalhes`);
+              router.replace(
+                `/admin/users/${id}/propriedades/${res.data.id}/detalhes`
+              );
               setDisableButton(false);
             }, 1000);
           }
@@ -191,13 +182,12 @@ function PropertiesEdit() {
       });
   };
 
-  if (error) return <Error error={error} />;
-  if (!isEmpty(route) && !route.hasPermission) return <Error error={404} />;
+  if (errorUser) return <Error error={errorUser} />;
 
   return (
     <>
       <Head>
-        <title>Editando propriedade - Agro7</title>
+        <title>Cadastrar propriedade - Agro7</title>
       </Head>
 
       <Navbar />
@@ -208,27 +198,24 @@ function PropertiesEdit() {
             <SectionHeaderContent
               breadcrumb={[
                 { route: '/', name: 'Home' },
+                { route: '/admin', name: 'Painel Administrativo' },
+                { route: '/admin/users', name: 'Usuários' },
                 {
-                  route: '/tecnico',
-                  name: 'Painel Técnico',
-                  active: type === 'tecnico' && route?.permission === type
+                  route: `/admin/users/${id}/detalhes`,
+                  name: `${dataUser?.name}`
                 },
                 {
-                  route: '/admin',
-                  name: 'Painel Administrativo',
-                  active: type === 'administrador' && route?.permission === type
+                  route: `/admin/users/${id}/propriedades`,
+                  name: 'Propriedades'
                 },
                 {
-                  route: '/admin/usuario',
-                  name: 'Usuários',
-                  active: type === 'administrador' && route?.permission === type
-                },
-                { route: `${route.path}`, name: 'Propriedades' },
-                { route: `${route.path}/${id}/editar`, name: 'Editar' }
+                  route: `/admin/users/${id}/cadastrar`,
+                  name: 'Cadastrar'
+                }
               ]}
-              title={`Editar propriedade ${data?.name}`}
-              description="Aqui você irá editar a propriedade em questão"
-              isLoading={isEmpty(data)}
+              title="Cadastre uma propriedade"
+              description={`Aqui você irá cadastrar uma propriedade para ${dataUser?.name}`}
+              isLoading={isEmpty(dataUser)}
             />
           </SectionHeader>
           <SectionBody>
@@ -238,14 +225,9 @@ function PropertiesEdit() {
                   <Alert type={alert.type}>{alert.message}</Alert>
                 )}
 
-                {(data && dataTypeOwner && dataTypeDimension && (
+                {(dataTypeDimension && dataTypeOwner && (
                   <>
-                    <Form
-                      ref={formRef}
-                      method="post"
-                      onSubmit={handleSubmit}
-                      initialData={{ ...data }}
-                    >
+                    <Form ref={formRef} method="post" onSubmit={handleSubmit}>
                       <MultiStep activeStep={activeStep}>
                         <Step label="Dados" onClick={() => setActiveStep(1)}>
                           <h4 className="step-title">Dados da Propriedade</h4>
@@ -288,40 +270,34 @@ function PropertiesEdit() {
                               />
                             </div>
                           </div>
-                          <Scope path="addresses">
-                            <div className="form-group">
-                              <div>
-                                <Input
-                                  type="text"
-                                  label="CEP"
-                                  name="postcode"
-                                  mask="cep"
-                                  disabled={loadingAddresses}
-                                  handleChange={handleChangeCep}
-                                />
-                              </div>
-                              <div>
-                                <Input
-                                  type="text"
-                                  label="Estado"
-                                  name="state"
-                                />
-                              </div>
-                              <div>
-                                <Input type="text" label="Cidade" name="city" />
-                              </div>
-                            </div>
+                          <div className="form-group">
                             <div>
                               <Input
                                 type="text"
-                                label="Logradouro"
-                                name="locality"
+                                label="CEP"
+                                name="postcode"
+                                mask="cep"
+                                disabled={loadingAddresses}
+                                handleChange={handleChangeCep}
                               />
                             </div>
                             <div>
-                              <Input type="text" label="Acesso" name="access" />
+                              <Input type="text" label="Estado" name="state" />
                             </div>
-                          </Scope>
+                            <div>
+                              <Input type="text" label="Cidade" name="city" />
+                            </div>
+                          </div>
+                          <div>
+                            <Input
+                              type="text"
+                              label="Logradouro"
+                              name="locality"
+                            />
+                          </div>
+                          <div>
+                            <Input type="text" label="Acesso" name="access" />
+                          </div>
                         </Step>
                         <Step
                           label="Localização"
@@ -334,26 +310,20 @@ function PropertiesEdit() {
                               <Input
                                 type="number"
                                 label="Latitude"
-                                name="coordinates.latitude"
+                                name="latitude"
                               />
                             </div>
                             <div>
                               <Input
                                 type="number"
                                 label="Longitude"
-                                name="coordinates.longitude"
+                                name="longitude"
                               />
                             </div>
                           </div>
 
                           <div style={{ marginBottom: '20px' }}>
-                            <MapActionGetLatLng
-                              onClick={handleLatLng}
-                              positions={[
-                                data.coordinates.latitude,
-                                data.coordinates.longitude
-                              ]}
-                            />
+                            <MapActionGetLatLng onClick={handleLatLng} />
                           </div>
                         </Step>
                       </MultiStep>
@@ -370,7 +340,7 @@ function PropertiesEdit() {
                           </div>
                         )) || (
                           <div>
-                            <Button type="button" onClick={handleCancelEdit}>
+                            <Button type="button" onClick={handleCancel}>
                               Cancelar
                             </Button>
                           </div>
@@ -392,7 +362,7 @@ function PropertiesEdit() {
                               className="primary"
                               type="submit"
                             >
-                              Salvar
+                              Cadastrar propriedade
                             </Button>
                           )}
                         </div>
@@ -409,4 +379,4 @@ function PropertiesEdit() {
   );
 }
 
-export default privateRoute()(PropertiesEdit);
+export default privateRoute(['administrador'])(Properties);

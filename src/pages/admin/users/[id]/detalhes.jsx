@@ -1,7 +1,11 @@
 import React, { useRef } from 'react';
 import Head from 'next/head';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { Form } from '@unform/web';
+
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faMapMarkedAlt, faBook } from '@fortawesome/free-solid-svg-icons';
 
 import Container from '@/components/Container';
 import Nav from '@/components/Nav';
@@ -21,6 +25,7 @@ import { useFetch } from '@/hooks/useFetch';
 import capitalize from '@/helpers/capitalize';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 import isEmpty from '@/helpers/isEmpty';
+import maskString from '@/helpers/maskString';
 
 function AdminUsers() {
   const router = useRouter();
@@ -57,7 +62,20 @@ function AdminUsers() {
               title={`Informações do Usuário ${data?.name}`}
               description="Aqui você irá ver informações detalhadas do usuário em questão"
               isLoading={isEmpty(data)}
-            />
+            >
+              <div className="buttons__container">
+                <Link href={`/admin/users/${id}/propriedades`}>
+                  <Button className="primary">
+                    <FontAwesomeIcon icon={faMapMarkedAlt} /> Propriedades
+                  </Button>
+                </Link>
+                <Link href={`/admin/users/${id}/caderno-produtor`}>
+                  <Button className="primary">
+                    <FontAwesomeIcon icon={faBook} /> Caderno Produtor
+                  </Button>
+                </Link>
+              </div>
+            </SectionHeaderContent>
           </SectionHeader>
           <SectionBody>
             <div className="SectionBody__content">
@@ -67,7 +85,10 @@ function AdminUsers() {
                     <Form
                       ref={formRef}
                       initialData={{
-                        ...data
+                        ...data,
+                        phone: maskString(data?.phone, 'phone') || '',
+                        phone_whatsapp:
+                          maskString(data?.phone_whatsapp, 'phone') || ''
                       }}
                     >
                       <Input type="text" label="Nome" name="name" disabled />

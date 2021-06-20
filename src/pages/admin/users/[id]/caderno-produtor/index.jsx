@@ -48,8 +48,9 @@ import { useInfiniteFetch } from '@/hooks/useInfiniteFetch';
 
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 import { truncateProducerNotebook } from '@/helpers/truncate';
+import isEmpty from '@/helpers/isEmpty';
 
-function ProducerNotebook() {
+function UserProducerNotebook() {
   const daysRef = createRef();
   const router = useRouter();
 
@@ -64,10 +65,10 @@ function ProducerNotebook() {
   const [daysList, setDaysList] = useState([]);
   const [hideCalendar, setHideCalendar] = useState(true);
 
-  const { searchDate = null } = router.query;
+  const { id, searchDate = null } = router.query;
 
   const { data, error, size, setSize, isValidating } = useInfiniteFetch(
-    `/producer-notebook/find/by/user-logged?date_start=${activeDate}&date_finish=${dateToISOStringFinish(
+    `/producer-notebook/find/by/user/${id}?date_start=${activeDate}&date_finish=${dateToISOStringFinish(
       activeDate
     )}${activeCategory !== '' ? `&categories=${activeCategory}` : ''}`,
     pageSize
@@ -75,6 +76,10 @@ function ProducerNotebook() {
 
   const { data: dataCategories, error: errorCategories } = useFetch(
     `/categories/find/all?limit=30`
+  );
+
+  const { data: dataUser, error: errorUser } = useFetch(
+    `/users/find/by/id/${id}`
   );
 
   const notes = data ? [].concat(...data) : [];
@@ -119,14 +124,14 @@ function ProducerNotebook() {
   };
 
   const handleChangeDate = date => {
-    router.push(`/caderno-produtor?searchDate=${date}`);
+    router.push(`/admin/users/${id}/caderno-produtor?searchDate=${date}`);
     setHideCalendar(true);
   };
 
   const handleChangeCategory = e => setActiveCategory(e?.value || '');
 
-  if (errorCategories || error)
-    return <Error error={errorCategories || error} />;
+  if (errorCategories || error || errorUser)
+    return <Error error={errorCategories || error || errorUser} />;
 
   return (
     <>
@@ -142,16 +147,20 @@ function ProducerNotebook() {
             <SectionHeaderContent
               breadcrumb={[
                 { route: '/', name: 'Home' },
-                { route: '/caderno-produtor', name: 'Caderno do Produtor' }
+                {
+                  route: `/admin/users/${id}/caderno-produtor`,
+                  name: 'Caderno do Produtor'
+                }
               ]}
               title={`Caderno do Produtor - ${dateConversor(
                 activeDate,
                 false
               )}`}
-              description="Aqui você poderá visualizar suas ações realizadas no sistema
-                pela data ou categorias."
+              description={`Aqui você poderá visualizar as ações realizadas por ${dataUser?.name} no sistema
+                pela data ou categorias.`}
+              isLoading={isEmpty(dataUser)}
             >
-              <Link href="/caderno-produtor/cadastrar">
+              <Link href={`/admin/users/${id}/caderno-produtor/cadastrar`}>
                 <Button className="primary">
                   <FontAwesomeIcon icon={faPlus} /> Anotar no Caderno
                 </Button>
@@ -243,7 +252,9 @@ function ProducerNotebook() {
                           color={`#${d.categories.colors.hexadecimal}`}
                           isLight={isLight(d.categories.colors.hexadecimal)}
                           onClick={() =>
-                            router.push(`/caderno-produtor/${d.id}/detalhes`)
+                            router.push(
+                              `/admin/users/${id}/caderno-produtor/${d.id}/detalhes`
+                            )
                           }
                           height="140px"
                           maxHeight="210px"
@@ -278,4 +289,4 @@ function ProducerNotebook() {
   );
 }
 
-export default privateRoute()(ProducerNotebook);
+export default privateRoute(['administrador'])(UserProducerNotebook);
