@@ -34,8 +34,7 @@ class CategoriesService {
       const response = await api.put(`/categories/update/${id}`, {
         name: data.name,
         description: data.description,
-        colors: data.colors,
-        icons: data.icons
+        colors: data.colors
       });
       return response;
     } catch (error) {

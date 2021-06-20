@@ -118,13 +118,6 @@ function CulturasInfo() {
               {loadingWillAccess && (
                 <div className="buttons__container">
                   <Link
-                    href={`${route.path}/${id}/talhoes/${fieldId}/culturas/${cultureId}/colheitas`}
-                  >
-                    <Button className="primary">
-                      <FontAwesomeIcon icon={faSeedling} /> Colheitas
-                    </Button>
-                  </Link>
-                  <Link
                     href={`${route.path}/${id}/talhoes/${fieldId}/culturas/${cultureId}/relatorios`}
                   >
                     <Button className="primary">
@@ -132,13 +125,22 @@ function CulturasInfo() {
                     </Button>
                   </Link>
                   {willAccess && (
-                    <Link
-                      href={`${route.path}/${id}/talhoes/${fieldId}/culturas/${cultureId}/acoes`}
-                    >
-                      <Button className="primary">
-                        <FontAwesomeIcon icon={faHandHoldingWater} /> Ações
-                      </Button>
-                    </Link>
+                    <>
+                      <Link
+                        href={`${route.path}/${id}/talhoes/${fieldId}/culturas/${cultureId}/colheitas`}
+                      >
+                        <Button className="primary">
+                          <FontAwesomeIcon icon={faSeedling} /> Colheitas
+                        </Button>
+                      </Link>
+                      <Link
+                        href={`${route.path}/${id}/talhoes/${fieldId}/culturas/${cultureId}/acoes`}
+                      >
+                        <Button className="primary">
+                          <FontAwesomeIcon icon={faHandHoldingWater} /> Ações
+                        </Button>
+                      </Link>
+                    </>
                   )}
                 </div>
               )}

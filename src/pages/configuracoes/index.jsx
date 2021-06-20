@@ -19,6 +19,7 @@ import Loader from '@/components/Loader';
 
 import { useFetch } from '@/hooks/useFetch';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
+import maskString from '@/helpers/maskString';
 
 function Configuracoes() {
   const { data, error } = useFetch(`/users/find/by/logged`);
@@ -55,7 +56,10 @@ function Configuracoes() {
                     <Form
                       ref={formRef}
                       initialData={{
-                        ...data
+                        ...data,
+                        phone: maskString(data?.phone, 'phone') || '',
+                        phone_whatsapp:
+                          maskString(data?.phone_whatsapp, 'phone') || ''
                       }}
                     >
                       <Input type="text" label="Nome" name="name" disabled />

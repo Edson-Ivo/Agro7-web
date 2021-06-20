@@ -25,6 +25,7 @@ import UsersService from '@/services/UsersService';
 import errorMessage from '@/helpers/errorMessage';
 import extractNumbers from '@/helpers/extractNumbers';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
+import maskString from '@/helpers/maskString';
 
 const schema = yup.object().shape({
   name: yup.string().required('O campo nome é obrigatório!'),
@@ -123,25 +124,17 @@ function ConfiguracoesEdit() {
           if (res.status >= 400 || res?.statusCode) {
             setAlert({ type: 'error', message: errorMessage(res) });
           } else {
-            await AddressesService.usersUpdate(data.addresses.id, dataReq).then(
-              async res2 => {
-                if (res2.status >= 400 || res2?.statusCode) {
-                  setAlert({ type: 'error', message: errorMessage(res2) });
-                } else {
-                  mutate();
+            mutate();
 
-                  setAlert({
-                    type: 'success',
-                    message: 'Dados alterados com sucesso!'
-                  });
+            setAlert({
+              type: 'success',
+              message: 'Dados alterados com sucesso!'
+            });
 
-                  setTimeout(() => {
-                    router.push(`/configuracoes/`);
-                    setDisableButton(false);
-                  }, 1000);
-                }
-              }
-            );
+            setTimeout(() => {
+              router.push(`/configuracoes/`);
+              setDisableButton(false);
+            }, 1000);
           }
 
           setLoading(false);
@@ -191,7 +184,10 @@ function ConfiguracoesEdit() {
                     method="post"
                     onSubmit={handleSubmit}
                     initialData={{
-                      ...data
+                      ...data,
+                      phone: maskString(data?.phone, 'phone') || '',
+                      phone_whatsapp:
+                        maskString(data?.phone_whatsapp, 'phone') || ''
                     }}
                   >
                     <Input type="text" label="Nome" name="name" required />

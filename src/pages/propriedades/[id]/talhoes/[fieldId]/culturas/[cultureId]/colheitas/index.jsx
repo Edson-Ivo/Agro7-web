@@ -59,7 +59,7 @@ function Colheitas() {
   const [baseUrl, setBaseUrl] = useState('');
 
   useEffect(() => {
-    setRoute(urlRoute(router, type));
+    setRoute(urlRoute(router, type, ['tecnico']));
   }, []);
 
   useEffect(() => {
@@ -192,22 +192,29 @@ function Colheitas() {
                               <th>Quantidade</th>
                               <th>Previsão</th>
                               <th>Quantidade Prevista</th>
+                              <th>Verde?</th>
                               <th>Ações</th>
                             </tr>
                           </thead>
                           <tbody>
                             {(!isEmpty(dataHarvests?.items) &&
                               dataHarvests.items.map(d => (
-                                <tr key={d.id}>
+                                <tr
+                                  key={d.id}
+                                  onClick={() =>
+                                    router.push(`${baseUrl}/${d.id}/detalhes`)
+                                  }
+                                >
                                   <td>{dateConversor(d?.date, false)}</td>
-                                  <td>{`${d?.quantity}kg`}</td>
+                                  <td>{`${d?.quantity}${d?.type}`}</td>
                                   <td>{dateConversor(d?.forecast, false)}</td>
-                                  <td>{`${d?.quantity_forecast}kg`}</td>
+                                  <td>{`${d?.quantity_forecast}${d?.type}`}</td>
+                                  <td>{d?.is_green ? 'Sim' : 'Não'}</td>
                                   <td>
                                     <ActionButton
                                       id={d.id}
                                       path={baseUrl}
-                                      noInfo
+                                      noEdit
                                       onDelete={() => handleDeleteModal(d.id)}
                                     />
                                   </td>

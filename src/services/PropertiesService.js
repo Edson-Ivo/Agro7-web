@@ -23,6 +23,18 @@ class PropertiesService {
     }
   }
 
+  static async createAdmin(id, data) {
+    try {
+      const response = await api.post(`/properties/create/user/${id}`, {
+        ...data
+      });
+
+      return response;
+    } catch (error) {
+      return error.response;
+    }
+  }
+
   static async createTechniciansProperties(data) {
     try {
       const response = await api.post(`/technicians-properties/create`, {
@@ -85,7 +97,8 @@ class PropertiesService {
         area: data.area,
         type_dimension: data.type_dimension,
         type_owner: data.type_owner,
-        addresses: data.addresses
+        addresses: data.addresses,
+        coordinates: data.coordinates
       });
       return response;
     } catch (error) {
