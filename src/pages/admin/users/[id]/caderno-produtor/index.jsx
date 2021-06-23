@@ -136,7 +136,7 @@ function UserProducerNotebook() {
   return (
     <>
       <Head>
-        <title>Caderno do Produtor - Agro7</title>
+        <title>Painel Administrativo | Caderno do Produtor - Agro7</title>
       </Head>
 
       <Navbar />
