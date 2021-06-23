@@ -187,7 +187,7 @@ function Properties() {
   return (
     <>
       <Head>
-        <title>Cadastrar propriedade - Agro7</title>
+        <title>Painel Administrativo | Cadastrar propriedade - Agro7</title>
       </Head>
 
       <Navbar />

@@ -5,7 +5,11 @@ import { useRouter } from 'next/router';
 import { Form } from '@unform/web';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faMapMarkedAlt, faBook } from '@fortawesome/free-solid-svg-icons';
+import {
+  faMapMarkedAlt,
+  faBook,
+  faUserSecret
+} from '@fortawesome/free-solid-svg-icons';
 
 import Container from '@/components/Container';
 import Nav from '@/components/Nav';
@@ -74,6 +78,13 @@ function AdminUsers() {
                     <FontAwesomeIcon icon={faBook} /> Caderno Produtor
                   </Button>
                 </Link>
+                {data?.type === 'tecnico' && (
+                  <Link href={`/admin/users/${id}/tecnico`}>
+                    <Button className="primary">
+                      <FontAwesomeIcon icon={faUserSecret} /> Painel Técnico
+                    </Button>
+                  </Link>
+                )}
               </div>
             </SectionHeaderContent>
           </SectionHeader>

@@ -104,7 +104,9 @@ function UserProducerNotebookCreate() {
   return (
     <>
       <Head>
-        <title>Anotação Caderno do Produtor - Agro7</title>
+        <title>
+          Painel Administrativo | Anotação Caderno do Produtor - Agro7
+        </title>
       </Head>
 
       <Navbar />
