@@ -93,14 +93,7 @@ function AdminProducts() {
         <Nav />
         <Section>
           <SectionHeader>
-            <SectionHeaderContent
-              breadcrumb={[
-                { route: '/', name: 'Home' },
-                { route: '/admin', name: 'Painel Administrativo' },
-                { route: '/admin/produtos', name: 'Produtos' }
-              ]}
-              title="Gerenciar Produtos"
-            >
+            <SectionHeaderContent title="Gerenciar Produtos">
               <Link href="/admin/produtos/cadastrar">
                 <Button className="primary">
                   <FontAwesomeIcon icon={faPlus} /> Novo Produto

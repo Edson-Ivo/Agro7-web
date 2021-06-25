@@ -1,0 +1,412 @@
+const adminUserPropertyRoute = {
+  '/admin/users/[userId]': {
+    name: '%usuario',
+    path: '/admin/users/[userId]/detalhes'
+  },
+
+  '/admin/users/[userId]/propriedades': { name: 'Propriedades' },
+
+  '/admin/users/[userId]/propriedades/[id]': {
+    name: '%propriedade',
+    path: '/admin/users/[userId]/propriedades/[id]/detalhes'
+  },
+
+  '/admin/users/[userId]/propriedades/[id]/documentos/[docId]/editar': {
+    name: 'Editar Documento'
+  },
+
+  '/admin/users/[userId]/propriedades/[id]/documentos/cadastrar': {
+    name: 'Adicionar Documento'
+  },
+  '/admin/users/[userId]/propriedades/[id]/editar': { name: 'Editar' },
+  '/admin/users/[userId]/propriedades/[id]/talhoes': { name: 'Talhões' },
+
+  '/admin/users/[userId]/propriedades/[id]/talhoes/[fieldId]/culturas': {
+    name: 'Culturas'
+  },
+
+  '/admin/users/[userId]/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]/acoes': {
+    name: 'Ações'
+  },
+
+  '/admin/users/[userId]/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]/acoes/[type]/[actionId]': {
+    name: 'Detalhes',
+    path:
+      '/admin/users/[userId]/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]/acoes/[type]/[actionId]/detalhes'
+  },
+
+  '/admin/users/[userId]/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]/acoes/[type]/[actionId]/editar': {
+    name: 'Editar'
+  },
+
+  '/admin/users/[userId]/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]/acoes/cadastrar': {
+    name: 'Registrar'
+  },
+
+  '/admin/users/[userId]/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]/colheitas': {
+    name: 'Colheitas'
+  },
+
+  '/admin/users/[userId]/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]/colheitas/[harvestId]': {
+    name: '%data',
+    path:
+      '/admin/users/[userId]/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]/colheitas/[harvestId]/detalhes'
+  },
+
+  '/admin/users/[userId]/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]/colheitas/[harvestId]/detalhes/estoque': {
+    name: 'Estoque'
+  },
+
+  '/admin/users/[userId]/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]/colheitas/cadastrar': {
+    name: 'Registrar'
+  },
+
+  '/admin/users/[userId]/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]': {
+    name: '%cultura',
+    path:
+      '/admin/users/[userId]/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]/detalhes'
+  },
+
+  '/admin/users/[userId]/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]/editar': {
+    name: 'Editar'
+  },
+
+  '/admin/users/[userId]/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]/relatorios': {
+    name: 'Relatórios Técnicos'
+  },
+
+  '/admin/users/[userId]/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]/relatorios/[actionId]/detalhes': {
+    name: 'Relatório'
+  },
+
+  '/admin/users/[userId]/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]/relatorios/cadastrar': {
+    name: 'Adicionar'
+  },
+
+  '/admin/users/[userId]/propriedades/[id]/talhoes/[fieldId]/culturas/cadastrar': {
+    name: 'Cadastrar'
+  },
+
+  '/admin/users/[userId]/propriedades/[id]/talhoes/[fieldId]': {
+    name: '%talhao',
+    path: '/admin/users/[userId]/propriedades/[id]/talhoes/[fieldId]/detalhes'
+  },
+
+  '/admin/users/[userId]/propriedades/[id]/talhoes/[fieldId]/editar': {
+    name: 'Editar'
+  },
+  '/admin/users/[userId]/propriedades/[id]/talhoes/cadastrar': {
+    name: 'Cadastrar'
+  },
+
+  '/admin/users/[userId]/propriedades/[id]/tecnicos': {
+    name: 'Técnicos Relacionados'
+  },
+
+  '/admin/users/[userId]/propriedades/[id]/tecnicos/solicitacoes': {
+    name: 'Solicitações'
+  },
+
+  '/admin/users/[userId]/propriedades/[id]/tecnicos/solicitacoes/cadastrar': {
+    name: 'Solicitar'
+  }
+};
+
+const adminPropertyRoute = {
+  '/admin/propriedades/[id]': {
+    name: '%propriedade',
+    path: '/admin/propriedades/[id]/detalhes'
+  },
+  '/admin/propriedades/[id]/documentos/[docId]/editar': {
+    name: 'Editar Documento'
+  },
+  '/admin/propriedades/[id]/documentos/cadastrar': {
+    name: 'Adicionar Documento'
+  },
+  '/admin/propriedades/[id]/editar': { name: 'Editar' },
+  '/admin/propriedades/[id]/talhoes': { name: 'Talhões' },
+  '/admin/propriedades/[id]/talhoes/[fieldId]/culturas': { name: 'Culturas' },
+
+  '/admin/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]/acoes': {
+    name: 'Ações'
+  },
+
+  '/admin/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]/acoes/[type]/[actionId]': {
+    name: 'Detalhes',
+    path:
+      '/admin/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]/acoes/[type]/[actionId]/detalhes'
+  },
+
+  '/admin/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]/acoes/[type]/[actionId]/editar': {
+    name: 'Editar'
+  },
+
+  '/admin/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]/acoes/cadastrar': {
+    name: 'Registrar'
+  },
+
+  '/admin/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]/colheitas': {
+    name: 'Colheitas'
+  },
+
+  '/admin/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]/colheitas/[harvestId]': {
+    name: '%data',
+    path:
+      '/admin/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]/colheitas/[harvestId]/detalhes'
+  },
+
+  '/admin/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]/colheitas/[harvestId]/detalhes/estoque': {
+    name: 'Estoque'
+  },
+
+  '/admin/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]/colheitas/cadastrar': {
+    name: 'Registrar'
+  },
+
+  '/admin/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]': {
+    name: '%cultura',
+    path:
+      '/admin/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]/detalhes'
+  },
+
+  '/admin/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]/editar': {
+    name: 'Editar'
+  },
+
+  '/admin/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]/relatorios': {
+    name: 'Relatórios Técnicos'
+  },
+
+  '/admin/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]/relatorios/[actionId]/detalhes': {
+    name: 'Relatório'
+  },
+
+  '/admin/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]/relatorios/cadastrar': {
+    name: 'Adicionar'
+  },
+
+  '/admin/propriedades/[id]/talhoes/[fieldId]/culturas/cadastrar': {
+    name: 'Cadastrar'
+  },
+  '/admin/propriedades/[id]/talhoes/[fieldId]': {
+    name: '%talhao',
+    path: '/admin/propriedades/[id]/talhoes/[fieldId]/detalhes'
+  },
+  '/admin/propriedades/[id]/talhoes/[fieldId]/editar': { name: 'Editar' },
+  '/admin/propriedades/[id]/talhoes/cadastrar': { name: 'Cadastrar' },
+  '/admin/propriedades/[id]/tecnicos': { name: 'Técnicos Relacionados' },
+  '/admin/propriedades/[id]/tecnicos/solicitacoes': { name: 'Solicitações' },
+  '/admin/propriedades/[id]/tecnicos/solicitacoes/cadastrar': {
+    name: 'Solicitar'
+  }
+};
+
+const technicianPropertyRoute = {
+  '/tecnico/propriedades/[id]': {
+    name: '%propriedade',
+    path: '/tecnico/propriedades/[id]/detalhes'
+  },
+  '/tecnico/propriedades/[id]/documentos/[docId]/editar': {
+    name: 'Editar Documento'
+  },
+  '/tecnico/propriedades/[id]/documentos/cadastrar': {
+    name: 'Adicionar Documento'
+  },
+  '/tecnico/propriedades/[id]/editar': { name: 'Editar' },
+  '/tecnico/propriedades/[id]/talhoes': { name: 'Talhões' },
+  '/tecnico/propriedades/[id]/talhoes/[fieldId]/culturas': { name: 'Culturas' },
+
+  '/tecnico/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]/colheitas': {
+    name: 'Colheitas'
+  },
+
+  '/tecnico/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]/colheitas/[harvestId]': {
+    name: '%data',
+    path:
+      '/tecnico/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]/colheitas/[harvestId]/detalhes'
+  },
+
+  '/tecnico/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]/colheitas/[harvestId]/detalhes/estoque': {
+    name: 'Estoque'
+  },
+
+  '/tecnico/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]/colheitas/cadastrar': {
+    name: 'Registrar'
+  },
+
+  '/tecnico/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]': {
+    name: '%cultura',
+    path:
+      '/tecnico/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]/detalhes'
+  },
+
+  '/tecnico/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]/editar': {
+    name: 'Editar'
+  },
+
+  '/tecnico/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]/relatorios': {
+    name: 'Relatórios Técnicos'
+  },
+
+  '/tecnico/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]/relatorios/[actionId]/detalhes': {
+    name: 'Relatório'
+  },
+
+  '/tecnico/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]/relatorios/cadastrar': {
+    name: 'Adicionar'
+  },
+
+  '/tecnico/propriedades/[id]/talhoes/[fieldId]/culturas/cadastrar': {
+    name: 'Cadastrar'
+  },
+  '/tecnico/propriedades/[id]/talhoes/[fieldId]': {
+    name: '%talhao',
+    path: '/tecnico/propriedades/[id]/talhoes/[fieldId]/detalhes'
+  },
+  '/tecnico/propriedades/[id]/talhoes/[fieldId]/editar': { name: 'Editar' },
+  '/tecnico/propriedades/[id]/talhoes/cadastrar': { name: 'Cadastrar' }
+};
+
+const adminUserProducerNotebookRoute = {
+  '/admin/users/[userId]': {
+    name: '%usuario',
+    path: '/admin/users/[userId]/detalhes'
+  },
+  '/admin/users/[userId]/caderno-produtor/[id]': {
+    name: '%data',
+    path: '/admin/users/[userId]/caderno-produtor/[id]/detalhes'
+  },
+  '/admin/users/[userId]/caderno-produtor/[id]/editar': { name: 'Editar' }
+};
+
+const namedRoutes = {
+  '/admin': { name: 'Painel Administrativo' },
+  '/admin/categorias': { name: 'Categorias' },
+  '/admin/categorias/[id]': {
+    name: '%categoria',
+    path: '/admin/categorias/[id]/detalhes'
+  },
+  '/admin/categorias/[id]/editar': { name: 'Editar' },
+  '/admin/categorias/cadastrar': { name: 'Cadastrar' },
+  '/admin/cores': { name: 'Cores' },
+  '/admin/cores/[id]': { name: '%cor', path: '/admin/cores/[id]/detalhes' },
+  '/admin/cores/[id]/editar': { name: 'Editar' },
+  '/admin/cores/cadastrar': { name: 'Cadastrar' },
+  '/admin/produtos': { name: 'Produtos' },
+  '/admin/produtos/[id]': {
+    name: '%produto',
+    path: '/admin/produtos/[id]/detalhes'
+  },
+  '/admin/produtos/[id]/editar': { name: 'Editar' },
+  '/admin/produtos/cadastrar': { name: 'Cadastrar' },
+  '/admin/propriedades': { name: 'Propriedades' },
+  '/admin/users': { name: 'Usuários' },
+  '/admin/users/[id]': { name: '%usuario', path: '/admin/users/[id]/detalhes' },
+  '/admin/users/[id]/caderno-produtor': { name: 'Caderno do Produtor' },
+  '/admin/users/[id]/caderno-produtor/cadastrar': { name: 'Anotação' },
+  '/admin/users/[id]/editar': { name: 'Alterar Dados' },
+  '/admin/users/[id]/editar/senha': { name: 'Alterar Senha' },
+  '/admin/users/[id]/propriedades': { name: 'Propriedades' },
+  '/admin/users/[id]/propriedades/cadastrar': { name: 'Cadastrar' },
+  '/admin/users/[id]/tecnico': { name: 'Técnico' },
+  '/admin/users/[id]/tecnico/propriedades': {
+    name: 'Propriedades Relacionadas'
+  },
+  '/admin/users/[id]/tecnico/solicitacoes': { name: 'Solicitações Técnica' },
+  '/admin/users/cadastrar': { name: 'Cadastrar' },
+  '/caderno-produtor': { name: 'Caderno do Produtor' },
+  '/caderno-produtor/[id]': {
+    name: '%data',
+    path: '/caderno-produtor/[id]/detalhes'
+  },
+  '/caderno-produtor/[id]/editar': { name: 'Editar' },
+  '/caderno-produtor/cadastrar': { name: 'Anotação' },
+  '/configuracoes': { name: 'Configurações' },
+  '/configuracoes/editar': { name: 'Editar meus Dados' },
+  '/configuracoes/senha': { name: 'Alterar Senha' },
+  '/propriedades': { name: 'Propriedades' },
+  '/propriedades/[id]': {
+    name: '%propriedade',
+    path: '/propriedades/[id]/detalhes'
+  },
+  '/propriedades/[id]/documentos/[docId]/editar': { name: 'Editar Documento' },
+  '/propriedades/[id]/documentos/cadastrar': { name: 'Adicionar Documento' },
+  '/propriedades/[id]/editar': { name: 'Editar' },
+  '/propriedades/[id]/talhoes': { name: 'Talhões' },
+  '/propriedades/[id]/talhoes/[fieldId]': {
+    name: '%talhao',
+    path: '/propriedades/[id]/talhoes/[fieldId]/detalhes'
+  },
+  '/propriedades/[id]/talhoes/[fieldId]/culturas': { name: 'Culturas' },
+  '/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]/acoes': {
+    name: 'Ações'
+  },
+
+  '/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]/acoes/[type]/[actionId]/detalhes': {
+    name: 'Detalhes'
+  },
+
+  '/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]/acoes/[type]/[actionId]/editar': {
+    name: 'Editar'
+  },
+
+  '/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]/acoes/cadastrar': {
+    name: 'Registrar'
+  },
+
+  '/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]/colheitas': {
+    name: 'Colheitas'
+  },
+
+  '/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]/colheitas/[harvestId]': {
+    name: '%data',
+    path:
+      '/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]/colheitas/[harvestId]/detalhes'
+  },
+
+  '/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]/colheitas/[harvestId]/detalhes/estoque': {
+    name: 'Estoque'
+  },
+
+  '/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]/colheitas/cadastrar': {
+    name: 'Registrar'
+  },
+
+  '/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]': {
+    name: '%cultura',
+    path: '/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]/detalhes'
+  },
+
+  '/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]/editar': {
+    name: 'Editar'
+  },
+
+  '/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]/relatorios': {
+    name: 'Relatórios Técnicos'
+  },
+
+  '/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]/relatorios/[actionId]/detalhes': {
+    name: 'Relatório'
+  },
+  '/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]/relatorios/cadastrar': {
+    name: 'Adicionar'
+  },
+  '/propriedades/[id]/talhoes/[fieldId]/culturas/cadastrar': {
+    name: 'Cadastrar'
+  },
+  '/propriedades/[id]/talhoes/[fieldId]/editar': { name: 'Editar' },
+  '/propriedades/[id]/talhoes/cadastrar': { name: 'Cadastrar' },
+  '/propriedades/[id]/tecnicos': { name: 'Técnicos Relacionados' },
+  '/propriedades/[id]/tecnicos/solicitacoes': { name: 'Solicitações' },
+  '/propriedades/[id]/tecnicos/solicitacoes/cadastrar': { name: 'Solicitar' },
+  '/propriedades/cadastrar': { name: 'Cadastrar' },
+  '/tecnico': { name: 'Painel Técnico' },
+  '/tecnico/propriedades': { name: 'Propriedades Relacionados' },
+  '/tecnico/solicitacoes': { name: 'Solicitações Técnica' },
+  ...technicianPropertyRoute,
+  ...adminPropertyRoute,
+  ...adminUserPropertyRoute,
+  ...adminUserProducerNotebookRoute
+};
+
+export default namedRoutes;

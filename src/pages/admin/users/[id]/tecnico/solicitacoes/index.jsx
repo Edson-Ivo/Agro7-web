@@ -101,14 +101,9 @@ function RequestsTechnichian() {
         <Section>
           <SectionHeader>
             <SectionHeaderContent
-              breadcrumb={[
-                { route: '/', name: 'Home' },
-                { route: '/tecnico', name: 'Painel Técnico' },
-                {
-                  route: `/admin/users/${id}/tecnico/solicitacoes`,
-                  name: 'Solicitação Técnica'
-                }
-              ]}
+              breadcrumbTitles={{
+                '%usuario': dataUser?.name
+              }}
               title="Solicitações Técnica"
               description={`Aqui você irá gerenciar todas as solicitações técnicas de
                 propriedades para o técnico ${dataUser?.name}.`}

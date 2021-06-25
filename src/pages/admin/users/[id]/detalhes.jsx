@@ -54,15 +54,9 @@ function AdminUsers() {
         <Section>
           <SectionHeader>
             <SectionHeaderContent
-              breadcrumb={[
-                { route: '/', name: 'Home' },
-                { route: '/admin', name: 'Painel Administrativo' },
-                { route: '/admin/users', name: 'Usuários' },
-                {
-                  route: `/admin/users/${id}/detalhes`,
-                  name: `${data?.name}`
-                }
-              ]}
+              breadcrumbTitles={{
+                '%usuario': data?.name
+              }}
               title={`Informações do Usuário ${data?.name}`}
               description="Aqui você irá ver informações detalhadas do usuário em questão"
               isLoading={isEmpty(data)}

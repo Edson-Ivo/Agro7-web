@@ -155,43 +155,11 @@ function AcoesCulturaCadastrar() {
         <Section>
           <SectionHeader>
             <SectionHeaderContent
-              breadcrumb={[
-                { route: '/', name: 'Home' },
-                {
-                  route: '/admin',
-                  name: 'Painel Administrativo',
-                  active: type === 'administrador' && route?.permission === type
-                },
-                { route: `${route.path}`, name: 'Propriedades' },
-                {
-                  route: `${route.path}/${id}/detalhes`,
-                  name: `${data?.properties?.name}`
-                },
-                {
-                  route: `${route.path}/${id}/talhoes`,
-                  name: `Talhões`
-                },
-                {
-                  route: `${route.path}/${id}/talhoes/${fieldId}/detalhes`,
-                  name: `${data?.name}`
-                },
-                {
-                  route: `${route.path}/${id}/talhoes/${fieldId}/culturas`,
-                  name: `Culturas`
-                },
-                {
-                  route: `${route.path}/${id}/talhoes/${fieldId}/culturas/${cultureId}/detalhes`,
-                  name: `${dataCultures?.products?.name}`
-                },
-                {
-                  route: `${route.path}/${id}/talhoes/${fieldId}/culturas/${cultureId}/acoes`,
-                  name: `Ações`
-                },
-                {
-                  route: `${route.path}/${id}/talhoes/${fieldId}/culturas/${cultureId}/acoes/cadastrar`,
-                  name: `Registrar`
-                }
-              ]}
+              breadcrumbTitles={{
+                '%propriedade': data?.properties.name,
+                '%talhao': data?.name,
+                '%cultura': dataCultures?.products?.name
+              }}
               title={`Registrar Ação na Cultura de ${dataCultures?.products?.name}`}
               description={`Aqui você irá registrar uma ação na cultura de ${dataCultures?.products?.name} do talhão ${data?.name} da propriedade ${data?.properties?.name}.`}
               isLoading={isEmpty(data) || isEmpty(dataCultures)}

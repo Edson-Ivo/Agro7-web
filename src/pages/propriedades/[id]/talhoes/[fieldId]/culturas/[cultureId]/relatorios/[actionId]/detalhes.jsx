@@ -132,48 +132,11 @@ function RelatoriosDetails() {
         <Section>
           <SectionHeader>
             <SectionHeaderContent
-              breadcrumb={[
-                { route: '/', name: 'Home' },
-                {
-                  route: '/tecnico',
-                  name: 'Painel Técnico',
-                  active: type === 'tecnico' && route?.permission === type
-                },
-                {
-                  route: '/admin',
-                  name: 'Painel Administrativo',
-                  active: type === 'administrador' && route?.permission === type
-                },
-                { route: `${route.path}`, name: 'Propriedades' },
-                {
-                  route: `${route.path}/${id}/detalhes`,
-                  name: `${data?.properties?.name}`
-                },
-                {
-                  route: `${route.path}/${id}/talhoes`,
-                  name: `Talhões`
-                },
-                {
-                  route: `${route.path}/${id}/talhoes/${fieldId}/detalhes`,
-                  name: `${data?.name}`
-                },
-                {
-                  route: `${route.path}/${id}/talhoes/${fieldId}/culturas`,
-                  name: `Culturas`
-                },
-                {
-                  route: `${route.path}/${id}/talhoes/${fieldId}/culturas/${cultureId}/detalhes`,
-                  name: `${dataCultures?.products?.name}`
-                },
-                {
-                  route: `${route.path}/${id}/talhoes/${fieldId}/culturas/${cultureId}/relatorios`,
-                  name: `Relatórios`
-                },
-                {
-                  route: `${route.path}/${id}/talhoes/${fieldId}/culturas/${cultureId}/relatorios/${actionId}/detalhes`,
-                  name: `Detalhes`
-                }
-              ]}
+              breadcrumbTitles={{
+                '%propriedade': data?.properties.name,
+                '%talhao': data?.name,
+                '%cultura': dataCultures?.products?.name
+              }}
               title={`Relatório da Cultura de ${
                 dataCultures?.products?.name
               } - ${dateConversor(dataActions?.created_at, false)}`}

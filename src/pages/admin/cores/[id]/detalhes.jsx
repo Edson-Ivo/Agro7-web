@@ -43,15 +43,9 @@ function AdminCoresDetails() {
         <Section>
           <SectionHeader>
             <SectionHeaderContent
-              breadcrumb={[
-                { route: '/', name: 'Home' },
-                { route: '/admin', name: 'Painel Administrativo' },
-                { route: '/admin/cores', name: 'Cores para Categorias' },
-                {
-                  route: `/admin/cores/${id}/detalhes`,
-                  name: `Cor ${dataColor?.name}`
-                }
-              ]}
+              breadcrumbTitles={{
+                '%cor': dataColor?.name
+              }}
               title={`Informações da Cor ${dataColor?.name}`}
               description="Aqui você irá ver informações da cor em questão"
               isLoading={isEmpty(dataColor)}

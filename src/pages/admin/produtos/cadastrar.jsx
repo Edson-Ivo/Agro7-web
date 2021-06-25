@@ -251,15 +251,6 @@ function AdminProductsCreate() {
         <Section>
           <SectionHeader>
             <SectionHeaderContent
-              breadcrumb={[
-                { route: '/', name: 'Home' },
-                { route: '/admin', name: 'Painel Administrativo' },
-                { route: '/admin/produtos', name: 'Produtos' },
-                {
-                  route: '/admin/produtos/cadastrar',
-                  name: 'Cadastrar'
-                }
-              ]}
               title="Cadastrar Produtos"
               description="Aqui você irá cadastrar um produto no sistema"
             />

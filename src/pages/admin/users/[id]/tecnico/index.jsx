@@ -59,10 +59,9 @@ function TechnichianHome() {
         <Section>
           <SectionHeader>
             <SectionHeaderContent
-              breadcrumb={[
-                { route: '/', name: 'Home' },
-                { route: '/tecnico', name: 'Painel Técnico' }
-              ]}
+              breadcrumbTitles={{
+                '%usuario': dataUser?.name
+              }}
               title="Painel Técnico"
               description={`Esse é o painel de técnico de ${dataUser?.name}, aqui você pode
                 gerenciar suas solicitações para trabalhar em uma propriedade,

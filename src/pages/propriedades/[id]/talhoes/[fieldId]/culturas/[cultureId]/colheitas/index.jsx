@@ -126,44 +126,11 @@ function Colheitas() {
         <Section>
           <SectionHeader>
             <SectionHeaderContent
-              breadcrumb={[
-                { route: '/', name: 'Home' },
-                {
-                  route: '/tecnico',
-                  name: 'Painel Técnico',
-                  active: type === 'tecnico' && route?.permission === type
-                },
-                {
-                  route: '/admin',
-                  name: 'Painel Administrativo',
-                  active: type === 'administrador' && route?.permission === type
-                },
-                { route: `${route.path}`, name: 'Propriedades' },
-                {
-                  route: `${route.path}/${id}/detalhes`,
-                  name: `${data?.properties?.name}`
-                },
-                {
-                  route: `${route.path}/${id}/talhoes`,
-                  name: `Talhões`
-                },
-                {
-                  route: `${route.path}/${id}/talhoes/${fieldId}/detalhes`,
-                  name: `${data?.name}`
-                },
-                {
-                  route: `${route.path}/${id}/talhoes/${fieldId}/culturas`,
-                  name: `Culturas`
-                },
-                {
-                  route: `${route.path}/${id}/talhoes/${fieldId}/culturas/${cultureId}/detalhes`,
-                  name: `${dataCultures?.products?.name}`
-                },
-                {
-                  route: `${route.path}/${id}/talhoes/${fieldId}/culturas/${cultureId}/colheitas`,
-                  name: `Colheitas`
-                }
-              ]}
+              breadcrumbTitles={{
+                '%propriedade': data?.properties.name,
+                '%talhao': data?.name,
+                '%cultura': dataCultures?.products?.name
+              }}
               title={`Colheitas da Cultura de ${dataCultures?.products?.name} do Talhão ${data?.name}`}
               description={`Aqui você irá ver as colheitas da cultura de ${dataCultures?.products?.name} do talhão ${data?.name} da propriedade ${data?.properties?.name}.`}
               isLoading={isEmpty(data) || isEmpty(dataCultures)}
@@ -210,7 +177,7 @@ function Colheitas() {
                                   <td>{dateConversor(d?.forecast, false)}</td>
                                   <td>{`${d?.quantity_forecast}${d?.type}`}</td>
                                   <td>{d?.is_green ? 'Sim' : 'Não'}</td>
-                                  <td>
+                                  <td onClick={e => e.stopPropagation()}>
                                     <ActionButton
                                       id={d.id}
                                       path={baseUrl}

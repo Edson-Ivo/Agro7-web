@@ -62,32 +62,10 @@ function TalhoesInfo() {
         <Section>
           <SectionHeader>
             <SectionHeaderContent
-              breadcrumb={[
-                { route: '/', name: 'Home' },
-                {
-                  route: '/tecnico',
-                  name: 'Painel Técnico',
-                  active: type === 'tecnico' && route?.permission === type
-                },
-                {
-                  route: '/admin',
-                  name: 'Painel Administrativo',
-                  active: type === 'administrador' && route?.permission === type
-                },
-                { route: `${route.path}`, name: 'Propriedades' },
-                {
-                  route: `${route.path}/${id}/detalhes`,
-                  name: `${data?.name}`
-                },
-                {
-                  route: `${route.path}/${id}/talhoes`,
-                  name: `Talhões`
-                },
-                {
-                  route: `${route.path}/${id}/talhoes/${fieldId}/detalhes`,
-                  name: `${dataFields?.name}`
-                }
-              ]}
+              breadcrumbTitles={{
+                '%propriedade': data?.name,
+                '%talhao': dataFields?.name
+              }}
               title={`Informações do Talhão ${dataFields?.name}`}
               description={`Você está vendo informações detalhadas do talhão ${dataFields?.name} da propriedade ${dataFields?.properties?.name}.`}
               isLoading={isEmpty(data) || isEmpty(dataFields)}

@@ -167,15 +167,6 @@ function AdminUsers() {
         <Section>
           <SectionHeader>
             <SectionHeaderContent
-              breadcrumb={[
-                { route: '/', name: 'Home' },
-                { route: '/admin', name: 'Painel Administrativo' },
-                { route: '/admin/users', name: 'Usuários' },
-                {
-                  route: '/admin/users/cadastrar',
-                  name: 'Cadastrar'
-                }
-              ]}
               title="Cadastre um usuário"
               description="Aqui você irá cadastrar um usuário para o sistema"
               isLoading={false}

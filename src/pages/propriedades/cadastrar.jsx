@@ -187,11 +187,6 @@ function Properties() {
         <Section>
           <SectionHeader>
             <SectionHeaderContent
-              breadcrumb={[
-                { route: '/', name: 'Home' },
-                { route: '/propriedades', name: 'Propriedades' },
-                { route: '/propriedades/cadastrar', name: 'Cadastrar' }
-              ]}
               title="Cadastre uma propriedade"
               description="Aqui você irá cadastrar uma propriedade"
             />

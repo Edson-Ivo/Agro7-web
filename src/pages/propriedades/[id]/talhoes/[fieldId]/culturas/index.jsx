@@ -113,36 +113,10 @@ function Culturas() {
         <Section>
           <SectionHeader>
             <SectionHeaderContent
-              breadcrumb={[
-                { route: '/', name: 'Home' },
-                {
-                  route: '/tecnico',
-                  name: 'Painel Técnico',
-                  active: type === 'tecnico' && route?.permission === type
-                },
-                {
-                  route: '/admin',
-                  name: 'Painel Administrativo',
-                  active: type === 'administrador' && route?.permission === type
-                },
-                { route: `${route.path}`, name: 'Propriedades' },
-                {
-                  route: `${route.path}/${id}/detalhes`,
-                  name: `${data?.properties.name}`
-                },
-                {
-                  route: `${route.path}/${id}/talhoes`,
-                  name: `Talhões`
-                },
-                {
-                  route: `${route.path}/${id}/talhoes/${fieldId}/detalhes`,
-                  name: `${data?.name}`
-                },
-                {
-                  route: `${route.path}/${id}/talhoes/${fieldId}/culturas`,
-                  name: `Culturas`
-                }
-              ]}
+              breadcrumbTitles={{
+                '%propriedade': data?.properties.name,
+                '%talhao': data?.name
+              }}
               title={`Culturas do Talhão ${data?.name}`}
               description={`Aqui você irá ver as culturas do talhão ${data?.name} da propriedade ${data?.properties?.name}.`}
               isLoading={isEmpty(data)}

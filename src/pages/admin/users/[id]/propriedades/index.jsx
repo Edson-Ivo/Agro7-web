@@ -99,19 +99,9 @@ function Properties() {
         <Section>
           <SectionHeader>
             <SectionHeaderContent
-              breadcrumb={[
-                { route: '/', name: 'Home' },
-                { route: '/admin', name: 'Painel Administrativo' },
-                { route: '/admin/users', name: 'Usuários' },
-                {
-                  route: `/admin/users/${id}/detalhes`,
-                  name: `${dataUser?.name}`
-                },
-                {
-                  route: `/admin/users/${id}/propriedades`,
-                  name: 'Propriedades'
-                }
-              ]}
+              breadcrumbTitles={{
+                '%usuario': dataUser?.name
+              }}
               title={`Gerenciar Propriedades de ${dataUser?.name}`}
               isLoading={isEmpty(dataUser) || isEmpty(data)}
             >

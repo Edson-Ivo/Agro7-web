@@ -180,15 +180,9 @@ function AdminUsersEdit() {
         <Section>
           <SectionHeader>
             <SectionHeaderContent
-              breadcrumb={[
-                { route: '/', name: 'Home' },
-                { route: '/admin', name: 'Painel Administrativo' },
-                { route: '/admin/users', name: 'Usuários' },
-                {
-                  route: `/admin/users/${id}/editar`,
-                  name: `Editar`
-                }
-              ]}
+              breadcrumbTitles={{
+                '%usuario': data?.name
+              }}
               title={`Editar Usuário ${data?.name}`}
               description="Aqui você irá editar o usuário em questão"
               isLoading={isEmpty(data)}
