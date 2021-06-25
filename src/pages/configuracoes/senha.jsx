@@ -87,11 +87,6 @@ function ConfiguracoesSenha() {
         <Section>
           <SectionHeader>
             <SectionHeaderContent
-              breadcrumb={[
-                { route: '/', name: 'Home' },
-                { route: '/configuracoes', name: 'Configurações' },
-                { route: '/configuracoes/senha', name: 'Alterar senha' }
-              ]}
               title="Alterar senha"
               description="Modifique sua senha abaixo."
             />

@@ -138,30 +138,12 @@ function DocumentosCreate() {
         <Section>
           <SectionHeader>
             <SectionHeaderContent
-              breadcrumb={[
-                { route: '/', name: 'Home' },
-                {
-                  route: '/tecnico',
-                  name: 'Painel Técnico',
-                  active: type === 'tecnico' && route?.permission === type
-                },
-                {
-                  route: '/admin',
-                  name: 'Painel Administrativo',
-                  active: type === 'administrador' && route?.permission === type
-                },
-                { route: `${route.path}`, name: 'Propriedades' },
-                {
-                  route: `${route.path}/${id}/detalhes`,
-                  name: `${data?.name}`
-                },
-                {
-                  route: `${route.path}/${id}/documentos/cadastrar`,
-                  name: 'Adicionar Documento'
-                }
-              ]}
+              breadcrumbTitles={{
+                '%propriedade': data?.name
+              }}
               title={`Adicionar Documento ${data?.name}`}
               description={`Aqui você irá adicionar um documento para propriedade ${data?.name}`}
+              isLoading={isEmpty(data)}
             />
           </SectionHeader>
 

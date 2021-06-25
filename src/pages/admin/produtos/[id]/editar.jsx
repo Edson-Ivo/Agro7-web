@@ -292,15 +292,9 @@ function AdminProductsEdit() {
         <Section>
           <SectionHeader>
             <SectionHeaderContent
-              breadcrumb={[
-                { route: '/', name: 'Home' },
-                { route: '/admin', name: 'Painel Administrativo' },
-                { route: '/admin/produtos', name: 'Produtos' },
-                {
-                  route: `/admin/produtos/${id}/editar`,
-                  name: 'Editar'
-                }
-              ]}
+              breadcrumbTitles={{
+                '%produto': data?.name
+              }}
               title={`Editar Produto ${data?.name}`}
               description="Aqui você irá editar o produto em questão"
               isLoading={isEmpty(data)}

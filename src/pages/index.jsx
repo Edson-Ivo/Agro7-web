@@ -59,7 +59,6 @@ function Home() {
         <Section>
           <SectionHeader>
             <SectionHeaderContent
-              breadcrumb={[{ route: '/', name: 'Home' }]}
               title={`${greeting} ${name}!`}
               description="Navegue por suas funcionalidades abaixo ou pelas abas ao lado."
             />

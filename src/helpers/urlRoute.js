@@ -59,4 +59,5 @@ const replaceQuery = (asPath, query) => {
   return path;
 };
 
+export { replaceQuery };
 export default urlRoute;

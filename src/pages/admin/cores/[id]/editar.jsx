@@ -98,15 +98,9 @@ function AdminCoresEdit() {
         <Section>
           <SectionHeader>
             <SectionHeaderContent
-              breadcrumb={[
-                { route: '/', name: 'Home' },
-                { route: '/admin', name: 'Painel Administrativo' },
-                { route: '/admin/cores', name: 'Cores para Categorias' },
-                {
-                  route: `/admin/cores/${id}/editar`,
-                  name: 'Editar'
-                }
-              ]}
+              breadcrumbTitles={{
+                '%cor': dataColor?.name
+              }}
               title="Editar Cor"
               description="Aqui você irá editar a cor em questão"
             />

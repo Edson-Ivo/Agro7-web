@@ -206,26 +206,9 @@ function PropertiesEdit() {
         <Section>
           <SectionHeader>
             <SectionHeaderContent
-              breadcrumb={[
-                { route: '/', name: 'Home' },
-                {
-                  route: '/tecnico',
-                  name: 'Painel Técnico',
-                  active: type === 'tecnico' && route?.permission === type
-                },
-                {
-                  route: '/admin',
-                  name: 'Painel Administrativo',
-                  active: type === 'administrador' && route?.permission === type
-                },
-                {
-                  route: '/admin/usuario',
-                  name: 'Usuários',
-                  active: type === 'administrador' && route?.permission === type
-                },
-                { route: `${route.path}`, name: 'Propriedades' },
-                { route: `${route.path}/${id}/editar`, name: 'Editar' }
-              ]}
+              breadcrumbTitles={{
+                '%propriedade': data?.name
+              }}
               title={`Editar propriedade ${data?.name}`}
               description="Aqui você irá editar a propriedade em questão"
               isLoading={isEmpty(data)}

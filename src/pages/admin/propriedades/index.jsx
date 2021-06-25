@@ -89,14 +89,7 @@ function Properties() {
         <Nav />
         <Section>
           <SectionHeader>
-            <SectionHeaderContent
-              breadcrumb={[
-                { route: '/', name: 'Home' },
-                { route: '/admin', name: 'Painel Administrativo' },
-                { route: '/admin/propriedades', name: 'Propriedades' }
-              ]}
-              title="Gerenciar Propriedades"
-            />
+            <SectionHeaderContent title="Gerenciar Propriedades" />
           </SectionHeader>
           <SectionBody>
             <div className="SectionBody__content">

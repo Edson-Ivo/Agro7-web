@@ -187,7 +187,7 @@ function Properties() {
   return (
     <>
       <Head>
-        <title>Cadastrar propriedade - Agro7</title>
+        <title>Painel Administrativo | Cadastrar propriedade - Agro7</title>
       </Head>
 
       <Navbar />
@@ -196,23 +196,9 @@ function Properties() {
         <Section>
           <SectionHeader>
             <SectionHeaderContent
-              breadcrumb={[
-                { route: '/', name: 'Home' },
-                { route: '/admin', name: 'Painel Administrativo' },
-                { route: '/admin/users', name: 'Usuários' },
-                {
-                  route: `/admin/users/${id}/detalhes`,
-                  name: `${dataUser?.name}`
-                },
-                {
-                  route: `/admin/users/${id}/propriedades`,
-                  name: 'Propriedades'
-                },
-                {
-                  route: `/admin/users/${id}/cadastrar`,
-                  name: 'Cadastrar'
-                }
-              ]}
+              breadcrumbTitles={{
+                '%usuario': dataUser?.name
+              }}
               title="Cadastre uma propriedade"
               description={`Aqui você irá cadastrar uma propriedade para ${dataUser?.name}`}
               isLoading={isEmpty(dataUser)}

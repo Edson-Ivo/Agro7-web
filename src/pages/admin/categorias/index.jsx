@@ -96,11 +96,6 @@ function AdminCategories() {
         <Section>
           <SectionHeader>
             <SectionHeaderContent
-              breadcrumb={[
-                { route: '/', name: 'Home' },
-                { route: '/admin', name: 'Painel Administrativo' },
-                { route: baseUrl, name: 'Categorias' }
-              ]}
               title="Gerenciar Categorias"
               description="Aqui você poderá gerenciar todas as categorias de seu sistema"
             >

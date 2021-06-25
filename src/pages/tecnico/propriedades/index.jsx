@@ -94,14 +94,6 @@ function PropertiesTechnichian() {
         <Section>
           <SectionHeader>
             <SectionHeaderContent
-              breadcrumb={[
-                { route: '/', name: 'Home' },
-                { route: '/tecnico', name: 'Painel Técnico' },
-                {
-                  route: '/tecnico/propriedades',
-                  name: 'Propriedades'
-                }
-              ]}
               title="Propriedades Relacionadas"
               description="Aqui você irá ver todas as propriedades que estão relacionadas
                 com seu usuário de técnico."

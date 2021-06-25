@@ -119,31 +119,13 @@ function DocumentosEdit() {
         <Section>
           <SectionHeader>
             <SectionHeaderContent
-              breadcrumb={[
-                { route: '/', name: 'Home' },
-                {
-                  route: '/tecnico',
-                  name: 'Painel Técnico',
-                  active: type === 'tecnico' && route?.permission === type
-                },
-                {
-                  route: '/admin',
-                  name: 'Painel Administrativo',
-                  active: type === 'administrador' && route?.permission === type
-                },
-                { route: `${route.path}`, name: 'Propriedades' },
-                {
-                  route: `${route.path}/${id}/detalhes`,
-                  name: `${data?.name}`
-                },
-                {
-                  route: `${route.path}/${id}/documentos/${docId}/cadastrar`,
-                  name: 'Editar Documento'
-                }
-              ]}
+              breadcrumbTitles={{
+                '%propriedade': data?.name
+              }}
               title={`Editar Documento ${dataDocs?.name}`}
               description={`Você está editando o documento ${dataDocs?.name} da
                 propriedade ${data?.name}.`}
+              isLoading={isEmpty(data)}
             />
           </SectionHeader>
           <SectionBody>

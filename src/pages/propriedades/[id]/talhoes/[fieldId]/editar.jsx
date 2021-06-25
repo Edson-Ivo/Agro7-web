@@ -155,32 +155,10 @@ function TalhoesEdit() {
         <Section>
           <SectionHeader>
             <SectionHeaderContent
-              breadcrumb={[
-                { route: '/', name: 'Home' },
-                {
-                  route: '/tecnico',
-                  name: 'Painel Técnico',
-                  active: type === 'tecnico' && route?.permission === type
-                },
-                {
-                  route: '/admin',
-                  name: 'Painel Administrativo',
-                  active: type === 'administrador' && route?.permission === type
-                },
-                { route: `${route.path}`, name: 'Propriedades' },
-                {
-                  route: `${route.path}/${id}/detalhes`,
-                  name: `${data?.name}`
-                },
-                {
-                  route: `${route.path}/${id}/talhoes`,
-                  name: `Talhões`
-                },
-                {
-                  route: `${route.path}/${id}/talhoes/${fieldId}/editar`,
-                  name: `Editar`
-                }
-              ]}
+              breadcrumbTitles={{
+                '%propriedade': data?.name,
+                '%talhao': dataFields?.name
+              }}
               title={`Editar Talhão ${dataFields?.name}`}
               description={`Você está editando o talhão ${dataFields?.name} da propriedade ${data?.name}.`}
               isLoading={isEmpty(data) || isEmpty(dataFields)}

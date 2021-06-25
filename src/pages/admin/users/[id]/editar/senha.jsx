@@ -99,19 +99,9 @@ function AdminUsersEditPassword() {
         <Section>
           <SectionHeader>
             <SectionHeaderContent
-              breadcrumb={[
-                { route: '/', name: 'Home' },
-                { route: '/admin', name: 'Painel Administrativo' },
-                { route: '/admin/users', name: 'Usuários' },
-                {
-                  route: `/admin/users/${id}/editar`,
-                  name: `Editar`
-                },
-                {
-                  route: `/admin/users/${id}/editar/senha`,
-                  name: `Alterar senha`
-                }
-              ]}
+              breadcrumbTitles={{
+                '%usuario': data?.name
+              }}
               title={`Alterar Senha do Usuário ${data?.name}`}
               description="Aqui você irá alterar a senha do usuário em questão"
               isLoading={isEmpty(data)}

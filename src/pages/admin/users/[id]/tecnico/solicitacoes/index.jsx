@@ -1,15 +1,10 @@
-import React, { useState, useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import Head from 'next/head';
-import Link from 'next/link';
-
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus } from '@fortawesome/free-solid-svg-icons';
 
 import Container from '@/components/Container';
 import Nav from '@/components/Nav';
 import Navbar from '@/components/Navbar';
 
-import Button from '@/components/Button';
 import { Section, SectionHeader, SectionBody } from '@/components/Section';
 
 import { CardContainer } from '@/components/CardContainer';
@@ -20,45 +15,53 @@ import Loader from '@/components/Loader';
 import Error from '@/components/Error';
 import { useFetch } from '@/hooks/useFetch';
 import ActionButton from '@/components/ActionButton';
-import { useModal } from '@/hooks/useModal';
 
 import { useRouter } from 'next/router';
+import Pagination from '@/components/Pagination/index';
+import { useModal } from '@/hooks/useModal';
 import errorMessage from '@/helpers/errorMessage';
 import PropertiesService from '@/services/PropertiesService';
 import { Alert } from '@/components/Alert/index';
-import Pagination from '@/components/Pagination/index';
 import isEmpty from '@/helpers/isEmpty';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 
-function Properties() {
+function RequestsTechnichian() {
   const [alertMsg, setAlertMsg] = useState({ type: '', message: '' });
   const [loading, setLoading] = useState(false);
 
   const router = useRouter();
 
-  const { page = 1 } = router.query;
+  const { id, page = 1 } = router.query;
   const perPage = 10;
+
+  const { data: dataUser, error: errorUser } = useFetch(
+    `/users/find/by/id/${id}`
+  );
+
+  const { data, error, mutate } = useFetch(
+    `/technicians-requests/find/by/technician/${id}?limit=${perPage}&page=${page}`
+  );
 
   const { addModal, removeModal } = useModal();
 
-  const { data, error, mutate } = useFetch(
-    `/properties/find/by/user-logged?limit=${perPage}&page=${page}`
-  );
-
-  const handleDelete = useCallback(
-    async identifier => {
+  const handleUpdate = useCallback(
+    async (identifier, accepted) => {
       removeModal();
       setLoading(true);
 
-      await PropertiesService.delete(identifier).then(res => {
-        if (res.status >= 400 || res?.statusCode) {
+      await PropertiesService.updateTechniciansPropertiesRequests(identifier, {
+        accepted
+      }).then(res => {
+        if (res.status !== 200 || res?.statusCode) {
           setAlertMsg({ type: 'error', message: errorMessage(res) });
         } else {
           mutate();
 
           setAlertMsg({
             type: 'success',
-            message: 'A propriedade foi deletada com sucesso!'
+            message: `Solicitação ${
+              accepted ? 'aceita' : 'recusada'
+            } com sucesso!`
           });
         }
       });
@@ -68,25 +71,28 @@ function Properties() {
     [addModal, removeModal]
   );
 
-  const handleDeleteModal = useCallback(
-    identifier => {
+  const handleUpdateModal = useCallback(
+    (identifier, accepted) => {
       addModal({
-        title: 'Deletar Propriedade',
-        text: 'Deseja realmente deletar esta propriedade?',
+        title: 'Solicitação Técnica',
+        text: `Deseja realmente ${
+          accepted ? 'aceitar' : 'recusar'
+        } essa solicitação técnica?`,
         confirm: true,
-        onConfirm: () => handleDelete(identifier),
+        onConfirm: () => handleUpdate(identifier, accepted),
         onCancel: removeModal
       });
     },
     [addModal, removeModal]
   );
 
-  if (error) return <Error error={error} />;
+  if (error || errorUser) return <Error error={error || errorUser} />;
+  if (dataUser && dataUser?.type !== 'tecnico') return <Error error={404} />;
 
   return (
     <>
       <Head>
-        <title>Suas propriedades - Agro7</title>
+        <title>Painel Administrativo | Solicitação Técnica - Agro7</title>
       </Head>
 
       <Navbar />
@@ -94,13 +100,15 @@ function Properties() {
         <Nav />
         <Section>
           <SectionHeader>
-            <SectionHeaderContent title="Suas propriedades">
-              <Link href="/propriedades/cadastrar">
-                <Button className="primary">
-                  <FontAwesomeIcon icon={faPlus} /> Nova Propriedade
-                </Button>
-              </Link>
-            </SectionHeaderContent>
+            <SectionHeaderContent
+              breadcrumbTitles={{
+                '%usuario': dataUser?.name
+              }}
+              title="Solicitações Técnica"
+              description={`Aqui você irá gerenciar todas as solicitações técnicas de
+                propriedades para o técnico ${dataUser?.name}.`}
+              isLoading={isEmpty(dataUser)}
+            />
           </SectionHeader>
           <SectionBody>
             <div className="SectionBody__content">
@@ -108,42 +116,43 @@ function Properties() {
                 {alertMsg.message && (
                   <Alert type={alertMsg.type}>{alertMsg.message}</Alert>
                 )}
-                {((data || loading) && (
+                {((data || loading) && dataUser && (
                   <>
                     <div className="table-responsive">
                       <Table>
                         <thead>
                           <tr>
-                            <th>Nome da propriedade</th>
-                            <th>Estado</th>
-                            <th>Cidade</th>
+                            <th>Mensagem</th>
                             <th>Ações</th>
                           </tr>
                         </thead>
                         <tbody>
                           {(!isEmpty(data?.items) &&
                             data.items.map(p => (
-                              <tr
-                                key={p.id}
-                                onClick={() =>
-                                  router.push(`/propriedades/${p.id}/detalhes`)
-                                }
-                              >
-                                <td>{p.name}</td>
-                                <td>{p?.addresses?.state}</td>
-                                <td>{p?.addresses?.city}</td>
-                                <td onClick={e => e.stopPropagation()}>
+                              <tr key={p.id}>
+                                <td>{`${p?.properties?.users?.name} solicitou para que o técnico ${dataUser?.name} trabalhe na propriedade ${p?.properties?.name}.`}</td>
+                                <td>
                                   <ActionButton
                                     id={p.id}
-                                    path="/propriedades"
-                                    onDelete={() => handleDeleteModal(p.id)}
+                                    path={`/admin/users/${id}/tecnico/solicitacoes`}
+                                    onAccept={() =>
+                                      handleUpdateModal(p.id, true)
+                                    }
+                                    onDelete={() =>
+                                      handleUpdateModal(p.id, false)
+                                    }
+                                    noInfo
+                                    noEdit
+                                    noAccept={false}
+                                    noRemove={false}
+                                    noDelete
                                   />
                                 </td>
                               </tr>
                             ))) || (
                             <tr>
-                              <td colSpan="4">
-                                Não há propriedades cadastradas
+                              <td colSpan="2">
+                                Não há solicitações técnicas no momento
                               </td>
                             </tr>
                           )}
@@ -151,7 +160,7 @@ function Properties() {
                       </Table>
                     </div>
                     <Pagination
-                      url="/propriedades"
+                      url={`/admin/users/${id}/tecnico/solicitacoes`}
                       currentPage={page}
                       itemsPerPage={perPage}
                       totalPages={data.meta.totalPages}
@@ -167,4 +176,4 @@ function Properties() {
   );
 }
 
-export default privateRoute()(Properties);
+export default privateRoute(['administrador'])(RequestsTechnichian);

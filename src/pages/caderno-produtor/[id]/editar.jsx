@@ -22,7 +22,7 @@ import Error from '@/components/Error/index';
 import Select from '@/components/Select/index';
 import Loader from '@/components/Loader/index';
 import ProducerNotebookService from '@/services/ProducerNotebookService';
-import { dateToInput, dateToISOString } from '@/helpers/date';
+import { dateConversor, dateToInput, dateToISOString } from '@/helpers/date';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 import { useSelector } from 'react-redux';
 import urlRoute from '@/helpers/urlRoute';
@@ -46,7 +46,7 @@ function ProducerNotebookEdit() {
     `/producer-notebook/find/by/id/${id}`
   );
 
-  const { id: userId, type } = useSelector(state => state.user);
+  const { type } = useSelector(state => state.user);
   const [route, setRoute] = useState({});
 
   useEffect(() => {
@@ -120,16 +120,12 @@ function ProducerNotebookEdit() {
         <Section>
           <SectionHeader>
             <SectionHeaderContent
-              breadcrumb={[
-                { route: '/', name: 'Home' },
-                { route: '/caderno-produtor', name: 'Caderno do Produtor' },
-                {
-                  route: `/caderno-produtor/${id}/editar`,
-                  name: 'Editar Anotação'
-                }
-              ]}
+              breadcrumbTitles={{
+                '%data': dateConversor(dataProducerNotebook?.date, false)
+              }}
               title="Editar Anotação"
               description="Aqui você irá editar uma anotação do seu Caderno do Produtor"
+              isLoading={isEmpty(dataProducerNotebook)}
             />
           </SectionHeader>
           <SectionBody>

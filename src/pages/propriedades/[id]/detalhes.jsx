@@ -129,24 +129,9 @@ function PropertieInfo() {
         <Section>
           <SectionHeader>
             <SectionHeaderContent
-              breadcrumb={[
-                { route: '/', name: 'Home' },
-                {
-                  route: '/tecnico',
-                  name: 'Painel Técnico',
-                  active: type === 'tecnico' && route?.permission === type
-                },
-                {
-                  route: '/admin',
-                  name: 'Painel Administrativo',
-                  active: type === 'administrador' && route?.permission === type
-                },
-                { route: `${route.path}`, name: 'Propriedades' },
-                {
-                  route: `${route.path}/${id}/detalhes`,
-                  name: `${data?.name}`
-                }
-              ]}
+              breadcrumbTitles={{
+                '%propriedade': data?.name
+              }}
               title={`Informações da propriedade ${data?.name}`}
               description="Aqui você irá ver informações detalhadas da propriedade em
                 questão"

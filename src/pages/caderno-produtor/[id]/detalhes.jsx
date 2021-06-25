@@ -49,7 +49,7 @@ function ProducerNotebookDetails() {
     `/categories/find/all?limit=30`
   );
 
-  const { id: userId, type } = useSelector(state => state.user);
+  const { type } = useSelector(state => state.user);
   const [route, setRoute] = useState({});
 
   useEffect(() => {
@@ -104,20 +104,9 @@ function ProducerNotebookDetails() {
         <Section>
           <SectionHeader>
             <SectionHeaderContent
-              breadcrumb={[
-                { route: '/', name: 'Home' },
-                { route: '/caderno-produtor', name: 'Caderno do Produtor' },
-                {
-                  route: `/caderno-produtor?searchDate=${dateToInput(
-                    data?.date
-                  )}`,
-                  name: `${dateConversor(data?.date, false)}`
-                },
-                {
-                  route: `/caderno-produtor/${id}/detalhes`,
-                  name: 'Anotação'
-                }
-              ]}
+              breadcrumbTitles={{
+                '%data': dateConversor(data?.date, false)
+              }}
               title="Anotação"
               description={`Você está visualizando a anotação "${data?.name}" do
                 dia ${dateConversor(data?.date, false)} do seu Caderno do

@@ -48,15 +48,9 @@ function AdminProductsDetails() {
         <Section>
           <SectionHeader>
             <SectionHeaderContent
-              breadcrumb={[
-                { route: '/', name: 'Home' },
-                { route: '/admin', name: 'Painel Administrativo' },
-                { route: '/admin/produtos', name: 'Produtos' },
-                {
-                  route: `/admin/produtos/${id}/detalhes`,
-                  name: `${data?.name}`
-                }
-              ]}
+              breadcrumbTitles={{
+                '%produto': data?.name
+              }}
               title={`Informações do Produto ${data?.name}`}
               description="Aqui você irá ver informações do produto em questão"
               isLoading={isEmpty(data)}

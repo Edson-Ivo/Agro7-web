@@ -118,32 +118,9 @@ function SolicitacoesTecnicos() {
         <Section>
           <SectionHeader>
             <SectionHeaderContent
-              breadcrumb={[
-                { route: '/', name: 'Home' },
-                {
-                  route: '/tecnico',
-                  name: 'Painel Técnico',
-                  active: type === 'tecnico' && route?.permission === type
-                },
-                {
-                  route: '/admin',
-                  name: 'Painel Administrativo',
-                  active: type === 'administrador' && route?.permission === type
-                },
-                { route: `${route.path}`, name: 'Propriedades' },
-                {
-                  route: `${route.path}/${id}/detalhes`,
-                  name: `${data?.name}`
-                },
-                {
-                  route: `${route.path}/${id}/tecnicos`,
-                  name: `Técnicos Relacionados`
-                },
-                {
-                  route: `${route.path}/${id}/tecnicos/solicitacoes`,
-                  name: `Solicitações`
-                }
-              ]}
+              breadcrumbTitles={{
+                '%propriedade': data?.name
+              }}
               title={`Solicitações de Técnicos na propriedade
                 ${data?.name}`}
               description="Aqui você irá ver as solicitações de técnicos para relacioná-los
