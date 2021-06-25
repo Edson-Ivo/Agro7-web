@@ -163,11 +163,6 @@ function ConfiguracoesEdit() {
         <Section>
           <SectionHeader>
             <SectionHeaderContent
-              breadcrumb={[
-                { route: '/', name: 'Home' },
-                { route: '/configuracoes', name: 'Configurações' },
-                { route: '/configuracoes/editar', name: 'Editar meus dados' }
-              ]}
               title="Editar Dados"
               description="Edite abaixo os dados de sua conta."
             />

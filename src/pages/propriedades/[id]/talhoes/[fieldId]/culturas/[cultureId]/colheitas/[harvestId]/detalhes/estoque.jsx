@@ -15,7 +15,7 @@ import { privateRoute } from '@/components/PrivateRoute';
 import Loader from '@/components/Loader';
 
 import { useFetch } from '@/hooks/useFetch';
-import { dateToInput } from '@/helpers/date';
+import { dateConversor, dateToInput } from '@/helpers/date';
 import Error from '@/components/Error/index';
 import urlRoute from '@/helpers/urlRoute';
 import { useSelector } from 'react-redux';
@@ -74,52 +74,12 @@ function EstoqueColheitasDetalhes() {
         <Section>
           <SectionHeader>
             <SectionHeaderContent
-              breadcrumb={[
-                { route: '/', name: 'Home' },
-                {
-                  route: '/tecnico',
-                  name: 'Painel Técnico',
-                  active: type === 'tecnico' && route?.permission === type
-                },
-                {
-                  route: '/admin',
-                  name: 'Painel Administrativo',
-                  active: type === 'administrador' && route?.permission === type
-                },
-                { route: `${route.path}`, name: 'Propriedades' },
-                {
-                  route: `${route.path}/${id}/detalhes`,
-                  name: `${data?.properties?.name}`
-                },
-                {
-                  route: `${route.path}/${id}/talhoes`,
-                  name: `Talhões`
-                },
-                {
-                  route: `${route.path}/${id}/talhoes/${fieldId}/detalhes`,
-                  name: `${data?.name}`
-                },
-                {
-                  route: `${route.path}/${id}/talhoes/${fieldId}/culturas`,
-                  name: `Culturas`
-                },
-                {
-                  route: `${route.path}/${id}/talhoes/${fieldId}/culturas/${cultureId}/detalhes`,
-                  name: `${dataCultures?.products?.name}`
-                },
-                {
-                  route: `${route.path}/${id}/talhoes/${fieldId}/culturas/${cultureId}/colheitas`,
-                  name: `Colheitas`
-                },
-                {
-                  route: `${route.path}/${id}/talhoes/${fieldId}/culturas/${cultureId}/colheitas/${harvestId}/detalhes`,
-                  name: `Detalhes`
-                },
-                {
-                  route: `${route.path}/${id}/talhoes/${fieldId}/culturas/${cultureId}/colheitas/${harvestId}/detalhes/estoque`,
-                  name: `Estoque`
-                }
-              ]}
+              breadcrumbTitles={{
+                '%propriedade': data?.properties.name,
+                '%talhao': data?.name,
+                '%cultura': dataCultures?.products?.name,
+                '%data': dateConversor(dataHarvests?.date, false)
+              }}
               title={`Estoque da Colheita na Cultura de ${dataCultures?.products?.name}`}
               description={`Aqui você irá ver o estoque da colheita da cultura de ${dataCultures?.products?.name} do talhão ${data?.name} da propriedade ${data?.properties.name}.`}
               isLoading={

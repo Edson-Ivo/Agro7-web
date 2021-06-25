@@ -75,10 +75,6 @@ function AdminHome() {
         <Section>
           <SectionHeader>
             <SectionHeaderContent
-              breadcrumb={[
-                { route: '/', name: 'Home' },
-                { route: '/admin', name: 'Painel Administrativo' }
-              ]}
               title="Painel Administrativo"
               description={`Olá ${name}! Esse é seu painel, aqui você pode gerenciar o
                 controle de sua aplicação!`}

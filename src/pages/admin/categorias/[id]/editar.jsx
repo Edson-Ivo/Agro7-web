@@ -127,15 +127,9 @@ function AdminCategoriesEdit() {
         <Section>
           <SectionHeader>
             <SectionHeaderContent
-              breadcrumb={[
-                { route: '/', name: 'Home' },
-                { route: '/admin', name: 'Painel Administrativo' },
-                { route: '/admin/categorias', name: 'Categorias' },
-                {
-                  route: `/admin/categorias/${id}/detalhes`,
-                  name: `${dataCategory?.name}`
-                }
-              ]}
+              breadcrumbTitles={{
+                '%categoria': dataCategory?.name
+              }}
               title={`Editar Categoria ${dataCategory?.name}`}
               description="Aqui você irá editar a categoria em questão"
               isLoading={isEmpty(dataCategory)}

@@ -86,15 +86,6 @@ function AdminCoresCreate() {
         <Section>
           <SectionHeader>
             <SectionHeaderContent
-              breadcrumb={[
-                { route: '/', name: 'Home' },
-                { route: '/admin', name: 'Painel Administrativo' },
-                { route: '/admin/cores', name: 'Cores para Categorias' },
-                {
-                  route: '/admin/cores/cadastrar',
-                  name: 'Cadastrar'
-                }
-              ]}
               title="Cadastre uma Cor"
               description=" Aqui você irá cadastrar uma cor para utilizar nas categorias do
                 sistema"

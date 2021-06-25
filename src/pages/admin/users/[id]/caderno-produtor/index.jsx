@@ -145,13 +145,9 @@ function UserProducerNotebook() {
         <Section>
           <SectionHeader>
             <SectionHeaderContent
-              breadcrumb={[
-                { route: '/', name: 'Home' },
-                {
-                  route: `/admin/users/${id}/caderno-produtor`,
-                  name: 'Caderno do Produtor'
-                }
-              ]}
+              breadcrumbTitles={{
+                '%usuario': dataUser?.name
+              }}
               title={`Caderno do Produtor - ${dateConversor(
                 activeDate,
                 false

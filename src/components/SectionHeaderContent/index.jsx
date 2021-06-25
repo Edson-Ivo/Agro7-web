@@ -12,7 +12,7 @@ const skeletonStyle = {
 export const SectionHeaderContent = ({
   children,
   title = '',
-  breadcrumb = [],
+  breadcrumbTitles = [],
   description = null,
   isLoading = false
 }) => (
@@ -22,7 +22,7 @@ export const SectionHeaderContent = ({
         <Skeleton style={{ ...skeletonStyle, maxWidth: '50%' }} />
       </h5>
     ) : (
-      <Breadcrumb path={breadcrumb} />
+      <Breadcrumb breadcrumbTitles={breadcrumbTitles} />
     )}
 
     <h2>{isLoading ? <Skeleton style={skeletonStyle} /> : title}</h2>

@@ -47,15 +47,9 @@ function AdminCategoriesDetails() {
         <Section>
           <SectionHeader>
             <SectionHeaderContent
-              breadcrumb={[
-                { route: '/', name: 'Home' },
-                { route: '/admin', name: 'Painel Administrativo' },
-                { route: '/admin/categorias', name: 'Categorias' },
-                {
-                  route: `/admin/categorias/${id}/detalhes`,
-                  name: `Categoria ${dataCategory?.name}`
-                }
-              ]}
+              breadcrumbTitles={{
+                '%categoria': dataCategory?.name
+              }}
               title={`Informações da Categoria ${dataCategory?.name}`}
               description="Aqui você irá ver informações da categoria em questão"
               isLoading={isEmpty(dataCategory)}

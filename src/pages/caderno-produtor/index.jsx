@@ -140,10 +140,6 @@ function ProducerNotebook() {
         <Section>
           <SectionHeader>
             <SectionHeaderContent
-              breadcrumb={[
-                { route: '/', name: 'Home' },
-                { route: '/caderno-produtor', name: 'Caderno do Produtor' }
-              ]}
               title={`Caderno do Produtor - ${dateConversor(
                 activeDate,
                 false

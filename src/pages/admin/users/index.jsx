@@ -100,11 +100,6 @@ function AdminUsers() {
         <Section>
           <SectionHeader>
             <SectionHeaderContent
-              breadcrumb={[
-                { route: '/', name: 'Home' },
-                { route: '/admin', name: 'Painel Administrativo' },
-                { route: '/admin/users', name: 'Usuários' }
-              ]}
               title="Gerenciar Usuários"
               description="Aqui você poderá gerenciar todos os usuários de seu sistema"
               isLoading={false}

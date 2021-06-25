@@ -94,13 +94,7 @@ function Properties() {
         <Nav />
         <Section>
           <SectionHeader>
-            <SectionHeaderContent
-              breadcrumb={[
-                { route: '/', name: 'Home' },
-                { route: '/propriedades', name: 'Propriedades' }
-              ]}
-              title="Suas propriedades"
-            >
+            <SectionHeaderContent title="Suas propriedades">
               <Link href="/propriedades/cadastrar">
                 <Button className="primary">
                   <FontAwesomeIcon icon={faPlus} /> Nova Propriedade

@@ -97,11 +97,6 @@ function AdminColors() {
         <Section>
           <SectionHeader>
             <SectionHeaderContent
-              breadcrumb={[
-                { route: '/', name: 'Home' },
-                { route: '/admin', name: 'Painel Administrativo' },
-                { route: baseUrl, name: 'Cores para Categorias' }
-              ]}
               title="Gerenciar Cores"
               description="Aqui você poderá gerenciar todas as cores para utilizá-las nas
                 categorias"

@@ -115,14 +115,9 @@ function UserProducerNotebookCreate() {
         <Section>
           <SectionHeader>
             <SectionHeaderContent
-              breadcrumb={[
-                { route: '/', name: 'Home' },
-                { route: '/caderno-produtor', name: 'Caderno do Produtor' },
-                {
-                  route: '/caderno-produtor/cadastrar',
-                  name: 'Anotação'
-                }
-              ]}
+              breadcrumbTitles={{
+                '%usuario': dataUser?.name
+              }}
               title="Anotar no Caderno"
               description={`Aqui você irá fazer uma anotação no Caderno do Produtor de ${dataUser?.name}`}
               isLoading={isEmpty(dataUser)}

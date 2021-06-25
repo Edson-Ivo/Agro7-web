@@ -97,14 +97,9 @@ function PropertiesTechnichian() {
         <Section>
           <SectionHeader>
             <SectionHeaderContent
-              breadcrumb={[
-                { route: '/', name: 'Home' },
-                { route: '/tecnico', name: 'Painel Técnico' },
-                {
-                  route: `/admin/users/${id}/tecnico/propriedades`,
-                  name: 'Propriedades'
-                }
-              ]}
+              breadcrumbTitles={{
+                '%usuario': dataUser?.name
+              }}
               title="Propriedades Relacionadas"
               description={`Aqui você irá ver todas as propriedades que estão relacionadas
                 com o técnico ${dataUser?.name}.`}

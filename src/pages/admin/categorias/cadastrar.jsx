@@ -116,15 +116,6 @@ function AdminCategoriesCreate() {
         <Section>
           <SectionHeader>
             <SectionHeaderContent
-              breadcrumb={[
-                { route: '/', name: 'Home' },
-                { route: '/admin', name: 'Painel Administrativo' },
-                { route: '/admin/categorias', name: 'Categorias' },
-                {
-                  route: '/admin/categorias/cadastrar',
-                  name: 'Cadastrar'
-                }
-              ]}
               title="Cadastre uma Categoria"
               description="Aqui você irá cadastrar uma categoria no seu sistema"
             />

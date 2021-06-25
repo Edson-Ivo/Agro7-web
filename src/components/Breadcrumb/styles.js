@@ -3,6 +3,7 @@ import styled from 'styled-components';
 export const BreadcrumbContainer = styled.div`
   color: ${props => props.theme.colors.black_50};
   margin-bottom: 4px;
+  min-width: 100%;
 
   h5 {
     display: inline-block;
@@ -19,7 +20,7 @@ export const BreadcrumbContainer = styled.div`
     text-decoration: underline;
   }
 
-  span {
+  span.breadcrumb__icons {
     pointer-events: none;
     padding: 0px 6px;
 
