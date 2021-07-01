@@ -24,10 +24,14 @@ export const DateWrapper = styled.div`
       rgb(252, 252, 253) 80%
     );
   }
+
+  @media screen and (max-width: ${props => props.theme.breakpoints.mobile}px) {
+    margin-top: -20px !important;
+  }
 `;
 
 export const DateContainer = styled.div`
-  margin-bottom: 10px;
+  margin: 10px 0;
   overflow: hidden;
   width: 100%;
 `;
@@ -112,6 +116,7 @@ export const DateCardCalendar = styled.div`
   text-align: center;
   width: 75px;
   z-index: 1000;
+  margin-top: -10px;
 
   & > div {
     align-items: center;

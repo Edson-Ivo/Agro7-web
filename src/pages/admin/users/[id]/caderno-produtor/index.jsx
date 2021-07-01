@@ -253,7 +253,7 @@ function UserProducerNotebook() {
                             )
                           }
                           height="140px"
-                          maxHeight="210px"
+                          maxHeight="350px"
                         >
                           <div className="card-info">
                             <h4>{d.name}</h4>

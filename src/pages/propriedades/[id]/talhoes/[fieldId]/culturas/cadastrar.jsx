@@ -29,8 +29,7 @@ import isEmpty from '@/helpers/isEmpty';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 
 const schema = yup.object().shape({
-  date_start: yup.string().required('O campo data inicial é obrigatório!'),
-  date_finish: yup.string().required('O campo data final é obrigatório!'),
+  date_start: yup.string().required('O campo data é obrigatório!'),
   area: yup
     .number()
     .transform(value => (Number.isNaN(value) ? undefined : value))
@@ -84,7 +83,6 @@ function CulturasCreate() {
         });
 
         d.date_start = dateToISOString(d.date_start);
-        d.date_finish = dateToISOString(d.date_finish);
         d.fields = Number(fieldId);
 
         await CulturesService.create(d).then(res => {
@@ -159,22 +157,7 @@ function CulturasCreate() {
                         label="Digite o nome do produto:"
                         url="/products/find/all"
                       />
-                      <div className="form-group">
-                        <div>
-                          <Input
-                            type="date"
-                            label="Data inicial"
-                            name="date_start"
-                          />
-                        </div>
-                        <div>
-                          <Input
-                            type="date"
-                            label="Data final"
-                            name="date_finish"
-                          />
-                        </div>
-                      </div>
+                      <Input type="date" label="Data" name="date_start" />
                       <div className="form-group">
                         <div>
                           <Input type="number" label="Área" name="area" />
