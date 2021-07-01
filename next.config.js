@@ -1,11 +1,12 @@
 const path = require('path');
 const withPlugins = require('next-compose-plugins');
-const withPWA = require('next-pwa');
+const withOffline = require('next-offline');
 
 const nextConfig = {
   webpack: config => {
     config.resolve.modules.push(path.resolve('./'));
     config.resolve.alias['@'] = path.resolve(__dirname, 'src');
+
     return config;
   },
 
@@ -30,6 +31,11 @@ const nextConfig = {
       },
       {
         source:
+          '/admin/users/:userId(\\d{1,})/tecnico/propriedades/:id(\\d{1,})/:path*',
+        destination: '/propriedades/:id(\\d{1,})/:path*?userId=:userId'
+      },
+      {
+        source:
           '/admin/users/:userId(\\d{1,})/caderno-produtor/:id(\\d{1,})/:path*',
         destination: '/caderno-produtor/:id(\\d{1,})/:path*?userId=:userId'
       }
@@ -40,12 +46,10 @@ const nextConfig = {
 module.exports = withPlugins(
   [
     [
-      withPWA,
+      withOffline,
       {
-        future: { webpack5: true },
-        pwa: {
-          dest: 'public',
-          disable: process.env.NODE_ENV === 'development'
+        workboxOpts: {
+          swDest: '../public/service-worker.js'
         }
       }
     ]

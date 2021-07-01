@@ -6,8 +6,9 @@ import Image from 'next/image';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSignInAlt } from '@fortawesome/free-solid-svg-icons';
 
-import Container, { CenterContainer } from '../Container';
+import AuthService from '@/services/AuthService';
 
+import Container, { CenterContainer } from '../Container';
 import Button from '../Button';
 
 const dataErrors = {
@@ -42,6 +43,8 @@ export default function Error({ error }) {
   useEffect(() => {
     const catchedError =
       typeof error === 'object' ? error?.response?.data?.statusCode : error;
+
+    if (catchedError === 401) AuthService.logout();
 
     setDataError(
       errorExists(catchedError) ? dataErrors[catchedError] : dataErrors.default

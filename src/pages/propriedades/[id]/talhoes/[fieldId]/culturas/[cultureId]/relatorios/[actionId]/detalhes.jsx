@@ -159,7 +159,7 @@ function RelatoriosDetails() {
                       onClick={() => handleSubmit()}
                       disabled={disableButton}
                     >
-                      <FontAwesomeIcon icon={faCheck} /> Marcar como Concluído
+                      <FontAwesomeIcon icon={faCheck} /> Marcar Concluído
                     </Button>
                   )) || (
                     <Button

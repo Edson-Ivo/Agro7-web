@@ -13,7 +13,8 @@ const urlRoute = (router, types, blockTypes = []) => {
       tecnico: ['/tecnico/propriedades'],
       administrador: [
         '/admin/propriedades',
-        '/admin/users/[userId]/propriedades'
+        '/admin/users/[userId]/propriedades',
+        '/admin/users/[userId]/tecnico/propriedades'
       ]
     };
   } else if (path === 'caderno-produtor') {

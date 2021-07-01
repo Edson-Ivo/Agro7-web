@@ -60,10 +60,7 @@ const Breadcrumb = ({ breadcrumbTitles = [] }) => {
                       />
                     </span>
                     <span className="breadcrumb__icons">
-                      <FontAwesomeIcon
-                        icon={faEllipsisH}
-                        className="separator dots"
-                      />
+                      <FontAwesomeIcon icon={faEllipsisH} className="dots" />
                     </span>
                   </>
                 )}

@@ -33,7 +33,5 @@ yarn-error.log*
 # vercel
 .vercel
 
-# next-pwa
-**/public/sw.js*
-**/public/workbox-*.js*
-**/public/fallback-*.js*
+# next-offline
+**/public/service-worker.js

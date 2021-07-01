@@ -29,8 +29,7 @@ import isEmpty from '@/helpers/isEmpty';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 
 const schema = yup.object().shape({
-  date_start: yup.string().required('O campo data inicial é obrigatório!'),
-  date_finish: yup.string().required('O campo data final é obrigatório!'),
+  date_start: yup.string().required('O campo data é obrigatório!'),
   area: yup
     .number()
     .transform(value => (Number.isNaN(value) ? undefined : value))
@@ -90,7 +89,6 @@ function CulturasEdit() {
         });
 
         d.date_start = dateToISOString(d.date_start);
-        d.date_finish = dateToISOString(d.date_finish);
         d.fields = Number(fieldId);
 
         await CulturesService.update(cultureId, d).then(res => {
@@ -169,8 +167,7 @@ function CulturasEdit() {
                       initialData={{
                         ...dataCultures,
                         products: dataCultures?.products.id,
-                        date_start: dateToInput(dataCultures?.date_start),
-                        date_finish: dateToInput(dataCultures?.date_finish)
+                        date_start: dateToInput(dataCultures?.date_start)
                       }}
                     >
                       <SearchSelect
@@ -184,22 +181,9 @@ function CulturasEdit() {
                           }
                         ]}
                       />
-                      <div className="form-group">
-                        <div>
-                          <Input
-                            type="date"
-                            label="Data inicial"
-                            name="date_start"
-                          />
-                        </div>
-                        <div>
-                          <Input
-                            type="date"
-                            label="Data final"
-                            name="date_finish"
-                          />
-                        </div>
-                      </div>
+
+                      <Input type="date" label="Data" name="date_start" />
+
                       <div className="form-group">
                         <div>
                           <Input type="number" label="Área" name="area" />

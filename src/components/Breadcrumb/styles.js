@@ -27,5 +27,9 @@ export const BreadcrumbContainer = styled.div`
     .separator {
       width: 7px !important;
     }
+
+    .dots {
+      width: 12px !important;
+    }
   }
 `;
