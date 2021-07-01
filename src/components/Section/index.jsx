@@ -12,6 +12,7 @@ export const Section = styled.div`
 `;
 
 export const SectionHeader = styled.div`
+  background-color: ${props => props.theme.colors.background};
   border-bottom: 1px solid ${props => props.theme.colors.border};
   padding-top: 48px;
 `;

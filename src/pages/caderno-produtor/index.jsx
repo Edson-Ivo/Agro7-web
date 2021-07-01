@@ -242,7 +242,7 @@ function ProducerNotebook() {
                             router.push(`/caderno-produtor/${d.id}/detalhes`)
                           }
                           height="140px"
-                          maxHeight="210px"
+                          maxHeight="350px"
                         >
                           <div className="card-info">
                             <h4>{d.name}</h4>

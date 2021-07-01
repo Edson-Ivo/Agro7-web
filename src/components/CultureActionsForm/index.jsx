@@ -124,6 +124,15 @@ const CulturesActionsForm = ({
           required
           disabled={disabled}
         />
+        <Input
+          type="text"
+          label="Preço em R$"
+          name="value"
+          inputMode="numeric"
+          mask="money"
+          required
+          disabled={disabled}
+        />
         <TextArea
           name="description"
           label="Descrição"
@@ -132,78 +141,76 @@ const CulturesActionsForm = ({
         />
       </>
     )) ||
-    (typeAction === 'applications-supplies' &&
-      !isEmpty(dataTypes) &&
-      !isEmpty(dataAction) && (
-        <>
-          {!editForm && !details ? (
-            <SearchSelect
+    (typeAction === 'applications-supplies' && !isEmpty(dataTypes) && (
+      <>
+        {!editForm && !details && isEmpty(dataAction) ? (
+          <SearchSelect
+            name="supplies"
+            label="Digite o nome do Insumo:"
+            url={`/cultures-supplies/find/by/culture/${cultureId}`}
+            required
+            disabled={disabled}
+          />
+        ) : (
+          <>
+            <Select
               name="supplies"
-              label="Digite o nome do Insumo:"
-              url={`/cultures-supplies/find/by/culture/${cultureId}`}
+              label="Insumo:"
+              options={[
+                {
+                  value: dataAction?.supplies?.id,
+                  label: dataAction?.supplies?.name
+                }
+              ]}
+              disabled
+            />
+          </>
+        )}
+
+        <div className="form-group">
+          <div>
+            <Input
+              type="number"
+              label="Dosagem"
+              name="dose"
               required
               disabled={disabled}
             />
-          ) : (
-            <>
-              <Select
-                name="supplies"
-                label="Insumo:"
-                options={[
-                  {
-                    value: dataAction?.supplies?.id,
-                    label: dataAction?.supplies?.name
-                  }
-                ]}
-                disabled
-              />
-            </>
-          )}
-
-          <div className="form-group">
-            <div>
-              <Input
-                type="number"
-                label="Dosagem"
-                name="dose"
-                required
-                disabled={disabled}
-              />
-            </div>
-            <div>
-              <Select
-                options={dataTypes?.typesDose.map(typeDose => ({
-                  value: typeDose,
-                  label: typeDose
-                }))}
-                label="Unidade de Dosagem"
-                name="type_dose"
-                disabled={disabled}
-              />
-            </div>
           </div>
-          <div className="form-group">
-            <div>
-              <Input
-                type="date"
-                label="Data Inicial"
-                name="date_start"
-                required
-                disabled={disabled}
-              />
-            </div>
-            <div>
-              <Input
-                type="date"
-                label="Data Final"
-                name="date_finish"
-                required
-                disabled={disabled}
-              />
-            </div>
+          <div>
+            <Select
+              options={dataTypes?.typesDose.map(typeDose => ({
+                value: typeDose,
+                label: typeDose
+              }))}
+              label="Unidade de Dosagem"
+              name="type_dose"
+              disabled={disabled}
+            />
           </div>
-        </>
-      ))
+        </div>
+        <div className="form-group">
+          <div>
+            <Input
+              type="date"
+              label="Data Inicial"
+              name="date_start"
+              required
+              disabled={disabled}
+            />
+          </div>
+          <div>
+            <Input
+              type="date"
+              label="Data Final"
+              name="date_finish"
+              required
+              disabled={disabled}
+            />
+          </div>
+        </div>
+      </>
+    ))
   );
 };
 

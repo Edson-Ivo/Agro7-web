@@ -122,7 +122,7 @@ function AcoesCulturaEditar() {
 
                 setTimeout(() => {
                   router.replace(
-                    `${baseUrl}/acoes/${typeAction}/${actionId}/detalhes`
+                    `${baseUrl}/${typeAction}/${actionId}/detalhes`
                   );
                   setDisableButton(false);
                 }, 1000);

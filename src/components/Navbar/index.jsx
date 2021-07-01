@@ -33,7 +33,6 @@ const Navbar = () => {
   };
 
   const handleLogout = () => {
-    dispatch(UserDeAuthAction());
     AuthService.logout();
 
     Router.push('/login');

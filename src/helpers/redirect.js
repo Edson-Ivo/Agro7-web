@@ -1,3 +1,5 @@
+import Router from 'next/router';
+
 export const redirect = (url, server) => {
   const page = `${url}?redirected=true`;
 
@@ -6,4 +8,6 @@ export const redirect = (url, server) => {
   });
 
   server?.end();
+
+  if (!server) Router.reload();
 };
