@@ -1,19 +1,10 @@
+import { getCurrentDate } from './date';
+
 export const greetings = () => {
-  const tz = new Date().toLocaleString('en-US', {
-    timeZone: 'America/Fortaleza'
-  });
+  const current = getCurrentDate();
+  const hours = current.format('HH');
 
-  const current = new Date(tz);
-  const hours = current.getHours();
-  let msg = '';
-
-  if (hours < 12) {
-    msg = 'Bom dia ';
-  } else if (hours >= 12 && hours < 18) {
-    msg = 'Boa tarde ';
-  } else if (hours >= 18 && hours < 24) {
-    msg = 'Boa noite ';
-  }
-
-  return msg;
+  if (hours < 12) return 'Bom dia';
+  if (hours >= 12 && hours < 18) return 'Boa tarde';
+  return 'Boa noite';
 };

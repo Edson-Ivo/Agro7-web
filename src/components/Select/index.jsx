@@ -29,12 +29,15 @@ const Select = ({
           return ref.state.value.map(option => option.value);
         }
 
-        if (!ref.state.value) return '';
+        if (!ref.state?.value) return '';
 
         return ref.state.value.value;
       },
       setValue: (ref, value) => {
         ref.select.setValue(value || null);
+      },
+      clearValue: ref => {
+        ref.select.clearValue();
       }
     });
   }, [fieldName, registerField, rest.isMulti]);
@@ -60,6 +63,14 @@ const Select = ({
         }
         ref={selectRef}
         onChange={e => handleChange(e)}
+        components={
+          disabled
+            ? {
+                DropdownIndicator: () => null,
+                IndicatorSeparator: () => null
+              }
+            : null
+        }
         isDisabled={disabled}
         noOptionsMessage={() => 'Não há dados'}
         isSearchable={searchable}

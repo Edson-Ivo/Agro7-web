@@ -10,7 +10,13 @@ class CulturesActionsService {
     if (['services', 'supplies'].includes(action))
       txt = txt.replace('%name', data?.name).replace('%value', data?.value);
 
-    if (action === 'others') txt = txt.replace('%name', data?.name);
+    if (action === 'others') {
+      txt = txt.replace('%name', data?.name);
+
+      if (data?.value) txt += `, custando R$ ${data?.value}`;
+
+      txt += '.';
+    }
 
     if (action === 'irrigations')
       txt = txt
@@ -78,7 +84,10 @@ class CulturesActionsService {
     if (action === 'others')
       schema = yup.object().shape({
         name: yup.string().required('O campo nome é obrigatório!'),
-        description: yup.string().required('O campo descrição é obrigatório!')
+        description: yup.string().required('O campo descrição é obrigatório!'),
+        value: yup
+          .number()
+          .transform(value => (Number.isNaN(value) ? undefined : value))
       });
 
     return schema;
@@ -145,7 +154,7 @@ export const actionsList = {
   others: {
     value: 'others',
     label: 'Outros',
-    text: '%name foi realizado.'
+    text: '%name foi realizado'
   }
 };
 

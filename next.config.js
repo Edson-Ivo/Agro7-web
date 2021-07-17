@@ -38,6 +38,25 @@ const nextConfig = {
         source:
           '/admin/users/:userId(\\d{1,})/caderno-produtor/:id(\\d{1,})/:path*',
         destination: '/caderno-produtor/:id(\\d{1,})/:path*?userId=:userId'
+      },
+      {
+        source:
+          '/admin/vendas/:pageOptions(distribuidoras|transportadoras)/:path*',
+        destination: '/vendas/:pageOptions/:path*'
+      },
+      {
+        source:
+          '/admin/users/:userId(\\d{1,})/vendas/:pageOptions(distribuidoras|transportadoras)/:path*',
+        destination:
+          '/vendas/:pageOptions(distribuidoras|transportadoras)/:path*?userId=:userId'
+      },
+      {
+        source: '/admin/vendas/:id(\\d{1,})/:path*',
+        destination: '/vendas/:id(\\d{1,})/:path*'
+      },
+      {
+        source: '/admin/users/:userId(\\d{1,})/vendas/:id(\\d{1,})/:path*',
+        destination: '/vendas/:id(\\d{1,})/:path*?userId=:userId'
       }
     ];
   }

@@ -5,11 +5,7 @@ import { useRouter } from 'next/router';
 import { Form } from '@unform/web';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  faMapMarkedAlt,
-  faBook,
-  faUserSecret
-} from '@fortawesome/free-solid-svg-icons';
+import { faFilter } from '@fortawesome/free-solid-svg-icons';
 
 import Container from '@/components/Container';
 import Nav from '@/components/Nav';
@@ -62,23 +58,11 @@ function AdminUsers() {
               isLoading={isEmpty(data)}
             >
               <div className="buttons__container">
-                <Link href={`/admin/users/${id}/propriedades`}>
+                <Link href={`/admin/users/${id}`}>
                   <Button className="primary">
-                    <FontAwesomeIcon icon={faMapMarkedAlt} /> Propriedades
+                    <FontAwesomeIcon icon={faFilter} /> Opções
                   </Button>
                 </Link>
-                <Link href={`/admin/users/${id}/caderno-produtor`}>
-                  <Button className="primary">
-                    <FontAwesomeIcon icon={faBook} /> Caderno Produtor
-                  </Button>
-                </Link>
-                {data?.type === 'tecnico' && (
-                  <Link href={`/admin/users/${id}/tecnico`}>
-                    <Button className="primary">
-                      <FontAwesomeIcon icon={faUserSecret} /> Painel Técnico
-                    </Button>
-                  </Link>
-                )}
               </div>
             </SectionHeaderContent>
           </SectionHeader>

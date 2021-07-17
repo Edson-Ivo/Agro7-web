@@ -21,6 +21,10 @@ const urlRoute = (router, types, blockTypes = []) => {
     routesList = {
       administrador: ['/admin/users/[userId]/caderno-produtor']
     };
+  } else if (path === 'vendas') {
+    routesList = {
+      administrador: ['/admin/vendas', '/admin/users/[userId]/vendas']
+    };
   }
 
   Object.keys(routesList).forEach(type => {
