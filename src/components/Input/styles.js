@@ -64,6 +64,17 @@ export const StyledInput = styled.input`
   &[type='number'] {
     -moz-appearance: textfield;
   }
+
+  &[type='date']:disabled,
+  &[type='time']:disabled {
+    -webkit-appearance: none;
+
+    &::-webkit-inner-spin-button,
+    &::-webkit-calendar-picker-indicator {
+      display: none;
+      -webkit-appearance: none;
+    }
+  }
 `;
 
 export const Label = styled.label`

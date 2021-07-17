@@ -160,7 +160,7 @@ function PropertieInfo() {
               <CardContainer>
                 {(data && dataTypeOwner && dataTypeDimension && (
                   <>
-                    <MultiStep activeStep={activeStep}>
+                    <MultiStep activeStep={activeStep} onlyView>
                       <Step
                         label="Informações"
                         onClick={() => setActiveStep(1)}

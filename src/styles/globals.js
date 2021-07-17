@@ -37,7 +37,7 @@ export default createGlobalStyle`
     line-height: 1.25em;
   }
 
-  h1, h2, h3, h4, h5, h6 {
+  h1, h2, h3, h4, h5, h6,strong {
     font-family: ${props => props.theme.fonts.montserratFamily}; 
   }
 
@@ -45,7 +45,7 @@ export default createGlobalStyle`
     font-weight: 700;
   }
 
-  h5, h6 {
+  h5, h6, strong {
     font-weight: 800;
   }
 
@@ -70,7 +70,8 @@ export default createGlobalStyle`
   }
 
   a, 
-  h5 {
+  h5,
+  strong {
     font-size: 1em;
     line-height: 1em;
   }
@@ -196,6 +197,11 @@ export default createGlobalStyle`
     width: 100% !important;
     z-index: 999999 !important;  
     animation: show 0.3s;
+
+    @media (prefers-reduced-motion: reduce) {
+      animation: none;
+      -webkit-animation: none;
+    }
 
     ${ShowTransition}
   }

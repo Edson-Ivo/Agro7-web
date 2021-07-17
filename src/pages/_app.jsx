@@ -14,7 +14,7 @@ import { ModalProvider } from '../hooks/useModal';
 
 config.autoAddCss = false;
 
-const MyApp = ({ Component, pageProps }) => (
+const Agro7App = ({ Component, pageProps }) => (
   <>
     <Head>
       <meta charSet="utf-8" />
@@ -35,4 +35,4 @@ const MyApp = ({ Component, pageProps }) => (
   </>
 );
 
-export default MyApp;
+export default Agro7App;

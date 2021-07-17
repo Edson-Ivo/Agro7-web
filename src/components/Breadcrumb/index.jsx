@@ -15,8 +15,8 @@ const Breadcrumb = ({ breadcrumbTitles = [] }) => {
   const router = useRouter();
 
   const [loading, isLoading] = useState(true);
-  const [path, setPath] = useState({});
   const [crop, setCrop] = useState(false);
+  const [path, setPath] = useState([]);
 
   const { userId } = router.query;
   const { data: dataUser } = useFetch(

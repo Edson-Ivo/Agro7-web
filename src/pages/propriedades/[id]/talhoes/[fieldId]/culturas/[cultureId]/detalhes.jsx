@@ -126,7 +126,10 @@ function CulturasInfo() {
                       ref={formRef}
                       initialData={{
                         ...dataCultures,
-                        date_start: dateToInput(dataCultures?.date_start)
+                        date_start: dateToInput(dataCultures?.date_start),
+                        date_finish: dataCultures?.date_finish
+                          ? dateToInput(dataCultures?.date_finish)
+                          : null
                       }}
                     >
                       <Select
@@ -141,12 +144,24 @@ function CulturasInfo() {
                         disabled
                       />
 
-                      <Input
-                        type="date"
-                        label="Data"
-                        name="date_start"
-                        disabled
-                      />
+                      <div className="form-group">
+                        <div>
+                          <Input
+                            type="date"
+                            label="Data"
+                            name="date_start"
+                            disabled
+                          />
+                        </div>
+                        <div>
+                          <Input
+                            type="date"
+                            label="Data de Término"
+                            name="date_finish"
+                            disabled
+                          />
+                        </div>
+                      </div>
 
                       <div className="form-group">
                         <div>

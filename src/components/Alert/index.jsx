@@ -15,6 +15,12 @@ export const Alert = styled.div`
       background: ${props.theme.colors.green};
     `};
 
+  ${props =>
+    props?.type === 'info' &&
+    css`
+      background: ${props.theme.colors.blue};
+    `};
+
   display: flex;
   flex-direction: row;
   width: 100%;
