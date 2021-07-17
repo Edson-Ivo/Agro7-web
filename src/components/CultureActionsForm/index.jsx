@@ -41,28 +41,22 @@ const CulturesActionsForm = ({
   return (
     (['services', 'supplies'].includes(typeAction) && (
       <>
-        <div className="form-group">
-          <div>
-            <Input
-              type="text"
-              label="Nome"
-              name="name"
-              required
-              disabled={disabled}
-            />
-          </div>
-          <div>
-            <Input
-              type="text"
-              label="Preço em R$"
-              name="value"
-              inputMode="numeric"
-              mask="money"
-              required
-              disabled={disabled}
-            />
-          </div>
-        </div>
+        <Input
+          type="text"
+          label="Nome"
+          name="name"
+          required
+          disabled={disabled}
+        />
+        <Input
+          type="text"
+          label="Preço em R$"
+          name="value"
+          inputMode="numeric"
+          mask="money"
+          required
+          disabled={disabled}
+        />
         <TextArea
           name="description"
           label="Descrição"
@@ -126,11 +120,10 @@ const CulturesActionsForm = ({
         />
         <Input
           type="text"
-          label="Preço em R$"
+          label="Preço em R$ (opcional)"
           name="value"
           inputMode="numeric"
           mask="money"
-          required
           disabled={disabled}
         />
         <TextArea
@@ -148,6 +141,7 @@ const CulturesActionsForm = ({
             name="supplies"
             label="Digite o nome do Insumo:"
             url={`/cultures-supplies/find/by/culture/${cultureId}`}
+            options
             required
             disabled={disabled}
           />

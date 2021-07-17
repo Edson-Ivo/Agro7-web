@@ -28,6 +28,7 @@ import Error from '@/components/Error/index';
 import { useSelector } from 'react-redux';
 import urlRoute from '@/helpers/urlRoute';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
+import { dateConversor } from '@/helpers/date';
 
 function Culturas() {
   const router = useRouter();
@@ -143,6 +144,8 @@ function Culturas() {
                             <tr>
                               <th>Cultura</th>
                               <th>Área</th>
+                              <th>Data</th>
+                              <th>Data de Término</th>
                               <th>Ações</th>
                             </tr>
                           </thead>
@@ -157,6 +160,12 @@ function Culturas() {
                                 >
                                   <td>{d?.products?.name}</td>
                                   <td>{`${d.area}${d.type_dimension}`}</td>
+                                  <td>{dateConversor(d?.date_start, false)}</td>
+                                  <td>
+                                    {d?.date_finish
+                                      ? dateConversor(d?.date_finish, false)
+                                      : 'Não finalizada'}
+                                  </td>
                                   <td onClick={e => e.stopPropagation()}>
                                     <ActionButton
                                       id={d.id}
@@ -167,7 +176,7 @@ function Culturas() {
                                 </tr>
                               ))) || (
                               <tr>
-                                <td colSpan="3">
+                                <td colSpan="5">
                                   Não há culturas nesse talhão
                                 </td>
                               </tr>

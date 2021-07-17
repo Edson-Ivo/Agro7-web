@@ -24,6 +24,11 @@ export const Content = styled.div`
   overflow: hidden;
   animation: show 0.3s;
 
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+    -webkit-animation: none;
+  }
+
   max-width: 400px;
 
   > button {

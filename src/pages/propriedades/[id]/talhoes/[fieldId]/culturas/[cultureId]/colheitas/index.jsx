@@ -188,7 +188,7 @@ function Colheitas() {
                                 </tr>
                               ))) || (
                               <tr>
-                                <td colSpan="5">
+                                <td colSpan="6">
                                   Não há colheitas registradas nessa cultura
                                 </td>
                               </tr>

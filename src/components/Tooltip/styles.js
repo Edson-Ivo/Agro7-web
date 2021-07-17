@@ -21,6 +21,11 @@ export const TooltipContainer = styled.div`
   color: ${props => props.theme.colors.black_75};
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.12);
 
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+    -webkit-animation: none;
+  }
+
   & > div {
     min-width: 225px;
     width: 100%;

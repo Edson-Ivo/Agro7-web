@@ -6,7 +6,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faCog,
   faBook,
-  faMapMarkerAlt
+  faMapMarkerAlt,
+  faDollarSign
 } from '@fortawesome/free-solid-svg-icons';
 
 import { useSelector } from 'react-redux';
@@ -25,9 +26,15 @@ import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 const data = [
   {
     href: '/propriedades',
-    title: 'Gerenciar Propriedades',
-    description: 'Aqui você pode gerenciar suas propriedades.',
+    title: 'Suas Propriedades',
+    description: 'Gerencie ou edite suas propriedades e relacionados.',
     icon: faMapMarkerAlt
+  },
+  {
+    href: '/vendas',
+    title: 'Suas Vendas',
+    description: 'Gerencie e realize suas vendas e relacionados.',
+    icon: faDollarSign
   },
   {
     href: '/caderno-produtor',
@@ -59,7 +66,7 @@ function Home() {
         <Section>
           <SectionHeader>
             <SectionHeaderContent
-              title={`${greeting} ${name}!`}
+              title={`${greeting}, ${name}!`}
               description="Navegue por suas funcionalidades abaixo ou pelas abas ao lado."
             />
           </SectionHeader>

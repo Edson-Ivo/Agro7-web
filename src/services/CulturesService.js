@@ -37,7 +37,7 @@ class CulturesService {
     try {
       const response = await api.put(`/cultures/update/${id}`, {
         date_start: data.date_start,
-        date_finish: data.date_finish,
+        date_finish: data?.date_finish,
         area: data.area,
         type_dimension: data.type_dimension,
         products: data.products

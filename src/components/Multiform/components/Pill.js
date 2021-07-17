@@ -8,12 +8,16 @@ const Pill = styled.div`
   background-color: #999;
   cursor: pointer;
   transition: all 0.4s;
+  border: 2px solid ${props => props.theme.colors.background};
 
   ${props =>
     props.label &&
     css`
       &:after {
         position: absolute;
+        ${
+          '' /* content: '${props.active || props.onlyView ? props.label : null}'; */
+        }
         content: '${props.label}';
         width: max-content;
         color: ${props.active || props.complete
@@ -38,7 +42,7 @@ const Pill = styled.div`
       &:before {
         position: absolute;
         content: '';
-        background-color: #fff;
+        background-color: ${props.theme.colors.background};
         width: 8px;
         height: 8px;
         border-radius: 8px;
@@ -57,8 +61,8 @@ const Pill = styled.div`
 
       &:before {
         position: absolute;
-        content: '✓';
-        color: #fff;
+        content: '${!props.onlyView ? '✓' : null}';
+        color: ${props.theme.colors.background};
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);

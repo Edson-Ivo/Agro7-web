@@ -67,7 +67,7 @@ function AdminProductsDetails() {
                         ...data
                       }}
                     >
-                      <MultiStep activeStep={activeStep}>
+                      <MultiStep activeStep={activeStep} onlyView>
                         <Step label="Produto" onClick={() => setActiveStep(1)}>
                           <h4 className="step-title">Informações do Produto</h4>
                           <Input

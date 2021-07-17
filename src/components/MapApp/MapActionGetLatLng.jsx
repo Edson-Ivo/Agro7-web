@@ -7,7 +7,12 @@ const containerStyle = {
   height: '500px'
 };
 
-function MapActionGetLatLng({ onClick, positions = [] }) {
+function MapActionGetLatLng({
+  onClick,
+  latitude = null,
+  longitude = null,
+  positions = []
+}) {
   const [position, setPosition] = useState([]);
   const [center, setCenter] = useState({
     lat: -3.7397479,
@@ -15,16 +20,18 @@ function MapActionGetLatLng({ onClick, positions = [] }) {
   });
 
   useEffect(() => {
-    if (positions.length > 1) {
-      positions = [Number(positions[0]), Number(positions[1])];
+    let pos = latitude && longitude ? [latitude, longitude] : positions;
 
-      setPosition(positions);
+    if (pos?.length > 1) {
+      pos = [Number(pos[0]), Number(pos[1])];
+
+      setPosition(pos);
       setCenter({
-        lat: Number(positions[0]),
-        lng: Number(positions[1])
+        lat: Number(pos[0]),
+        lng: Number(pos[1])
       });
     }
-  }, []);
+  }, [latitude, longitude]);
 
   const handleClick = e => {
     if (onClick !== undefined) {

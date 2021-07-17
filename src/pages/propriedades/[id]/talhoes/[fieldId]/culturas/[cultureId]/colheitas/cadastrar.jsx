@@ -195,7 +195,7 @@ function ColheitasCreate() {
                             value: typeHarvest,
                             label: typeHarvest
                           }))}
-                          label="Unidadede de Medida"
+                          label="Unidade de Medida"
                           name="type"
                         />
                       </div>

@@ -1,7 +1,7 @@
 const adminUserPropertyRoute = {
   '/admin/users/[userId]': {
     name: '%usuario',
-    path: '/admin/users/[userId]/detalhes'
+    path: '/admin/users/[userId]'
   },
 
   '/admin/users/[userId]/propriedades': { name: 'Propriedades' },
@@ -115,7 +115,7 @@ const adminUserPropertyRoute = {
 const adminUserTechPropertyRoute = {
   '/admin/users/[userId]': {
     name: '%usuario',
-    path: '/admin/users/[userId]/detalhes'
+    path: '/admin/users/[userId]'
   },
 
   '/admin/users/[userId]/tecnico': { name: 'Técnico' },
@@ -391,13 +391,149 @@ const technicianPropertyRoute = {
 const adminUserProducerNotebookRoute = {
   '/admin/users/[userId]': {
     name: '%usuario',
-    path: '/admin/users/[userId]/detalhes'
+    path: '/admin/users/[userId]'
   },
   '/admin/users/[userId]/caderno-produtor/[id]': {
     name: '%data',
     path: '/admin/users/[userId]/caderno-produtor/[id]/detalhes'
   },
   '/admin/users/[userId]/caderno-produtor/[id]/editar': { name: 'Editar' }
+};
+
+const namedSales = {
+  '/vendas': {
+    name: 'Vendas'
+  },
+  '/vendas/[id]': {
+    name: '%lote',
+    path: '/vendas/[id]/detalhes'
+  },
+  '/vendas/[id]/etiquetas': {
+    name: 'Gerar Etiquetas'
+  },
+  '/vendas/[id]/etiquetas/caixas/gerar': {
+    name: 'Caixas ou Sacarias'
+  },
+  '/vendas/[id]/etiquetas/produtos/gerar': {
+    name: 'Produtos Embalados (sem Informações Nutricionais)'
+  },
+  '/vendas/[id]/etiquetas/produtos/nutricional/gerar': {
+    name: 'Produtos Embalados (com Informações Nutricionais)'
+  },
+  '/vendas/cadastrar': {
+    name: 'Cadastrar'
+  },
+  '/vendas/distribuidoras': {
+    name: 'Distribuidoras'
+  },
+  '/vendas/distribuidoras/[id]': {
+    name: '%distribuidora',
+    path: '/vendas/distribuidoras/[id]/detalhes'
+  },
+  '/vendas/transportadoras': {
+    name: 'Transportadoras'
+  },
+  '/vendas/transportadoras/[id]': {
+    name: '%transportadora',
+    path: '/vendas/transportadoras/[id]/detalhes'
+  },
+  '/vendas/transportadoras/[id]/documentos/cadastrar': {
+    name: 'Cadastrar Documentos'
+  },
+  '/vendas/transportadoras/[id]/veiculos/[idVehicle]': {
+    name: '%veiculo',
+    path: '/vendas/transportadoras/[id]/veiculos/[idVehicle]/detalhes'
+  }
+};
+
+const adminUserSalesRoute = {
+  '/admin/users/[id]/vendas': {
+    name: 'Vendas'
+  },
+  '/admin/users/[id]/vendas/cadastrar': {
+    name: 'Cadastrar'
+  },
+  '/admin/users/[userId]': {
+    name: '%usuario',
+    path: '/admin/users/[userId]'
+  },
+  '/admin/users/[userId]/vendas': {
+    name: 'Vendas'
+  },
+  '/admin/users/[userId]/vendas/[id]': {
+    name: '%lote',
+    path: '/admin/users/[userId]/vendas/[id]/detalhes'
+  },
+  '/admin/users/[userId]/vendas/[id]/etiquetas': {
+    name: 'Gerar Etiquetas'
+  },
+  '/admin/users/[userId]/vendas/[id]/etiquetas/caixas/gerar': {
+    name: 'Caixas ou Sacarias'
+  },
+  '/admin/users/[userId]/vendas/[id]/etiquetas/produtos/gerar': {
+    name: 'Produtos Embalados (sem Informações Nutricionais)'
+  },
+  '/admin/users/[userId]/vendas/[id]/etiquetas/produtos/nutricional/gerar': {
+    name: 'Produtos Embalados (com Informações Nutricionais)'
+  },
+  '/admin/users/[userId]/vendas/cadastrar': {
+    name: 'Cadastrar'
+  },
+  '/admin/users/[userId]/vendas/distribuidoras': {
+    name: 'Distribuidoras'
+  },
+  '/admin/users/[userId]/vendas/distribuidoras/[id]': {
+    name: '%distribuidora',
+    path: '/admin/users/[userId]/vendas/distribuidoras/[id]/detalhes'
+  },
+  '/admin/users/[userId]/vendas/transportadoras': {
+    name: 'Transportadoras'
+  },
+  '/admin/users/[userId]/vendas/transportadoras/[id]': {
+    name: '%transportadora',
+    path: '/admin/users/[userId]/vendas/transportadoras/[id]/detalhes'
+  },
+  '/admin/users/[userId]/vendas/transportadoras/[id]/documentos/cadastrar': {
+    name: 'Cadastrar Documentos'
+  },
+  '/admin/users/[userId]/vendas/transportadoras/[id]/veiculos/[idVehicle]': {
+    name: '%veiculo',
+    path:
+      '/admin/users/[userId]/vendas/transportadoras/[id]/veiculos/[idVehicle]/detalhes'
+  },
+  '/admin/vendas': {
+    name: 'Vendas'
+  },
+  '/admin/vendas/[id]': {
+    name: '%lote',
+    path: '/admin/vendas/[id]/detalhes'
+  },
+  '/admin/vendas/[id]/etiquetas': {
+    name: 'Etiquetas'
+  },
+  '/admin/vendas/distribuidoras': {
+    name: 'Distribuidoras'
+  },
+  '/admin/vendas/transportadoras': {
+    name: 'Transportadoras'
+  },
+  '/admin/vendas/[id]/etiquetas/caixas/gerar': {
+    name: 'Caixas ou Sacarias'
+  },
+  '/admin/vendas/[id]/etiquetas/produtos/gerar': {
+    name: 'Produtos Embalados (sem Informações Nutricionais)'
+  },
+  '/admin/vendas/[id]/etiquetas/produtos/nutricional/gerar': {
+    name: 'Produtos Embalados (com Informações Nutricionais)'
+  },
+  '/admin/vendas/distribuidoras/[id]': {
+    name: '%distribuidora',
+    path: '/admin/vendas/distribuidoras/[id]/detalhes'
+  },
+  '/admin/vendas/transportadoras/[id]': {
+    name: '%transportadora',
+    path: '/admin/vendas/transportadoras/[id]/detalhes'
+  }
 };
 
 const namedRoutes = {
@@ -422,7 +558,7 @@ const namedRoutes = {
   '/admin/produtos/cadastrar': { name: 'Cadastrar' },
   '/admin/propriedades': { name: 'Propriedades' },
   '/admin/users': { name: 'Usuários' },
-  '/admin/users/[id]': { name: '%usuario', path: '/admin/users/[id]/detalhes' },
+  '/admin/users/[id]': { name: '%usuario', path: '/admin/users/[id]' },
   '/admin/users/[id]/caderno-produtor': { name: 'Caderno do Produtor' },
   '/admin/users/[id]/caderno-produtor/cadastrar': { name: 'Anotação' },
   '/admin/users/[id]/editar': { name: 'Alterar Dados' },
@@ -528,7 +664,9 @@ const namedRoutes = {
   ...adminPropertyRoute,
   ...adminUserPropertyRoute,
   ...adminUserProducerNotebookRoute,
-  ...adminUserTechPropertyRoute
+  ...adminUserTechPropertyRoute,
+  ...namedSales,
+  ...adminUserSalesRoute
 };
 
 export default namedRoutes;

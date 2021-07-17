@@ -8,7 +8,10 @@ import {
   faMapMarkerAlt,
   faBox,
   faPaintRoller,
-  faListUl
+  faListUl,
+  faDollarSign,
+  faTruck,
+  faStore
 } from '@fortawesome/free-solid-svg-icons';
 
 import { useSelector } from 'react-redux';
@@ -43,6 +46,26 @@ const data = [
     description:
       'Aqui você tem controle de todos os produtos de sua aplicação.',
     icon: faBox
+  },
+  {
+    href: '/admin/vendas',
+    title: 'Gerenciar Vendas',
+    description: 'Aqui você tem controle de todas as vendas de sua aplicação.',
+    icon: faDollarSign
+  },
+  {
+    href: '/admin/vendas/distribuidoras',
+    title: 'Gerenciar Distribuidoras',
+    description:
+      'Aqui você tem controle de todas as distribuidoras de sua aplicação.',
+    icon: faStore
+  },
+  {
+    href: '/admin/vendas/transportadoras',
+    title: 'Gerenciar Transportadoras',
+    description:
+      'Aqui você tem controle de todas as transportadoras de sua aplicação.',
+    icon: faTruck
   },
   {
     href: '/admin/categorias',

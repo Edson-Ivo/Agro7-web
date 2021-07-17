@@ -152,9 +152,7 @@ function AdminUsers() {
                               <tr
                                 key={user.id}
                                 onClick={() =>
-                                  router.push(
-                                    `/admin/users/${user.id}/detalhes`
-                                  )
+                                  router.push(`/admin/users/${user.id}`)
                                 }
                               >
                                 <td>{user.name}</td>
