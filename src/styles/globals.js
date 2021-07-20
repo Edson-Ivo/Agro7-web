@@ -51,7 +51,7 @@ export default createGlobalStyle`
 
   h1 {
     font-size: 2.5em;
-    line-height: 2em;
+    line-height: 1.5em;
   }
 
   h2 {
