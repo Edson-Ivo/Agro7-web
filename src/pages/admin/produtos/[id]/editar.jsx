@@ -228,6 +228,8 @@ function AdminProductsEdit() {
                     e.target.fileNutricional.files[0]
                   );
 
+                  nutricionalImageFormData.append('is_green', String(0));
+
                   await NutricionalService.updateNutritionalImage(
                     data?.nutritional?.nutritional_images?.id,
                     nutricionalImageFormData

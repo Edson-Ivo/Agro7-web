@@ -202,6 +202,7 @@ function AdminProductsCreate() {
               );
 
               nutricionalFormData.append('products', productId);
+              nutricionalFormData.append('is_green', String(0));
 
               await NutricionalService.create(nutricionalFormData).then(
                 res2 => {
