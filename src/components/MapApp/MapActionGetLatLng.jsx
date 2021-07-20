@@ -11,13 +11,19 @@ function MapActionGetLatLng({
   onClick,
   latitude = null,
   longitude = null,
-  positions = []
+  positions = [],
+  zoom = null
 }) {
+  const [zoomNumber, setZoomNumber] = useState(8);
   const [position, setPosition] = useState([]);
   const [center, setCenter] = useState({
     lat: -3.7397479,
     lng: -38.5095142
   });
+
+  useEffect(() => {
+    if (zoom) setZoomNumber(zoom);
+  }, []);
 
   useEffect(() => {
     let pos = latitude && longitude ? [latitude, longitude] : positions;
@@ -46,7 +52,7 @@ function MapActionGetLatLng({
     <MapWrapper
       mapContainerStyle={containerStyle}
       center={center}
-      zoom={8}
+      zoom={zoomNumber}
       mapTypeId="satellite"
       onClick={handleClick}
     >

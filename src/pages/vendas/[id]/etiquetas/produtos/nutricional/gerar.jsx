@@ -140,7 +140,7 @@ function VendasEtiquetasProdutosNutricional() {
                     </div>
                     {quantity && (
                       <>
-                        {(dataLabel && (
+                        {(!isEmpty(dataLabel) && (
                           <PDFViewer
                             src={`${dataLabel}`}
                             name="Etiqueta com Informações Nutricionais de Produto"

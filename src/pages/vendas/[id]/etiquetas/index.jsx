@@ -25,7 +25,7 @@ const data = [
     href: 'caixas',
     title: 'Caixas ou Sacarias',
     description:
-      'Aqui você irá gerar uma etiqueta de 50x160x2 para Caixas ou Sacarias, inserindo a quantidade do produto que irá em cada caixa.',
+      'Aqui você irá gerar uma etiqueta de 50x120x2 para Caixas ou Sacarias, inserindo a quantidade do produto que irá em cada caixa.',
     icon: faTags
   },
   {
