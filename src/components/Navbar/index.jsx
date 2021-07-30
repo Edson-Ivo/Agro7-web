@@ -11,7 +11,8 @@ import {
   faChevronUp,
   faChevronDown,
   faBars,
-  faTimes
+  faTimes,
+  faUser
 } from '@fortawesome/free-solid-svg-icons';
 
 import { NavToogleAction } from '@/store/modules/Nav/actions';
@@ -72,8 +73,8 @@ const Navbar = () => {
               <div className="navbar_button__image">
                 <Image
                   src="/assets/user-placeholder.png"
-                  width={24}
-                  height={24}
+                  width={48}
+                  height={48}
                   loading="eager"
                   alt="Imagem de Usuário"
                 />
@@ -89,6 +90,14 @@ const Navbar = () => {
               </h5>
               <Tooltip opened={open} clickAction={handleClick}>
                 <ul>
+                  <Link href="/configuracoes/perfil">
+                    <li>
+                      <span style={{ width: '100%' }}>
+                        <FontAwesomeIcon icon={faUser} className="icon" /> Meu
+                        Perfil
+                      </span>
+                    </li>
+                  </Link>
                   <Link href="/configuracoes">
                     <li>
                       <span style={{ width: '100%' }}>
