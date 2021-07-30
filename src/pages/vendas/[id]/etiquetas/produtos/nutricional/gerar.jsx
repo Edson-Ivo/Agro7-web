@@ -99,7 +99,7 @@ function VendasEtiquetasProdutosNutricional() {
               }}
               title={`Etiqueta com Informações Nutricionais de Produto da Venda ${dataSale?.batch}`}
               description={`Aqui você irá gerar uma etiqueta com Informações Nutricionais de 50x100x2 para Produtos Embalados da Venda ${dataSale?.batch}.`}
-              i1sLoading={isEmpty(dataSale)}
+              isLoading={isEmpty(dataSale)}
             />
           </SectionHeader>
           <SectionBody>

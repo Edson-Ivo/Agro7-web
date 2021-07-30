@@ -7,7 +7,8 @@ import {
   faCog,
   faBook,
   faMapMarkerAlt,
-  faDollarSign
+  faDollarSign,
+  faUser
 } from '@fortawesome/free-solid-svg-icons';
 
 import { useSelector } from 'react-redux';
@@ -41,6 +42,12 @@ const data = [
     title: 'Caderno do Produtor',
     description: 'Gerencie ou edite suas anotações do caderno do produtor.',
     icon: faBook
+  },
+  {
+    href: '/configuracoes/perfil',
+    title: 'Meu Perfil',
+    description: 'Gerencie ou edite seu perfil aqui.',
+    icon: faUser
   },
   {
     href: '/configuracoes',

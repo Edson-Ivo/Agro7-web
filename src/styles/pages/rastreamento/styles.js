@@ -63,6 +63,51 @@ export const Content = styled.div`
   }
 `;
 
+export const ContentDivided = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  min-height: 240px;
+  width: 100%;
+
+  & > div {
+    text-align: left;
+    width: 100%;
+
+    h2 {
+      margin-bottom: 16px;
+    }
+
+    p {
+      font-size: 1.25em;
+    }
+
+    &:first-child {
+      align-self: flex-start;
+    }
+
+    &:last-child {
+      padding-left: 64px;
+
+      @media screen and (max-width: ${props =>
+          props.theme.breakpoints.tablet}px) {
+        margin-top: 16px;
+        padding: 0;
+      }
+    }
+
+    @media screen and (max-width: ${props =>
+        props.theme.breakpoints.tablet}px) {
+      text-align: center;
+    }
+  }
+
+  @media screen and (max-width: ${props => props.theme.breakpoints.tablet}px) {
+    display: block;
+  }
+`;
+
 export const CardContainer = styled.div`
   color: ${props => props.theme.colors.gray}!important;
   display: flex;
@@ -76,6 +121,13 @@ export const CardContainer = styled.div`
       color: ${props.theme.colors.black}!important;
     `};
 
+  ${props =>
+    props?.verticalAlign &&
+    css`
+      flex-direction: column;
+      align-items: center;
+    `}
+
   @media screen and (max-width: ${props => props.theme.breakpoints.tablet}px) {
     flex-direction: column;
     align-items: center;
@@ -83,10 +135,17 @@ export const CardContainer = styled.div`
 `;
 
 export const CardImage = styled.div`
+  background: ${props => props.theme.colors.gray};
   border-radius: 10px;
   max-width: 240px;
   max-height: 240px;
   overflow: hidden;
+
+  ${props =>
+    props?.verticalAlign &&
+    css`
+      margin-bottom: 16px;
+    `}
 
   @media screen and (max-width: ${props => props.theme.breakpoints.tablet}px) {
     margin-bottom: 32px;
@@ -100,6 +159,12 @@ export const CardContent = styled.div`
   padding-left: 32px;
   width: calc(100% - 240px);
   text-align: left;
+
+  .centered {
+    padding: 0;
+    text-align: center;
+    width: 100%;
+  }
 
   .card__body__description {
     font-size: 1.25em;
@@ -218,5 +283,16 @@ export const SectionNutritionalTable = styled.div`
   img {
     border-radius: 10px;
     width: 100%;
+  }
+`;
+
+export const GalleryImage = styled.div`
+  padding: 1%;
+  width: 85%;
+  margin: 0 auto;
+
+  img {
+    border-radius: 10px;
+    overflow: hidden;
   }
 `;

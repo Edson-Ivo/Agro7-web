@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -37,6 +37,7 @@ import useWebShareApi from '@/hooks/useWebShareApi';
 import { api } from '@/services/api';
 import isEmpty from '@/helpers/isEmpty';
 import { dateConversor } from '@/helpers/date';
+import truncate from '@/helpers/truncate';
 
 export default function Rastreamento({ sale }) {
   const router = useRouter();
@@ -78,6 +79,7 @@ export default function Rastreamento({ sale }) {
     <>
       <Head>
         <title>Rastreamento - Agro7</title>
+        <meta name="robots" content="noindex" />
       </Head>
 
       <Container>
@@ -242,7 +244,11 @@ export default function Rastreamento({ sale }) {
             <CardContainer alternative>
               <CardImage>
                 <Image
-                  src="/assets/images/product-placeholder.png"
+                  src={
+                    sale?.harvests_sales?.[0]?.harvests?.cultures?.fields
+                      ?.properties?.users?.profiles?.image_url ||
+                    '/assets/user-placeholder.png'
+                  }
                   alt={`Imagem do Produtor ${sale?.harvests_sales?.[0]?.harvests?.cultures?.fields?.properties?.users?.name}`}
                   width={240}
                   height={240}
@@ -258,7 +264,13 @@ export default function Rastreamento({ sale }) {
                   </h1>
                 </div>
                 <div className="card__body">
-                  <p className="card__body__description">Sobre mim.</p>
+                  <p className="card__body__description">
+                    {truncate(
+                      sale?.harvests_sales?.[0]?.harvests?.cultures?.fields
+                        ?.properties?.users?.profiles?.about,
+                      230
+                    ) || 'Esse produtor ainda não colocou uma descrição.'}
+                  </p>
                   <CardContentButtons center>
                     <CardContentButton
                       title="Perfil do Produtor"

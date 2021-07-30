@@ -99,7 +99,7 @@ function VendasEtiquetasCaixas() {
               }}
               title={`Etiqueta para Caixas ou Sacarias da Venda ${dataSale?.batch}`}
               description={`Aqui você irá gerar uma etiqueta de 50x120x2 para Caixas ou Sacarias da Venda ${dataSale?.batch}.`}
-              i1sLoading={isEmpty(dataSale)}
+              isLoading={isEmpty(dataSale)}
             />
           </SectionHeader>
           <SectionBody>

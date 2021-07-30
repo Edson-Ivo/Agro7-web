@@ -142,7 +142,7 @@ const FileInput = (
           name={`${name}${multiple && '[]'}`}
           onChangeCapture={handleChange}
           hidden
-          multiple={multiple}
+          multiple={multiple || max > 1}
         />
       ) : (
         <input
@@ -152,7 +152,7 @@ const FileInput = (
           name={`${name}${multiple && '[]'}`}
           onChangeCapture={handleChange}
           hidden
-          multiple={multiple}
+          multiple={multiple || max > 1}
         />
       )}
 
