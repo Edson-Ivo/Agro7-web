@@ -3,6 +3,7 @@ import Head from 'next/head';
 import { MultiStepForm as MultiStep, Step } from '@/components/Multiform';
 import * as yup from 'yup';
 import { Form } from '@unform/web';
+import { Scope } from '@unform/core';
 
 import Container from '@/components/Container';
 import Nav from '@/components/Nav';
@@ -23,120 +24,13 @@ import { useRouter } from 'next/router';
 import TextArea from '@/components/TextArea/index';
 import NutricionalService from '@/services/NutricionalService';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
-
-const schema = yup.object().shape({
-  name: yup.string().required('O campo nome é obrigatório!'),
-  description: yup.string().nullable(),
-  water: yup
-    .number()
-    .transform(value => (Number.isNaN(value) ? undefined : value))
-    .positive('O campo Água (%) deve ser um valor positivo')
-    .nullable(),
-  calories: yup
-    .number()
-    .transform(value => (Number.isNaN(value) ? undefined : value))
-    .positive('O campo Calorias (Kcal) deve ser um valor positivo')
-    .nullable(),
-  protein: yup
-    .number()
-    .transform(value => (Number.isNaN(value) ? undefined : value))
-    .positive('O campo Proteína (g) deve ser um valor positivo')
-    .nullable(),
-  carbohydrate: yup
-    .number()
-    .transform(value => (Number.isNaN(value) ? undefined : value))
-    .positive('O campo Carboidrato (g) deve ser um valor positivo')
-    .nullable(),
-  dietary_fiber: yup
-    .number()
-    .transform(value => (Number.isNaN(value) ? undefined : value))
-    .positive('O campo Fibra Alimentar (g) deve ser um valor positivo')
-    .nullable(),
-  cholesterol: yup
-    .number()
-    .transform(value => (Number.isNaN(value) ? undefined : value))
-    .positive('O campo Colesterol (mg) deve ser um valor positivo')
-    .nullable(),
-  lipids: yup
-    .number()
-    .transform(value => (Number.isNaN(value) ? undefined : value))
-    .positive('O campo Lipídios (g) deve ser um valor positivo')
-    .nullable(),
-  saturated_fatty_acid: yup
-    .number()
-    .transform(value => (Number.isNaN(value) ? undefined : value))
-    .positive('O campo Ácido Graxo Saturado (g) deve ser um valor positivo')
-    .nullable(),
-  unsaturated_fatty_acid: yup
-    .number()
-    .transform(value => (Number.isNaN(value) ? undefined : value))
-    .positive(
-      'O campo Ácido Graxo Mono insaturado (g) deve ser um valor positivo'
-    )
-    .nullable(),
-  polyunsaturated_fatty_acid: yup
-    .number()
-    .transform(value => (Number.isNaN(value) ? undefined : value))
-    .positive(
-      'O campo Ácido Graxo Poli insaturado (g) deve ser um valor positivo'
-    )
-    .nullable(),
-  calcium: yup
-    .number()
-    .transform(value => (Number.isNaN(value) ? undefined : value))
-    .positive('O campo Cálcio (mg) deve ser um valor positivo')
-    .nullable(),
-  phosphorus: yup
-    .number()
-    .transform(value => (Number.isNaN(value) ? undefined : value))
-    .positive('O campo Fósforo (mg) deve ser um valor positivo')
-    .nullable(),
-  iron: yup
-    .number()
-    .transform(value => (Number.isNaN(value) ? undefined : value))
-    .positive('O campo Ferro (mg) deve ser um valor positivo')
-    .nullable(),
-  potassium: yup
-    .number()
-    .transform(value => (Number.isNaN(value) ? undefined : value))
-    .positive('O campo Potássio (mg) deve ser um valor positivo')
-    .nullable(),
-  sodium: yup
-    .number()
-    .transform(value => (Number.isNaN(value) ? undefined : value))
-    .positive('O campo Sódio (mg) deve ser um valor positivo')
-    .nullable(),
-  vitamin_b1: yup
-    .number()
-    .transform(value => (Number.isNaN(value) ? undefined : value))
-    .positive('O campo Vitamina B1 (mg) deve ser um valor positivo')
-    .nullable(),
-  vitamin_b2: yup
-    .number()
-    .transform(value => (Number.isNaN(value) ? undefined : value))
-    .positive('O campo Vitamina B2 (mg) deve ser um valor positivo')
-    .nullable(),
-  vitamin_b3: yup
-    .number()
-    .transform(value => (Number.isNaN(value) ? undefined : value))
-    .positive('O campo Vitamina B3 (mg) deve ser um valor positivo')
-    .nullable(),
-  vitamin_b6: yup
-    .number()
-    .transform(value => (Number.isNaN(value) ? undefined : value))
-    .positive('O campo Vitamina B6 (mg) deve ser um valor positivo')
-    .nullable(),
-  vitamin_c: yup
-    .number()
-    .transform(value => (Number.isNaN(value) ? undefined : value))
-    .positive('O campo Vitamina C (mg) deve ser um valor positivo')
-    .nullable()
-});
+import isEmpty from '@/helpers/isEmpty';
 
 function AdminProductsCreate() {
   const formRef = useRef(null);
   const inputRef = useRef(null);
   const inputNutricionalRef = useRef(null);
+  const inputNutricionalVerdeRef = useRef(null);
 
   const [activeStep, setActiveStep] = useState(1);
   const [alert, setAlert] = useState({ type: '', message: '' });
@@ -156,7 +50,7 @@ function AdminProductsCreate() {
   const handleSubmit = async (d, { reset }, e) => {
     setDisableButton(true);
 
-    schema
+    ProductsService.schema()
       .validate(d)
       .then(async data => {
         setAlert({
@@ -166,13 +60,16 @@ function AdminProductsCreate() {
 
         if (
           inputRef.current.error.message ||
-          inputNutricionalRef.current.error.message
+          inputNutricionalRef.current.error.message ||
+          (e.target.fileNutricionalVerde.files.length > 0 &&
+            inputNutricionalVerdeRef.current.error.message)
         ) {
           setAlert({
             type: 'error',
             message:
               inputRef.current.error.message ||
-              inputNutricionalRef.current.error.message
+              inputNutricionalRef.current.error.message ||
+              inputNutricionalVerdeRef.current.error.message
           });
           setDisableButton(false);
         } else {
@@ -189,11 +86,12 @@ function AdminProductsCreate() {
                 setDisableButton(false);
               }, 1000);
             } else {
+              let success = false;
               const productId = res.data.id;
               const nutricionalFormData = new FormData();
 
               Object.keys(data).forEach(key => {
-                nutricionalFormData.append(key, data[key]);
+                if (key !== 'green') nutricionalFormData.append(key, data[key]);
               });
 
               nutricionalFormData.append(
@@ -205,25 +103,57 @@ function AdminProductsCreate() {
               nutricionalFormData.append('is_green', String(0));
 
               await NutricionalService.create(nutricionalFormData).then(
-                res2 => {
+                async res2 => {
                   if (res2.status !== 201 || res2?.statusCode) {
                     setAlert({ type: 'error', message: errorMessage(res2) });
                     setTimeout(() => {
                       setDisableButton(false);
                     }, 1000);
-                  } else {
-                    setAlert({
-                      type: 'success',
-                      message: 'Produto cadastrado com sucesso!'
+                  } else if (
+                    !isEmpty(data?.green?.length) ||
+                    e.target.fileNutricionalVerde.files.length > 0
+                  ) {
+                    const nutricionalGreenFormData = new FormData();
+
+                    Object.keys(data.green).forEach(key => {
+                      nutricionalGreenFormData.append(key, data.green[key]);
                     });
 
-                    setTimeout(() => {
-                      router.push(`/admin/produtos/${productId}/detalhes`);
-                      setDisableButton(false);
-                    }, 1000);
+                    nutricionalGreenFormData.append(
+                      'file',
+                      e.target.fileNutricionalVerde.files[0]
+                    );
+
+                    nutricionalGreenFormData.append('products', productId);
+                    nutricionalGreenFormData.append('is_green', String(1));
+
+                    await NutricionalService.create(
+                      nutricionalGreenFormData
+                    ).then(res3 => {
+                      if (res3.status !== 201 || res3?.statusCode) {
+                        setAlert({
+                          type: 'error',
+                          message: errorMessage(res3)
+                        });
+                        setTimeout(() => {
+                          setDisableButton(false);
+                        }, 1000);
+                      } else {
+                        success = true;
+                      }
+                    });
+                  } else {
+                    success = true;
                   }
                 }
               );
+
+              if (success) {
+                setTimeout(() => {
+                  router.push(`/admin/produtos/${productId}/detalhes`);
+                  setDisableButton(false);
+                }, 1000);
+              }
             }
           });
         }
@@ -444,6 +374,184 @@ function AdminProductsCreate() {
                         </div>
                       </div>
                     </Step>
+                    <Step
+                      label="Nutricional Verde"
+                      onClick={() => setActiveStep(3)}
+                    >
+                      <h4 className="step-title">Tabela Nutricional Verde:</h4>
+                      <FileInput
+                        ref={inputNutricionalVerdeRef}
+                        name="fileNutricionalVerde"
+                        label="Selecione a Imagem da Tabela Nutricional Verde (opcional)"
+                        extensions={['.jpg', '.jpeg', '.png', '.gif']}
+                        max={1}
+                      />
+                      <h4 className="step-title">
+                        Escrever Nutricional Verde (opcional)
+                      </h4>
+                      <Scope path="green">
+                        <div className="form-group">
+                          <div>
+                            <Input
+                              type="number"
+                              name="water"
+                              label="Água (%)"
+                            />
+                          </div>
+                          <div>
+                            <Input
+                              type="number"
+                              name="calories"
+                              label="Calorias (Kcal)"
+                            />
+                          </div>
+                        </div>
+                        <div className="form-group">
+                          <div>
+                            <Input
+                              type="number"
+                              name="protein"
+                              label="Proteína (g)"
+                            />
+                          </div>
+                          <div>
+                            <Input
+                              type="number"
+                              name="carbohydrate"
+                              label="Carboidrato (g)"
+                            />
+                          </div>
+                        </div>
+                        <div className="form-group">
+                          <div>
+                            <Input
+                              type="number"
+                              name="dietary_fiber"
+                              label="Fibra Alimentar (g)"
+                            />
+                          </div>
+                          <div>
+                            <Input
+                              type="number"
+                              name="cholesterol"
+                              label="Colesterol (mg)"
+                            />
+                          </div>
+                        </div>
+                        <div className="form-group">
+                          <div>
+                            <Input
+                              type="number"
+                              name="lipids"
+                              label="Lipídios (g)"
+                            />
+                          </div>
+                          <div>
+                            <Input
+                              type="number"
+                              name="saturated_fatty_acid"
+                              label="Ácido Graxo Saturado (g)"
+                            />
+                          </div>
+                        </div>
+                        <div className="form-group">
+                          <div>
+                            <Input
+                              type="number"
+                              name="unsaturated_fatty_acid"
+                              label="Ácido Graxo Mono insaturado (g)"
+                            />
+                          </div>
+                          <div>
+                            <Input
+                              type="number"
+                              name="polyunsaturated_fatty_acid"
+                              label="Ácido Graxo Poli insaturado (g)"
+                            />
+                          </div>
+                        </div>
+                        <div className="form-group">
+                          <div>
+                            <Input
+                              type="number"
+                              name="calcium"
+                              label="Cálcio (mg)"
+                            />
+                          </div>
+                          <div>
+                            <Input
+                              type="number"
+                              name="phosphorus"
+                              label="Fósforo (mg)"
+                            />
+                          </div>
+                        </div>
+                        <div className="form-group">
+                          <div>
+                            <Input
+                              type="number"
+                              name="iron"
+                              label="Ferro (mg)"
+                            />
+                          </div>
+                          <div>
+                            <Input
+                              type="number"
+                              name="potassium"
+                              label="Potássio (mg)"
+                            />
+                          </div>
+                        </div>
+                        <div className="form-group">
+                          <div>
+                            <Input
+                              type="number"
+                              name="sodium"
+                              label="Sódio (mg)"
+                            />
+                          </div>
+                          <div>
+                            <Input
+                              type="number"
+                              name="vitamin_b1"
+                              label="Vitamina B1 (mg)"
+                            />
+                          </div>
+                        </div>
+                        <div className="form-group">
+                          <div>
+                            <Input
+                              type="number"
+                              name="vitamin_b2"
+                              label="Vitamina B2 (mg)"
+                            />
+                          </div>
+                          <div>
+                            <Input
+                              type="number"
+                              name="vitamin_b3"
+                              label="Vitamina B3 (mg)"
+                            />
+                          </div>
+                        </div>
+                        <div className="form-group">
+                          <div>
+                            <Input
+                              type="number"
+                              name="vitamin_b6"
+                              label="Vitamina B6 (mg)"
+                            />
+                          </div>
+                          <div>
+                            <Input
+                              type="number"
+                              name="vitamin_c"
+                              label="Vitamina C (mg)"
+                            />
+                          </div>
+                        </div>
+                      </Scope>
+                    </Step>
                   </MultiStep>
                   <div className="form-group buttons">
                     {(activeStep !== 1 && (
@@ -463,7 +571,7 @@ function AdminProductsCreate() {
                       </div>
                     )}
                     <div>
-                      {activeStep !== 2 && (
+                      {activeStep !== 3 && (
                         <Button
                           type="button"
                           onClick={() => setActiveStep(activeStep + 1)}
@@ -473,7 +581,7 @@ function AdminProductsCreate() {
                         </Button>
                       )}
 
-                      {activeStep === 2 && (
+                      {activeStep === 3 && (
                         <Button
                           disabled={disableButton}
                           className="primary"

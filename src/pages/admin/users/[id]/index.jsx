@@ -11,7 +11,8 @@ import {
   faBook,
   faUserSecret,
   faStore,
-  faTruck
+  faTruck,
+  faUserEdit
 } from '@fortawesome/free-solid-svg-icons';
 
 import { Card } from '@/components/Card/index';
@@ -35,6 +36,13 @@ const data = [
     description:
       'Aqui você terá acesso aos Detalhes e relacionados desse Usuário.',
     icon: faUser
+  },
+  {
+    href: 'editar/perfil',
+    title: 'Editar Perfil Público',
+    description:
+      'Aqui você poderá editar o Perfil Público e Galeria Pública desse Usuário.',
+    icon: faUserEdit
   },
   {
     href: 'propriedades',

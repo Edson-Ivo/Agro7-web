@@ -563,6 +563,7 @@ const namedRoutes = {
   '/admin/users/[id]/caderno-produtor/cadastrar': { name: 'Anotação' },
   '/admin/users/[id]/editar': { name: 'Alterar Dados' },
   '/admin/users/[id]/editar/senha': { name: 'Alterar Senha' },
+  '/admin/users/[id]/editar/perfil': { name: 'Alterar Perfil Público' },
   '/admin/users/[id]/propriedades': { name: 'Propriedades' },
   '/admin/users/[id]/propriedades/cadastrar': { name: 'Cadastrar' },
   '/admin/users/[id]/tecnico': { name: 'Técnico' },
@@ -581,6 +582,8 @@ const namedRoutes = {
   '/configuracoes': { name: 'Configurações' },
   '/configuracoes/editar': { name: 'Editar meus Dados' },
   '/configuracoes/senha': { name: 'Alterar Senha' },
+  '/configuracoes/perfil': { name: 'Perfil Público' },
+  '/configuracoes/perfil/editar': { name: 'Editar' },
   '/propriedades': { name: 'Propriedades' },
   '/propriedades/[id]': {
     name: '%propriedade',

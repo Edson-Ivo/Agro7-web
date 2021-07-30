@@ -45,6 +45,7 @@ export const TooltipContainer = styled.div`
         padding-left: 20px;
 
         .icon {
+          width: 20px;
           font-size: 1.25em;
           margin-right: 5px;
         }
