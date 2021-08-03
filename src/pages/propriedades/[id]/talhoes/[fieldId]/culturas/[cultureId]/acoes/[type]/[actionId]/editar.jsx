@@ -90,7 +90,12 @@ function AcoesCulturaEditar() {
           d.cultures = Number(cultureId);
 
           Object.keys(d).forEach(el => {
-            if (d[el] === null || d[el] === undefined || el === 'types')
+            if (
+              d[el] === null ||
+              d[el] === undefined ||
+              el === 'types' ||
+              el === ''
+            )
               delete d[el];
           });
 
@@ -102,6 +107,9 @@ function AcoesCulturaEditar() {
             typeAction === 'applications-supplies'
           )
             d.date_finish = dateToISOString(d.date_finish);
+
+          if (!isEmpty(d?.date) && ['services', 'others'].includes(typeAction))
+            d.date = dateToISOString(d.date);
 
           await CulturesActionsService.update(actionId, d, typeAction).then(
             res => {
@@ -195,6 +203,7 @@ function AcoesCulturaEditar() {
                       onSubmit={handleSubmit}
                       initialData={{
                         ...dataActions,
+                        date: dateToInput(dataActions?.date),
                         date_start: dateToInput(dataActions?.date_start),
                         date_finish: dateToInput(dataActions?.date_finish),
                         time_start: removeTimeSeconds(dataActions?.time_start),

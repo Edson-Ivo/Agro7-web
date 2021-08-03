@@ -109,7 +109,7 @@ function VendasCreate() {
   const handleChangeIsGreen = e => setIsGreen(String(Number(e?.value)));
 
   const handleChangeActiveStep = step => {
-    if (step === 4 && property && product && typeUnt && isGreen && !getStock)
+    if (step === 2 && property && product && typeUnt && isGreen && !getStock)
       setGetStock(true);
 
     setActiveStep(step);
@@ -456,8 +456,57 @@ function VendasCreate() {
                         </div>
                       </Step>
                       <Step
-                        label="Distribuição"
+                        label="Venda"
                         onClick={() => handleChangeActiveStep(2)}
+                      >
+                        {(getStock && (
+                          <>
+                            {(dataStock && (
+                              <>
+                                <div
+                                  style={{ marginBottom: 15, marginLeft: 10 }}
+                                >
+                                  <h4>
+                                    Quantidade em Estoque: {stockQtd}
+                                    {typeUnt}
+                                  </h4>
+                                </div>
+                              </>
+                            )) || (
+                              <Skeleton
+                                style={{
+                                  maxWidth: '40%',
+                                  minHeight: '22px',
+                                  marginBottom: '15px'
+                                }}
+                              />
+                            )}
+                          </>
+                        )) || (
+                          <Alert type="error">
+                            Selecione o produto e suas informações antes.
+                          </Alert>
+                        )}
+                        <Input
+                          type="number"
+                          label="Quantidade da venda"
+                          name="products.quantity"
+                          min="1"
+                          max={stockQtd}
+                          disabled={!getStock}
+                        />
+                        <Input
+                          type="text"
+                          label="Preço em R$ da venda"
+                          name="value"
+                          inputMode="numeric"
+                          mask="money"
+                          disabled={!getStock}
+                        />
+                      </Step>
+                      <Step
+                        label="Distribuição"
+                        onClick={() => handleChangeActiveStep(3)}
                       >
                         {loadingDistributor && (
                           <Alert type="success">
@@ -604,7 +653,7 @@ function VendasCreate() {
                       </Step>
                       <Step
                         label="Transporte"
-                        onClick={() => handleChangeActiveStep(3)}
+                        onClick={() => handleChangeActiveStep(4)}
                       >
                         <div style={{ marginBottom: 10 }}>
                           <h4>
@@ -694,55 +743,6 @@ function VendasCreate() {
                         <TextArea
                           name="transporters.vehicles.description"
                           label="Descrição do veículo"
-                        />
-                      </Step>
-                      <Step
-                        label="Venda"
-                        onClick={() => handleChangeActiveStep(4)}
-                      >
-                        {(getStock && (
-                          <>
-                            {(dataStock && (
-                              <>
-                                <div
-                                  style={{ marginBottom: 15, marginLeft: 10 }}
-                                >
-                                  <h4>
-                                    Quantidade em Estoque: {stockQtd}
-                                    {typeUnt}
-                                  </h4>
-                                </div>
-                              </>
-                            )) || (
-                              <Skeleton
-                                style={{
-                                  maxWidth: '40%',
-                                  minHeight: '22px',
-                                  marginBottom: '15px'
-                                }}
-                              />
-                            )}
-                          </>
-                        )) || (
-                          <Alert type="error">
-                            Selecione o produto e suas informações antes.
-                          </Alert>
-                        )}
-                        <Input
-                          type="number"
-                          label="Quantidade da venda"
-                          name="products.quantity"
-                          min="1"
-                          max={stockQtd}
-                          disabled={!getStock}
-                        />
-                        <Input
-                          type="text"
-                          label="Preço em R$ da venda"
-                          name="value"
-                          inputMode="numeric"
-                          mask="money"
-                          disabled={!getStock}
                         />
                       </Step>
                     </MultiStep>

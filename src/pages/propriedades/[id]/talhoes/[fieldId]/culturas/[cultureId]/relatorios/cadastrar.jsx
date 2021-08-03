@@ -26,10 +26,10 @@ import isEmpty from '@/helpers/isEmpty';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 
 const schema = yup.object().shape({
-  diagnostics: yup.string().required('O campo diagnóstico é obrigatório!'),
-  cultivation: yup.string().required('O campo tratos culturais é obrigatório!'),
-  fertilizing: yup.string().required('O campo adubação é obrigatório!'),
-  plant_health: yup.string().required('O campo fitossanidade é obrigatório!')
+  diagnostics: yup.string().nullable(),
+  cultivation: yup.string().nullable(),
+  fertilizing: yup.string().nullable(),
+  plant_health: yup.string().nullable()
 });
 
 function RelatoriosCreate() {
@@ -70,28 +70,36 @@ function RelatoriosCreate() {
           message: 'Enviando...'
         });
 
-        d.cultures = Number(cultureId);
+        if (isEmpty(d)) {
+          d.cultures = Number(cultureId);
 
-        await TechnicianActionsService.create(d).then(res => {
-          if (res.status !== 201 || res?.statusCode) {
-            setAlert({ type: 'error', message: errorMessage(res) });
-            setTimeout(() => {
-              setDisableButton(false);
-            }, 1000);
-          } else {
-            setAlert({
-              type: 'success',
-              message: 'Relatório Técnico adicionado com sucesso!'
-            });
+          await TechnicianActionsService.create(d).then(res => {
+            if (res.status !== 201 || res?.statusCode) {
+              setAlert({ type: 'error', message: errorMessage(res) });
+              setTimeout(() => {
+                setDisableButton(false);
+              }, 1000);
+            } else {
+              setAlert({
+                type: 'success',
+                message: 'Relatório Técnico adicionado com sucesso!'
+              });
 
-            setTimeout(() => {
-              router.push(
-                `${route.path}/${id}/talhoes/${fieldId}/culturas/${cultureId}/relatorios/${res.data.id}/detalhes`
-              );
-              setDisableButton(false);
-            }, 1000);
-          }
-        });
+              setTimeout(() => {
+                router.push(
+                  `${route.path}/${id}/talhoes/${fieldId}/culturas/${cultureId}/relatorios/${res.data.id}/detalhes`
+                );
+                setDisableButton(false);
+              }, 1000);
+            }
+          });
+        } else {
+          setAlert({
+            type: 'error',
+            message: 'Você precisa informar pelo menos 1 campo!'
+          });
+          setDisableButton(false);
+        }
       })
       .catch(err => {
         setAlert({ type: 'error', message: err.errors[0] });

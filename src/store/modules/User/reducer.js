@@ -5,7 +5,10 @@ import { AUTHENTICATE, DEAUTHENTICATE } from './constants';
 let INITIAL_STATE = {
   id: 0,
   name: '',
-  type: ''
+  type: '',
+  profile: {
+    image_url: ''
+  }
 };
 
 if (typeof localStorage !== 'undefined') {
@@ -30,7 +33,10 @@ const UserReducer = (state = INITIAL_STATE, action) => {
       return {
         id: 0,
         name: '',
-        type: ''
+        type: '',
+        profile: {
+          image_url: ''
+        }
       };
     }
 
