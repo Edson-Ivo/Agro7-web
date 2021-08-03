@@ -25,21 +25,21 @@ const data = [
     href: 'caixas',
     title: 'Caixas ou Sacarias',
     description:
-      'Aqui você irá gerar uma etiqueta de 50x120x2 para Caixas ou Sacarias, inserindo a quantidade do produto que irá em cada caixa.',
+      'Aqui você irá gerar uma etiqueta de 50x120x2 para Caixas ou Sacarias, inserindo a quantidade e a data de validade do produto que irá em cada caixa.',
     icon: faTags
   },
   {
     href: 'produtos/nutricional',
     title: 'Produtos Embalados (com Informações Nutricionais)',
     description:
-      'Aqui você irá gerar uma etiqueta com Informações Nutricionais de 50x100x2 para Produtos Embalados, inserindo a quantidade do produto que irá em cada caixa.',
+      'Aqui você irá gerar uma etiqueta com Informações Nutricionais de 50x100x2 para Produtos Embalados, inserindo a quantidade e a data de validade do produto que irá em cada caixa.',
     icon: faTags
   },
   {
     href: 'produtos',
     title: 'Produtos Embalados (sem Informações Nutricionais)',
     description:
-      'Aqui você irá gerar uma etiqueta sem Informações Nutricionais de 25x40x4 para Produtos Embalados, contendo apenas o Qr Code e código de rastreamento, lote e data.',
+      'Aqui você irá gerar uma etiqueta sem Informações Nutricionais de 25x40x4 para Produtos Embalados, inserindo a data de validade do produto, contendo apenas o QR Code, código de rastreamento, lote, data de venda e data de validade.',
     icon: faTags
   }
 ];

@@ -1,5 +1,5 @@
 const truncate = (input, maxLength) =>
-  input.length > maxLength ? `${input.substring(0, maxLength)}...` : input;
+  input?.length > maxLength ? `${input.substring(0, maxLength)}...` : input;
 
 export const truncateProducerNotebook = (input, isMobile) => {
   const maxLength = !isMobile ? 490 : 280;

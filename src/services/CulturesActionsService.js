@@ -7,13 +7,22 @@ class CulturesActionsService {
   static text(action, data) {
     let txt = actionsList[action].text;
 
-    if (['services', 'supplies'].includes(action))
+    if (action === 'services') {
+      txt = txt.replace('%name', data?.name).replace('%value', data?.value);
+
+      if (data?.date) txt += ` no dia ${dateConversor(data?.date, false)}`;
+
+      txt += '.';
+    }
+
+    if (action === 'supplies')
       txt = txt.replace('%name', data?.name).replace('%value', data?.value);
 
     if (action === 'others') {
       txt = txt.replace('%name', data?.name);
 
       if (data?.value) txt += `, custando R$ ${data?.value}`;
+      if (data?.date) txt += `, no dia ${dateConversor(data?.date, false)}`;
 
       txt += '.';
     }
@@ -39,7 +48,18 @@ class CulturesActionsService {
   static schema(action) {
     let schema = null;
 
-    if (action === 'services' || action === 'supplies')
+    if (action === 'services')
+      schema = yup.object().shape({
+        name: yup.string().required('O campo nome é obrigatório!'),
+        description: yup.string().required('O campo descrição é obrigatório!'),
+        value: yup
+          .number()
+          .transform(value => (Number.isNaN(value) ? undefined : value))
+          .required('O campo preço é obrigatório!'),
+        date: yup.string().nullable()
+      });
+
+    if (action === 'supplies')
       schema = yup.object().shape({
         name: yup.string().required('O campo nome é obrigatório!'),
         description: yup.string().required('O campo descrição é obrigatório!'),
@@ -87,7 +107,8 @@ class CulturesActionsService {
         description: yup.string().required('O campo descrição é obrigatório!'),
         value: yup
           .number()
-          .transform(value => (Number.isNaN(value) ? undefined : value))
+          .transform(value => (Number.isNaN(value) ? undefined : value)),
+        date: yup.string().nullable()
       });
 
     return schema;
@@ -132,7 +153,7 @@ export const actionsList = {
   services: {
     value: 'services',
     label: 'Serviços',
-    text: 'Serviço %name, custando R$ %value, feito.'
+    text: 'Serviço %name, custando R$ %value, feito'
   },
   irrigations: {
     value: 'irrigations',

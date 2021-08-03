@@ -105,6 +105,7 @@ function AcoesCulturasDetalhes() {
                       ref={formRef}
                       initialData={{
                         ...dataActions,
+                        date: dateToInput(dataActions?.date),
                         date_start: dateToInput(dataActions?.date_start),
                         date_finish: dateToInput(dataActions?.date_finish),
                         time_start: removeTimeSeconds(dataActions?.time_start),

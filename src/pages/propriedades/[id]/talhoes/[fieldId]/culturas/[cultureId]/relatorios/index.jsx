@@ -188,10 +188,22 @@ function Relatorios() {
                                 >
                                   <td>{dateConversor(d?.created_at, false)}</td>
                                   <td>{d?.concluded ? 'Sim' : 'Não'}</td>
-                                  <td>{truncate(d?.diagnostics, 30)}</td>
-                                  <td>{truncate(d?.cultivation, 30)}</td>
-                                  <td>{truncate(d?.fertilizing, 30)}</td>
-                                  <td>{truncate(d?.cultivation, 30)}</td>
+                                  <td>
+                                    {truncate(d?.diagnostics, 30) ||
+                                      'Não informado'}
+                                  </td>
+                                  <td>
+                                    {truncate(d?.cultivation, 30) ||
+                                      'Não informado'}
+                                  </td>
+                                  <td>
+                                    {truncate(d?.fertilizing, 30) ||
+                                      'Não informado'}
+                                  </td>
+                                  <td>
+                                    {truncate(d?.plant_health, 30) ||
+                                      'Não informado'}
+                                  </td>
                                   <td onClick={e => e.stopPropagation()}>
                                     <ActionButton
                                       id={d.id}

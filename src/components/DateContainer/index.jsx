@@ -70,8 +70,15 @@ export const DateCardWrapper = styled.div`
 
 export const DateCard = styled.div`
   align-items: center;
+  ${props =>
+    props.highlight &&
+    css`
+      background-color: ${props.theme.colors.green_highlight}!important;
+    `}
   background-color: ${props =>
-    !props.active ? props.theme.colors.gray : props.theme.colors.green};
+    !props.active
+      ? props.theme.colors.gray
+      : `${props.theme.colors.green}!important`};
   border-radius: 10px;
   cursor: pointer;
   display: flex;

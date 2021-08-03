@@ -62,7 +62,9 @@ export const NavbarContainer = styled.div`
     .navbar_button__image {
       border-radius: 999px;
       margin-right: 10px;
+      overflow: hidden;
       vertical-align: -0.6em;
+      object-fit: cover;
       width: 2em;
 
       img {

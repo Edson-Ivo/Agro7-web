@@ -13,7 +13,7 @@ export default createGlobalStyle`
   body {
     background: ${props => props.theme.colors.background};
     color: ${props => props.theme.colors.black};
-    font-family: ${props => props.theme.fonts.latoFamily}; 
+    font-family: ${props => props.theme.fonts.latoFamily};
     font-size: 14px;
     font-weight: 400;
     -webkit-font-smoothing: antialiased;
@@ -38,7 +38,7 @@ export default createGlobalStyle`
   }
 
   h1, h2, h3, h4, h5, h6,strong {
-    font-family: ${props => props.theme.fonts.montserratFamily}; 
+    font-family: ${props => props.theme.fonts.montserratFamily};
   }
 
   h1, h2, h3, h4 {
@@ -69,7 +69,7 @@ export default createGlobalStyle`
     line-height: 1.25em;
   }
 
-  a, 
+  a,
   h5,
   strong {
     font-size: 1em;
@@ -118,7 +118,7 @@ export default createGlobalStyle`
       display: flex;
       flex-direction: column;
       justify-content: flex-end;
-      
+
       &:not(:last-child) {
         margin-right: 10px;
       }
@@ -131,7 +131,7 @@ export default createGlobalStyle`
       > div {
         margin-right: 0!important;
       }
-    } 
+    }
   }
 
   .table-responsive {
@@ -163,17 +163,26 @@ export default createGlobalStyle`
       height: 20px;
     }
 
-    .react-colorful__alpha, 
+    .react-colorful__alpha,
     .react-colorful__hue {
       height: 20px;
     }
+  }
+
+  .CalendarDay__highlighted_calendar {
+    background: ${props => props.theme.colors.green_highlight};
+  }
+
+  .CalendarDay__highlighted_calendar:hover {
+    background: ${props => props.theme.colors.green_75};
+    color: ${props => props.theme.colors.white};
   }
 
   .CalendarDay__selected, .CalendarDay__selected:active, .CalendarDay__selected:hover {
     background: ${props => props.theme.colors.green};
     border: 1px double ${props => props.theme.colors.green};
   }
-  
+
   .CalendarMonthGrid {
     text-align: center;
   }
@@ -195,7 +204,7 @@ export default createGlobalStyle`
     left: 0;
     height: 100%;
     width: 100% !important;
-    z-index: 999999 !important;  
+    z-index: 999999 !important;
     animation: show 0.3s;
 
     @media (prefers-reduced-motion: reduce) {

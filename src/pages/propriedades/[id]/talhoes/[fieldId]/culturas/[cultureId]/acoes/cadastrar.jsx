@@ -81,7 +81,12 @@ function AcoesCulturaCadastrar() {
           d.cultures = Number(cultureId);
 
           Object.keys(d).forEach(el => {
-            if (d[el] === null || d[el] === undefined || el === 'types')
+            if (
+              d[el] === null ||
+              d[el] === undefined ||
+              el === 'types' ||
+              d[el] === ''
+            )
               delete d[el];
           });
 
@@ -93,6 +98,9 @@ function AcoesCulturaCadastrar() {
             typeAction === 'applications-supplies'
           )
             d.date_finish = dateToISOString(d.date_finish);
+
+          if (!isEmpty(d?.date) && ['services', 'others'].includes(typeAction))
+            d.date = dateToISOString(d.date);
 
           await CulturesActionsService.create(d, typeAction).then(res => {
             if (res.status !== 201 || res?.statusCode) {

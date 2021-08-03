@@ -5,4 +5,11 @@ const isEmpty = obj => {
   return true;
 };
 
+const isArrayOfEmpty = array => {
+  if (Array.isArray(array)) return array.every(el => isEmpty(el));
+
+  return false;
+};
+
+export { isArrayOfEmpty };
 export default isEmpty;

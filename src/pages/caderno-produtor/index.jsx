@@ -34,10 +34,14 @@ import {
 } from '@/components/DateContainer';
 
 import {
+  addOneDay,
   dateConversor,
+  dateToInput,
   dateToISOString,
   dateToISOStringFinish,
+  getActualTwoWeekInterval,
   getCurrentDate,
+  getDateMonthInterval,
   isValidDate,
   weekDays
 } from '@/helpers/date';
@@ -48,6 +52,7 @@ import { useInfiniteFetch } from '@/hooks/useInfiniteFetch';
 
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 import { truncateProducerNotebook } from '@/helpers/truncate';
+import isEmpty, { isArrayOfEmpty } from '@/helpers/isEmpty';
 
 function ProducerNotebook() {
   const daysRef = createRef();
@@ -63,6 +68,14 @@ function ProducerNotebook() {
   const [activeCategory, setActiveCategory] = useState('');
   const [daysList, setDaysList] = useState([]);
   const [hideCalendar, setHideCalendar] = useState(true);
+  const [dateCalendarInterval, setDateCalendarInterval] = useState([
+    null,
+    null
+  ]);
+  const [dateWeekInterval, setDateWeekInterval] = useState([null, null]);
+  const [userRecords, setUserRecords] = useState([]);
+  const [userWeekRecords, setUserWeekRecords] = useState([]);
+  const [monthSelected, setMonthSelected] = useState('');
 
   const { searchDate = null } = router.query;
 
@@ -77,6 +90,18 @@ function ProducerNotebook() {
     `/categories/find/all?limit=30`
   );
 
+  const { data: dataUserRecords, error: errorUserRecords } = useFetch(
+    !isArrayOfEmpty(dateCalendarInterval)
+      ? `/producer-notebook/find/count/by/user-logged?date_start=${dateCalendarInterval[0]}&date_finish=${dateCalendarInterval[1]}`
+      : null
+  );
+
+  const { data: dataUserRecordsWeek, error: errorUserRecordsWeek } = useFetch(
+    !isArrayOfEmpty(dateWeekInterval)
+      ? `/producer-notebook/find/count/by/user-logged?date_start=${dateWeekInterval[0]}&date_finish=${dateWeekInterval[1]}`
+      : null
+  );
+
   const notes = data ? [].concat(...data) : [];
   const isLoadingInitialData = !data && !error;
   const isLoadingMore =
@@ -88,6 +113,12 @@ function ProducerNotebook() {
   const isRefreshing = isValidating && data && data.length === size;
 
   useEffect(() => {
+    const actualTwoWeekInterval = getActualTwoWeekInterval();
+
+    setDateWeekInterval(actualTwoWeekInterval);
+  }, []);
+
+  useEffect(() => {
     if (isVisible && !isReachingEnd && !isRefreshing) setSize(size + 1);
   }, [isVisible, isRefreshing]);
 
@@ -96,9 +127,53 @@ function ProducerNotebook() {
   }, [searchDate]);
 
   useEffect(() => {
-    if (daysRef.current !== null)
-      daysRef.current.scrollIntoView({ behavior: 'smooth' });
+    if (!isEmpty(activeDate)) {
+      if (daysRef.current !== null)
+        daysRef.current.scrollIntoView({ behavior: 'smooth' });
+
+      const interval = getDateMonthInterval(activeDate, 1);
+      setDateCalendarInterval(interval);
+    }
   }, [activeDate]);
+
+  useEffect(() => {
+    const query = dataUserRecords?.producer_notebook;
+
+    if (!isEmpty(query)) {
+      const months = [];
+
+      Object.keys(query).forEach(key => {
+        const { date } = query[key];
+
+        months.push(String(dateToInput(addOneDay(date))));
+      });
+
+      setUserRecords(months);
+    }
+  }, [dataUserRecords]);
+
+  useEffect(() => {
+    if (monthSelected) {
+      const interval = getDateMonthInterval(dateToInput(monthSelected), 1);
+      setDateCalendarInterval(interval);
+    }
+  }, [monthSelected]);
+
+  useEffect(() => {
+    const query = dataUserRecordsWeek?.producer_notebook;
+
+    if (!isEmpty(query)) {
+      const days = [];
+
+      Object.keys(query).forEach(key => {
+        const { date } = query[key];
+
+        days.push(String(dateToInput(addOneDay(date))));
+      });
+
+      setUserWeekRecords(days);
+    }
+  }, [dataUserRecordsWeek]);
 
   const handleDate = () => {
     const actualWeek = weekDays();
@@ -125,8 +200,14 @@ function ProducerNotebook() {
 
   const handleChangeCategory = e => setActiveCategory(e?.value || '');
 
-  if (errorCategories || error)
-    return <Error error={errorCategories || error} />;
+  if (errorCategories || error || errorUserRecords || errorUserRecordsWeek)
+    return (
+      <Error
+        error={
+          errorCategories || error || errorUserRecords || errorUserRecordsWeek
+        }
+      />
+    );
 
   return (
     <>
@@ -146,6 +227,7 @@ function ProducerNotebook() {
               )}`}
               description="Aqui você poderá visualizar suas ações realizadas no sistema
                 pela data ou categorias."
+              isLoading={isEmpty(activeDate)}
             >
               <Link href="/caderno-produtor/cadastrar">
                 <Button className="primary">
@@ -157,46 +239,60 @@ function ProducerNotebook() {
           <SectionBody>
             <div className="SectionBody__content">
               <CardContainer>
-                <DatePicker
-                  hidden={hideCalendar}
-                  initialValue={activeDate}
-                  onChange={date => handleChangeDate(date.format('YYYY-MM-DD'))}
-                  onOutsideClick={() => setHideCalendar(true)}
-                />
-                <DateWrapper style={{ marginTop: -10 }}>
-                  <DateContainer>
-                    <DateContent>
-                      <ScrollContainer
-                        hideScrollbars={false}
-                        className="scroll-container"
-                      >
-                        <DateCardCalendar
-                          onClick={() => setHideCalendar(false)}
-                        >
-                          <div>
-                            <Image
-                              src="/assets/calendar-search.png"
-                              width="30"
-                              height="30"
-                            />
-                          </div>
-                        </DateCardCalendar>
-                        {daysList.map(({ date, day, dateString, string }) => (
-                          <DateCardWrapper key={dateString}>
-                            <DateCard
-                              onClick={() => handleChangeDate(dateString)}
-                              ref={activeDate === string ? daysRef : null}
-                              active={activeDate === string}
+                {!isEmpty(activeDate) && (
+                  <>
+                    <DatePicker
+                      hidden={hideCalendar}
+                      initialValue={activeDate}
+                      onChange={date =>
+                        handleChangeDate(date.format('YYYY-MM-DD'))
+                      }
+                      onOutsideClick={() => setHideCalendar(true)}
+                      datesList={userRecords}
+                      onMonthClick={setMonthSelected}
+                    />
+                    <DateWrapper style={{ marginTop: -10 }}>
+                      <DateContainer>
+                        <DateContent>
+                          <ScrollContainer
+                            hideScrollbars={false}
+                            className="scroll-container"
+                          >
+                            <DateCardCalendar
+                              onClick={() => setHideCalendar(false)}
                             >
-                              <h3>{date}</h3>
-                              <span>{day}</span>
-                            </DateCard>
-                          </DateCardWrapper>
-                        ))}
-                      </ScrollContainer>
-                    </DateContent>
-                  </DateContainer>
-                </DateWrapper>
+                              <div>
+                                <Image
+                                  src="/assets/calendar-search.png"
+                                  width="30"
+                                  height="30"
+                                />
+                              </div>
+                            </DateCardCalendar>
+                            {daysList.map(
+                              ({ date, day, dateString, string }) => (
+                                <DateCardWrapper key={dateString}>
+                                  <DateCard
+                                    onClick={() => handleChangeDate(dateString)}
+                                    ref={activeDate === string ? daysRef : null}
+                                    active={activeDate === string}
+                                    highlight={userWeekRecords.some(
+                                      d => d === dateString
+                                    )}
+                                  >
+                                    <h3>{date}</h3>
+                                    <span>{day}</span>
+                                  </DateCard>
+                                </DateCardWrapper>
+                              )
+                            )}
+                          </ScrollContainer>
+                        </DateContent>
+                      </DateContainer>
+                    </DateWrapper>
+                  </>
+                )}
+
                 <div
                   style={{
                     borderBottom: '1px solid #EEEDEA',
@@ -230,7 +326,7 @@ function ProducerNotebook() {
                     </div>
                   )}
                 </div>
-                {data && (
+                {!isEmpty(activeDate) && data && (
                   <>
                     {(!isEmptyData &&
                       notes.map(d => (

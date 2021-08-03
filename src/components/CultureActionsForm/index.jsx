@@ -39,7 +39,7 @@ const CulturesActionsForm = ({
   if (loading) return <Loader />;
 
   return (
-    (['services', 'supplies'].includes(typeAction) && (
+    (typeAction === 'services' && (
       <>
         <Input
           type="text"
@@ -55,6 +55,12 @@ const CulturesActionsForm = ({
           inputMode="numeric"
           mask="money"
           required
+          disabled={disabled}
+        />
+        <Input
+          type="date"
+          label="Data (opcional)"
+          name="date"
           disabled={disabled}
         />
         <TextArea
@@ -124,6 +130,38 @@ const CulturesActionsForm = ({
           name="value"
           inputMode="numeric"
           mask="money"
+          disabled={disabled}
+        />
+        <Input
+          type="date"
+          label="Data (opcional)"
+          name="date"
+          disabled={disabled}
+        />
+        <TextArea
+          name="description"
+          label="Descrição"
+          required
+          disabled={disabled}
+        />
+      </>
+    )) ||
+    (typeAction === 'supplies' && (
+      <>
+        <Input
+          type="text"
+          label="Nome"
+          name="name"
+          required
+          disabled={disabled}
+        />
+        <Input
+          type="text"
+          label="Preço em R$"
+          name="value"
+          inputMode="numeric"
+          mask="money"
+          required
           disabled={disabled}
         />
         <TextArea

@@ -139,7 +139,7 @@ const FileInput = (
           accept={extensions.join(',')}
           id={name}
           type="file"
-          name={`${name}${multiple && '[]'}`}
+          name={`${name}${multiple ? '[]' : ''}`}
           onChangeCapture={handleChange}
           hidden
           multiple={multiple || max > 1}
@@ -149,7 +149,7 @@ const FileInput = (
           ref={inputRef}
           id={name}
           type="file"
-          name={`${name}${multiple && '[]'}`}
+          name={`${name}${multiple ? '[]' : ''}`}
           onChangeCapture={handleChange}
           hidden
           multiple={multiple || max > 1}

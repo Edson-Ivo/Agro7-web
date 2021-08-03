@@ -16,7 +16,6 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 
 import { NavToogleAction } from '@/store/modules/Nav/actions';
-import { UserDeAuthAction } from '@/store/modules/User/actions';
 import AuthService from '@/services/AuthService';
 import { NavbarContainer } from './styles';
 
@@ -27,7 +26,10 @@ const Navbar = () => {
   const [open, setOpen] = useState(false);
 
   const navOpen = useSelector(state => state.nav.open);
-  const { name } = useSelector(state => state.user);
+  const {
+    name,
+    profile: { image_url: imageUrl }
+  } = useSelector(state => state.user);
 
   const handleClick = () => {
     setOpen(!open);
@@ -72,7 +74,7 @@ const Navbar = () => {
             >
               <div className="navbar_button__image">
                 <Image
-                  src="/assets/user-placeholder.png"
+                  src={imageUrl || `/assets/user-placeholder.png`}
                   width={48}
                   height={48}
                   loading="eager"

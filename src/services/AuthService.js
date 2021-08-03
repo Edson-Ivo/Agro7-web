@@ -16,6 +16,11 @@ class AuthService {
         if (response.data.access_token) {
           const { access_token: accessToken, user } = response.data;
 
+          if (!user?.profile?.image_url)
+            user.profile = {
+              image_url: ''
+            };
+
           setCookie(AUTH_COOKIE_TOKEN, accessToken);
           setCookie(AUTH_COOKIE_NAME, Base64.encode(JSON.stringify(user)));
         }
@@ -45,7 +50,10 @@ class AuthService {
     return {
       id: 0,
       name: '',
-      type: ''
+      type: '',
+      profile: {
+        image_url: ''
+      }
     };
   }
 }
