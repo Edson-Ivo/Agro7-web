@@ -107,7 +107,9 @@ function VendasDetalhes() {
                         products:
                           data?.harvests_sales?.[0]?.harvests?.cultures
                             ?.products?.id,
-                        is_green: data?.harvests_sales?.[0]?.harvests?.is_green,
+                        is_green: String(
+                          data?.harvests_sales?.[0]?.harvests?.is_green
+                        ),
                         transporters_name:
                           data?.vehicles_sales?.vehicles?.transporters?.name,
                         transporters_document:
@@ -180,11 +182,11 @@ function VendasDetalhes() {
                               <Select
                                 options={[
                                   {
-                                    value: true,
+                                    value: 'true',
                                     label: 'Sim'
                                   },
                                   {
-                                    value: false,
+                                    value: 'false',
                                     label: 'Não'
                                   }
                                 ]}
@@ -196,8 +198,27 @@ function VendasDetalhes() {
                           </div>
                         </Step>
                         <Step
-                          label="Distribuição"
+                          label="Venda"
                           onClick={() => handleChangeActiveStep(2)}
+                        >
+                          <Input
+                            type="number"
+                            label="Quantidade da venda"
+                            name="total_quantity"
+                            disabled
+                          />
+                          <Input
+                            type="text"
+                            label="Preço em R$ da venda"
+                            name="value"
+                            inputMode="numeric"
+                            mask="money"
+                            disabled
+                          />
+                        </Step>
+                        <Step
+                          label="Distribuição"
+                          onClick={() => handleChangeActiveStep(3)}
                         >
                           <Input
                             type="text"
@@ -321,7 +342,7 @@ function VendasDetalhes() {
                         </Step>
                         <Step
                           label="Transporte"
-                          onClick={() => handleChangeActiveStep(3)}
+                          onClick={() => handleChangeActiveStep(4)}
                         >
                           <Input
                             type="text"
@@ -383,25 +404,6 @@ function VendasDetalhes() {
                               </Button>
                             </div>
                           </div>
-                        </Step>
-                        <Step
-                          label="Venda"
-                          onClick={() => handleChangeActiveStep(4)}
-                        >
-                          <Input
-                            type="number"
-                            label="Quantidade da venda"
-                            name="total_quantity"
-                            disabled
-                          />
-                          <Input
-                            type="text"
-                            label="Preço em R$ da venda"
-                            name="value"
-                            inputMode="numeric"
-                            mask="money"
-                            disabled
-                          />
                         </Step>
                       </MultiStep>
                     </Form>

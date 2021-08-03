@@ -21,12 +21,14 @@ import Loader from '@/components/Loader/index';
 import PDFViewer from '@/components/PDFViewer/index';
 import Input from '@/components/Input/index';
 import Button from '@/components/Button/index';
+import { dateToISOString, getCurrentDate, isValidDate } from '@/helpers/date';
 
 function VendasEtiquetasProdutosNutricional() {
   const formRef = useRef(null);
   const [alert, setAlert] = useState({ type: '', message: '' });
   const [disableButton, setDisableButton] = useState(false);
   const [quantity, setQuantity] = useState(null);
+  const [validate, setValidate] = useState(null);
 
   const router = useRouter();
   const { id } = router.query;
@@ -36,14 +38,15 @@ function VendasEtiquetasProdutosNutricional() {
   );
 
   const { data: dataLabel, error: errorLabel } = useFetch(
-    dataSale && quantity
-      ? `/sales/generate/product-label/by/id/${dataSale?.id}?quantity=${quantity}`
+    dataSale && quantity && validate
+      ? `/sales/generate/product-label/by/id/${dataSale?.id}?quantity=${quantity}&date_validate=${validate}`
       : null,
     true
   );
 
   const handleSubmit = dt => {
     setDisableButton(true);
+    setAlert({ type: '', message: '' });
 
     const maxQtd = dataSale?.total_quantity;
 
@@ -53,17 +56,28 @@ function VendasEtiquetasProdutosNutricional() {
         .transform(value => (Number.isNaN(value) ? undefined : value))
         .positive('Quantidade deve ser maior que 0')
         .max(maxQtd, `Quantidade deve ser menor ou igual à ${maxQtd}`)
-        .required('O campo quantidade é obrigatório')
+        .required('O campo quantidade é obrigatório'),
+      validate: yup.string().required('O campo data de validade é obrigatório!')
     });
 
     schema
       .validate(dt)
       .then(async d => {
-        setQuantity(d.quantity);
+        if (isValidDate(d.validate)) {
+          const date = dateToISOString(d.validate);
+          const dateSale = dataSale?.date;
 
-        setTimeout(() => {
-          setDisableButton(false);
-        }, 1000);
+          if (getCurrentDate(dateSale).diff(date) < 0) {
+            setValidate(date);
+            setQuantity(d.quantity);
+          } else {
+            setAlert({
+              type: 'error',
+              message:
+                'A data da validade não pode ser anterior a data da venda'
+            });
+          }
+        }
       })
       .catch(err => {
         setAlert({ type: 'error', message: err.errors[0] });
@@ -75,6 +89,10 @@ function VendasEtiquetasProdutosNutricional() {
           formRef.current.setFieldError(path, message);
         }
       });
+
+    setTimeout(() => {
+      setDisableButton(false);
+    }, 1000);
   };
 
   if (errorSale || errorLabel) return <Error error={errorSale || errorLabel} />;
@@ -110,10 +128,10 @@ function VendasEtiquetasProdutosNutricional() {
                 )}
                 {(dataSale && (
                   <>
-                    {!quantity && (
+                    {!quantity && !validate && (
                       <Alert type="info">
-                        Selecione a quantidade que vai em cada embalagem
-                        primeiro:
+                        Selecione a quantidade e a data de validade que vai em
+                        cada embalagem primeiro:
                       </Alert>
                     )}
                     <h4>
@@ -128,6 +146,13 @@ function VendasEtiquetasProdutosNutricional() {
                           name="quantity"
                           min="1"
                           max={dataSale?.total_quantity}
+                          required
+                        />
+                        <Input
+                          type="date"
+                          label="Validade do produto:"
+                          name="validate"
+                          required
                         />
                         <Button
                           type="submit"
@@ -138,7 +163,7 @@ function VendasEtiquetasProdutosNutricional() {
                         </Button>
                       </Form>
                     </div>
-                    {quantity && (
+                    {quantity && validate && !errorLabel && (
                       <>
                         {(!isEmpty(dataLabel) && (
                           <PDFViewer

@@ -25,6 +25,7 @@ import { useFetch } from '@/hooks/useFetch';
 import Loader from '@/components/Loader/index';
 import NutricionalService from '@/services/NutricionalService';
 import isEmpty from '@/helpers/isEmpty';
+import objectKeyExists from '@/helpers/objectKeyExists';
 import ImageContainer from '@/components/ImageContainer/index';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 
@@ -127,12 +128,14 @@ function AdminProductsEdit() {
               // Nutricional
 
               Object.keys(productData?.nutritional).forEach(key => {
-                if (isEmpty(dataEdit.nutritional[key])) {
-                  dataEdit.nutritional[key] = null;
-                } else {
-                  dataEdit.nutritional[key] = String(
-                    dataEdit?.nutritional[key]
-                  );
+                if (objectKeyExists(dataEdit.nutritional, key)) {
+                  if (isEmpty(dataEdit.nutritional[key])) {
+                    dataEdit.nutritional[key] = '0';
+                  } else {
+                    dataEdit.nutritional[key] = String(
+                      dataEdit?.nutritional[key]
+                    );
+                  }
                 }
               });
 
@@ -183,12 +186,16 @@ function AdminProductsEdit() {
                 editSuccess = false;
 
                 Object.keys(productData?.green).forEach(key => {
-                  if (isEmpty(dataEdit.green[key])) {
-                    dataEdit.green[key] = null;
-                  } else {
-                    dataEdit.green[key] = String(dataEdit?.green[key]);
+                  if (objectKeyExists(dataEdit.green, key)) {
+                    if (isEmpty(dataEdit.green[key])) {
+                      dataEdit.green[key] = '0';
+                    } else {
+                      dataEdit.green[key] = String(dataEdit?.green[key]);
+                    }
                   }
                 });
+
+                dataEdit.green = { edit: true };
 
                 await NutricionalService.update(
                   productData?.green.id,
@@ -199,7 +206,7 @@ function AdminProductsEdit() {
                     setTimeout(() => {
                       setDisableButton(false);
                     }, 1000);
-                  } else if (nutricionalImageEdit) {
+                  } else if (nutricionalGreenImageEdit) {
                     const nutricionalVerdeImageFormData = new FormData();
 
                     nutricionalVerdeImageFormData.append(
@@ -238,7 +245,7 @@ function AdminProductsEdit() {
                 });
 
                 setTimeout(() => {
-                  // router.push(`/admin/produtos/${id}/detalhes`);
+                  router.push(`/admin/produtos/${id}/detalhes`);
                   setDisableButton(false);
                 }, 1000);
               }

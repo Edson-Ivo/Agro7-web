@@ -50,3 +50,33 @@ export const removeTimeSeconds = time => {
 
   return timeToArray.join(':');
 };
+
+export const getDateMonthInterval = (date, addFinalMonth = 0) => {
+  const startOfMonth = getCurrentDate(date)
+    .startOf('month')
+    .subtract(1, 'days')
+    .format('YYYY-MM-DD');
+
+  const endOfMonth = getCurrentDate(date)
+    .endOf('month')
+    .add(addFinalMonth, 'months')
+    .add(1, 'days')
+    .format('YYYY-MM-DD');
+
+  return [startOfMonth, endOfMonth];
+};
+
+export const getActualTwoWeekInterval = () => {
+  const current = getCurrentDate().startOf('day');
+
+  const startOfWeek = current.add(1, 'days').format('YYYY-MM-DD');
+
+  const endOfWeek = current
+    .subtract(2, 'weeks')
+    .subtract(1, 'days')
+    .format('YYYY-MM-DD');
+
+  return [endOfWeek, startOfWeek];
+};
+
+export const addOneDay = date => getCurrentDate(date).add(1, 'days');

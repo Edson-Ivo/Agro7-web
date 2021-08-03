@@ -175,32 +175,36 @@ export default function Produtor({ profile }) {
         <Section>
           <Content>
             <h2>Galeria de fotos:</h2>
-            <Carousel
-              slidesToShow={3}
-              responsive={[
-                {
-                  breakpoint: 1150,
-                  settings: {
-                    slidesToShow: 1
+            {(!isEmpty(profile?.profiles?.gallery) && (
+              <Carousel
+                slidesToShow={3}
+                responsive={[
+                  {
+                    breakpoint: 1150,
+                    settings: {
+                      slidesToShow: 1
+                    }
                   }
-                }
-              ]}
-            >
-              {profile?.profiles?.gallery.map(({ image_url: imageUrl }, i) => (
-                <div key={String(i)}>
-                  <GalleryImage>
-                    <Image
-                      src={imageUrl}
-                      width={566}
-                      height={372}
-                      alt={`Imagem ${i} da galeria de fotos deste produtor`}
-                    />
-                  </GalleryImage>
-                </div>
-              )) || (
-                <h4>Esse produtor ainda não inseriu fotos para sua galeria.</h4>
-              )}
-            </Carousel>
+                ]}
+              >
+                {profile?.profiles?.gallery.map(
+                  ({ image_url: imageUrl }, i) => (
+                    <div key={String(i)}>
+                      <GalleryImage>
+                        <Image
+                          src={imageUrl}
+                          width={566}
+                          height={372}
+                          alt={`Imagem ${i} da galeria de fotos deste produtor`}
+                        />
+                      </GalleryImage>
+                    </div>
+                  )
+                )}
+              </Carousel>
+            )) || (
+              <h4>Esse produtor ainda não inseriu fotos para sua galeria.</h4>
+            )}
           </Content>
         </Section>
       </Container>
@@ -224,8 +228,10 @@ export const getStaticProps = async ctx => {
     const response = await api.get(url);
     let newData = response.data;
 
-    const embedId = extractYoutubeVideoID(newData?.profiles?.video_url);
-    newData = { ...newData, embedId };
+    if (!isEmpty(newData?.profiles?.video_url)) {
+      const embedId = extractYoutubeVideoID(newData?.profiles?.video_url);
+      newData = { ...newData, embedId };
+    }
 
     profile = newData;
   } catch (err) {
