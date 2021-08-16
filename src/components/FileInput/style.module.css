@@ -25,9 +25,12 @@
   font-size: 1em;
   font-weight: 800;
   text-align: left;
-  -webkit-transition: ease 0.2s;
   transition: ease 0.2s;
   margin-left: 10px;
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none !important;
+  }
 }
 
 .files {
@@ -104,6 +107,10 @@
   border-radius: 100%;
   cursor: pointer;
   transition: 0.2s background-color ease;
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none !important;
+  }
 }
 
 .fileRemove:hover {
@@ -153,6 +160,10 @@
   height: auto;
   color: gray;
   transition: 0.2s color ease;
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none !important;
+  }
 }
 
 .input::after {
@@ -165,6 +176,10 @@
   font-family: 'Montserrat', sans-serif, 'Segoe UI', Verdana, Arial;
   text-align: center;
   transition: 0.2s color ease;
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none !important;
+  }
 }
 .input[text]::after {
   content: attr(text);

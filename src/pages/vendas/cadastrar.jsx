@@ -482,7 +482,6 @@ function VendasCreate() {
                           label="Quantidade da venda"
                           name="products.quantity"
                           min="1"
-                          max={stockQtd}
                           disabled={!getStock}
                         />
                         <Input
@@ -727,6 +726,7 @@ function VendasCreate() {
                               type="text"
                               label="Placa do veículo"
                               name="transporters.vehicles.plate"
+                              mask="plate"
                             />
                           </div>
                         </div>

@@ -12,6 +12,10 @@ const Button = styled.button`
   opacity: 0.9;
   border: 1px solid ${props => props.theme.colors.black_25};
 
+  @media (prefers-reduced-motion: reduce) {
+    transition: none !important;
+  }
+
   > svg {
     margin-right: 4px;
   }

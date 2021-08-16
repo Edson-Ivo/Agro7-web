@@ -3,7 +3,7 @@ import Link from 'next/link';
 import Head from 'next/head';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faPlus, faFileAlt } from '@fortawesome/free-solid-svg-icons';
 import Button from '@/components/Button';
 
 import Container from '@/components/Container';
@@ -106,11 +106,18 @@ function Vendas() {
               title="Gerenciar Vendas"
               isLoading={isEmpty(dataUser) || isEmpty(data)}
             >
-              <Link href={`/admin/users/${id}/vendas/cadastrar`}>
-                <Button className="primary">
-                  <FontAwesomeIcon icon={faPlus} /> Nova Venda
-                </Button>
-              </Link>
+              <div className="buttons__container">
+                <Link href={`/admin/users/${id}/vendas/cadastrar`}>
+                  <Button className="primary">
+                    <FontAwesomeIcon icon={faPlus} /> Nova Venda
+                  </Button>
+                </Link>
+                <Link href={`/admin/users/${id}/vendas/relatorio`}>
+                  <Button className="primary">
+                    <FontAwesomeIcon icon={faFileAlt} /> Relatório
+                  </Button>
+                </Link>
+              </div>
             </SectionHeaderContent>
           </SectionHeader>
           <SectionBody>

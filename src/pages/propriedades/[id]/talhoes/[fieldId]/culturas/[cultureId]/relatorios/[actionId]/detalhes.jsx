@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { Form } from '@unform/web';
+import { MultiStepForm as MultiStep, Step } from '@/components/Multiform';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck } from '@fortawesome/free-solid-svg-icons';
@@ -28,12 +29,14 @@ import { useSelector } from 'react-redux';
 import urlRoute from '@/helpers/urlRoute';
 import isEmpty from '@/helpers/isEmpty';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
+import PDFViewer from '@/components/PDFViewer/index';
 
 function RelatoriosDetails() {
   const router = useRouter();
   const formRef = useRef(null);
   const { id, fieldId, cultureId, actionId } = router.query;
   const [alert, setAlert] = useState({ type: '', message: '' });
+  const [activeStep, setActiveStep] = useState(1);
   const [disableButton, setDisableButton] = useState(false);
   const { addModal, removeModal } = useModal();
 
@@ -48,6 +51,11 @@ function RelatoriosDetails() {
     error: errorActions,
     mutate: mutateActions
   } = useFetch(`/technician-actions/find/by/id/${actionId}`);
+
+  const { data: dataReport, error: errorReport } = useFetch(
+    `/technician-actions/generate/report/by/id/${actionId}`,
+    true
+  );
 
   const { type } = useSelector(state => state.user);
   const [route, setRoute] = useState({});
@@ -113,8 +121,10 @@ function RelatoriosDetails() {
     router.back();
   };
 
-  if (error || errorCultures || errorActions)
-    return <Error error={error || errorCultures || errorActions} />;
+  if (error || errorCultures || errorActions || errorReport)
+    return (
+      <Error error={error || errorCultures || errorActions || errorReport} />
+    );
   if (data && id !== String(data?.properties?.id)) return <Error error={404} />;
   if (dataCultures && fieldId !== String(dataCultures?.fields?.id))
     return <Error error={404} />;
@@ -188,22 +198,51 @@ function RelatoriosDetails() {
                         ...dataActions
                       }}
                     >
-                      <TextArea
-                        name="diagnostics"
-                        label="Diagnóstico da Cultura"
-                        disabled
-                      />
-                      <TextArea
-                        name="cultivation"
-                        label="Tratos Culturais"
-                        disabled
-                      />
-                      <TextArea name="fertilizing" label="Adubação" disabled />
-                      <TextArea
-                        name="plant_health"
-                        label="Fitossanidade"
-                        disabled
-                      />
+                      <MultiStep activeStep={activeStep}>
+                        <Step
+                          label="Relatório"
+                          onClick={() => setActiveStep(1)}
+                        >
+                          <h4 className="step-title">Relatório Técnico</h4>
+                          <TextArea
+                            name="diagnostics"
+                            label="Diagnóstico da Cultura"
+                            disabled
+                          />
+                          <TextArea
+                            name="cultivation"
+                            label="Tratos Culturais"
+                            disabled
+                          />
+                          <TextArea
+                            name="fertilizing"
+                            label="Adubação"
+                            disabled
+                          />
+                          <TextArea
+                            name="plant_health"
+                            label="Fitossanidade"
+                            disabled
+                          />
+                        </Step>
+                        <Step label="Imprimir" onClick={() => setActiveStep(2)}>
+                          <h4 className="step-title">
+                            Imprimir/Visualizar Relatório
+                          </h4>
+                          <>
+                            {(!isEmpty(dataReport) && (
+                              <PDFViewer
+                                src={`${dataReport}`}
+                                name={`Relatório Técnico na Cultura de ${dataCultures?.products.name}`}
+                                pdfName={`Relatório Técnico na Cultura de ${dataCultures?.products.name}.pdf`}
+                                alertMessage="Se você não conseguir abrir ou visualizar o relatório, baixe-o no botão abaixo:"
+                                downloadMessage="Baixar Relatório"
+                                fitH
+                              />
+                            )) || <Loader />}
+                          </>
+                        </Step>
+                      </MultiStep>
 
                       <div className="form-group buttons">
                         <div>

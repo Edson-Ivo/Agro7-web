@@ -70,7 +70,13 @@ function RelatoriosCreate() {
           message: 'Enviando...'
         });
 
-        if (isEmpty(d)) {
+        let isValidRegister = false;
+
+        Object.keys(d).forEach(key => {
+          if (!isEmpty(d[key])) isValidRegister = true;
+        });
+
+        if (isValidRegister) {
           d.cultures = Number(cultureId);
 
           await TechnicianActionsService.create(d).then(res => {

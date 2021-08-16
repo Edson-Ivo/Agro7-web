@@ -15,6 +15,10 @@ export const InputContainer = styled.div`
     margin: 5px 0px 15px;
     transition: background 0.3s;
 
+    @media (prefers-reduced-motion: reduce) {
+      transition: none !important;
+    }
+
     ${props =>
       props.error
         ? css`
@@ -62,13 +66,19 @@ export const InputContainer = styled.div`
 export const StyledInput = styled.input``;
 
 export const Label = styled.label`
+  align-self: left;
   color: ${props => props.theme.colors.black_50};
   cursor: text;
+  display: flex;
   font-size: 1em;
   font-weight: 800;
   text-align: left;
   transition: ease 0.2s;
   margin-left: 10px;
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none !important;
+  }
 
   &.label_error {
     color: ${props => props.theme.colors.red};

@@ -15,6 +15,10 @@ class SalesService {
     return api.get(`/transporters-vehicles/find/by/id/${id}`);
   }
 
+  static async getTransporterVehiclesByProperty(idProperty) {
+    return api.get(`/transporters-vehicles/find/by/property/${idProperty}`);
+  }
+
   static async create(data) {
     try {
       const response = await api.post(`/sales/create`, { ...data });

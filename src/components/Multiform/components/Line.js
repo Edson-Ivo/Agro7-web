@@ -6,6 +6,10 @@ const Line = styled.div`
   flex: 1;
   transition: all 0.4s;
 
+  @media (prefers-reduced-motion: reduce) {
+    transition: none !important;
+  }
+
   ${props =>
     props.complete &&
     css`

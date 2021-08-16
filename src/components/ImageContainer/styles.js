@@ -34,4 +34,8 @@ export const UpperLabel = styled.p`
   transition: ease 0.2s;
   margin-left: 10px;
   margin-bottom: 5px;
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none !important;
+  }
 `;

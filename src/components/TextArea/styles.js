@@ -1,7 +1,5 @@
 import styled, { css } from 'styled-components';
 
-import { ShrinkedLabel } from '@/styles/mixins';
-
 export const InputContainer = styled.div`
   position: relative;
 `;
@@ -12,13 +10,17 @@ export const StyledTextArea = styled.textarea`
   font: 400 1em 'Lato';
   height: 160px;
   line-height: 1.4em;
-  padding: 24px 20px 0;
+  padding: 10px 20px;
   display: block;
   width: 100%;
   border-radius: 10px;
   margin: 5px 0px 15px;
   transition: background 0.3s;
   resize: none;
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none !important;
+  }
 
   ${props =>
     props.error
@@ -38,10 +40,6 @@ export const StyledTextArea = styled.textarea`
   &:focus {
     background-color: ${props => props.theme.colors.white};
   }
-
-  &:focus + .input-label {
-    ${ShrinkedLabel}
-  }
 `;
 
 export const Label = styled.label`
@@ -51,14 +49,10 @@ export const Label = styled.label`
   font-weight: 800;
   text-align: left;
   transition: ease 0.2s;
-  position: absolute;
-  left: 20px;
-  top: 11%;
-  transform: translateY(-40%);
-  pointer-events: none;
+  margin-left: 10px;
 
-  &.label_active {
-    ${ShrinkedLabel}
+  @media (prefers-reduced-motion: reduce) {
+    transition: none !important;
   }
 
   &.label_error {

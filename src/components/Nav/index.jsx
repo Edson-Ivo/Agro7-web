@@ -32,6 +32,10 @@ const NavContainer = styled.div`
   z-index: 99999;
   transition: transform 0.1s ease-in-out;
 
+  @media (prefers-reduced-motion: reduce) {
+    transition: none !important;
+  }
+
   &.open {
     transform: translateX(0%) !important;
     height: 100%;

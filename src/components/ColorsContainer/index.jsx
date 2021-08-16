@@ -14,6 +14,10 @@ export const ColorFill = styled.div`
   width: ${props => props.size || 90}px;
   transform: scale(${props => (props.selected ? 1.2 : 1.0)});
   transition: transform 100ms ease 0s;
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none !important;
+  }
 `;
 
 export const ColorViewer = styled.div`

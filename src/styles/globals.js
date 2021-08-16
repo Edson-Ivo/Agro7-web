@@ -37,7 +37,7 @@ export default createGlobalStyle`
     line-height: 1.25em;
   }
 
-  h1, h2, h3, h4, h5, h6,strong {
+  h1, h2, h3, h4, h5, h6, strong {
     font-family: ${props => props.theme.fonts.montserratFamily};
   }
 
@@ -208,8 +208,7 @@ export default createGlobalStyle`
     animation: show 0.3s;
 
     @media (prefers-reduced-motion: reduce) {
-      animation: none;
-      -webkit-animation: none;
+      animation: none !important;
     }
 
     ${ShowTransition}

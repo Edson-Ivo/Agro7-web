@@ -21,6 +21,10 @@ export const Card = styled.div`
   margin-top: 10px;
   transition: all 0.3s cubic-bezier(0.215, 0.61, 0.355, 1);
 
+  @media (prefers-reduced-motion: reduce) {
+    transition: none !important;
+  }
+
   @media screen and (max-width: ${props => props.theme.breakpoints.mobile}px) {
     min-height: ${props => props.height || '150px'};
   }

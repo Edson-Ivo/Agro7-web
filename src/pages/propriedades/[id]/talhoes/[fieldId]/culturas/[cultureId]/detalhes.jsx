@@ -98,6 +98,13 @@ function CulturasInfo() {
                   {willAccess && (
                     <>
                       <Link
+                        href={`${route.path}/${id}/talhoes/${fieldId}/culturas/${cultureId}/relatorio`}
+                      >
+                        <Button className="primary">
+                          <FontAwesomeIcon icon={faFileAlt} /> Relatório
+                        </Button>
+                      </Link>
+                      <Link
                         href={`${route.path}/${id}/talhoes/${fieldId}/culturas/${cultureId}/colheitas`}
                       >
                         <Button className="primary">

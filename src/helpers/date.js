@@ -80,3 +80,12 @@ export const getActualTwoWeekInterval = () => {
 };
 
 export const addOneDay = date => getCurrentDate(date).add(1, 'days');
+
+export const getFinishDate = date =>
+  getCurrentDate(date)
+    .startOf('day')
+    .add(20, 'hours')
+    .add(59, 'minutes')
+    .add(59, 'seconds')
+    .add(99, 'milliseconds')
+    .toISOString();
