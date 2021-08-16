@@ -3,7 +3,12 @@ import Head from 'next/head';
 import Link from 'next/link';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTruck, faStore, faPlus } from '@fortawesome/free-solid-svg-icons';
+import {
+  faTruck,
+  faStore,
+  faPlus,
+  faFileAlt
+} from '@fortawesome/free-solid-svg-icons';
 
 import Container from '@/components/Container';
 import Nav from '@/components/Nav';
@@ -110,6 +115,11 @@ function Vendas() {
                 <Link href="/vendas/transportadoras/">
                   <Button className="primary">
                     <FontAwesomeIcon icon={faTruck} /> Transportadoras
+                  </Button>
+                </Link>
+                <Link href="/vendas/relatorio/">
+                  <Button className="primary">
+                    <FontAwesomeIcon icon={faFileAlt} /> Relatório
                   </Button>
                 </Link>
               </div>

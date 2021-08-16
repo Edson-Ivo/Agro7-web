@@ -5,7 +5,7 @@ import { Form } from '@unform/web';
 import { useRouter } from 'next/router';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTags } from '@fortawesome/free-solid-svg-icons';
+import { faTags, faQrcode } from '@fortawesome/free-solid-svg-icons';
 
 import { MultiStepForm as MultiStep, Step } from '@/components/Multiform';
 import Container from '@/components/Container';
@@ -83,9 +83,20 @@ function VendasDetalhes() {
             >
               <div className="buttons__container">
                 <Link href={`${routePath}/${id}/etiquetas/`}>
-                  <Button className="primary">
+                  <Button className="primary" style={{ marginRight: 8 }}>
                     <FontAwesomeIcon icon={faTags} /> Etiquetas
                   </Button>
+                </Link>
+                <Link href={`/rastreamento/${data?.code}`} replace passHref>
+                  <a
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{ minWidth: 200 }}
+                  >
+                    <Button className="primary">
+                      <FontAwesomeIcon icon={faQrcode} /> Rastreio
+                    </Button>
+                  </a>
                 </Link>
               </div>
             </SectionHeaderContent>

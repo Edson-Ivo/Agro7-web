@@ -10,6 +10,10 @@ const Pill = styled.div`
   transition: all 0.4s;
   border: 2px solid ${props => props.theme.colors.background};
 
+  @media (prefers-reduced-motion: reduce) {
+    transition: none !important;
+  }
+
   ${props =>
     props.label &&
     css`

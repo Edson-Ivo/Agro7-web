@@ -29,6 +29,10 @@ const adminUserPropertyRoute = {
     name: 'Ações'
   },
 
+  '/admin/users/[userId]/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]/relatorio': {
+    name: 'Relatórios'
+  },
+
   '/admin/users/[userId]/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]/acoes/[type]/[actionId]': {
     name: 'Detalhes',
     path:
@@ -404,6 +408,9 @@ const namedSales = {
   '/vendas': {
     name: 'Vendas'
   },
+  '/vendas/relatorio': {
+    name: 'Relatório'
+  },
   '/vendas/[id]': {
     name: '%lote',
     path: '/vendas/[id]/detalhes'
@@ -443,12 +450,18 @@ const namedSales = {
   '/vendas/transportadoras/[id]/veiculos/[idVehicle]': {
     name: '%veiculo',
     path: '/vendas/transportadoras/[id]/veiculos/[idVehicle]/detalhes'
+  },
+  '/vendas/transportadoras/[id]/relatorio': {
+    name: 'Relatório'
   }
 };
 
 const adminUserSalesRoute = {
   '/admin/users/[id]/vendas': {
     name: 'Vendas'
+  },
+  '/admin/users/[id]/vendas/relatorio': {
+    name: 'Relatório'
   },
   '/admin/users/[id]/vendas/cadastrar': {
     name: 'Cadastrar'
@@ -459,6 +472,9 @@ const adminUserSalesRoute = {
   },
   '/admin/users/[userId]/vendas': {
     name: 'Vendas'
+  },
+  '/admin/users/[userId]/vendas/relatorio': {
+    name: 'Relatório'
   },
   '/admin/users/[userId]/vendas/[id]': {
     name: '%lote',
@@ -495,6 +511,9 @@ const adminUserSalesRoute = {
   },
   '/admin/users/[userId]/vendas/transportadoras/[id]/documentos/cadastrar': {
     name: 'Cadastrar Documentos'
+  },
+  '/admin/users/[userId]/vendas/transportadoras/[id]/relatorio': {
+    name: 'Relatório'
   },
   '/admin/users/[userId]/vendas/transportadoras/[id]/veiculos/[idVehicle]': {
     name: '%veiculo',
@@ -635,6 +654,10 @@ const namedRoutes = {
   '/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]': {
     name: '%cultura',
     path: '/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]/detalhes'
+  },
+
+  '/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]/relatorio': {
+    name: 'Relatório'
   },
 
   '/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]/editar': {

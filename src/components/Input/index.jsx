@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useField } from '@unform/core';
 
 import { masks } from './masks';
-import { InputContainer, StyledInput, Label, UpperLabel } from './styles';
+import { InputContainer, StyledInput, Label } from './styles';
 
 const Input = ({
   handleChange,
@@ -17,7 +17,6 @@ const Input = ({
   const inputRef = useRef(null);
 
   const { fieldName, defaultValue, registerField, error } = useField(name);
-  const [hasText, setHasText] = useState(!!defaultValue || !!otherProps?.value);
 
   useEffect(() => {
     registerField({
@@ -26,11 +25,9 @@ const Input = ({
       getValue: refs => refs.current.value,
       setValue: (refs, value) => {
         refs.current.value = value;
-        setHasText(!!value);
       },
       clearValue: refs => {
         refs.current.value = '';
-        setHasText(false);
       }
     });
   }, [fieldName, registerField]);
@@ -44,9 +41,6 @@ const Input = ({
       const maskedValue = maskInput(inputValue);
 
       inputRef.current.value = maskInput(maskedValue);
-      setHasText(!!maskedValue);
-    } else {
-      setHasText(!!inputValue);
     }
 
     if (typeof handleChange !== 'undefined') handleChange(e);
@@ -54,10 +48,13 @@ const Input = ({
 
   return (
     <InputContainer>
-      {label && ['date', 'time'].includes(type) && (
-        <UpperLabel className={`input-label ${error ? ' label_error' : ''}`}>
+      {label && (
+        <Label
+          className={`input-label ${error ? ' label_error' : ''}`}
+          htmlFor={fieldName}
+        >
           {label}
-        </UpperLabel>
+        </Label>
       )}
       <StyledInput
         id={fieldName}
@@ -68,18 +65,10 @@ const Input = ({
         defaultValue={defaultValue}
         error={!!error}
         disabled={disabled}
+        placeholder={label || ''}
         step={type === 'number' ? step : null}
         {...otherProps}
       />
-      {label && !['date', 'time'].includes(type) && (
-        <Label
-          className={`input-label ${hasText ? 'label_active' : ''}${
-            error ? ' label_error' : ''
-          }`}
-        >
-          {label}
-        </Label>
-      )}
     </InputContainer>
   );
 };

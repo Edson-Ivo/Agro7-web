@@ -2,6 +2,10 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import Head from 'next/head';
 import { Form } from '@unform/web';
 import { useRouter } from 'next/router';
+import Link from 'next/link';
+
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faFileAlt } from '@fortawesome/free-solid-svg-icons';
 
 import { MultiStepForm as MultiStep, Step } from '@/components/Multiform';
 import Container from '@/components/Container';
@@ -117,7 +121,15 @@ function VendasTransportadorasDetalhes() {
                 data?.name
               } cadastrada no dia ${dateConversor(data?.created_at, false)}.`}
               isLoading={isEmpty(data)}
-            />
+            >
+              <div className="buttons__container">
+                <Link href={`${routePath}/transportadoras/${id}/relatorio`}>
+                  <Button className="primary">
+                    <FontAwesomeIcon icon={faFileAlt} /> Relatório
+                  </Button>
+                </Link>
+              </div>
+            </SectionHeaderContent>
           </SectionHeader>
           <SectionBody>
             <div className="SectionBody__content">

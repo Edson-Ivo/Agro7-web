@@ -90,13 +90,17 @@ const SearchSelect = ({
   return (
     <InputContainer error={error}>
       {label && (
-        <Label className={`input-label ${error ? ' label_error' : ''}`}>
+        <Label
+          className={`input-label ${error ? ' label_error' : ''}`}
+          htmlFor={fieldName}
+        >
           {label}
         </Label>
       )}
       <AsyncSelect
         key={JSON.stringify(urlQuery)}
         cacheOptions
+        inputId={fieldName}
         name={name}
         defaultOptions
         loadOptions={loadOptions}

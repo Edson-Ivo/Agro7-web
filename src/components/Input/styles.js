@@ -1,7 +1,5 @@
 import styled, { css } from 'styled-components';
 
-import { ShrinkedLabel } from '@/styles/mixins';
-
 export const InputContainer = styled.div`
   position: relative;
 `;
@@ -13,12 +11,16 @@ export const StyledInput = styled.input`
   font-size: 1em;
   height: ${props => (props.type !== 'checkbox' ? `50px;` : '')};
   line-height: 50px;
-  padding: ${props =>
-    !['date', 'time'].includes(props.type) ? `16px 20px 0` : '0 20px'};
+  padding: 0 20px;
   ${props => (props.type !== 'checkbox' ? `width: 100%;` : '')};
   ${props => (props.type !== 'checkbox' ? `margin: 5px 0px 15px` : '')};
   border-radius: 10px;
   transition: background 0.3s;
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none !important;
+  }
+
   ${props =>
     props.type === 'checkbox' &&
     css`
@@ -45,16 +47,6 @@ export const StyledInput = styled.input`
     background-color: ${props => props.theme.colors.white};
   }
 
-  ${props =>
-    !['checkbox', 'date', 'time'].includes(props.type) &&
-    css`
-      display: block;
-
-      &:focus + .input-label {
-        ${ShrinkedLabel}
-      }
-    `}
-
   &::-webkit-outer-spin-button,
   &::-webkit-inner-spin-button {
     -webkit-appearance: none;
@@ -78,35 +70,19 @@ export const StyledInput = styled.input`
 `;
 
 export const Label = styled.label`
+  align-self: left;
   color: ${props => props.theme.colors.black_50};
   cursor: text;
-  font-size: 1em;
-  font-weight: 800;
-  text-align: left;
-  transition: ease 0.2s;
-  position: absolute;
-  left: 20px;
-  top: 45%;
-  transform: translateY(-40%);
-  pointer-events: none;
-
-  &.label_active {
-    ${ShrinkedLabel}
-  }
-
-  &.label_error {
-    color: ${props => props.theme.colors.red};
-  }
-`;
-
-export const UpperLabel = styled.label`
-  color: ${props => props.theme.colors.black_50};
-  cursor: text;
+  display: flex;
   font-size: 1em;
   font-weight: 800;
   text-align: left;
   transition: ease 0.2s;
   margin-left: 10px;
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none !important;
+  }
 
   &.label_error {
     color: ${props => props.theme.colors.red};

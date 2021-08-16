@@ -492,7 +492,6 @@ function VendasCreate() {
                           label="Quantidade da venda"
                           name="products.quantity"
                           min="1"
-                          max={stockQtd}
                           disabled={!getStock}
                         />
                         <Input
