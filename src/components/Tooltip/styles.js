@@ -22,8 +22,7 @@ export const TooltipContainer = styled.div`
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.12);
 
   @media (prefers-reduced-motion: reduce) {
-    animation: none;
-    -webkit-animation: none;
+    animation: none !important;
   }
 
   & > div {
@@ -40,6 +39,10 @@ export const TooltipContainer = styled.div`
       padding: 10px 0;
       width: 100%;
       transition: all 0.3s;
+
+      @media (prefers-reduced-motion: reduce) {
+        transition: none !important;
+      }
 
       span {
         padding-left: 20px;

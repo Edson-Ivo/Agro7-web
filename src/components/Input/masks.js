@@ -51,5 +51,10 @@ export const masks = {
     );
 
     return v;
+  },
+
+  plate: v => {
+    const val = v.toUpperCase();
+    return val;
   }
 };

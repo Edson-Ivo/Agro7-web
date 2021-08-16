@@ -15,6 +15,10 @@ const Table = styled.table`
       transition: transform ease-in-out 0.25s;
       background-position: center;
 
+      @media (prefers-reduced-motion: reduce) {
+        transition: none !important;
+      }
+
       &:hover {
         background-color: ${props => props.theme.colors.gray};
       }

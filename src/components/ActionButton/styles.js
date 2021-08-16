@@ -22,6 +22,10 @@ export const ActionButtonContainer = styled.div`
     border-radius: 8px;
     transition: all ease-in 0.2s;
 
+    @media (prefers-reduced-motion: reduce) {
+      transition: none !important;
+    }
+
     &:hover,
     &:focus {
       background: ${props => props.theme.colors.black_10};

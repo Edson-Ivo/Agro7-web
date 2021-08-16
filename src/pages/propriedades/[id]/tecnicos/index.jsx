@@ -131,15 +131,15 @@ function Tecnicos() {
               isLoading={isEmpty(data)}
             >
               <div className="buttons__container">
+                <Link href={`${baseUrl}/solicitacoes/cadastrar`}>
+                  <Button className="primary">
+                    <FontAwesomeIcon icon={faPlus} /> Solicitar Técnico
+                  </Button>
+                </Link>
                 <Link href={`${baseUrl}/solicitacoes`}>
                   <Button className="primary">
                     <FontAwesomeIcon icon={faUserSecret} /> Solicitações
                     Pendentes
-                  </Button>
-                </Link>
-                <Link href={`${baseUrl}/solicitacoes/cadastrar`}>
-                  <Button className="primary">
-                    <FontAwesomeIcon icon={faPlus} /> Solicitar Técnico
                   </Button>
                 </Link>
               </div>

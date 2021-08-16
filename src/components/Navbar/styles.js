@@ -54,6 +54,10 @@ export const NavbarContainer = styled.div`
     position: relative;
     flex-direction: row;
 
+    @media (prefers-reduced-motion: reduce) {
+      transition: none !important;
+    }
+
     h5 {
       pointer-events: none;
       font-weight: 800;

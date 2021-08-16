@@ -49,12 +49,16 @@ const Select = ({
   return (
     <InputContainer error={error}>
       {label && !noLabel && (
-        <Label className={`input-label ${error ? ' label_error' : ''}`}>
+        <Label
+          className={`input-label ${error ? ' label_error' : ''}`}
+          htmlFor={fieldName}
+        >
           {label}
         </Label>
       )}
       <ReactSelect
         name={name}
+        inputId={fieldName}
         options={options}
         classNamePrefix="select"
         placeholder={label}

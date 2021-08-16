@@ -25,8 +25,7 @@ export const Content = styled.div`
   animation: show 0.3s;
 
   @media (prefers-reduced-motion: reduce) {
-    animation: none;
-    -webkit-animation: none;
+    animation: none !important;
   }
 
   max-width: 400px;
@@ -41,6 +40,10 @@ export const Content = styled.div`
     background: transparent;
     color: #adb5bd;
     transition: 0.2s color;
+
+    @media (prefers-reduced-motion: reduce) {
+      transition: none !important;
+    }
 
     &:hover {
       color: #353b41;

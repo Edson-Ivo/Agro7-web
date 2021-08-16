@@ -90,6 +90,10 @@ export const DateCard = styled.div`
   width: 55px;
   transition: all 0.25s;
 
+  @media (prefers-reduced-motion: reduce) {
+    transition: none !important;
+  }
+
   span {
     font-weight: 700;
   }
@@ -133,6 +137,10 @@ export const DateCardCalendar = styled.div`
     justify-content: center;
     transition: all ease-in 0.2s;
     width: 55px;
+
+    @media (prefers-reduced-motion: reduce) {
+      transition: none !important;
+    }
 
     &:hover,
     &:focus {

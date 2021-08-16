@@ -96,8 +96,8 @@ function EstoqueColheitasDetalhes() {
                       ref={formRef}
                       initialData={{
                         ...dataStock,
-                        stocked: `${dataStock?.items[0].harvests.quantity}${dataStock?.items[0].harvests.type}`,
-                        general: `${dataStock?.items[0].quantity}${dataStock?.items[0].harvests.type}`,
+                        stocked: `${dataStock?.items[0].quantity}${dataStock?.items[0].harvests.type}`,
+                        general: `${dataStock?.items[0].harvests.quantity}${dataStock?.items[0].harvests.type}`,
                         lastestUpdate: dateToInput(
                           dataStock?.items[0].updated_at
                         )
