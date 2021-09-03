@@ -48,7 +48,7 @@ function AcoesCulturaCadastrar() {
     `/cultures/find/by/id/${cultureId}`
   );
 
-  const { type } = useSelector(state => state.user);
+  const { type, userId } = useSelector(state => state.user);
 
   useEffect(() => {
     setAlert({ type: '', message: '' });
@@ -78,14 +78,23 @@ function AcoesCulturaCadastrar() {
             message: 'Enviando...'
           });
 
+          let withAdminUserId = null;
+
+          if (
+            typeAction === 'supplies' &&
+            type === 'administrador' &&
+            userId !== data?.properties?.users?.id
+          )
+            withAdminUserId = data?.properties?.users?.id;
+
           d.cultures = Number(cultureId);
 
           Object.keys(d).forEach(el => {
             if (
               d[el] === null ||
               d[el] === undefined ||
-              el === 'types' ||
-              d[el] === ''
+              d[el] === '' ||
+              el === 'types'
             )
               delete d[el];
           });
@@ -102,7 +111,11 @@ function AcoesCulturaCadastrar() {
           if (!isEmpty(d?.date) && ['services', 'others'].includes(typeAction))
             d.date = dateToISOString(d.date);
 
-          await CulturesActionsService.create(d, typeAction).then(res => {
+          await CulturesActionsService.create(
+            d,
+            typeAction,
+            withAdminUserId
+          ).then(res => {
             if (res.status !== 201 || res?.statusCode) {
               setAlert({ type: 'error', message: errorMessage(res) });
               setTimeout(() => {
@@ -208,6 +221,7 @@ function AcoesCulturaCadastrar() {
                       <CulturesActionsForm
                         typeAction={typeAction}
                         cultureId={cultureId}
+                        userId={data?.properties?.users?.id}
                       />
 
                       <div className="form-group buttons">
