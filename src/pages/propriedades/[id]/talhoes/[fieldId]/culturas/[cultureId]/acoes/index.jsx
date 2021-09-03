@@ -69,7 +69,11 @@ function AcoesCultura() {
     error: errorActions,
     mutate: mutateActions
   } = useFetch(
-    `/cultures-${typeAction}/find/by/culture/${cultureId}?limit=${perPage}&page=${page}`
+    (typeAction !== 'supplies' &&
+      `/cultures-${typeAction}/find/by/culture/${cultureId}?limit=${perPage}&page=${page}`) ||
+      (data
+        ? `/cultures-supplies/find/by/user/${data?.properties?.users?.id}?limit=${perPage}&page=${page}`
+        : null)
   );
 
   useEffect(() => {

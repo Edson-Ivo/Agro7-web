@@ -12,7 +12,8 @@ import isEmpty from '@/helpers/isEmpty';
 
 const CulturesActionsForm = ({
   typeAction,
-  cultureId,
+  cultureId = null,
+  userId,
   dataAction = null,
   editForm = false,
   details = false
@@ -155,15 +156,6 @@ const CulturesActionsForm = ({
           required
           disabled={disabled}
         />
-        <Input
-          type="text"
-          label="Preço em R$"
-          name="value"
-          inputMode="numeric"
-          mask="money"
-          required
-          disabled={disabled}
-        />
         <TextArea
           name="description"
           label="Descrição"
@@ -178,7 +170,7 @@ const CulturesActionsForm = ({
           <SearchSelect
             name="supplies"
             label="Digite o nome do Insumo:"
-            url={`/cultures-supplies/find/by/culture/${cultureId}`}
+            url={`/cultures-supplies/find/by/user/${userId}`}
             options
             required
             disabled={disabled}
@@ -198,6 +190,15 @@ const CulturesActionsForm = ({
             />
           </>
         )}
+
+        <Input
+          type="text"
+          label="Custo em R$ (opcional)"
+          name="value"
+          inputMode="numeric"
+          mask="money"
+          disabled={disabled}
+        />
 
         <div className="form-group">
           <div>
