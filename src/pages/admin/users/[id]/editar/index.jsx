@@ -210,7 +210,14 @@ function AdminUsersEdit() {
                         ...data,
                         phone: maskString(data?.phone, 'phone') || '',
                         phone_whatsapp:
-                          maskString(data?.phone_whatsapp, 'phone') || ''
+                          maskString(data?.phone_whatsapp, 'phone') || '',
+                        document: maskString(data?.document, 'document') || '',
+                        addresses: {
+                          ...data?.addresses,
+                          postcode:
+                            maskString(data?.addresses?.postcode, 'postcode') ||
+                            ''
+                        }
                       }}
                     >
                       <Input type="text" label="Nome" name="name" required />
@@ -310,7 +317,7 @@ function AdminUsersEdit() {
                         <div>
                           <Input
                             type="text"
-                            label="Complementos"
+                            label="Complemento"
                             name="addresses.complement"
                           />
                         </div>

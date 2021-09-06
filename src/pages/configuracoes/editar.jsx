@@ -182,7 +182,13 @@ function ConfiguracoesEdit() {
                       ...data,
                       phone: maskString(data?.phone, 'phone') || '',
                       phone_whatsapp:
-                        maskString(data?.phone_whatsapp, 'phone') || ''
+                        maskString(data?.phone_whatsapp, 'phone') || '',
+                      addresses: {
+                        ...data?.addresses,
+                        postcode:
+                          maskString(data?.addresses?.postcode, 'postcode') ||
+                          ''
+                      }
                     }}
                   >
                     <Input type="text" label="Nome" name="name" required />
@@ -266,7 +272,7 @@ function ConfiguracoesEdit() {
                       <div>
                         <Input
                           type="text"
-                          label="Complementos"
+                          label="Complemento"
                           name="addresses.complement"
                         />
                       </div>

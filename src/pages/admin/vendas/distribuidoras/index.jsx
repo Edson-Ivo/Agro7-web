@@ -25,6 +25,7 @@ import isEmpty from '@/helpers/isEmpty';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 import SalesService from '@/services/SalesService';
 import { dateConversor } from '@/helpers/date';
+import maskString from '@/helpers/maskString';
 
 function AdminVendasDistribuidoras() {
   const [alertMsg, setAlertMsg] = useState({ type: '', message: '' });
@@ -125,8 +126,15 @@ function AdminVendasDistribuidoras() {
                                 }
                               >
                                 <td>{p?.name}</td>
-                                <td>{p?.document}</td>
-                                <td>{`${p?.addresses?.postcode}`}</td>
+                                <td>
+                                  {maskString(p?.document, 'document') || ''}
+                                </td>
+                                <td>
+                                  {maskString(
+                                    p?.addresses?.postcode,
+                                    'postcode'
+                                  ) || ''}
+                                </td>
                                 <td>{`${p?.addresses?.city} - ${p?.addresses?.state}`}</td>
                                 <td>{p?.users?.name}</td>
                                 <td>{dateConversor(p?.created_at, false)}</td>

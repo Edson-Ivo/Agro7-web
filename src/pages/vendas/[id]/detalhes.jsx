@@ -28,6 +28,7 @@ import TextArea from '@/components/TextArea/index';
 import { dateConversor } from '@/helpers/date';
 import Loader from '@/components/Loader/index';
 import useRewriteRoute from '@/hooks/useRewriteRoute';
+import maskString from '@/helpers/maskString';
 
 function VendasDetalhes() {
   const formRef = useRef(null);
@@ -112,6 +113,7 @@ function VendasDetalhes() {
                     <Form
                       ref={formRef}
                       initialData={{
+                        ...data,
                         properties:
                           data?.harvests_sales?.[0]?.harvests?.cultures?.fields
                             ?.properties?.id,
@@ -124,8 +126,11 @@ function VendasDetalhes() {
                         transporters_name:
                           data?.vehicles_sales?.vehicles?.transporters?.name,
                         transporters_document:
-                          data?.vehicles_sales?.vehicles?.transporters
-                            ?.document,
+                          maskString(
+                            data?.vehicles_sales?.vehicles?.transporters
+                              ?.document,
+                            'document'
+                          ) || '',
                         transporters_phone:
                           data?.vehicles_sales?.vehicles?.transporters?.phone,
                         transporters_vehicles_name:
@@ -134,7 +139,16 @@ function VendasDetalhes() {
                           data?.vehicles_sales?.vehicles?.plate,
                         transporters_vehicles_description:
                           data?.vehicles_sales?.vehicles?.description,
-                        ...data
+                        distributors_document:
+                          maskString(
+                            data?.distributors?.document,
+                            'document'
+                          ) || '',
+                        distributors_addresses_postcode:
+                          maskString(
+                            data?.distributors?.addresses?.postcode,
+                            'postcode'
+                          ) || ''
                       }}
                     >
                       <MultiStep activeStep={activeStep} onlyView>
@@ -240,7 +254,7 @@ function VendasDetalhes() {
                           <Input
                             type="text"
                             label="Documento (CPF ou CNPJ)"
-                            name="distributors.document"
+                            name="distributors_document"
                             mask="cpf_cnpj"
                             maxLength="18"
                             disabled
@@ -273,7 +287,7 @@ function VendasDetalhes() {
                               <Input
                                 type="text"
                                 label="CEP"
-                                name="distributors.addresses.postcode"
+                                name="distributors_addresses_postcode"
                                 mask="cep"
                                 disabled
                               />

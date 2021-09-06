@@ -80,9 +80,11 @@ function ProducerNotebook() {
   const { searchDate = null } = router.query;
 
   const { data, error, size, setSize, isValidating } = useInfiniteFetch(
-    `/producer-notebook/find/by/user-logged?date_start=${activeDate}&date_finish=${dateToISOStringFinish(
-      activeDate
-    )}${activeCategory !== '' ? `&categories=${activeCategory}` : ''}`,
+    activeDate
+      ? `/producer-notebook/find/by/user-logged?date_start=${activeDate}&date_finish=${dateToISOStringFinish(
+          activeDate
+        )}${activeCategory !== '' ? `&categories=${activeCategory}` : ''}`
+      : null,
     pageSize
   );
 

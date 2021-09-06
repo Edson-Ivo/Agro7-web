@@ -32,6 +32,7 @@ import SalesService from '@/services/SalesService';
 import { useModal } from '@/hooks/useModal';
 import truncate from '@/helpers/truncate';
 import useRewriteRoute from '@/hooks/useRewriteRoute';
+import maskString from '@/helpers/maskString';
 
 function VendasTransportadorasDetalhes() {
   const formRef = useRef(null);
@@ -142,7 +143,9 @@ function VendasTransportadorasDetalhes() {
                     <Form
                       ref={formRef}
                       initialData={{
-                        ...data
+                        ...data,
+                        document: maskString(data?.document, 'document') || '',
+                        phone: maskString(data?.phone, 'phone') || ''
                       }}
                     >
                       <MultiStep activeStep={activeStep} onlyView>

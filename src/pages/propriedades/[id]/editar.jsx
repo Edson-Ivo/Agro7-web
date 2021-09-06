@@ -33,6 +33,7 @@ import urlRoute from '@/helpers/urlRoute';
 import { useSelector } from 'react-redux';
 import isEmpty from '@/helpers/isEmpty';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
+import maskString from '@/helpers/maskString';
 
 const schema = yup.object().shape({
   name: yup.string().required('O campo nome é obrigatório!'),
@@ -227,7 +228,15 @@ function PropertiesEdit() {
                       ref={formRef}
                       method="post"
                       onSubmit={handleSubmit}
-                      initialData={{ ...data }}
+                      initialData={{
+                        ...data,
+                        addresses: {
+                          ...data?.addresses,
+                          postcode:
+                            maskString(data?.addresses?.postcode, 'postcode') ||
+                            ''
+                        }
+                      }}
                     >
                       <MultiStep activeStep={activeStep}>
                         <Step label="Dados" onClick={() => setActiveStep(1)}>

@@ -49,19 +49,29 @@ function AdminUsers() {
   const { addModal, removeModal } = useModal();
 
   const handleDelete = useCallback(
-    async id => {
+    async (id, type) => {
       removeModal();
       setLoading(true);
 
-      await UsersService.deleteByAdmin(id).then(res => {
+      const service =
+        type === 'remove'
+          ? UsersService.deleteSoftwareByAdmin(id)
+          : UsersService.deletePermanentlyByAdmin(id);
+
+      await service.then(res => {
         if (res.status !== 200 || res?.statusCode) {
           setAlertMsg({ type: 'error', message: errorMessage(res) });
         } else {
           mutate();
 
+          const message =
+            type === 'remove'
+              ? 'Usuário desativado com sucesso!'
+              : 'Usuário deletado permanentemente com sucesso!';
+
           setAlertMsg({
             type: 'success',
-            message: 'Usuário deletado com sucesso!'
+            message
           });
         }
       });
@@ -72,12 +82,24 @@ function AdminUsers() {
   );
 
   const handleDeleteModal = useCallback(
-    id => {
+    (id, type) => {
+      let title = 'Deletar Usuário Permanentemente';
+      let text =
+        'Ao deletar esse usuário permanentemente, todas as suas propriedades e relacionados, caderno do produtor, vendas, etc., serão deletados do sistema, sem possibilidade de recuperação. Deseja continuar?';
+
+      const onConfirm = () => handleDelete(id, type);
+
+      if (type === 'remove') {
+        title = 'Desativar Usuário';
+        text =
+          'Ao desativar esse usuário, algumas de suas informações ficarão indisponíveis, e ele perderá acesso ao sistema, contudo, será possível cadastrá-lo novamente e seus dados voltarão ao normal. Deseja continuar?';
+      }
+
       addModal({
-        title: 'Deletar Usuário',
-        text: 'Deseja realmente deletar este usuário?',
+        title,
+        text,
         confirm: true,
-        onConfirm: () => handleDelete(id),
+        onConfirm,
         onCancel: removeModal
       });
     },
@@ -157,13 +179,21 @@ function AdminUsers() {
                               >
                                 <td>{user.name}</td>
                                 <td>{user.email}</td>
-                                <td>{user.document}</td>
-                                <td>{maskString(user.phone, 'phone')}</td>
+                                <td>
+                                  {maskString(user.document, 'document') || ''}
+                                </td>
+                                <td>{maskString(user.phone, 'phone') || ''}</td>
                                 <td onClick={e => e.stopPropagation()}>
                                   <ActionButton
                                     id={user.id}
                                     path="/admin/users"
-                                    onDelete={() => handleDeleteModal(user.id)}
+                                    noRemove={false}
+                                    onRemove={() =>
+                                      handleDeleteModal(user.id, 'remove')
+                                    }
+                                    onDelete={() =>
+                                      handleDeleteModal(user.id, 'delete')
+                                    }
                                   />
                                 </td>
                               </tr>

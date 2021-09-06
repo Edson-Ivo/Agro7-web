@@ -9,7 +9,7 @@ const getKey = (pageIndex, previousPageData, url, pageSize) => {
 
 export function useInfiniteFetch(url, pageSize) {
   const { data, error, mutate, size, setSize, isValidating } = useSWRInfinite(
-    (...args) => getKey(...args, url, pageSize),
+    (...args) => (url ? getKey(...args, url, pageSize) : null),
     async access => {
       const response = await api.get(access);
 

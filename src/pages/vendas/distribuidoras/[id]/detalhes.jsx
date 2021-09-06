@@ -19,6 +19,7 @@ import isEmpty from '@/helpers/isEmpty';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 
 import { dateConversor } from '@/helpers/date';
+import maskString from '@/helpers/maskString';
 
 function VendasDistribuidorasDetalhes() {
   const formRef = useRef(null);
@@ -65,7 +66,11 @@ function VendasDistribuidorasDetalhes() {
                     <Form
                       ref={formRef}
                       initialData={{
-                        ...data
+                        ...data,
+                        document: maskString(data?.document, 'document') || '',
+                        addresses_postcode:
+                          maskString(data?.addresses?.postcode, 'postcode') ||
+                          ''
                       }}
                     >
                       <Input type="text" label="Nome" name="name" disabled />
@@ -105,7 +110,7 @@ function VendasDistribuidorasDetalhes() {
                           <Input
                             type="text"
                             label="CEP"
-                            name="addresses.postcode"
+                            name="addresses_postcode"
                             mask="cep"
                             disabled
                           />
