@@ -15,8 +15,7 @@ class CulturesActionsService {
       txt += '.';
     }
 
-    if (action === 'supplies')
-      txt = txt.replace('%name', data?.name).replace('%value', data?.value);
+    if (action === 'supplies') txt = txt.replace('%name', data?.name);
 
     if (action === 'others') {
       txt = txt.replace('%name', data?.name);
@@ -34,13 +33,18 @@ class CulturesActionsService {
         .replace('%date_finish', dateConversor(data?.date_finish, false))
         .replace('%time_finish', data?.time_finish);
 
-    if (action === 'applications-supplies')
+    if (action === 'applications-supplies') {
       txt = txt
         .replace('%name', data?.supplies?.name)
         .replace('%dose', data?.dose)
         .replace('%type_dose', data?.type_dose)
         .replace('%date_start', dateConversor(data?.date_start, false))
         .replace('%date_finish', dateConversor(data?.date_finish, false));
+
+      if (data?.value) txt += `, custando R$ ${data?.value}`;
+
+      txt += '.';
+    }
 
     return txt;
   }
@@ -62,11 +66,7 @@ class CulturesActionsService {
     if (action === 'supplies')
       schema = yup.object().shape({
         name: yup.string().required('O campo nome é obrigatório!'),
-        description: yup.string().required('O campo descrição é obrigatório!'),
-        value: yup
-          .number()
-          .transform(value => (Number.isNaN(value) ? undefined : value))
-          .required('O campo preço é obrigatório!')
+        description: yup.string().required('O campo descrição é obrigatório!')
       });
 
     if (action === 'irrigations')
@@ -98,7 +98,10 @@ class CulturesActionsService {
         supplies: yup
           .number()
           .transform(value => (Number.isNaN(value) ? undefined : value))
-          .required('O insumo precisa ser selecionado.')
+          .required('O insumo precisa ser selecionado.'),
+        value: yup
+          .number()
+          .transform(value => (Number.isNaN(value) ? undefined : value))
       });
 
     if (action === 'others')
@@ -114,11 +117,19 @@ class CulturesActionsService {
     return schema;
   }
 
-  static async create(data, action) {
+  static async create(data, action, userId = null) {
     try {
-      const response = await api.post(`/cultures-${action}/create`, {
-        ...data
-      });
+      let response;
+
+      if (!userId) {
+        response = await api.post(`/cultures-${action}/create`, {
+          ...data
+        });
+      } else {
+        response = await api.post(`/cultures-${action}/create/user/${userId}`, {
+          ...data
+        });
+      }
 
       return response;
     } catch (error) {
@@ -164,13 +175,13 @@ export const actionsList = {
   supplies: {
     value: 'supplies',
     label: 'Insumos',
-    text: 'Insumo %name, custando R$ %value, adicionado.'
+    text: 'Insumo %name foi adicionado.'
   },
   'applications-supplies': {
     value: 'applications-supplies',
     label: 'Aplicação de Insumos',
     text:
-      'Insumo %name aplicado (%dose%type_dose) em %date_start até %date_finish.'
+      'Insumo %name aplicado (%dose%type_dose) em %date_start até %date_finish'
   },
   others: {
     value: 'others',

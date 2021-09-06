@@ -103,6 +103,7 @@ export default function Login() {
                 maxLength="18"
                 autoComplete="off"
                 required
+                disabled={loading}
               />
 
               <Input
@@ -112,6 +113,7 @@ export default function Login() {
                 style={{ marginBottom: '10px' }}
                 autoComplete="off"
                 required
+                disabled={loading}
               />
 
               {(!loading && (

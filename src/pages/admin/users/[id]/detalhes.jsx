@@ -77,7 +77,11 @@ function AdminUsers() {
                         ...data,
                         phone: maskString(data?.phone, 'phone') || '',
                         phone_whatsapp:
-                          maskString(data?.phone_whatsapp, 'phone') || ''
+                          maskString(data?.phone_whatsapp, 'phone') || '',
+                        document: maskString(data?.document, 'document') || '',
+                        addresses_postcode:
+                          maskString(data?.addresses?.postcode, 'postcode') ||
+                          ''
                       }}
                     >
                       <Input type="text" label="Nome" name="name" disabled />
@@ -124,7 +128,7 @@ function AdminUsers() {
                           <Input
                             type="text"
                             label="CEP"
-                            name="addresses.postcode"
+                            name="addresses_postcode"
                             mask="cep"
                             disabled
                           />
@@ -176,7 +180,7 @@ function AdminUsers() {
                         <div>
                           <Input
                             type="text"
-                            label="Complementos"
+                            label="Complemento"
                             name="addresses.complement"
                             disabled
                           />

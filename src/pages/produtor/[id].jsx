@@ -156,7 +156,7 @@ export default function Produtor({ profile }) {
               propriedades:
             </h2>
             <Carousel draggable={false}>
-              {profile?.properties.map(
+              {profile?.properties?.map(
                 ({ name, coordinates: { latitude, longitude } }, i) => (
                   <div key={String(i)}>
                     <h3 style={{ marginBottom: '32px' }}>Propriedade {name}</h3>
@@ -187,7 +187,7 @@ export default function Produtor({ profile }) {
                   }
                 ]}
               >
-                {profile?.profiles?.gallery.map(
+                {profile?.profiles?.gallery?.map(
                   ({ image_url: imageUrl }, i) => (
                     <div key={String(i)}>
                       <GalleryImage>

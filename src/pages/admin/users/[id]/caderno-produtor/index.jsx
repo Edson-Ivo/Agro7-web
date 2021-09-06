@@ -58,7 +58,7 @@ function UserProducerNotebook() {
   const daysRef = createRef();
   const router = useRouter();
 
-  const ref = useRef();
+  const ref = useRef(null);
   const formRef = useRef(null);
   const isVisible = useOnScreen(ref);
   const isMobile = useMediaQuery({ maxWidth: 800 });
@@ -80,9 +80,11 @@ function UserProducerNotebook() {
   const { id, searchDate = null } = router.query;
 
   const { data, error, size, setSize, isValidating } = useInfiniteFetch(
-    `/producer-notebook/find/by/user/${id}?date_start=${activeDate}&date_finish=${dateToISOStringFinish(
-      activeDate
-    )}${activeCategory !== '' ? `&categories=${activeCategory}` : ''}`,
+    activeDate !== null
+      ? `/producer-notebook/find/by/user/${id}?date_start=${activeDate}&date_finish=${dateToISOStringFinish(
+          activeDate
+        )}${activeCategory !== '' ? `&categories=${activeCategory}` : ''}`
+      : null,
     pageSize
   );
 
