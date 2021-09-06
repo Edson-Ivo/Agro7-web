@@ -77,9 +77,19 @@ class UsersService {
     }
   }
 
-  static async deleteByAdmin(id) {
+  static async deleteSoftwareByAdmin(id) {
     try {
-      const response = await api.delete(`/users/${id}`);
+      const response = await api.delete(`/users/delete-software/${id}`);
+
+      return response;
+    } catch (error) {
+      return error.response;
+    }
+  }
+
+  static async deletePermanentlyByAdmin(id) {
+    try {
+      const response = await api.delete(`/users/delete-permanently/${id}`);
 
       return response;
     } catch (error) {

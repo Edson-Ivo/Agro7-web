@@ -18,6 +18,7 @@ const ActionButton = ({
   path,
   onDelete,
   onAccept,
+  onRemove,
   info = '/detalhes',
   noInfo = false,
   noEdit = false,
@@ -58,20 +59,6 @@ const ActionButton = ({
       </Link>
     )}
 
-    {!noDelete && (
-      <div
-        onClick={() => onDelete()}
-        onKeyPress={() => onDelete()}
-        title="Deletar"
-        role="button"
-        tabIndex="0"
-      >
-        <div>
-          <FontAwesomeIcon icon={faTrash} />
-        </div>
-      </div>
-    )}
-
     {!noAccept && (
       <div
         onClick={() => onAccept()}
@@ -88,14 +75,28 @@ const ActionButton = ({
 
     {!noRemove && (
       <div
-        onClick={() => onDelete()}
-        onKeyPress={() => onDelete()}
+        onClick={() => onRemove()}
+        onKeyPress={() => onRemove()}
         title="Remover"
         role="button"
         tabIndex="0"
       >
         <div>
           <FontAwesomeIcon icon={faTimes} />
+        </div>
+      </div>
+    )}
+
+    {!noDelete && (
+      <div
+        onClick={() => onDelete()}
+        onKeyPress={() => onDelete()}
+        title="Deletar"
+        role="button"
+        tabIndex="0"
+      >
+        <div>
+          <FontAwesomeIcon icon={faTrash} />
         </div>
       </div>
     )}

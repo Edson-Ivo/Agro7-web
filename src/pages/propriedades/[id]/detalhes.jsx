@@ -35,6 +35,7 @@ import { useSelector } from 'react-redux';
 import urlRoute from '@/helpers/urlRoute';
 import isEmpty from '@/helpers/isEmpty';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
+import maskString from '@/helpers/maskString';
 
 function PropertieInfo() {
   const [activeStep, setActiveStep] = useState(1);
@@ -168,7 +169,15 @@ function PropertieInfo() {
                         <Form
                           ref={formRef}
                           initialData={{
-                            ...data
+                            ...data,
+                            addresses: {
+                              ...data?.addresses,
+                              postcode:
+                                maskString(
+                                  data?.addresses?.postcode,
+                                  'postcode'
+                                ) || ''
+                            }
                           }}
                         >
                           <div className="form-group">

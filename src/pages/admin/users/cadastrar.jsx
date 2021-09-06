@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useCallback } from 'react';
 import Head from 'next/head';
 import * as yup from 'yup';
 import { useRouter } from 'next/router';
@@ -25,6 +25,7 @@ import capitalize from '@/helpers/capitalize';
 import Loader from '@/components/Loader/index';
 import isEmpty from '@/helpers/isEmpty';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
+import { useModal } from '@/hooks/useModal';
 
 const schema = yup.object().shape({
   name: yup.string().required('O campo nome é obrigatório!'),
@@ -84,6 +85,8 @@ function AdminUsers() {
   const router = useRouter();
   const formRef = useRef(null);
 
+  const { addModal, removeModal } = useModal();
+
   const { data: dataTypes } = useFetch('/users/find/all/types');
 
   const handleChangeCep = e => {
@@ -124,24 +127,8 @@ function AdminUsers() {
 
         if (isEmpty(data.phone_whatsapp)) delete data.phone_whatsapp;
 
-        await UsersService.create(data).then(res => {
-          if (res.status !== 201 || res?.statusCode) {
-            setAlert({ type: 'error', message: errorMessage(res) });
-            setTimeout(() => {
-              setDisableButton(false);
-            }, 1000);
-          } else {
-            setAlert({
-              type: 'success',
-              message: 'Usuário cadastrado com sucesso!'
-            });
-
-            setTimeout(() => {
-              router.push('/admin/users');
-              setDisableButton(false);
-            }, 1000);
-          }
-        });
+        if (data?.type === 'administrador') handleConfirmAdminCreate(data);
+        else handleCreateUser(data);
       })
       .catch(err => {
         setAlert({ type: 'error', message: err.errors[0] });
@@ -153,6 +140,47 @@ function AdminUsers() {
           formRef.current.setFieldError(path, message);
         }
       });
+  };
+
+  const handleCreateUser = async data => {
+    await UsersService.create(data).then(res => {
+      if (res.status !== 201 || res?.statusCode) {
+        setAlert({ type: 'error', message: errorMessage(res) });
+        setTimeout(() => {
+          setDisableButton(false);
+        }, 1000);
+      } else {
+        setAlert({
+          type: 'success',
+          message: 'Usuário cadastrado com sucesso!'
+        });
+
+        setTimeout(() => {
+          router.push('/admin/users');
+          setDisableButton(false);
+        }, 1000);
+      }
+    });
+  };
+
+  const handleConfirmAdminCreate = useCallback(
+    data => {
+      addModal({
+        title: 'Cadastro de Administrador',
+        text:
+          'Deseja realmente cadastrar um novo administrador ao sistema? Lembre-se de que você não poderá deletá-lo ou desativá-lo após sua criação.',
+        confirm: true,
+        onConfirm: () => handleCreateUser(data),
+        onCancel: () => handleCancelModal(removeModal)
+      });
+    },
+    [addModal, removeModal]
+  );
+
+  const handleCancelModal = removeModalAction => {
+    setDisableButton(false);
+    setAlert({ type: 'info', message: 'Cadastro de usuário cancelado.' });
+    removeModalAction();
   };
 
   return (
@@ -292,7 +320,7 @@ function AdminUsers() {
                         <div>
                           <Input
                             type="text"
-                            label="Complementos"
+                            label="Complemento"
                             name="complement"
                             initialValue=""
                           />

@@ -25,6 +25,7 @@ import isEmpty from '@/helpers/isEmpty';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 import SalesService from '@/services/SalesService';
 import { dateConversor } from '@/helpers/date';
+import maskString from '@/helpers/maskString';
 
 function VendasTransportadoras() {
   const [alertMsg, setAlertMsg] = useState({ type: '', message: '' });
@@ -124,8 +125,10 @@ function VendasTransportadoras() {
                                 }
                               >
                                 <td>{p?.name}</td>
-                                <td>{p?.document}</td>
-                                <td>{`${p?.phone}`}</td>
+                                <td>
+                                  {maskString(p?.document, 'document') || ''}
+                                </td>
+                                <td>{maskString(p.phone, 'phone') || ''}</td>
                                 <td>{`${p?.vehicles?.length}`}</td>
                                 <td>{dateConversor(p?.created_at, false)}</td>
                                 <td onClick={e => e.stopPropagation()}>
