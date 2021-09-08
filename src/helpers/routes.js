@@ -555,6 +555,30 @@ const adminUserSalesRoute = {
   }
 };
 
+const chartRoutes = {
+  '/admin/receita': {
+    name: 'Receita'
+  },
+  '/admin/projecao-colheita': {
+    name: 'Projeção das Colheitas'
+  },
+  '/admin/users/[id]/receita': {
+    name: 'Receita'
+  },
+  '/admin/users/[id]/projecao-colheita': {
+    name: 'Projeção das Colheitas'
+  },
+  '/painel-controle': {
+    name: 'Painel de Controle'
+  },
+  '/painel-controle/projecao-colheita': {
+    name: 'Projeção das Colheitas'
+  },
+  '/painel-controle/receita': {
+    name: 'Receita'
+  }
+};
+
 const namedRoutes = {
   '/admin': { name: 'Painel Administrativo' },
   '/admin/categorias': { name: 'Categorias' },
@@ -692,7 +716,8 @@ const namedRoutes = {
   ...adminUserProducerNotebookRoute,
   ...adminUserTechPropertyRoute,
   ...namedSales,
-  ...adminUserSalesRoute
+  ...adminUserSalesRoute,
+  ...chartRoutes
 };
 
 export default namedRoutes;

@@ -8,7 +8,8 @@ import {
   faBook,
   faMapMarkerAlt,
   faDollarSign,
-  faUser
+  faUser,
+  faChartPie
 } from '@fortawesome/free-solid-svg-icons';
 
 import { useSelector } from 'react-redux';
@@ -25,6 +26,13 @@ import { greetings } from '@/helpers/greetings';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 
 const data = [
+  {
+    href: '/painel-controle',
+    title: 'Painel de Controle',
+    description:
+      'Gerencie sua receita e suas projeções de colheitas em um período de tempo.',
+    icon: faChartPie
+  },
   {
     href: '/propriedades',
     title: 'Suas Propriedades',
