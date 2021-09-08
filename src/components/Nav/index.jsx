@@ -10,7 +10,8 @@ import {
   faBook,
   faMapMarkerAlt,
   faUserSecret,
-  faDollarSign
+  faDollarSign,
+  faChartPie
 } from '@fortawesome/free-solid-svg-icons';
 
 import { useRouter } from 'next/router';
@@ -157,7 +158,12 @@ const Nav = () => {
           <NavButton
             link="/caderno-produtor"
             icon={faBook}
-            text="Caderno Produtor"
+            text="Caderno do Produtor"
+          />
+          <NavButton
+            link="/painel-controle"
+            icon={faChartPie}
+            text="Painel de Controle"
           />
           {type === 'tecnico' && (
             <>

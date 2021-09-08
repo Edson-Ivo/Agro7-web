@@ -11,7 +11,9 @@ import {
   faListUl,
   faDollarSign,
   faTruck,
-  faStore
+  faStore,
+  faWallet,
+  faSeedling
 } from '@fortawesome/free-solid-svg-icons';
 
 import { useSelector } from 'react-redux';
@@ -52,6 +54,20 @@ const data = [
     title: 'Gerenciar Vendas',
     description: 'Aqui você tem controle de todas as vendas de sua aplicação.',
     icon: faDollarSign
+  },
+  {
+    href: '/admin/receita',
+    title: 'Gerenciar Receita',
+    description:
+      'Aqui você poderá checar a receita (ganhos e despesas) geral dos usuários do sistema em determinado um período de tempo.',
+    icon: faWallet
+  },
+  {
+    href: '/admin/projecao-colheita',
+    title: 'Gerenciar Projeções das Colheitas',
+    description:
+      'Aqui você poderá checar a projeção das colheitas geral dos usuários do sistema em determinado um período de tempo.',
+    icon: faSeedling
   },
   {
     href: '/admin/vendas/distribuidoras',

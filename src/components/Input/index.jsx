@@ -24,7 +24,9 @@ const Input = ({
       ref: inputRef,
       getValue: refs => refs.current.value,
       setValue: (refs, value) => {
-        refs.current.value = value;
+        const v = mask ? maskInput(value) : value;
+
+        refs.current.value = v;
       },
       clearValue: refs => {
         refs.current.value = '';
@@ -32,16 +34,12 @@ const Input = ({
     });
   }, [fieldName, registerField]);
 
-  const maskInput = v => masks?.[mask]?.(v) || '';
+  const maskInput = v => masks?.[mask]?.(v) || v;
 
   const changeAction = e => {
     const { value: inputValue } = e.target;
 
-    if (typeof mask !== 'undefined') {
-      const maskedValue = maskInput(inputValue);
-
-      inputRef.current.value = maskInput(maskedValue);
-    }
+    if (mask) inputRef.current.value = maskInput(inputValue);
 
     if (typeof handleChange !== 'undefined') handleChange(e);
   };
