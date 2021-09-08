@@ -12,7 +12,9 @@ import {
   faUserSecret,
   faStore,
   faTruck,
-  faUserEdit
+  faUserEdit,
+  faWallet,
+  faSeedling
 } from '@fortawesome/free-solid-svg-icons';
 
 import { Card } from '@/components/Card/index';
@@ -63,6 +65,20 @@ const data = [
     title: 'Vendas',
     description: 'Aqui você terá acesso às Vendas e relacionados desse Usuário',
     icon: faDollarSign
+  },
+  {
+    href: 'receita',
+    title: 'Receita',
+    description:
+      'Aqui você poderá checar a receita (ganhos e despesas) em determinado um período de tempo desse Usuário.',
+    icon: faWallet
+  },
+  {
+    href: 'projecao-colheita',
+    title: 'Projeções das Colheitas',
+    description:
+      'Aqui você poderá checar a projeção de colheitas em determinado um período de tempo desse Usuário.',
+    icon: faSeedling
   },
   {
     href: 'vendas/distribuidoras',

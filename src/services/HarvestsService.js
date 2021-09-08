@@ -32,20 +32,6 @@ class HarvestsService {
       return error.response;
     }
   }
-
-  static async update(id, data) {
-    try {
-      const response = await api.put(`/harvests/update/${id}`, {
-        date: data.date,
-        quantity: data.quantity,
-        forecast: data.forecast,
-        quantity_forecast: data.quantity_forecast
-      });
-      return response;
-    } catch (error) {
-      return error.response;
-    }
-  }
 }
 
 export default HarvestsService;
