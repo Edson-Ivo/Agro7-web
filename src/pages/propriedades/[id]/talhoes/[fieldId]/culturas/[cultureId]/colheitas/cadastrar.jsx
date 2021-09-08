@@ -86,8 +86,8 @@ function ColheitasCreate() {
           message: 'Enviando...'
         });
 
-        d.date = dateToISOString(d.date_start);
-        d.forecast = dateToISOString(d.date_finish);
+        d.date = dateToISOString(d.date);
+        d.forecast = dateToISOString(d.forecast);
         d.cultures = Number(cultureId);
 
         await HarvestsService.create(d).then(res => {

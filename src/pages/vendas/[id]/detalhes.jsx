@@ -132,7 +132,10 @@ function VendasDetalhes() {
                             'document'
                           ) || '',
                         transporters_phone:
-                          data?.vehicles_sales?.vehicles?.transporters?.phone,
+                          maskString(
+                            data?.vehicles_sales?.vehicles?.transporters?.phone,
+                            'document'
+                          ) || '',
                         transporters_vehicles_name:
                           data?.vehicles_sales?.vehicles?.name,
                         transporters_vehicles_plate:
