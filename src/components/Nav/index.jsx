@@ -150,6 +150,11 @@ const Nav = () => {
         <NavList>
           <NavButton link="/" icon={faHome} text="Página Inicial" />
           <NavButton
+            link="/painel-controle"
+            icon={faChartPie}
+            text="Painel de Controle"
+          />
+          <NavButton
             link="/propriedades"
             icon={faMapMarkerAlt}
             text="Suas Propriedades"
@@ -159,11 +164,6 @@ const Nav = () => {
             link="/caderno-produtor"
             icon={faBook}
             text="Caderno do Produtor"
-          />
-          <NavButton
-            link="/painel-controle"
-            icon={faChartPie}
-            text="Painel de Controle"
           />
           {type === 'tecnico' && (
             <>
