@@ -170,6 +170,7 @@ function PropertieInfo() {
                           ref={formRef}
                           initialData={{
                             ...data,
+                            area: maskString(data?.area, 'area'),
                             addresses: {
                               ...data?.addresses,
                               postcode:

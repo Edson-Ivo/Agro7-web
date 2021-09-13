@@ -27,6 +27,7 @@ import { useSelector } from 'react-redux';
 import urlRoute from '@/helpers/urlRoute';
 import isEmpty from '@/helpers/isEmpty';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
+import maskString from '@/helpers/maskString';
 
 function TalhoesInfo() {
   const router = useRouter();
@@ -82,7 +83,13 @@ function TalhoesInfo() {
               <CardContainer>
                 {(data && dataFields && (
                   <>
-                    <Form ref={formRef} initialData={{ ...dataFields }}>
+                    <Form
+                      ref={formRef}
+                      initialData={{
+                        ...dataFields,
+                        area: maskString(dataFields.area, 'area')
+                      }}
+                    >
                       <Input
                         type="text"
                         name="name"

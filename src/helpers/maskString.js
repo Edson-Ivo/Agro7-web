@@ -15,6 +15,9 @@ const maskString = (value, pattern) => {
       else pat = '##.###.###/####-##';
     }
 
+    if (pat === 'area') return String(Number(v));
+    if (pat === 'area-in-table') return String(Number(v)).replace('.', ',');
+
     return pat.replace(/#/g, () => v[i++] || '');
   }
 
