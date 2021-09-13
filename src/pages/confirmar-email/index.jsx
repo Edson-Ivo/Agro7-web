@@ -53,9 +53,9 @@ export default function ConfirmarEmail() {
           router.push('/login');
         }, 2000);
       }
-    });
 
-    setLoading(false);
+      setLoading(false);
+    });
   };
 
   if (!token) return <Error error={405} />;
@@ -86,11 +86,18 @@ export default function ConfirmarEmail() {
               </p>
               {alertMsg && <Alert type={alertType}>{alertMsg}</Alert>}
 
-              {(!loading && alertType !== 'success' && (
-                <Button className="primary loginButton" type="submit">
-                  <FontAwesomeIcon icon={faEnvelope} className="loginIcon" />{' '}
-                  Confirmar e-mail
-                </Button>
+              {(!loading && (
+                <>
+                  {alertType !== 'success' ? (
+                    <Button className="primary loginButton" type="submit">
+                      <FontAwesomeIcon
+                        icon={faEnvelope}
+                        className="loginIcon"
+                      />{' '}
+                      Confirmar e-mail
+                    </Button>
+                  ) : null}
+                </>
               )) || <Loader />}
             </Form>
             <p className="text">

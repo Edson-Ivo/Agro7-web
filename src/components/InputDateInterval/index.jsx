@@ -10,6 +10,7 @@ import Loader from '@/components/Loader';
 import {
   dateToInput,
   getCurrentDate,
+  getStartDate,
   getFinishDate,
   isValidDate
 } from '@/helpers/date';
@@ -199,7 +200,7 @@ const InputDateInterval = ({
   }, [period]);
 
   useEffect(() => {
-    if (dateStartSearch) onDateStartSelect(dateStartSearch);
+    if (dateStartSearch) onDateStartSelect(getStartDate(dateStartSearch));
   }, [dateStartSearch]);
 
   useEffect(() => {

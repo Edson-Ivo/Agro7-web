@@ -67,18 +67,20 @@ export default function AlterarSenha() {
               router.push('/login');
             }, 2000);
           }
+
+          setLoading(false);
         });
       })
       .catch(err => {
         setAlertMsg(err.errors[0]);
+        setLoading(false);
+
         if (err instanceof yup.ValidationError) {
           const { path, message } = err;
 
           formRef.current.setFieldError(path, message);
         }
       });
-
-    setLoading(false);
   };
 
   if (!token) return <Error error={405} />;
@@ -122,11 +124,15 @@ export default function AlterarSenha() {
                 disabled={loading}
               />
 
-              {(!loading && alertType !== 'success' && (
-                <Button className="primary loginButton" type="submit">
-                  <FontAwesomeIcon icon={faKey} className="loginIcon" /> Salvar
-                  alteração
-                </Button>
+              {(!loading && (
+                <>
+                  {alertType !== 'success' ? (
+                    <Button className="primary loginButton" type="submit">
+                      <FontAwesomeIcon icon={faKey} className="loginIcon" />{' '}
+                      Salvar alteração
+                    </Button>
+                  ) : null}
+                </>
               )) || <Loader />}
             </Form>
             <p className="text">

@@ -1,6 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
+import { useSelector } from 'react-redux';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -44,6 +45,8 @@ function Vendas() {
 
   const { page = 1 } = router.query;
   const perPage = 10;
+
+  const { type } = useSelector(state => state.user);
 
   const { addModal, removeModal } = useModal();
 
@@ -185,6 +188,7 @@ function Vendas() {
                                     id={p.id}
                                     path="/vendas"
                                     noEdit
+                                    noDelete={type !== 'administrador'}
                                     onDelete={() => handleDeleteModal(p.id)}
                                   />
                                 </td>

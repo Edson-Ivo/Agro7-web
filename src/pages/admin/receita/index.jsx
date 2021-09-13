@@ -97,7 +97,12 @@ function AdminReceita() {
                     <>
                       {(!isEmpty(dataChart) && (
                         <>
-                          {dataProfits !== '0' && dataCosts !== '0' ? (
+                          {String(dataProfits) === '0' &&
+                          String(dataCosts) === '0' ? (
+                            <Alert type="error">
+                              Não há receita para o período selecionado.
+                            </Alert>
+                          ) : (
                             <div style={{ textAlign: 'center' }}>
                               <Chart
                                 type="pie"
@@ -125,10 +130,6 @@ function AdminReceita() {
                                 legendActive={false}
                               />
                             </div>
-                          ) : (
-                            <Alert type="error">
-                              Não há receita para o período selecionado.
-                            </Alert>
                           )}
                         </>
                       )) || <Loader />}

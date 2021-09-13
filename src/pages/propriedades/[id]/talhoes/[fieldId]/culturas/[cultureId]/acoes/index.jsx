@@ -54,6 +54,7 @@ function AcoesCultura() {
   const [loading, setLoading] = useState(false);
   const [route, setRoute] = useState({});
   const [baseUrl, setBaseUrl] = useState('');
+  const [cultureSupplyDataRoute, setCultureSupplyDataRoute] = useState('');
 
   const { type } = useSelector(state => state.user);
 
@@ -71,14 +72,28 @@ function AcoesCultura() {
   } = useFetch(
     (typeAction !== 'supplies' &&
       `/cultures-${typeAction}/find/by/culture/${cultureId}?limit=${perPage}&page=${page}`) ||
-      (data
-        ? `/cultures-supplies/find/by/user/${data?.properties?.users?.id}?limit=${perPage}&page=${page}`
+      (!isEmpty(cultureSupplyDataRoute)
+        ? `/cultures-supplies/find/by/${cultureSupplyDataRoute}?limit=${perPage}&page=${page}`
         : null)
   );
 
   useEffect(() => {
     setRoute(urlRoute(router, type, ['tecnico']));
   }, []);
+
+  useEffect(() => {
+    setCultureSupplyDataRoute('');
+
+    if (!isEmpty(data)) {
+      const userId = data?.properties?.users?.id;
+
+      if (type === 'administrador' && router.query?.userId === String(userId)) {
+        setCultureSupplyDataRoute(`user/${userId}`);
+      } else {
+        setCultureSupplyDataRoute(`user-logged`);
+      }
+    }
+  }, [data]);
 
   useEffect(() => {
     setBaseUrl(
@@ -193,7 +208,7 @@ function AcoesCultura() {
                           <thead>
                             <tr>
                               <th>Lista</th>
-                              <th>Criado em</th>
+                              <th>Adicionado em</th>
                               <th>Ações</th>
                             </tr>
                           </thead>
