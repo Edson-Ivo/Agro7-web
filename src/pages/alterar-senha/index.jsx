@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import * as yup from 'yup';
 import Head from 'next/head';
 import Image from 'next/image';
@@ -7,77 +7,86 @@ import Link from 'next/link';
 import { Form } from '@unform/web';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSignInAlt } from '@fortawesome/free-solid-svg-icons';
+import { faKey } from '@fortawesome/free-solid-svg-icons';
 
-import Router from 'next/router';
+import { useRouter } from 'next/router';
 import Loader from '@/components/Loader/index';
 import Container, { CenterContainer } from '@/components/Container';
 import Input from '@/components/Input';
 import Button from '@/components/Button';
+import Error from '@/components/Error';
 import { Alert } from '@/components/Alert';
 
 import AuthService from '@/services/AuthService';
-import { UserAuthAction } from '@/store/modules/User/actions';
 import errorMessage from '@/helpers/errorMessage';
 
 const schema = yup.object().shape({
-  document: yup.string().required('Por favor, preencha o campo CPF ou CNPJ.'),
-  password: yup.string().required('Por favor, preencha o campo senha.')
+  password: yup.string().required('O campo nova senha é obrigatório!'),
+  confirm_password: yup
+    .string()
+    .oneOf([yup.ref('password'), null], 'As duas senhas devem ser iguais!')
+    .required('O campo confirme a nova senha é obrigatório!')
 });
 
-export default function Login() {
+export default function AlterarSenha() {
   const formRef = useRef(null);
+  const router = useRouter();
+
+  const { token } = router.query;
 
   const [alertMsg, setAlertMsg] = useState('');
+  const [alertType, setAlertType] = useState('error');
   const [loading, setLoading] = useState(false);
-
-  const dispatch = useDispatch();
 
   const { id } = useSelector(state => state.user);
 
-  if (id) Router.push('/');
+  if (id) router.push('/');
 
   const handleSubmit = async data => {
     setLoading(true);
     formRef.current.setErrors({});
 
+    setAlertType('error');
+    setAlertMsg('');
+
     schema
       .validate(data)
       .then(async d => {
-        const { document, password } = d;
+        d.token = token;
 
-        await AuthService.login(document, password).then(
-          res => {
-            dispatch(
-              UserAuthAction({
-                user: res.user
-              })
+        await AuthService.changePassword(d).then(res => {
+          if (res.status !== 201 || res?.statusCode) {
+            setAlertMsg(errorMessage(res));
+          } else {
+            setAlertType('success');
+            setAlertMsg(
+              'Senha alterada com sucesso! Você será redirecionado para o login em 2 segundos...'
             );
 
-            Router.push('/');
-          },
-          error => {
-            setLoading(false);
-            setAlertMsg(errorMessage(error));
+            setTimeout(() => {
+              router.push('/login');
+            }, 2000);
           }
-        );
+        });
       })
       .catch(err => {
         setAlertMsg(err.errors[0]);
-        setLoading(false);
-
         if (err instanceof yup.ValidationError) {
           const { path, message } = err;
 
           formRef.current.setFieldError(path, message);
         }
       });
+
+    setLoading(false);
   };
+
+  if (!token) return <Error error={405} />;
 
   return (
     <>
       <Head>
-        <title>Acessar o sistema - Agro7</title>
+        <title>Alterar senha - Agro7</title>
       </Head>
 
       <Container>
@@ -91,16 +100,14 @@ export default function Login() {
                 alt="Logotipo Agro7"
               />
             </div>
-            {alertMsg && <Alert>{alertMsg}</Alert>}
             <Form method="post" ref={formRef} onSubmit={handleSubmit}>
+              <h3 style={{ marginBottom: 8, marginTop: -16 }}>Alterar senha</h3>
+              {alertMsg && <Alert type={alertType}>{alertMsg}</Alert>}
+
               <Input
-                type="text"
-                label="CPF ou CNPJ"
-                name="document"
-                inputMode="numeric"
-                style={{ marginBottom: '16px' }}
-                mask="cpf_cnpj"
-                maxLength="18"
+                type="password"
+                label="Senha nova"
+                name="password"
                 autoComplete="off"
                 required
                 disabled={loading}
@@ -108,23 +115,22 @@ export default function Login() {
 
               <Input
                 type="password"
-                label="Senha"
-                name="password"
-                style={{ marginBottom: '10px' }}
+                label="Confirme a nova senha"
+                name="confirm_password"
                 autoComplete="off"
                 required
                 disabled={loading}
               />
 
-              {(!loading && (
+              {(!loading && alertType !== 'success' && (
                 <Button className="primary loginButton" type="submit">
-                  <FontAwesomeIcon icon={faSignInAlt} className="loginIcon" />{' '}
-                  Acessar o Sistema
+                  <FontAwesomeIcon icon={faKey} className="loginIcon" /> Salvar
+                  alteração
                 </Button>
               )) || <Loader />}
             </Form>
             <p className="text">
-              <Link href="/esqueceu-senha">Esqueceu sua senha?</Link>
+              <Link href="/login">Voltar ao login</Link>
             </p>
           </div>
         </CenterContainer>
