@@ -132,10 +132,14 @@ function AdminVendas() {
                                   }
                                 </td>
                                 <td>
-                                  {
+                                  {`${
                                     p?.harvests_sales?.[0]?.harvests?.cultures
                                       ?.products?.name
-                                  }
+                                  }${
+                                    p?.harvests_sales?.[0]?.harvests?.is_green
+                                      ? ' Verde'
+                                      : ''
+                                  }`}
                                 </td>
                                 <td>{`${p?.total_quantity}${p?.type_unity}`}</td>
                                 <td>R$ {p?.value}</td>

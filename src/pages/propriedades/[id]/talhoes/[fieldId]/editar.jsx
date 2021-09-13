@@ -27,6 +27,7 @@ import Error from '@/components/Error/index';
 import urlRoute from '@/helpers/urlRoute';
 import { useSelector } from 'react-redux';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
+import maskString from '@/helpers/maskString';
 
 const schema = yup.object().shape({
   name: yup.string().required('O campo nome é obrigatório!'),
@@ -177,7 +178,10 @@ function TalhoesEdit() {
                       ref={formRef}
                       method="post"
                       onSubmit={handleSubmit}
-                      initialData={{ ...dataFields }}
+                      initialData={{
+                        ...dataFields,
+                        area: maskString(dataFields.area, 'area')
+                      }}
                     >
                       <Input type="text" name="name" label="Nome do talhão" />
                       <div className="form-group">

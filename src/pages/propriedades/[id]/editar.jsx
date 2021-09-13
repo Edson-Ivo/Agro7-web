@@ -230,6 +230,7 @@ function PropertiesEdit() {
                       onSubmit={handleSubmit}
                       initialData={{
                         ...data,
+                        area: maskString(data?.area, 'area'),
                         addresses: {
                           ...data?.addresses,
                           postcode:
