@@ -215,8 +215,6 @@ function AcoesCulturaEditar() {
                     >
                       <CulturesActionsForm
                         typeAction={typeAction}
-                        cultureId={cultureId}
-                        userId={data?.properties?.users?.id}
                         dataAction={dataActions}
                         editForm
                       />

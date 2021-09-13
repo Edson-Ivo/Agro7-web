@@ -111,7 +111,12 @@ function UserReceita() {
                     <>
                       {(!isEmpty(dataChart) && (
                         <>
-                          {dataProfits !== '0' && dataCosts !== '0' ? (
+                          {String(dataProfits) === '0' &&
+                          String(dataCosts) === '0' ? (
+                            <Alert type="error">
+                              Não há receita para o período selecionado.
+                            </Alert>
+                          ) : (
                             <div style={{ textAlign: 'center' }}>
                               <Chart
                                 type="pie"
@@ -139,10 +144,6 @@ function UserReceita() {
                                 legendActive={false}
                               />
                             </div>
-                          ) : (
-                            <Alert type="error">
-                              Não há receita para o período selecionado.
-                            </Alert>
                           )}
                         </>
                       )) || <Loader />}

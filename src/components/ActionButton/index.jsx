@@ -17,9 +17,9 @@ import { ActionButtonContainer } from './styles';
 const ActionButton = ({
   id,
   path,
-  onDelete,
+  onDelete = () => {},
   onAccept,
-  onRemove,
+  onRemove = () => {},
   onResendMail = null,
   info = '/detalhes',
   noInfo = false,
@@ -91,8 +91,8 @@ const ActionButton = ({
 
     {!noRemove && (
       <div
-        onClick={() => onRemove()}
-        onKeyPress={() => onRemove()}
+        onClick={() => onRemove() || onDelete()}
+        onKeyPress={() => onRemove() || onDelete()}
         title="Remover"
         role="button"
         tabIndex="0"

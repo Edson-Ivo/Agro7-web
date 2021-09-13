@@ -12,8 +12,7 @@ import isEmpty from '@/helpers/isEmpty';
 
 const CulturesActionsForm = ({
   typeAction,
-  cultureId = null,
-  userId,
+  userSuppliesRoute = '',
   dataAction = null,
   editForm = false,
   details = false
@@ -167,14 +166,18 @@ const CulturesActionsForm = ({
     (typeAction === 'applications-supplies' && !isEmpty(dataTypes) && (
       <>
         {!editForm && !details && isEmpty(dataAction) ? (
-          <SearchSelect
-            name="supplies"
-            label="Digite o nome do Insumo:"
-            url={`/cultures-supplies/find/by/user/${userId}`}
-            options
-            required
-            disabled={disabled}
-          />
+          <>
+            {!isEmpty(userSuppliesRoute) && (
+              <SearchSelect
+                name="supplies"
+                label="Digite o nome do Insumo:"
+                url={userSuppliesRoute}
+                options
+                required
+                disabled={disabled}
+              />
+            )}
+          </>
         ) : (
           <>
             <Select

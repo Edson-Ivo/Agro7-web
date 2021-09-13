@@ -38,6 +38,7 @@ function AcoesCulturaCadastrar() {
   const [typeAction, setTypeAction] = useState('');
   const [route, setRoute] = useState({});
   const [baseUrl, setBaseUrl] = useState('');
+  const [userSuppliesRoute, setUserSuppliesRoute] = useState('');
 
   const router = useRouter();
   const { id, fieldId, cultureId } = router.query;
@@ -55,6 +56,24 @@ function AcoesCulturaCadastrar() {
     setDisableButton(false);
     setRoute(urlRoute(router, type, ['tecnico']));
   }, []);
+
+  useEffect(() => {
+    setUserSuppliesRoute('');
+
+    if (!isEmpty(data)) {
+      const userIdProperty = data?.properties?.users?.id;
+      const cultesSuppliesBase = '/cultures-supplies/find/by';
+
+      if (
+        type === 'administrador' &&
+        router.query?.userId === String(userIdProperty)
+      ) {
+        setUserSuppliesRoute(`${cultesSuppliesBase}/user/${userIdProperty}`);
+      } else {
+        setUserSuppliesRoute(`${cultesSuppliesBase}/user-logged`);
+      }
+    }
+  }, [data]);
 
   useEffect(() => {
     setBaseUrl(`${route.path}/${id}/talhoes/${fieldId}/culturas/${cultureId}`);
@@ -220,8 +239,7 @@ function AcoesCulturaCadastrar() {
 
                       <CulturesActionsForm
                         typeAction={typeAction}
-                        cultureId={cultureId}
-                        userId={data?.properties?.users?.id}
+                        userSuppliesRoute={userSuppliesRoute}
                       />
 
                       <div className="form-group buttons">
