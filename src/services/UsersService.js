@@ -96,6 +96,19 @@ class UsersService {
       return error.response;
     }
   }
+
+  static async resendConfirmEmail(id) {
+    try {
+      const response = await api.post(
+        `/users/resend-confirm-email/by/id/${id}`,
+        {}
+      );
+
+      return response;
+    } catch (error) {
+      return error.response;
+    }
+  }
 }
 
 export default UsersService;
