@@ -27,6 +27,7 @@ import { useSelector } from 'react-redux';
 import urlRoute from '@/helpers/urlRoute';
 import isEmpty from '@/helpers/isEmpty';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
+import maskString from '@/helpers/maskString';
 
 const schema = yup.object().shape({
   date_start: yup.string().required('O campo data é obrigatório!'),
@@ -175,7 +176,8 @@ function CulturasEdit() {
                         date_start: dateToInput(dataCultures?.date_start),
                         date_finish: dataCultures?.date_finish
                           ? dateToInput(dataCultures?.date_finish)
-                          : null
+                          : null,
+                        area: maskString(dataCultures?.area, 'area')
                       }}
                     >
                       <SearchSelect

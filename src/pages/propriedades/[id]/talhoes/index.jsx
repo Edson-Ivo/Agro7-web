@@ -28,6 +28,7 @@ import Error from '@/components/Error/index';
 import { useSelector } from 'react-redux';
 import urlRoute from '@/helpers/urlRoute';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
+import maskString from '@/helpers/maskString';
 
 function Talhoes() {
   const router = useRouter();
@@ -154,7 +155,9 @@ function Talhoes() {
                                   }
                                 >
                                   <td>{d.name}</td>
-                                  <td>{`${d.area}${d.type_dimension}`}</td>
+                                  <td>{`${maskString(d.area, 'area-in-table')}${
+                                    d.type_dimension
+                                  }`}</td>
                                   <td onClick={e => e.stopPropagation()}>
                                     <ActionButton
                                       id={d.id}

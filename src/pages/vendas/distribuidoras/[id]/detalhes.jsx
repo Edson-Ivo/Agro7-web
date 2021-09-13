@@ -70,7 +70,8 @@ function VendasDistribuidorasDetalhes() {
                         document: maskString(data?.document, 'document') || '',
                         addresses_postcode:
                           maskString(data?.addresses?.postcode, 'postcode') ||
-                          ''
+                          '',
+                        area: maskString(data?.area, 'area')
                       }}
                     >
                       <Input type="text" label="Nome" name="name" disabled />

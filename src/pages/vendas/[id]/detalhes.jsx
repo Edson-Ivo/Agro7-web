@@ -151,7 +151,11 @@ function VendasDetalhes() {
                           maskString(
                             data?.distributors?.addresses?.postcode,
                             'postcode'
-                          ) || ''
+                          ) || '',
+                        distributors_area: maskString(
+                          data?.distributors?.area,
+                          'area'
+                        )
                       }}
                     >
                       <MultiStep activeStep={activeStep} onlyView>
@@ -267,7 +271,7 @@ function VendasDetalhes() {
                               <Input
                                 type="number"
                                 label="Área"
-                                name="distributors.area"
+                                name="distributors_area"
                                 disabled
                               />
                             </div>

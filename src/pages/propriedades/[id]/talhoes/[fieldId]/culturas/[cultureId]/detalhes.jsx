@@ -31,6 +31,7 @@ import { useSelector } from 'react-redux';
 import urlRoute from '@/helpers/urlRoute';
 import isEmpty from '@/helpers/isEmpty';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
+import maskString from '@/helpers/maskString';
 
 function CulturasInfo() {
   const router = useRouter();
@@ -136,7 +137,8 @@ function CulturasInfo() {
                         date_start: dateToInput(dataCultures?.date_start),
                         date_finish: dataCultures?.date_finish
                           ? dateToInput(dataCultures?.date_finish)
-                          : null
+                          : null,
+                        area: maskString(dataCultures?.area, 'area')
                       }}
                     >
                       <Select

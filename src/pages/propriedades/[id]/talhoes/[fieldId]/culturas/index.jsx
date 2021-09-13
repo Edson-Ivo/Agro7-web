@@ -29,6 +29,7 @@ import { useSelector } from 'react-redux';
 import urlRoute from '@/helpers/urlRoute';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 import { dateConversor } from '@/helpers/date';
+import maskString from '@/helpers/maskString';
 
 function Culturas() {
   const router = useRouter();
@@ -159,7 +160,10 @@ function Culturas() {
                                   }
                                 >
                                   <td>{d?.products?.name}</td>
-                                  <td>{`${d.area}${d.type_dimension}`}</td>
+                                  <td>{`${maskString(
+                                    d?.area,
+                                    'area-in-table'
+                                  )}${d.type_dimension}`}</td>
                                   <td>{dateConversor(d?.date_start, false)}</td>
                                   <td>
                                     {d?.date_finish
