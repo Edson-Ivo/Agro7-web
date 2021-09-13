@@ -13,7 +13,8 @@ import {
   faTruck,
   faStore,
   faWallet,
-  faSeedling
+  faSeedling,
+  faUserLock
 } from '@fortawesome/free-solid-svg-icons';
 
 import { useSelector } from 'react-redux';
@@ -33,8 +34,15 @@ const data = [
     href: '/admin/users',
     title: 'Gerenciar Usuários',
     description:
-      'Aqui você tem controle de todos os usuários da sua aplicação.',
+      'Aqui você tem controle de todos os usuários ativados da sua aplicação.',
     icon: faUser
+  },
+  {
+    href: '/admin/users/nao-ativado',
+    title: 'Gerenciar Usuários Não Ativados',
+    description:
+      'Aqui você tem controle de todos os usuários não ativados da sua aplicação.',
+    icon: faUserLock
   },
   {
     href: '/admin/propriedades',

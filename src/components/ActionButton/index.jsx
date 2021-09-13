@@ -8,7 +8,8 @@ import {
   faTrash,
   faFileDownload,
   faTimes,
-  faCheck
+  faCheck,
+  faEnvelope
 } from '@fortawesome/free-solid-svg-icons';
 
 import { ActionButtonContainer } from './styles';
@@ -19,6 +20,7 @@ const ActionButton = ({
   onDelete,
   onAccept,
   onRemove,
+  onResendMail = null,
   info = '/detalhes',
   noInfo = false,
   noEdit = false,
@@ -57,6 +59,20 @@ const ActionButton = ({
           </div>
         </a>
       </Link>
+    )}
+
+    {onResendMail && (
+      <div
+        onClick={() => onResendMail()}
+        onKeyPress={() => onResendMail()}
+        title="Reenviar e-mail"
+        role="button"
+        tabIndex="0"
+      >
+        <div>
+          <FontAwesomeIcon icon={faEnvelope} />
+        </div>
+      </div>
     )}
 
     {!noAccept && (

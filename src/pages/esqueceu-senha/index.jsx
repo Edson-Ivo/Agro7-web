@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import * as yup from 'yup';
 import Head from 'next/head';
 import Image from 'next/image';
@@ -7,9 +7,9 @@ import Link from 'next/link';
 import { Form } from '@unform/web';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSignInAlt } from '@fortawesome/free-solid-svg-icons';
+import { faEnvelope } from '@fortawesome/free-solid-svg-icons';
 
-import Router from 'next/router';
+import { useRouter } from 'next/router';
 import Loader from '@/components/Loader/index';
 import Container, { CenterContainer } from '@/components/Container';
 import Input from '@/components/Input';
@@ -17,67 +17,66 @@ import Button from '@/components/Button';
 import { Alert } from '@/components/Alert';
 
 import AuthService from '@/services/AuthService';
-import { UserAuthAction } from '@/store/modules/User/actions';
 import errorMessage from '@/helpers/errorMessage';
 
 const schema = yup.object().shape({
-  document: yup.string().required('Por favor, preencha o campo CPF ou CNPJ.'),
-  password: yup.string().required('Por favor, preencha o campo senha.')
+  email: yup
+    .string()
+    .email('O e-mail precisa ser um e-mail válido')
+    .required('O campo e-mail é obrigatório!')
 });
 
-export default function Login() {
+export default function EsqueceuSenha() {
   const formRef = useRef(null);
+  const router = useRouter();
 
   const [alertMsg, setAlertMsg] = useState('');
+  const [alertType, setAlertType] = useState('error');
   const [loading, setLoading] = useState(false);
-
-  const dispatch = useDispatch();
 
   const { id } = useSelector(state => state.user);
 
-  if (id) Router.push('/');
+  const { email: queryEmail = '' } = router.query;
+
+  if (id) router.push('/');
 
   const handleSubmit = async data => {
     setLoading(true);
     formRef.current.setErrors({});
 
+    setAlertType('error');
+    setAlertMsg('');
+
     schema
       .validate(data)
       .then(async d => {
-        const { document, password } = d;
+        const { email } = d;
 
-        await AuthService.login(document, password).then(
-          res => {
-            dispatch(
-              UserAuthAction({
-                user: res.user
-              })
-            );
-
-            Router.push('/');
-          },
-          error => {
-            setLoading(false);
-            setAlertMsg(errorMessage(error));
+        await AuthService.forgotPassword(email).then(res => {
+          if (res.status !== 201 || res?.statusCode) {
+            setAlertMsg(errorMessage(res));
+          } else {
+            setAlertType('success');
+            setAlertMsg('E-mail de recuperação de senha enviado com sucesso!');
           }
-        );
+        });
       })
       .catch(err => {
         setAlertMsg(err.errors[0]);
-        setLoading(false);
-
         if (err instanceof yup.ValidationError) {
           const { path, message } = err;
 
           formRef.current.setFieldError(path, message);
         }
       });
+
+    setLoading(false);
   };
 
   return (
     <>
       <Head>
-        <title>Acessar o sistema - Agro7</title>
+        <title>Esqueceu sua senha? - Agro7</title>
       </Head>
 
       <Container>
@@ -91,40 +90,39 @@ export default function Login() {
                 alt="Logotipo Agro7"
               />
             </div>
-            {alertMsg && <Alert>{alertMsg}</Alert>}
-            <Form method="post" ref={formRef} onSubmit={handleSubmit}>
+            <Form
+              method="post"
+              ref={formRef}
+              onSubmit={handleSubmit}
+              initialData={{ email: queryEmail }}
+            >
+              <h3 style={{ marginBottom: 8, marginTop: -16 }}>
+                Esqueceu sua senha?
+              </h3>
+              <p style={{ marginBottom: 20 }}>
+                Não se preocupe! Iremos te enviar um e-mail com um link para
+                recuperá-la.
+              </p>
+              {alertMsg && <Alert type={alertType}>{alertMsg}</Alert>}
+
               <Input
-                type="text"
-                label="CPF ou CNPJ"
-                name="document"
-                inputMode="numeric"
-                style={{ marginBottom: '16px' }}
-                mask="cpf_cnpj"
-                maxLength="18"
+                type="email"
+                label="Insira aqui o e-mail de sua conta"
+                name="email"
                 autoComplete="off"
                 required
                 disabled={loading}
               />
 
-              <Input
-                type="password"
-                label="Senha"
-                name="password"
-                style={{ marginBottom: '10px' }}
-                autoComplete="off"
-                required
-                disabled={loading}
-              />
-
-              {(!loading && (
+              {(!loading && alertType !== 'success' && (
                 <Button className="primary loginButton" type="submit">
-                  <FontAwesomeIcon icon={faSignInAlt} className="loginIcon" />{' '}
-                  Acessar o Sistema
+                  <FontAwesomeIcon icon={faEnvelope} className="loginIcon" />{' '}
+                  Enviar e-mail de recuperação
                 </Button>
               )) || <Loader />}
             </Form>
             <p className="text">
-              <Link href="/esqueceu-senha">Esqueceu sua senha?</Link>
+              <Link href="/login">Voltar ao login</Link>
             </p>
           </div>
         </CenterContainer>

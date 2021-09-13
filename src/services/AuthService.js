@@ -56,6 +56,36 @@ class AuthService {
       }
     };
   }
+
+  static async forgotPassword(email) {
+    try {
+      const response = await api.post(`/auth/forgot-password`, { email });
+
+      return response;
+    } catch (error) {
+      return error.response;
+    }
+  }
+
+  static async changePassword(data) {
+    try {
+      const response = await api.post(`/auth/change-password`, { ...data });
+
+      return response;
+    } catch (error) {
+      return error.response;
+    }
+  }
+
+  static async confirmEmail(token) {
+    try {
+      const response = await api.post(`/auth/confirm-email`, { token });
+
+      return response;
+    } catch (error) {
+      return error.response;
+    }
+  }
 }
 
 export default AuthService;
