@@ -1,9 +1,10 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import Head from 'next/head';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Form } from '@unform/web';
+import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEnvelope } from '@fortawesome/free-solid-svg-icons';
@@ -21,7 +22,9 @@ import errorMessage from '@/helpers/errorMessage';
 export default function ConfirmarEmail() {
   const formRef = useRef(null);
   const router = useRouter();
+  const { executeRecaptcha } = useGoogleReCaptcha();
 
+  const [reCaptcha, setReCaptcha] = useState('');
   const [alertMsg, setAlertMsg] = useState('');
   const [alertType, setAlertType] = useState('error');
   const [loading, setLoading] = useState(false);
@@ -32,6 +35,27 @@ export default function ConfirmarEmail() {
 
   if (id) router.push('/');
 
+  const handleReCaptchaVerify = async () => {
+    if (!executeRecaptcha) return;
+
+    (async () => {
+      try {
+        const tokenCaptcha = await executeRecaptcha('login');
+
+        setReCaptcha(tokenCaptcha);
+      } catch (error) {
+        setAlertType('error');
+        setAlertMsg(
+          'Erro ao configurar o reCaptcha, por favor, tente novamente ou atualize a página.'
+        );
+      }
+    })();
+  };
+
+  useEffect(() => {
+    handleReCaptchaVerify();
+  }, [executeRecaptcha]);
+
   const handleSubmit = async () => {
     setLoading(true);
     formRef.current.setErrors({});
@@ -39,7 +63,9 @@ export default function ConfirmarEmail() {
     setAlertType('success');
     setAlertMsg('Enviando solicitação...');
 
-    await AuthService.confirmEmail(token).then(res => {
+    await handleReCaptchaVerify();
+
+    await AuthService.confirmEmail(token, reCaptcha).then(res => {
       if (res.status !== 201 || res?.statusCode) {
         setAlertType('error');
         setAlertMsg(errorMessage(res));
