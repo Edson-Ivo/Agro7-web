@@ -2,6 +2,7 @@ import React from 'react';
 import Head from 'next/head';
 import { ThemeProvider } from 'styled-components';
 import { Provider as ReduxProvider } from 'react-redux';
+import { GoogleReCaptchaProvider } from 'react-google-recaptcha-v3';
 
 import '@fortawesome/fontawesome-svg-core/styles.css';
 import { config } from '@fortawesome/fontawesome-svg-core';
@@ -24,14 +25,20 @@ const Agro7App = ({ Component, pageProps }) => (
       />
       <title>Agro7</title>
     </Head>
-    <ReduxProvider store={store}>
-      <ThemeProvider theme={theme}>
-        <ModalProvider>
-          <Component {...pageProps} />
-        </ModalProvider>
-        <GlobalStyle />
-      </ThemeProvider>
-    </ReduxProvider>
+    <GoogleReCaptchaProvider
+      language="pt-BR"
+      reCaptchaKey="6LeVX2wcAAAAANs6bBZy3wf_XLFxohDclRDuw6k5"
+      scriptProps={{ async: true }}
+    >
+      <ReduxProvider store={store}>
+        <ThemeProvider theme={theme}>
+          <ModalProvider>
+            <Component {...pageProps} />
+          </ModalProvider>
+          <GlobalStyle />
+        </ThemeProvider>
+      </ReduxProvider>
+    </GoogleReCaptchaProvider>
   </>
 );
 
