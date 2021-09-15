@@ -5,6 +5,7 @@ import Head from 'next/head';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Form } from '@unform/web';
+import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faKey } from '@fortawesome/free-solid-svg-icons';
@@ -31,9 +32,11 @@ const schema = yup.object().shape({
 export default function AlterarSenha() {
   const formRef = useRef(null);
   const router = useRouter();
+  const { executeRecaptcha } = useGoogleReCaptcha();
 
   const { token } = router.query;
 
+  const [reCaptcha, setReCaptcha] = useState('');
   const [alertMsg, setAlertMsg] = useState('');
   const [alertType, setAlertType] = useState('error');
   const [loading, setLoading] = useState(false);
@@ -42,6 +45,23 @@ export default function AlterarSenha() {
 
   if (id) router.push('/');
 
+  const handleReCaptchaVerify = async () => {
+    if (!executeRecaptcha) return;
+
+    (async () => {
+      try {
+        const tokenCaptcha = await executeRecaptcha('login');
+
+        setReCaptcha(tokenCaptcha);
+      } catch (error) {
+        setAlertType('error');
+        setAlertMsg(
+          'Erro ao configurar o reCaptcha, por favor, tente novamente ou atualize a página.'
+        );
+      }
+    })();
+  };
+
   const handleSubmit = async data => {
     setLoading(true);
     formRef.current.setErrors({});
@@ -49,10 +69,13 @@ export default function AlterarSenha() {
     setAlertType('error');
     setAlertMsg('');
 
+    await handleReCaptchaVerify();
+
     schema
       .validate(data)
       .then(async d => {
         d.token = token;
+        d.captcha = reCaptcha;
 
         await AuthService.changePassword(d).then(res => {
           if (res.status !== 201 || res?.statusCode) {

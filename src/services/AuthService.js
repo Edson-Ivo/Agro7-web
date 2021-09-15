@@ -6,11 +6,12 @@ import { getCookie, setCookie, removeCookie } from '../helpers/cookies';
 import { api } from './api';
 
 class AuthService {
-  static async login(document, password) {
+  static async login(document, password, captcha) {
     return api
       .post(`/auth/login`, {
         document,
-        password
+        password,
+        captcha
       })
       .then(response => {
         if (response.data.access_token) {
@@ -57,9 +58,12 @@ class AuthService {
     };
   }
 
-  static async forgotPassword(email) {
+  static async forgotPassword(email, captcha) {
     try {
-      const response = await api.post(`/auth/forgot-password`, { email });
+      const response = await api.post(`/auth/forgot-password`, {
+        email,
+        captcha
+      });
 
       return response;
     } catch (error) {
@@ -77,9 +81,12 @@ class AuthService {
     }
   }
 
-  static async confirmEmail(token) {
+  static async confirmEmail(token, captcha) {
     try {
-      const response = await api.post(`/auth/confirm-email`, { token });
+      const response = await api.post(`/auth/confirm-email`, {
+        token,
+        captcha
+      });
 
       return response;
     } catch (error) {

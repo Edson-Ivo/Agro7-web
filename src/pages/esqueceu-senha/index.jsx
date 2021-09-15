@@ -1,10 +1,11 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import * as yup from 'yup';
 import Head from 'next/head';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Form } from '@unform/web';
+import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEnvelope } from '@fortawesome/free-solid-svg-icons';
@@ -29,7 +30,9 @@ const schema = yup.object().shape({
 export default function EsqueceuSenha() {
   const formRef = useRef(null);
   const router = useRouter();
+  const { executeRecaptcha } = useGoogleReCaptcha();
 
+  const [reCaptcha, setReCaptcha] = useState('');
   const [alertMsg, setAlertMsg] = useState('');
   const [alertType, setAlertType] = useState('error');
   const [loading, setLoading] = useState(false);
@@ -40,6 +43,27 @@ export default function EsqueceuSenha() {
 
   if (id) router.push('/');
 
+  const handleReCaptchaVerify = async () => {
+    if (!executeRecaptcha) return;
+
+    (async () => {
+      try {
+        const token = await executeRecaptcha('login');
+
+        setReCaptcha(token);
+      } catch (error) {
+        setAlertType('error');
+        setAlertMsg(
+          'Erro ao configurar o reCaptcha, por favor, tente novamente ou atualize a página.'
+        );
+      }
+    })();
+  };
+
+  useEffect(() => {
+    handleReCaptchaVerify();
+  }, [executeRecaptcha]);
+
   const handleSubmit = async data => {
     setLoading(true);
     formRef.current.setErrors({});
@@ -47,12 +71,14 @@ export default function EsqueceuSenha() {
     setAlertType('error');
     setAlertMsg('');
 
+    await handleReCaptchaVerify();
+
     schema
       .validate(data)
       .then(async d => {
         const { email } = d;
 
-        await AuthService.forgotPassword(email).then(res => {
+        await AuthService.forgotPassword(email, reCaptcha).then(res => {
           if (res.status !== 201 || res?.statusCode) {
             setAlertMsg(errorMessage(res));
           } else {

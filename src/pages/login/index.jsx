@@ -1,10 +1,11 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import * as yup from 'yup';
 import Head from 'next/head';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Form } from '@unform/web';
+import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSignInAlt } from '@fortawesome/free-solid-svg-icons';
@@ -27,8 +28,11 @@ const schema = yup.object().shape({
 
 export default function Login() {
   const formRef = useRef(null);
+  const { executeRecaptcha } = useGoogleReCaptcha();
 
+  const [reCaptcha, setReCaptcha] = useState('');
   const [alertMsg, setAlertMsg] = useState('');
+  const [alertType, setAlertType] = useState('error');
   const [loading, setLoading] = useState(false);
 
   const dispatch = useDispatch();
@@ -37,16 +41,42 @@ export default function Login() {
 
   if (id) Router.push('/');
 
+  const handleReCaptchaVerify = async () => {
+    if (!executeRecaptcha) return;
+
+    (async () => {
+      try {
+        const token = await executeRecaptcha('login');
+
+        setReCaptcha(token);
+      } catch (error) {
+        setAlertType('error');
+        setAlertMsg(
+          'Erro ao configurar o reCaptcha, por favor, tente novamente ou atualize a página.'
+        );
+      }
+    })();
+  };
+
+  useEffect(() => {
+    handleReCaptchaVerify();
+  }, [executeRecaptcha]);
+
   const handleSubmit = async data => {
     setLoading(true);
+    setAlertType('error');
+    setAlertMsg('');
+
     formRef.current.setErrors({});
+
+    await handleReCaptchaVerify();
 
     schema
       .validate(data)
       .then(async d => {
         const { document, password } = d;
 
-        await AuthService.login(document, password).then(
+        await AuthService.login(document, password, reCaptcha).then(
           res => {
             dispatch(
               UserAuthAction({
@@ -91,7 +121,7 @@ export default function Login() {
                 alt="Logotipo Agro7"
               />
             </div>
-            {alertMsg && <Alert>{alertMsg}</Alert>}
+            {alertMsg && <Alert type={alertType}>{alertMsg}</Alert>}
             <Form method="post" ref={formRef} onSubmit={handleSubmit}>
               <Input
                 type="text"

@@ -214,4 +214,10 @@ export default createGlobalStyle`
     ${ShowTransition}
   }
 
+  .grecaptcha-badge {
+    display: none;
+    opacity: 0;
+    visibility: hidden;
+  }
+
 `;
