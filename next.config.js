@@ -15,6 +15,8 @@ const nextConfig = {
     domains: ['dev.agrofind.com.br']
   },
 
+  target: 'experimental-serverless-trace',
+
   rewrites: async () => {
     return [
       {
