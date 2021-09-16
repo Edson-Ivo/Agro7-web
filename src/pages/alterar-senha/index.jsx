@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import * as yup from 'yup';
 import Head from 'next/head';
@@ -61,6 +61,10 @@ export default function AlterarSenha() {
       }
     })();
   };
+
+  useEffect(() => {
+    handleReCaptchaVerify();
+  }, [executeRecaptcha]);
 
   const handleSubmit = async data => {
     setLoading(true);
