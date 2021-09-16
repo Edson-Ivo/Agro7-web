@@ -3,7 +3,7 @@ import { getCookieFromBrowser } from '../helpers/cookies';
 import { AUTH_COOKIE_TOKEN } from './constants';
 
 export const api = axios.create({
-  baseURL: 'https://dev.agrofind.com.br'
+  baseURL: 'https://agrofind.com.br'
 });
 
 api.interceptors.request.use(config => {
