@@ -37,9 +37,9 @@ const Navbar = () => {
   };
 
   const handleLogout = () => {
-    router.reload();
-
     AuthService.logout();
+
+    router.reload();
   };
 
   return (
