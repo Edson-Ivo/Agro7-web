@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import Router from 'next/router';
+import { useRouter } from 'next/router';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useSelector, useDispatch } from 'react-redux';
@@ -24,6 +24,7 @@ import Tooltip from '../Tooltip';
 const Navbar = () => {
   const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
+  const router = useRouter();
 
   const navOpen = useSelector(state => state.nav.open);
   const {
@@ -36,9 +37,9 @@ const Navbar = () => {
   };
 
   const handleLogout = () => {
-    AuthService.logout();
+    router.reload();
 
-    Router.push('/login');
+    AuthService.logout();
   };
 
   return (

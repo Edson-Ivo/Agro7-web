@@ -6,16 +6,14 @@ const nextConfig = {
   webpack: config => {
     config.resolve.modules.push(path.resolve('./'));
     config.resolve.alias['@'] = path.resolve(__dirname, 'src');
-    config.optimization.minimize = true;
+    // config.optimization.minimize = true;
 
     return config;
   },
 
   images: {
-    domains: ['dev.agrofind.com.br']
+    domains: ['agrofind.com.br']
   },
-
-  target: 'experimental-serverless-trace',
 
   rewrites: async () => {
     return [

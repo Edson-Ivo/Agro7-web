@@ -1,53 +1,48 @@
+/* eslint-disable react/prefer-stateless-function */
 import React, { Component } from 'react';
+import Router from 'next/router';
 
 import { AUTH_COOKIE_TOKEN, AUTH_COOKIE_NAME } from '@/services/constants';
 
 import isEmpty from '@/helpers/isEmpty';
 import AuthService from '@/services/AuthService';
 
-import { redirect } from '@/helpers/redirect';
 import { getCookie } from '@/helpers/cookies';
 import Error from '../Error/index';
 
-export function privateRoute(type) {
-  return WrappedComponent =>
-    class extends Component {
-      static async getInitialProps(ctx) {
-        const token = getCookie(AUTH_COOKIE_TOKEN, ctx);
-        const userData = getCookie(AUTH_COOKIE_NAME, ctx);
+export const privateRoute = type => WrappedComponent =>
+  class extends Component {
+    constructor(props) {
+      super(props);
 
-        let initialProps = { hasPermission: true };
+      this.state = {
+        token: getCookie(AUTH_COOKIE_TOKEN),
+        userData: getCookie(AUTH_COOKIE_NAME),
+        hasPermission: true
+      };
+    }
 
-        if (!token || !userData) {
-          AuthService.logout();
+    componentDidMount() {
+      const { token, userData } = this.state;
 
-          redirect('/login', ctx.res);
-        }
-
-        if (!isEmpty(type)) {
-          const user = AuthService.decodeUserData(userData);
-          const hasPermission = type.includes(user?.type);
-
-          initialProps = {
-            ...initialProps,
-            hasPermission
-          };
-        }
-
-        if (WrappedComponent.getInitialProps)
-          return WrappedComponent.getInitialProps(initialProps);
-
-        return initialProps;
+      if (!token || !userData) {
+        AuthService.logout();
+        Router.push('/login?redirected=true');
       }
 
-      render() {
-        const { hasPermission } = this.props;
-
-        return hasPermission ? (
-          <WrappedComponent {...this.props} />
-        ) : (
-          <Error error={403} />
-        );
+      if (!isEmpty(type)) {
+        const user = AuthService.decodeUserData(userData);
+        this.setState({ hasPermission: type.includes(user?.type) });
       }
-    };
-}
+    }
+
+    render() {
+      const { hasPermission } = this.state;
+
+      return hasPermission ? (
+        <WrappedComponent {...hasPermission} />
+      ) : (
+        <Error error={403} />
+      );
+    }
+  };
