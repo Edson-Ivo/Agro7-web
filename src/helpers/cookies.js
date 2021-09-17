@@ -33,4 +33,4 @@ const getCookieFromServer = (key, ctx) => {
 };
 
 export const getCookie = (key, ctx) =>
-  process.browser ? getCookieFromBrowser(key) : getCookieFromServer(key, ctx);
+  !ctx ? getCookieFromBrowser(key) : getCookieFromServer(key, ctx);
