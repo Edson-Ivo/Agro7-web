@@ -97,7 +97,7 @@ function ControlReceita() {
                           {String(dataProfits) === '0' &&
                           String(dataCosts) === '0' ? (
                             <Alert type="error">
-                              Não há receita para o período selecionado:{' '}
+                              Não há dados para o período selecionado:{' '}
                               {dateConversor(dateStart, false)} -
                               {dateConversor(dateEnd, false)}.
                             </Alert>
