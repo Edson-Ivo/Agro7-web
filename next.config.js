@@ -6,8 +6,6 @@ const nextConfig = {
   webpack: config => {
     config.resolve.modules.push(path.resolve('./'));
     config.resolve.alias['@'] = path.resolve(__dirname, 'src');
-    config.optimization.splitChunks.cacheGroups = {};
-    config.optimization.minimize = true;
 
     return config;
   },
