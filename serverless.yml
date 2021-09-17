@@ -1,0 +1,2 @@
+agro7Serverless:
+  component: '@sls-next/serverless-component'

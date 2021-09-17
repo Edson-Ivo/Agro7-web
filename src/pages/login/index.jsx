@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import * as yup from 'yup';
 import Head from 'next/head';
@@ -10,7 +10,7 @@ import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSignInAlt } from '@fortawesome/free-solid-svg-icons';
 
-import Router from 'next/router';
+import { useRouter } from 'next/router';
 import Loader from '@/components/Loader/index';
 import Container, { CenterContainer } from '@/components/Container';
 import Input from '@/components/Input';
@@ -29,6 +29,7 @@ const schema = yup.object().shape({
 export default function Login() {
   const formRef = useRef(null);
   const { executeRecaptcha } = useGoogleReCaptcha();
+  const router = useRouter();
 
   const [reCaptcha, setReCaptcha] = useState('');
   const [alertMsg, setAlertMsg] = useState('');
@@ -39,7 +40,7 @@ export default function Login() {
 
   const { id } = useSelector(state => state.user);
 
-  if (id) Router.push('/');
+  if (id) router.push('/');
 
   const handleReCaptchaVerify = async () => {
     if (!executeRecaptcha) return;
@@ -84,7 +85,7 @@ export default function Login() {
               })
             );
 
-            Router.push('/');
+            router.push('/');
           },
           error => {
             setLoading(false);
