@@ -1,6 +1,4 @@
-/* eslint-disable react/prefer-stateless-function */
-import React, { Component } from 'react';
-import Router from 'next/router';
+import React from 'react';
 
 import { AUTH_COOKIE_TOKEN, AUTH_COOKIE_NAME } from '@/services/constants';
 
@@ -8,41 +6,39 @@ import isEmpty from '@/helpers/isEmpty';
 import AuthService from '@/services/AuthService';
 
 import { getCookie } from '@/helpers/cookies';
+import { redirect } from '@/helpers/redirect';
 import Error from '../Error/index';
 
-export const privateRoute = type => WrappedComponent =>
-  class extends Component {
-    constructor(props) {
-      super(props);
+export const privateRoute = type => WrappedComponent => {
+  const Wrapper = ({ hasPermission }) =>
+    hasPermission ? (
+      <WrappedComponent {...hasPermission} />
+    ) : (
+      <Error error={403} />
+    );
 
-      this.state = {
-        token: getCookie(AUTH_COOKIE_TOKEN),
-        userData: getCookie(AUTH_COOKIE_NAME),
-        hasPermission: true
-      };
+  Wrapper.getInitialProps = async ctx => {
+    const token = getCookie(AUTH_COOKIE_TOKEN, ctx);
+    const userData = getCookie(AUTH_COOKIE_NAME, ctx);
+    let hasPermission = false;
+
+    if (!token || !userData) {
+      AuthService.logout();
+
+      redirect('/login', ctx.res);
+
+      return { hasPermission };
     }
 
-    componentDidMount() {
-      const { token, userData } = this.state;
+    hasPermission = true;
 
-      if (!token || !userData) {
-        AuthService.logout();
-        Router.push('/login?redirected=true');
-      }
-
-      if (!isEmpty(type)) {
-        const user = AuthService.decodeUserData(userData);
-        this.setState({ hasPermission: type.includes(user?.type) });
-      }
+    if (!isEmpty(type)) {
+      const user = AuthService.decodeUserData(userData);
+      hasPermission = type.includes(user?.type);
     }
 
-    render() {
-      const { hasPermission } = this.state;
-
-      return hasPermission ? (
-        <WrappedComponent {...hasPermission} />
-      ) : (
-        <Error error={403} />
-      );
-    }
+    return { hasPermission };
   };
+
+  return Wrapper;
+};
