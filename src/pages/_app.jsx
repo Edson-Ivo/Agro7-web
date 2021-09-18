@@ -27,7 +27,7 @@ const Agro7App = ({ Component, pageProps }) => (
     </Head>
     <GoogleReCaptchaProvider
       language="pt-BR"
-      reCaptchaKey="6LeVX2wcAAAAANs6bBZy3wf_XLFxohDclRDuw6k5"
+      reCaptchaKey="6LcqN3ccAAAAABkIKLCs_b7UrpgLdJ01_LJHxLpu"
       scriptProps={{ async: true }}
     >
       <ReduxProvider store={store}>
