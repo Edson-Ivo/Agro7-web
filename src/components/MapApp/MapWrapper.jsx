@@ -11,7 +11,7 @@ function MapWrapper({ children, onClick, center = [], zoom = 8, ...rest }) {
   const [libraries] = useState(['geometry']);
 
   const { isLoaded } = useJsApiLoader({
-    googleMapsApiKey: 'AIzaSyDYjSxhFEOiIXD5KLMkIigrGtRVxwU_6WM',
+    googleMapsApiKey: 'AIzaSyAA8WQ37NM_lyZ_n7XYKr1ZjQkfE1BH58E',
     libraries
   });
 
