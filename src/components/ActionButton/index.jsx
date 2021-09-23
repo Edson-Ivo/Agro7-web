@@ -12,6 +12,7 @@ import {
   faEnvelope
 } from '@fortawesome/free-solid-svg-icons';
 
+import downloadDocument from '@/helpers/downloadDocument';
 import { ActionButtonContainer } from './styles';
 
 const ActionButton = ({
@@ -32,13 +33,17 @@ const ActionButton = ({
 }) => (
   <ActionButtonContainer>
     {download && (
-      <Link href={download} replace passHref>
-        <a target="_blank" rel="noopener noreferrer" title="Baixar arquivo">
-          <div>
-            <FontAwesomeIcon icon={faFileDownload} />
-          </div>
-        </a>
-      </Link>
+      <div
+        onClick={() => downloadDocument(download)}
+        onKeyPress={() => downloadDocument(download)}
+        title="Baixar arquivo"
+        role="button"
+        tabIndex="0"
+      >
+        <div>
+          <FontAwesomeIcon icon={faFileDownload} />
+        </div>
+      </div>
     )}
 
     {!noInfo && (
