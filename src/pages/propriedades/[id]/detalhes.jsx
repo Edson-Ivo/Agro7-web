@@ -42,11 +42,9 @@ function PropertieInfo() {
   const formRef = useRef(null);
 
   const router = useRouter();
-  const { id } = router.query;
+  const { id, pageDocs = 1 } = router.query;
 
   const perPageDocs = 20;
-
-  const { pageDocs = 1 } = router.query;
 
   const [alertMsg, setAlertMsg] = useState({ type: '', message: '' });
   const { addModal, removeModal } = useModal();

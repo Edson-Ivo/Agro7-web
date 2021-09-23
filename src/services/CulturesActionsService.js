@@ -158,33 +158,84 @@ class CulturesActionsService {
       return error.response;
     }
   }
+
+  static async createDocument(id, data, action) {
+    try {
+      const response = await api.post(
+        `/cultures-${action}-documents/${id}`,
+        data,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        }
+      );
+
+      return response;
+    } catch (error) {
+      return error.response;
+    }
+  }
+
+  static async updateDocument(id, data, action) {
+    try {
+      const response = await api.put(
+        `/cultures-${action}-documents/${id}`,
+        data,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        }
+      );
+
+      return response;
+    } catch (error) {
+      return error.response;
+    }
+  }
+
+  static async deleteDocument(id, action) {
+    try {
+      const response = await api.delete(`/cultures-${action}-documents/${id}`);
+
+      return response;
+    } catch (error) {
+      return error.response;
+    }
+  }
 }
 
 export const actionsList = {
   services: {
     value: 'services',
+    singleValue: 'service',
     label: 'Serviços',
     text: 'Serviço %name, custando R$ %value, feito'
   },
   irrigations: {
     value: 'irrigations',
+    singleValue: 'irrigation',
     label: 'Irrigações',
     text:
       'Irrigação feita em %date_start às %time_start até %date_finish às %time_finish.'
   },
   supplies: {
     value: 'supplies',
+    singleValue: 'supply',
     label: 'Insumos',
     text: 'Insumo %name foi adicionado.'
   },
   'applications-supplies': {
-    value: 'applications-supplies',
+    value: 'application-supply',
+    singleValue: 'supply',
     label: 'Aplicação de Insumos',
     text:
       'Insumo %name aplicado (%dose%type_dose) em %date_start até %date_finish'
   },
   others: {
     value: 'others',
+    singleValue: 'other',
     label: 'Outros',
     text: '%name foi realizado'
   }

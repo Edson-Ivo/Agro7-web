@@ -26,6 +26,7 @@ import urlRoute from '@/helpers/urlRoute';
 import { useSelector } from 'react-redux';
 import isEmpty from '@/helpers/isEmpty';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
+import downloadDocument from '@/helpers/downloadDocument';
 
 const schema = yup.object().shape({
   name: yup.string().required('Você precisa dar um nome para o documento')
@@ -148,16 +149,15 @@ function DocumentosEdit() {
                         name="name"
                         label="Nome do documento"
                       />
-                      <Link href={dataDocs?.url} replace passHref>
-                        <a target="_blank" rel="noopener noreferrer">
-                          <Input
-                            type="text"
-                            name="url"
-                            label="Clique aqui para ver o documento atual"
-                            disabled
-                          />
-                        </a>
-                      </Link>
+
+                      <Button
+                        type="button"
+                        onClick={() => downloadDocument(dataDocs?.url)}
+                        style={{ marginBottom: 20 }}
+                      >
+                        Clique aqui para ver o documento atual
+                      </Button>
+
                       <FileInput
                         ref={inputRef}
                         name="file"
