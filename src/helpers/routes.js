@@ -657,6 +657,18 @@ const namedRoutes = {
     name: 'Registrar'
   },
 
+  '/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]/acoes/[type]/[actionId]/documentos': {
+    name: 'Documentos'
+  },
+
+  '/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]/acoes/[type]/[actionId]/documentos/cadastrar': {
+    name: 'Adicionar'
+  },
+
+  '/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]/acoes/[type]/[actionId]/documentos/[docId]/editar': {
+    name: 'Editar'
+  },
+
   '/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]/colheitas': {
     name: 'Colheitas'
   },

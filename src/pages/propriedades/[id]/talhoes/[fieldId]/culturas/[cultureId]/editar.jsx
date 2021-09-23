@@ -20,7 +20,6 @@ import Loader from '@/components/Loader';
 import errorMessage from '@/helpers/errorMessage';
 import { useFetch } from '@/hooks/useFetch';
 import CulturesService from '@/services/CulturesService';
-import SearchSelect from '@/components/SearchSelect/index';
 import { dateToInput, dateToISOString } from '@/helpers/date';
 import Error from '@/components/Error/index';
 import { useSelector } from 'react-redux';
@@ -39,11 +38,7 @@ const schema = yup.object().shape({
     .positive('A área precisa ter um valor positivo'),
   type_dimension: yup
     .string()
-    .required('Unidade de medida precisa ser definida'),
-  products: yup
-    .number()
-    .transform(value => (Number.isNaN(value) ? undefined : value))
-    .required('O produto tem que ser escolhido')
+    .required('Unidade de medida precisa ser definida')
 });
 
 function CulturasEdit() {
@@ -172,7 +167,6 @@ function CulturasEdit() {
                       onSubmit={handleSubmit}
                       initialData={{
                         ...dataCultures,
-                        products: dataCultures?.products.id,
                         date_start: dateToInput(dataCultures?.date_start),
                         date_finish: dataCultures?.date_finish
                           ? dateToInput(dataCultures?.date_finish)
@@ -180,18 +174,6 @@ function CulturasEdit() {
                         area: maskString(dataCultures?.area, 'area')
                       }}
                     >
-                      <SearchSelect
-                        name="products"
-                        label="Digite o nome do produto:"
-                        url="/products/find/all"
-                        options={[
-                          {
-                            value: dataCultures?.products.id,
-                            label: dataCultures?.products.name
-                          }
-                        ]}
-                      />
-
                       <div className="form-group">
                         <div>
                           <Input type="date" label="Data" name="date_start" />
