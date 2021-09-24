@@ -168,6 +168,7 @@ function Relatorios() {
                         <Table>
                           <thead>
                             <tr>
+                              <th>Técnico</th>
                               <th>Data</th>
                               <th>Concluído</th>
                               <th>Diagnóstico</th>
@@ -186,6 +187,11 @@ function Relatorios() {
                                     router.push(`${baseUrl}/${d.id}/detalhes`)
                                   }
                                 >
+                                  <td>
+                                    {!isEmpty(d?.technicians)
+                                      ? d?.technicians?.name
+                                      : 'Usuário deletado'}
+                                  </td>
                                   <td>{dateConversor(d?.created_at, false)}</td>
                                   <td>{d?.concluded ? 'Sim' : 'Não'}</td>
                                   <td>

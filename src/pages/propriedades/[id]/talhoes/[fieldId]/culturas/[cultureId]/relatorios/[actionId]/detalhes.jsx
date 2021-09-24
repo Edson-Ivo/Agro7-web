@@ -57,7 +57,7 @@ function RelatoriosDetails() {
     true
   );
 
-  const { type } = useSelector(state => state.user);
+  const { type, id: userId } = useSelector(state => state.user);
   const [route, setRoute] = useState({});
 
   useEffect(() => {
@@ -150,7 +150,11 @@ function RelatoriosDetails() {
               title={`Relatório da Cultura de ${
                 dataCultures?.products?.name
               } - ${dateConversor(dataActions?.created_at, false)}`}
-              description={`Aqui você vendo o relatório técnico do dia ${dateConversor(
+              description={`Aqui você vendo o relatório feito pelo técnico ${
+                !isEmpty(dataActions?.technicians)
+                  ? dataActions?.technicians?.name
+                  : 'Usuário deletado'
+              } do dia ${dateConversor(
                 dataActions?.created_at,
                 false
               )} da cultura de ${dataCultures?.products?.name} do talhão ${
@@ -160,28 +164,30 @@ function RelatoriosDetails() {
                 isEmpty(data) || isEmpty(dataCultures) || isEmpty(dataActions)
               }
             >
-              {dataActions && (
-                <>
-                  {(!dataActions?.concluded && (
-                    <Button
-                      type="button"
-                      className="primary"
-                      onClick={() => handleSubmit()}
-                      disabled={disableButton}
-                    >
-                      <FontAwesomeIcon icon={faCheck} /> Marcar Concluído
-                    </Button>
-                  )) || (
-                    <Button
-                      type="button"
-                      onClick={() => handleRemoveConcludedModal()}
-                      disabled={disableButton}
-                    >
-                      <FontAwesomeIcon icon={faCheck} /> Concluído
-                    </Button>
-                  )}
-                </>
-              )}
+              {dataActions &&
+                (data?.properties?.users?.id === userId ||
+                  type === 'administrador') && (
+                  <>
+                    {(!dataActions?.concluded && (
+                      <Button
+                        type="button"
+                        className="primary"
+                        onClick={() => handleSubmit()}
+                        disabled={disableButton}
+                      >
+                        <FontAwesomeIcon icon={faCheck} /> Marcar Concluído
+                      </Button>
+                    )) || (
+                      <Button
+                        type="button"
+                        onClick={() => handleRemoveConcludedModal()}
+                        disabled={disableButton}
+                      >
+                        <FontAwesomeIcon icon={faCheck} /> Concluído
+                      </Button>
+                    )}
+                  </>
+                )}
             </SectionHeaderContent>
           </SectionHeader>
           <SectionBody>
