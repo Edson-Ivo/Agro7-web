@@ -78,7 +78,7 @@ function AcoesCulturasDocumentosCreate() {
     if (!createAction) {
       router.back();
     } else {
-      router.replace(`${baseUrl}/${id}/detalhes`);
+      router.replace(`${baseUrl}/${actionId}/detalhes`);
     }
   };
 
@@ -117,7 +117,7 @@ function AcoesCulturasDocumentosCreate() {
                 message: 'Documento cadastrado com sucesso!'
               });
               setTimeout(() => {
-                router.push(`${baseUrl}/${id}/detalhes`);
+                router.push(`${baseUrl}/${actionId}/detalhes`);
                 setDisableButton(false);
               }, 1000);
             }
