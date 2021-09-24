@@ -65,7 +65,7 @@ function AcoesCulturasDetalhes() {
   );
 
   const { data: dataDocs, error: errorDocs, mutate: mutateDocs } = useFetch(
-    `/cultures-${typeAction}-documents/find/by/culture-${actionsList[typeAction]?.singleValue}/${id}?limit=${perPageDocs}&page=${pageDocs}`
+    `/cultures-${typeAction}-documents/find/by/culture-${actionsList[typeAction]?.singleValue}/${actionId}?limit=${perPageDocs}&page=${pageDocs}`
   );
 
   const { type } = useSelector(state => state.user);
@@ -262,7 +262,7 @@ function AcoesCulturasDetalhes() {
                               </tbody>
                             </Table>
                             <Pagination
-                              url={`${route.path}/${id}/detalhes`}
+                              url={`${route.path}/${actionId}/detalhes`}
                               currentPage={pageDocs}
                               itemsPerPage={perPageDocs}
                               totalPages={dataDocs.meta.totalPages}

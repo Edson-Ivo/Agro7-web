@@ -114,7 +114,7 @@ function AcoesCulturasDocumentosCreate() {
             });
 
             setTimeout(() => {
-              router.push(`${baseUrl}/${id}/detalhes`);
+              router.push(`${baseUrl}/${actionId}/detalhes`);
               setDisableButton(false);
             }, 1000);
           });

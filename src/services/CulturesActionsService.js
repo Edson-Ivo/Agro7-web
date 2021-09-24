@@ -227,8 +227,8 @@ export const actionsList = {
     text: 'Insumo %name foi adicionado.'
   },
   'applications-supplies': {
-    value: 'application-supply',
-    singleValue: 'supply',
+    value: 'applications-supplies',
+    singleValue: 'application-supply',
     label: 'Aplicação de Insumos',
     text:
       'Insumo %name aplicado (%dose%type_dose) em %date_start até %date_finish'
