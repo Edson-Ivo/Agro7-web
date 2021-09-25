@@ -93,7 +93,7 @@ function CulturasRelatorio() {
                 '%cultura': dataCultures?.products?.name
               }}
               title={`Relatório da Cultura de ${dataCultures?.products?.name} do Talhão ${data?.name}`}
-              description={`Aqui você irá ver o relatório das ações na cultura de ${dataCultures?.products?.name} do talhão ${data?.name} da propriedade ${data?.properties?.name}.`}
+              description={`Aqui, você irá ver o relatório das ações da cultura de ${dataCultures?.products?.name} do talhão ${data?.name} da propriedade ${data?.properties?.name}.`}
               isLoading={isEmpty(data) || isEmpty(dataCultures)}
             />
           </SectionHeader>

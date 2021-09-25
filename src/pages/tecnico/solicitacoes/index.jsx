@@ -99,7 +99,7 @@ function RequestsTechnichian() {
           <SectionHeader>
             <SectionHeaderContent
               title="Solicitações Técnica"
-              description="Aqui você irá gerenciar todas as solicitações técnicas de
+              description="Aqui, você irá gerenciar todas as solicitações técnicas de
                 propriedades."
             />
           </SectionHeader>

@@ -200,7 +200,7 @@ function Properties() {
                 '%usuario': dataUser?.name
               }}
               title="Cadastre uma propriedade"
-              description={`Aqui você irá cadastrar uma propriedade para ${dataUser?.name}`}
+              description={`Aqui, você irá cadastrar uma propriedade para ${dataUser?.name}`}
               isLoading={isEmpty(dataUser)}
             />
           </SectionHeader>

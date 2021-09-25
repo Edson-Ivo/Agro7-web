@@ -137,7 +137,7 @@ function VendasTransportadorasDocumentosCreate() {
                 '%transportadora': data?.name
               }}
               title={`Adicionar Documento para ${data?.name}`}
-              description={`Aqui você irá adicionar um documento para o seu registro da transportadora ${data?.name}.`}
+              description={`Aqui, você irá adicionar um documento para o seu registro da transportadora ${data?.name}.`}
               isLoading={isEmpty(data)}
             />
           </SectionHeader>

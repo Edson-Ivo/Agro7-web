@@ -197,7 +197,7 @@ function AdminConfiguracoesPerfilEdit() {
                 '%usuario': data?.users?.name
               }}
               title="Editar Perfil Público"
-              description="Aqui você irá editar o perfil público do usuário em questão."
+              description="Aqui, você irá editar o perfil público do usuário em questão."
               isLoading={isEmpty(data)}
             />
           </SectionHeader>

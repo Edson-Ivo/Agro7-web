@@ -126,7 +126,7 @@ function Tecnicos() {
                 '%propriedade': data?.name
               }}
               title={`Técnicos relacionados a propriedade ${data?.name}`}
-              description="Aqui você irá ver os técnicos relacionados da propriedade em
+              description="Aqui, você irá ver os técnicos relacionados da propriedade em
                 questão"
               isLoading={isEmpty(data)}
             >

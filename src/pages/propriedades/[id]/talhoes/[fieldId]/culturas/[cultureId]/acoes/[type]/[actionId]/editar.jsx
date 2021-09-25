@@ -177,9 +177,9 @@ function AcoesCulturaEditar() {
                 '%cultura': dataCultures?.products?.name
               }}
               title={`Editar Ação de ${actionsList[typeAction]?.label} na Cultura de ${dataCultures?.products?.name}`}
-              description={`Aqui você irá editar a ação ${actionsList[
+              description={`Aqui, você irá editar a ação ${actionsList[
                 typeAction
-              ]?.label.toLowerCase()} em questão na cultura de ${
+              ]?.label.toLowerCase()} em questão da cultura de ${
                 dataCultures?.products?.name
               } do talhão ${data?.name} da propriedade ${
                 data?.properties?.name

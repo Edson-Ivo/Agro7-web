@@ -143,7 +143,7 @@ function Relatorios() {
                 '%cultura': dataCultures?.products?.name
               }}
               title={`Relatório Técnico da Cultura de ${dataCultures?.products?.name} do Talhão ${data?.name}`}
-              description={`Aqui você irá ver os relatórios do técnico da cultura de ${dataCultures?.products?.name} do talhão ${data?.name} da propriedade ${data?.properties?.name}.`}
+              description={`Aqui, você irá ver os relatórios do técnico da cultura de ${dataCultures?.products?.name} do talhão ${data?.name} da propriedade ${data?.properties?.name}.`}
               isLoading={isEmpty(data) || isEmpty(dataCultures)}
             >
               {willCreate && (

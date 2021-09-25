@@ -116,7 +116,7 @@ function VendasEtiquetasCaixas() {
                 '%lote': dataSale?.batch
               }}
               title={`Etiqueta para Caixas ou Sacarias da Venda ${dataSale?.batch}`}
-              description={`Aqui você irá gerar uma etiqueta de 50x120x2 para Caixas ou Sacarias da Venda ${dataSale?.batch}.`}
+              description={`Aqui, você irá gerar uma etiqueta de 50x120x2 para Caixas ou Sacarias da Venda ${dataSale?.batch}.`}
               isLoading={isEmpty(dataSale)}
             />
           </SectionHeader>

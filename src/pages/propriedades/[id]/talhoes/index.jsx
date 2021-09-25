@@ -117,7 +117,7 @@ function Talhoes() {
                 '%propriedade': data?.name
               }}
               title={`Talhões da propriedade ${data?.name}`}
-              description="Aqui você irá ver o talhões da propriedade em questão"
+              description="Aqui, você irá ver os talhões da propriedade em questão"
               isLoading={isEmpty(data)}
             >
               <Link href={`${baseUrl}/cadastrar`}>

@@ -124,7 +124,7 @@ function ProducerNotebookEdit() {
                 '%data': dateConversor(dataProducerNotebook?.date, false)
               }}
               title="Editar Anotação"
-              description="Aqui você irá editar uma anotação do seu Caderno do Produtor"
+              description="Aqui, você irá editar uma anotação do seu Caderno do Produtor"
               isLoading={isEmpty(dataProducerNotebook)}
             />
           </SectionHeader>

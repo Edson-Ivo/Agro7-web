@@ -101,7 +101,7 @@ function PropertiesTechnichian() {
                 '%usuario': dataUser?.name
               }}
               title="Propriedades Relacionadas"
-              description={`Aqui você irá ver todas as propriedades que estão relacionadas
+              description={`Aqui, você irá ver todas as propriedades que estão relacionadas
                 com o técnico ${dataUser?.name}.`}
               isLoading={isEmpty(dataUser)}
             />

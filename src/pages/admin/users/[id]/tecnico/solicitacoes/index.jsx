@@ -105,7 +105,7 @@ function RequestsTechnichian() {
                 '%usuario': dataUser?.name
               }}
               title="Solicitações Técnica"
-              description={`Aqui você irá gerenciar todas as solicitações técnicas de
+              description={`Aqui, você irá gerenciar todas as solicitações técnicas de
                 propriedades para o técnico ${dataUser?.name}.`}
               isLoading={isEmpty(dataUser)}
             />

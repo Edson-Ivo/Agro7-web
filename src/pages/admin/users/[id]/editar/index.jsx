@@ -184,7 +184,7 @@ function AdminUsersEdit() {
                 '%usuario': data?.name
               }}
               title={`Editar Usuário ${data?.name}`}
-              description="Aqui você irá editar o usuário em questão"
+              description="Aqui, você irá editar o usuário em questão"
               isLoading={isEmpty(data)}
             >
               <Link href={`/admin/users/${id}/editar/senha`}>

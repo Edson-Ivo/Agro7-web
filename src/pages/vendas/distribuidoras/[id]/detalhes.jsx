@@ -49,7 +49,7 @@ function VendasDistribuidorasDetalhes() {
                 '%distribuidora': data?.name
               }}
               title={`Distribuidora ${data?.name}`}
-              description={`Aqui você irá ver os dados da sua distribuidora ${
+              description={`Aqui, você irá ver os dados da sua distribuidora ${
                 data?.name
               } cadastrada no dia ${dateConversor(data?.created_at, false)}.`}
               isLoading={isEmpty(data)}

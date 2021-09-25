@@ -123,7 +123,7 @@ function AdminUsers() {
           <SectionHeader>
             <SectionHeaderContent
               title="Gerenciar Usuários"
-              description="Aqui você poderá gerenciar todos os usuários de seu sistema"
+              description="Aqui, você poderá gerenciar todos os usuários de seu sistema"
               isLoading={false}
             >
               <Link href="/admin/users/cadastrar">

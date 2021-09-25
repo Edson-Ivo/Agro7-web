@@ -132,7 +132,7 @@ function PropertieInfo() {
                 '%propriedade': data?.name
               }}
               title={`Informações da propriedade ${data?.name}`}
-              description="Aqui você irá ver informações detalhadas da propriedade em
+              description="Aqui, você irá ver informações detalhadas da propriedade em
                 questão"
               isLoading={isEmpty(data)}
             >

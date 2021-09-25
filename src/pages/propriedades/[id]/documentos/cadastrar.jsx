@@ -142,7 +142,7 @@ function DocumentosCreate() {
                 '%propriedade': data?.name
               }}
               title={`Adicionar Documento ${data?.name}`}
-              description={`Aqui você irá adicionar um documento para propriedade ${data?.name}`}
+              description={`Aqui, você irá adicionar um documento para propriedade ${data?.name}`}
               isLoading={isEmpty(data)}
             />
           </SectionHeader>

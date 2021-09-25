@@ -98,7 +98,7 @@ function AdminColors() {
           <SectionHeader>
             <SectionHeaderContent
               title="Gerenciar Cores"
-              description="Aqui você poderá gerenciar todas as cores para utilizá-las nas
+              description="Aqui, você poderá gerenciar todas as cores para utilizá-las nas
                 categorias"
             >
               <Link href={`${baseUrl}/cadastrar`}>

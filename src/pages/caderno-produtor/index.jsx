@@ -227,8 +227,7 @@ function ProducerNotebook() {
                 activeDate,
                 false
               )}`}
-              description="Aqui você poderá visualizar suas ações realizadas no sistema
-                pela data ou categorias."
+              description="Aqui, você poderá visualizar suas ações realizadas no sistema pela data ou categorias."
               isLoading={isEmpty(activeDate)}
             >
               <Link href="/caderno-produtor/cadastrar">

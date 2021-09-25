@@ -108,7 +108,7 @@ function VendasEtiquetasProdutos() {
                 '%lote': dataSale?.batch
               }}
               title={`Etiqueta sem Informações Nutricionais de Produto da Venda ${dataSale?.batch}`}
-              description={`Aqui você irá gerar uma etiqueta sem Informações Nutricionais de 25x40x4 para Produtos Embalados da Venda ${dataSale?.batch}.`}
+              description={`Aqui, você irá gerar uma etiqueta sem Informações Nutricionais de 25x40x4 para Produtos Embalados da Venda ${dataSale?.batch}.`}
               isLoading={isEmpty(dataSale)}
             />
           </SectionHeader>

@@ -144,7 +144,7 @@ function CulturasCreate() {
                 '%talhao': data?.name
               }}
               title={`Adicionar Cultura ${data?.name}`}
-              description={`Aqui você irá adicionar uma cultura para o talhão ${data?.name} da propriedade ${data?.properties?.name}.`}
+              description={`Aqui, você irá adicionar uma cultura para o talhão ${data?.name} da propriedade ${data?.properties?.name}.`}
               isLoading={isEmpty(data)}
             />
           </SectionHeader>

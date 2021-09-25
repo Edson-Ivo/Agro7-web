@@ -34,75 +34,75 @@ const data = [
     href: '/admin/users',
     title: 'Gerenciar Usuários',
     description:
-      'Aqui você tem controle de todos os usuários ativados da sua aplicação.',
+      'Aqui, você tem controle de todos os usuários ativados da sua aplicação.',
     icon: faUser
   },
   {
     href: '/admin/users/nao-ativado',
     title: 'Gerenciar Usuários Não Ativados',
     description:
-      'Aqui você tem controle de todos os usuários não ativados da sua aplicação.',
+      'Aqui, você tem controle de todos os usuários não ativados da sua aplicação.',
     icon: faUserLock
   },
   {
     href: '/admin/propriedades',
     title: 'Gerenciar Propriedades',
-    description: 'Aqui você pode gerenciar as propriedades de sua aplicação.',
+    description: 'Aqui, você pode gerenciar as propriedades de sua aplicação.',
     icon: faMapMarkerAlt
   },
   {
     href: '/admin/produtos',
     title: 'Gerenciar Produtos',
     description:
-      'Aqui você tem controle de todos os produtos de sua aplicação.',
+      'Aqui, você tem controle de todos os produtos de sua aplicação.',
     icon: faBox
   },
   {
     href: '/admin/vendas',
     title: 'Gerenciar Vendas',
-    description: 'Aqui você tem controle de todas as vendas de sua aplicação.',
+    description: 'Aqui, você tem controle de todas as vendas de sua aplicação.',
     icon: faDollarSign
   },
   {
     href: '/admin/receita',
     title: 'Gerenciar Receita',
     description:
-      'Aqui você poderá checar a receita (ganhos e despesas) geral dos usuários do sistema em determinado um período de tempo.',
+      'Aqui, você poderá checar a receita (ganhos e despesas) geral dos usuários do sistema em determinado um período de tempo.',
     icon: faWallet
   },
   {
     href: '/admin/projecao-colheita',
     title: 'Gerenciar Projeções das Colheitas',
     description:
-      'Aqui você poderá checar a projeção das colheitas geral dos usuários do sistema em determinado um período de tempo.',
+      'Aqui, você poderá checar a projeção das colheitas geral dos usuários do sistema em determinado um período de tempo.',
     icon: faSeedling
   },
   {
     href: '/admin/vendas/distribuidoras',
     title: 'Gerenciar Distribuidoras',
     description:
-      'Aqui você tem controle de todas as distribuidoras de sua aplicação.',
+      'Aqui, você tem controle de todas as distribuidoras de sua aplicação.',
     icon: faStore
   },
   {
     href: '/admin/vendas/transportadoras',
     title: 'Gerenciar Transportadoras',
     description:
-      'Aqui você tem controle de todas as transportadoras de sua aplicação.',
+      'Aqui, você tem controle de todas as transportadoras de sua aplicação.',
     icon: faTruck
   },
   {
     href: '/admin/categorias',
     title: 'Gerenciar Categorias',
     description:
-      'Aqui você tem controle de todas as categorias de sua aplicação.',
+      'Aqui, você tem controle de todas as categorias de sua aplicação.',
     icon: faListUl
   },
   {
     href: '/admin/cores',
     title: 'Gerenciar Cores',
     description:
-      'Aqui você tem controle de todas as cores para categorias de sua aplicação.',
+      'Aqui, você tem controle de todas as cores para categorias de sua aplicação.',
     icon: faPaintRoller
   }
 ];

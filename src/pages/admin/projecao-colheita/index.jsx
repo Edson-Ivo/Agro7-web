@@ -124,7 +124,7 @@ function AdminProjecaoColheita() {
           <SectionHeader>
             <SectionHeaderContent
               title="Gerenciar Projeção das Colheitas"
-              description="Aqui você poderá gerenciar todas as projeções das colheitas no sistema."
+              description="Aqui, você poderá gerenciar todas as projeções das colheitas no sistema."
             />
           </SectionHeader>
           <SectionBody>

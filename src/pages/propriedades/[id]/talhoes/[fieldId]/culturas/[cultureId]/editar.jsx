@@ -149,7 +149,7 @@ function CulturasEdit() {
                 '%cultura': dataCultures?.products?.name
               }}
               title={`Editar Cultura ${dataCultures?.products?.name}`}
-              description={`Aqui você irá editar a cultura de ${dataCultures?.products?.name} no talhão ${data?.name} da propriedade ${data?.properties?.name}`}
+              description={`Aqui, você irá editar a cultura de ${dataCultures?.products?.name} no talhão ${data?.name} da propriedade ${data?.properties?.name}`}
               isLoading={isEmpty(data) || isEmpty(dataCultures)}
             />
           </SectionHeader>
