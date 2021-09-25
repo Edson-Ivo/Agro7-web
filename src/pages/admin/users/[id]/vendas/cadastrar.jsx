@@ -369,7 +369,7 @@ function VendasCreate() {
                 '%usuario': dataUser?.name
               }}
               title={`Nova Venda para ${dataUser?.name}`}
-              description={`Aqui você irá cadastrar uma nova venda de um produto para o usuário ${dataUser?.name}.`}
+              description={`Aqui, você irá cadastrar uma nova venda de um produto para o usuário ${dataUser?.name}.`}
               isLoading={isEmpty(dataUser)}
             />
           </SectionHeader>

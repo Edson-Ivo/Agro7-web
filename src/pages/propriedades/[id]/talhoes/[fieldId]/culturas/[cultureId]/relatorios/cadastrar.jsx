@@ -145,7 +145,7 @@ function RelatoriosCreate() {
                 '%cultura': dataCultures?.products?.name
               }}
               title={`Adicionar Relatório na Cultura de ${dataCultures?.products?.name}`}
-              description={`Aqui você irá fazer um relatório da cultura de ${dataCultures?.products?.name} do talhão ${data?.name} da propriedade ${data?.properties?.name}.`}
+              description={`Aqui, você irá fazer um relatório da cultura de ${dataCultures?.products?.name} do talhão ${data?.name} da propriedade ${data?.properties?.name}.`}
               isLoading={isEmpty(data) || isEmpty(dataCultures)}
             />
           </SectionHeader>

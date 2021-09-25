@@ -47,7 +47,7 @@ function AdminCoresDetails() {
                 '%cor': dataColor?.name
               }}
               title={`Informações da Cor ${dataColor?.name}`}
-              description="Aqui você irá ver informações da cor em questão"
+              description="Aqui, você irá ver informações da cor em questão"
               isLoading={isEmpty(dataColor)}
             />
           </SectionHeader>

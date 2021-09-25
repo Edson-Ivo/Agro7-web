@@ -283,7 +283,7 @@ function AdminProductsEdit() {
                 '%produto': data?.name
               }}
               title={`Editar Produto ${data?.name}`}
-              description="Aqui você irá editar o produto em questão"
+              description="Aqui, você irá editar o produto em questão"
               isLoading={isEmpty(data)}
             />
           </SectionHeader>

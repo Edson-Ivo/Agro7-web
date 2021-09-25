@@ -104,7 +104,7 @@ function ProducerNotebookCreate() {
           <SectionHeader>
             <SectionHeaderContent
               title="Anotar no Caderno"
-              description="Aqui você irá fazer uma anotação no seu Caderno do Produtor"
+              description="Aqui, você irá fazer uma anotação no seu Caderno do Produtor"
             />
           </SectionHeader>
           <SectionBody>

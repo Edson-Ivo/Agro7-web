@@ -75,7 +75,7 @@ function AdminProductsDetails() {
                 '%produto': data?.name
               }}
               title={`Informações do Produto ${data?.name}`}
-              description="Aqui você irá ver informações do produto em questão"
+              description="Aqui, você irá ver informações do produto em questão"
               isLoading={isEmpty(data)}
             />
           </SectionHeader>

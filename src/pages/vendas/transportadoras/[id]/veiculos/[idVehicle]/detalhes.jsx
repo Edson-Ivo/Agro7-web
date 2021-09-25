@@ -48,7 +48,7 @@ function VendasTransportadorasVeiculosDetalhes() {
                 '%veiculo': data?.name
               }}
               title={`Veículo ${data?.name}`}
-              description={`Aqui você irá ver os dados do veículo ${
+              description={`Aqui, você irá ver os dados do veículo ${
                 data?.name
               } cadastrado no dia ${dateConversor(
                 data?.created_at,

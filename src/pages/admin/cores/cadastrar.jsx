@@ -87,7 +87,7 @@ function AdminCoresCreate() {
           <SectionHeader>
             <SectionHeaderContent
               title="Cadastre uma Cor"
-              description=" Aqui você irá cadastrar uma cor para utilizar nas categorias do
+              description=" Aqui, você irá cadastrar uma cor para utilizar nas categorias do
                 sistema"
             />
           </SectionHeader>

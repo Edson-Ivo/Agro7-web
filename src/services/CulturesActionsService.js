@@ -1,5 +1,6 @@
 import * as yup from 'yup';
 
+import maskString from '@/helpers/maskString';
 import { dateConversor } from '@/helpers/date';
 import { api } from './api';
 
@@ -8,7 +9,9 @@ class CulturesActionsService {
     let txt = actionsList[action].text;
 
     if (action === 'services') {
-      txt = txt.replace('%name', data?.name).replace('%value', data?.value);
+      txt = txt
+        .replace('%name', data?.name)
+        .replace('%value', maskString(data?.value, 'money'));
 
       if (data?.date) txt += ` no dia ${dateConversor(data?.date, false)}`;
 
@@ -20,7 +23,7 @@ class CulturesActionsService {
     if (action === 'others') {
       txt = txt.replace('%name', data?.name);
 
-      if (data?.value) txt += `, custando R$ ${data?.value}`;
+      if (data?.value) txt += `, custando ${maskString(data?.value, 'money')}`;
       if (data?.date) txt += `, no dia ${dateConversor(data?.date, false)}`;
 
       txt += '.';
@@ -41,7 +44,7 @@ class CulturesActionsService {
         .replace('%date_start', dateConversor(data?.date_start, false))
         .replace('%date_finish', dateConversor(data?.date_finish, false));
 
-      if (data?.value) txt += `, custando R$ ${data?.value}`;
+      if (data?.value) txt += `, custando ${maskString(data?.value, 'money')}`;
 
       txt += '.';
     }
@@ -211,7 +214,7 @@ export const actionsList = {
     value: 'services',
     singleValue: 'service',
     label: 'Serviços',
-    text: 'Serviço %name, custando R$ %value, feito'
+    text: 'Serviço %name, custando %value, feito'
   },
   irrigations: {
     value: 'irrigations',

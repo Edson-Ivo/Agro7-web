@@ -40,8 +40,7 @@ function Configuracoes() {
           <SectionHeader>
             <SectionHeaderContent
               title="Meus Dados"
-              description="Esses são os dados de sua conta, aqui você pode os editar ou
-                alterar sua senha."
+              description="Esses são os dados da sua conta. Aqui, você pode editá-los e alterar sua senha."
             />
           </SectionHeader>
           <SectionBody>

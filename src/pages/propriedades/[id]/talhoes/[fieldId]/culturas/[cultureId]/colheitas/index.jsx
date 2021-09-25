@@ -132,7 +132,7 @@ function Colheitas() {
                 '%cultura': dataCultures?.products?.name
               }}
               title={`Colheitas da Cultura de ${dataCultures?.products?.name} do Talhão ${data?.name}`}
-              description={`Aqui você irá ver as colheitas da cultura de ${dataCultures?.products?.name} do talhão ${data?.name} da propriedade ${data?.properties?.name}.`}
+              description={`Aqui, você irá ver as colheitas da cultura de ${dataCultures?.products?.name} do talhão ${data?.name} da propriedade ${data?.properties?.name}.`}
               isLoading={isEmpty(data) || isEmpty(dataCultures)}
             >
               <Link href={`${baseUrl}/cadastrar`}>

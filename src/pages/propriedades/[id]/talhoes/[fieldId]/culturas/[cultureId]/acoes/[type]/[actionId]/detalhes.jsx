@@ -32,6 +32,7 @@ import Pagination from '@/components/Pagination/index';
 import ActionButton from '@/components/ActionButton/index';
 import Table from '@/components/Table/index';
 import { Alert } from '@/components/Alert/index';
+import maskString from '@/helpers/maskString';
 
 function AcoesCulturasDetalhes() {
   const formRef = useRef(null);
@@ -148,9 +149,9 @@ function AcoesCulturasDetalhes() {
                 '%cultura': dataCultures?.products?.name
               }}
               title={`Detalhes da Ação de ${actionsList[typeAction]?.label} na Cultura de ${dataCultures?.products?.name}`}
-              description={`Aqui você irá vizualizar a ação ${actionsList[
+              description={`Aqui, você irá vizualizar a ação ${actionsList[
                 typeAction
-              ]?.label.toLowerCase()} em questão na cultura de ${
+              ]?.label.toLowerCase()} em questão da cultura de ${
                 dataCultures?.products?.name
               } do talhão ${data?.name} da propriedade ${
                 data?.properties?.name
@@ -183,7 +184,8 @@ function AcoesCulturasDetalhes() {
                             time_finish: removeTimeSeconds(
                               dataActions?.time_finish
                             ),
-                            supplies: dataActions?.supplies?.id
+                            supplies: dataActions?.supplies?.id,
+                            value: maskString(dataActions?.value, 'money')
                           }}
                         >
                           <CulturesActionsForm
@@ -219,7 +221,7 @@ function AcoesCulturasDetalhes() {
                         {errorDocs && (
                           <Alert type="error">
                             Houve um erro ao tentar carregar os documentos dessa
-                            ação na cultura.
+                            ação da cultura.
                           </Alert>
                         )}
                         {alertMsg.message && (

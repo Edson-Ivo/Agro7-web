@@ -69,14 +69,20 @@ function VendasDetalhes() {
               breadcrumbTitles={{
                 '%lote': data?.batch
               }}
-              title={`Venda de ${data?.harvests_sales?.[0]?.harvests?.cultures?.products?.name} - ${data?.total_quantity}${data?.type_unity} (R$ ${data?.value})`}
-              description={`Aqui você irá ver os dados da venda no lote ${
+              title={`Venda de ${
+                data?.harvests_sales?.[0]?.harvests?.cultures?.products?.name
+              } - ${data?.total_quantity}${data?.type_unity} (${maskString(
+                data?.value,
+                'money'
+              )})`}
+              description={`Aqui, você irá ver os dados da venda no lote ${
                 data?.batch
               } de ${
                 data?.harvests_sales?.[0]?.harvests?.cultures?.products?.name
-              } - ${data?.total_quantity}${data?.type_unity} (R$ ${
-                data?.value
-              }) em ${dateConversor(
+              } - ${data?.total_quantity}${data?.type_unity} (${maskString(
+                data?.value,
+                'money'
+              )}) em ${dateConversor(
                 data?.created_at,
                 false
               )} com código de rastreio ${data?.code}.`}
@@ -155,7 +161,8 @@ function VendasDetalhes() {
                         distributors_area: maskString(
                           data?.distributors?.area,
                           'area'
-                        )
+                        ),
+                        value: maskString(data?.value, 'money')
                       }}
                     >
                       <MultiStep activeStep={activeStep} onlyView>
@@ -243,8 +250,6 @@ function VendasDetalhes() {
                             type="text"
                             label="Preço em R$ da venda"
                             name="value"
-                            inputMode="numeric"
-                            mask="money"
                             disabled
                           />
                         </Step>

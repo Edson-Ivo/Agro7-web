@@ -97,7 +97,7 @@ function AdminCategories() {
           <SectionHeader>
             <SectionHeaderContent
               title="Gerenciar Categorias"
-              description="Aqui você poderá gerenciar todas as categorias de seu sistema"
+              description="Aqui, você poderá gerenciar todas as categorias de seu sistema"
             >
               <Link href={`${baseUrl}/cadastrar`}>
                 <Button className="primary">

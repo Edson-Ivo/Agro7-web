@@ -23,7 +23,7 @@ class AuthService {
             };
 
           setCookie(AUTH_COOKIE_TOKEN, accessToken);
-          setCookie(AUTH_COOKIE_NAME, Base64.encode(JSON.stringify(user)));
+          this.setUserDataCookie(user);
         }
 
         return response.data;
@@ -41,6 +41,10 @@ class AuthService {
     return this.decodeUserData(authCookie);
   }
 
+  static encodeUserData(data) {
+    return Base64.encode(JSON.stringify(data));
+  }
+
   static decodeUserData(data) {
     if (data) {
       const decodedUser = Base64.decode(data);
@@ -48,6 +52,7 @@ class AuthService {
       if (isValidJSON(decodedUser))
         return JSON.parse(decodeURIComponent(decodedUser));
     }
+
     return {
       id: 0,
       name: '',
@@ -56,6 +61,10 @@ class AuthService {
         image_url: ''
       }
     };
+  }
+
+  static setUserDataCookie(data) {
+    setCookie(AUTH_COOKIE_NAME, this.encodeUserData(data));
   }
 
   static async forgotPassword(email, captcha) {

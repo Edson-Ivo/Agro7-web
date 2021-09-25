@@ -22,14 +22,14 @@ const data = [
     href: '/painel-controle/receita',
     title: 'Gerenciar Receita',
     description:
-      'Aqui você poderá checar a sua receita (ganhos e despesas) em determinado um período de tempo.',
+      'Aqui, você poderá checar a sua receita (ganhos e despesas) em determinado período de tempo.',
     icon: faWallet
   },
   {
     href: '/painel-controle/projecao-colheita',
     title: 'Gerenciar Projeções das Colheitas',
     description:
-      'Aqui você poderá checar a projeção de suas colheitas em determinado um período de tempo.',
+      'Aqui, você poderá checar a projeção de suas colheitas em determinado período de tempo.',
     icon: faSeedling
   }
 ];
@@ -50,7 +50,7 @@ function ControlPanel() {
           <SectionHeader>
             <SectionHeaderContent
               title="Painel de Controle"
-              description={`Olá ${name}! Esse é seu painel de controle, aqui você pode gerenciar suas receita, colheitas, etc. da sua conta.`}
+              description={`Olá, ${name}! Esse é seu painel de controle. Aqui, você pode gerenciar suas receitas e as projeções das suas colheitas.`}
             />
           </SectionHeader>
           <SectionBody>

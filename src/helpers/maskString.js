@@ -18,6 +18,15 @@ const maskString = (value, pattern) => {
     if (pat === 'area') return String(Number(v));
     if (pat === 'area-in-table') return String(Number(v)).replace('.', ',');
 
+    if (pat === 'money')
+      return Number(v)
+        .toLocaleString('pt-br', {
+          minimumFractionDigits: 2,
+          style: 'currency',
+          currency: 'BRL'
+        })
+        .toString();
+
     return pat.replace(/#/g, () => v[i++] || '');
   }
 

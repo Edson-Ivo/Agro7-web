@@ -22,14 +22,14 @@ const data = [
     href: '/tecnico/propriedades',
     title: 'Propriedades Relacionadas',
     description:
-      'Aqui você irá ver todas as propriedades que estão relacionadas com seu usuário de técnico.',
+      'Aqui, você irá ver todas as propriedades que estão relacionadas com seu usuário de técnico.',
     icon: faMapMarkedAlt
   },
   {
     href: '/tecnico/solicitacoes',
     title: 'Solicitação Técnica',
     description:
-      'Aqui você irá gerenciar todas as solicitações técnicas de propriedades.',
+      'Aqui, você irá gerenciar todas as solicitações técnicas de propriedades.',
     icon: faBell
   }
 ];
@@ -50,10 +50,7 @@ function TechnichianHome() {
           <SectionHeader>
             <SectionHeaderContent
               title="Painel Técnico"
-              description={`Olá ${name}! Esse é seu painel de técnico, aqui você pode
-                gerenciar suas solicitações para trabalhar em uma propriedade,
-                como também, gerenciar as propriedades que você já está
-                relacionado!`}
+              description={`Olá, ${name}! Esse é seu painel técnico. Aqui, você pode gerenciar suas solicitações para trabalhar em uma propriedade, como também, as propriedades em que você já está relacionado.`}
             />
           </SectionHeader>
           <SectionBody>

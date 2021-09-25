@@ -164,9 +164,9 @@ function AcoesCulturasDocumentosCreate() {
               }}
               title={`Adicionar Documento para Ação de ${actionsList[typeAction]?.label} na
               Cultura ${dataCultures?.products?.name}`}
-              description={`Aqui você irá adicionar um documento para a ação ${actionsList[
+              description={`Aqui, você irá adicionar um documento para a ação ${actionsList[
                 typeAction
-              ]?.label.toLowerCase()} em questão na cultura de ${
+              ]?.label.toLowerCase()} em questão da cultura de ${
                 dataCultures?.products?.name
               } do talhão ${data?.name} da propriedade ${
                 data?.properties?.name

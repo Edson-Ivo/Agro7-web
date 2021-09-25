@@ -1,4 +1,5 @@
 import React, { useState, useRef, useCallback, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import Head from 'next/head';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
@@ -30,6 +31,8 @@ import isEmpty from '@/helpers/isEmpty';
 import Table from '@/components/Table/index';
 import ActionButton from '@/components/ActionButton/index';
 import { useModal } from '@/hooks/useModal';
+import AuthService from '@/services/AuthService';
+import { UserAuthAction } from '@/store/modules/User/actions';
 
 function ConfiguracoesPerfilEdit() {
   const formRef = useRef(null);
@@ -37,6 +40,8 @@ function ConfiguracoesPerfilEdit() {
   const inputGalleryRef = useRef(null);
 
   const router = useRouter();
+  const dispatch = useDispatch();
+  const user = useSelector(state => state.user);
 
   const { addModal, removeModal } = useModal();
   const [activeStep, setActiveStep] = useState(1);
@@ -91,6 +96,22 @@ function ConfiguracoesPerfilEdit() {
             } else {
               mutate();
 
+              const userData = {
+                ...user,
+                profile: {
+                  ...user.profile,
+                  image_url: res.data.image_url
+                }
+              };
+
+              AuthService.setUserDataCookie(userData);
+
+              dispatch(
+                UserAuthAction({
+                  user: userData
+                })
+              );
+
               const galleryQtd = e.target.files.files.length;
 
               if (galleryQtd > 0) {
@@ -118,10 +139,10 @@ function ConfiguracoesPerfilEdit() {
                   message: 'Perfil alterado com sucesso!'
                 });
 
-                setTimeout(() => {
-                  router.push(`/configuracoes/perfil`);
-                  setDisableButton(false);
-                }, 1000);
+                // setTimeout(() => {
+                //   router.push(`/configuracoes/perfil`);
+                //   setDisableButton(false);
+                // }, 1000);
               }
             }
           });

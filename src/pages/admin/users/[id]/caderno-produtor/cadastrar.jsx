@@ -119,7 +119,7 @@ function UserProducerNotebookCreate() {
                 '%usuario': dataUser?.name
               }}
               title="Anotar no Caderno"
-              description={`Aqui você irá fazer uma anotação no Caderno do Produtor de ${dataUser?.name}`}
+              description={`Aqui, você irá fazer uma anotação no Caderno do Produtor de ${dataUser?.name}`}
               isLoading={isEmpty(dataUser)}
             />
           </SectionHeader>

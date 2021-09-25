@@ -196,7 +196,7 @@ function AdminUsers() {
           <SectionHeader>
             <SectionHeaderContent
               title="Cadastre um usuário"
-              description="Aqui você irá cadastrar um usuário para o sistema"
+              description="Aqui, você irá cadastrar um usuário para o sistema"
               isLoading={false}
             />
           </SectionHeader>

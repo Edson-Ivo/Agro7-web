@@ -103,7 +103,7 @@ function AdminUsersEditPassword() {
                 '%usuario': data?.name
               }}
               title={`Alterar Senha do Usuário ${data?.name}`}
-              description="Aqui você irá alterar a senha do usuário em questão"
+              description="Aqui, você irá alterar a senha do usuário em questão"
               isLoading={isEmpty(data)}
             />
           </SectionHeader>

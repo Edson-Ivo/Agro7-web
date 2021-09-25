@@ -138,7 +138,7 @@ function AdminUsersNotActive() {
           <SectionHeader>
             <SectionHeaderContent
               title="Gerenciar Usuários Não Ativados"
-              description="Aqui você poderá gerenciar todos os usuários não ativados de seu sistema"
+              description="Aqui, você poderá gerenciar todos os usuários não ativados de seu sistema"
               isLoading={false}
             />
           </SectionHeader>

@@ -244,7 +244,7 @@ function UserProducerNotebook() {
                 activeDate,
                 false
               )}`}
-              description={`Aqui você poderá visualizar as ações realizadas por ${dataUser?.name} no sistema
+              description={`Aqui, você poderá visualizar as ações realizadas por ${dataUser?.name} no sistema
                 pela data ou categorias.`}
               isLoading={isEmpty(dataUser) || isEmpty(activeDate)}
             >

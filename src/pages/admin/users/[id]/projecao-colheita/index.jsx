@@ -169,7 +169,7 @@ function UserProjecaoColheita() {
                 '%usuario': dataUser?.name
               }}
               title="Gerenciar Projeção das Colheitas"
-              description={`Aqui você poderá gerenciar a projeção das colheitas de ${dataUser?.name} no sistema.`}
+              description={`Aqui, você poderá gerenciar a projeção das colheitas de ${dataUser?.name} no sistema.`}
               isLoading={isEmpty(dataUser)}
             />
           </SectionHeader>

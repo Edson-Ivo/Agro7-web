@@ -147,7 +147,7 @@ function ColheitasCreate() {
                 '%cultura': dataCultures?.products?.name
               }}
               title={`Registrar Colheita na Cultura de ${dataCultures?.products?.name}`}
-              description={`Aqui você irá registrar uma colheita para cultura de ${dataCultures?.products?.name} do talhão ${data?.name} da propriedade ${data?.properties?.name}.`}
+              description={`Aqui, você irá registrar uma colheita para cultura de ${dataCultures?.products?.name} do talhão ${data?.name} da propriedade ${data?.properties?.name}.`}
               isLoading={isEmpty(data) || isEmpty(dataCultures)}
             />
           </SectionHeader>

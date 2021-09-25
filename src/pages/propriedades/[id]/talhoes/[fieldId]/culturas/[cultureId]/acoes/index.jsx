@@ -169,7 +169,7 @@ function AcoesCultura() {
                 '%cultura': dataCultures?.products?.name
               }}
               title={`Ações na Cultura de ${dataCultures?.products?.name} do Talhão ${data?.name}`}
-              description={`Aqui você irá ver as ações na cultura de ${dataCultures?.products?.name} do talhão ${data?.name} da propriedade ${data?.properties?.name}.`}
+              description={`Aqui, você irá ver as ações da cultura de ${dataCultures?.products?.name} do talhão ${data?.name} da propriedade ${data?.properties?.name}.`}
               isLoading={isEmpty(data) || isEmpty(dataCultures)}
             >
               <Link href={`${baseUrl}/cadastrar`}>

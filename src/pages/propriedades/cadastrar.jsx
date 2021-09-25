@@ -188,7 +188,7 @@ function Properties() {
           <SectionHeader>
             <SectionHeaderContent
               title="Cadastre uma propriedade"
-              description="Aqui você irá cadastrar uma propriedade"
+              description="Aqui, você irá cadastrar uma propriedade"
             />
           </SectionHeader>
           <SectionBody>
