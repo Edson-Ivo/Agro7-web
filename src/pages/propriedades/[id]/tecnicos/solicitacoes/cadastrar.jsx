@@ -123,7 +123,7 @@ function TecnicosCadastrar() {
                 '%propriedade': data?.name
               }}
               title={`Solicitar Técnico em ${data?.name}`}
-              description={`Aqui você irá solicitar um técnico para gerenciar a propriedade ${data?.name}`}
+              description={`Aqui, você irá solicitar um técnico para gerenciar a propriedade ${data?.name}`}
               isLoading={isEmpty(data)}
             />
           </SectionHeader>

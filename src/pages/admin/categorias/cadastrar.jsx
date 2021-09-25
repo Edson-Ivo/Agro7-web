@@ -117,7 +117,7 @@ function AdminCategoriesCreate() {
           <SectionHeader>
             <SectionHeaderContent
               title="Cadastre uma Categoria"
-              description="Aqui você irá cadastrar uma categoria no seu sistema"
+              description="Aqui, você irá cadastrar uma categoria no seu sistema"
             />
           </SectionHeader>
           <SectionBody>

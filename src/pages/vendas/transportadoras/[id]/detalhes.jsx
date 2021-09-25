@@ -118,7 +118,7 @@ function VendasTransportadorasDetalhes() {
                 '%transportadora': data?.name
               }}
               title={`Transportadora ${data?.name}`}
-              description={`Aqui você irá ver os dados da sua transportadora ${
+              description={`Aqui, você irá ver os dados da sua transportadora ${
                 data?.name
               } cadastrada no dia ${dateConversor(data?.created_at, false)}.`}
               isLoading={isEmpty(data)}

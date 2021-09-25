@@ -54,7 +54,7 @@ function AdminUsers() {
                 '%usuario': data?.name
               }}
               title={`Informações do Usuário ${data?.name}`}
-              description="Aqui você irá ver informações detalhadas do usuário em questão"
+              description="Aqui, você irá ver informações detalhadas do usuário em questão"
               isLoading={isEmpty(data)}
             >
               <div className="buttons__container">

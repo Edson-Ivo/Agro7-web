@@ -150,7 +150,7 @@ function RelatoriosDetails() {
               title={`Relatório da Cultura de ${
                 dataCultures?.products?.name
               } - ${dateConversor(dataActions?.created_at, false)}`}
-              description={`Aqui você vendo o relatório feito pelo técnico ${
+              description={`Aqui, você vendo o relatório feito pelo técnico ${
                 !isEmpty(dataActions?.technicians)
                   ? dataActions?.technicians?.name
                   : 'Usuário deletado'

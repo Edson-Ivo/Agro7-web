@@ -53,7 +53,7 @@ const CulturesActionsForm = ({
           label="Preço em R$"
           name="value"
           inputMode="numeric"
-          mask="money"
+          mask={!details ? 'money' : ''}
           required
           disabled={disabled}
         />
@@ -129,7 +129,7 @@ const CulturesActionsForm = ({
           label="Preço em R$ (opcional)"
           name="value"
           inputMode="numeric"
-          mask="money"
+          mask={!details ? 'money' : ''}
           disabled={disabled}
         />
         <Input
@@ -199,7 +199,7 @@ const CulturesActionsForm = ({
           label="Custo em R$ (opcional)"
           name="value"
           inputMode="numeric"
-          mask="money"
+          mask={!details ? 'money' : ''}
           disabled={disabled}
         />
 

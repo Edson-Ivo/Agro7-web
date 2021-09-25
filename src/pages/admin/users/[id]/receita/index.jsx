@@ -85,7 +85,7 @@ function UserReceita() {
                 '%usuario': dataUser?.name
               }}
               title="Gerenciar Receita"
-              description={`Aqui você poderá gerenciar a receita de ${dataUser?.name} no sistema.`}
+              description={`Aqui, você poderá gerenciar a receita de ${dataUser?.name} no sistema.`}
               isLoading={isEmpty(dataUser)}
             />
           </SectionHeader>

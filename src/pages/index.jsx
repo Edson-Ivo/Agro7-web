@@ -82,7 +82,7 @@ function Home() {
           <SectionHeader>
             <SectionHeaderContent
               title={`${greeting}, ${name}!`}
-              description="Navegue por suas funcionalidades abaixo ou pelas abas ao lado."
+              description="Navegue pelas suas funcionalidades abaixo ou pelas abas ao lado."
             />
           </SectionHeader>
           <SectionBody>

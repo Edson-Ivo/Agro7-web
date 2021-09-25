@@ -95,7 +95,7 @@ function PropertiesTechnichian() {
           <SectionHeader>
             <SectionHeaderContent
               title="Propriedades Relacionadas"
-              description="Aqui você irá ver todas as propriedades que estão relacionadas
+              description="Aqui, você irá ver todas as propriedades que estão relacionadas
                 com seu usuário de técnico."
             />
           </SectionHeader>

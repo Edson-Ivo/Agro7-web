@@ -211,7 +211,7 @@ function PropertiesEdit() {
                 '%propriedade': data?.name
               }}
               title={`Editar propriedade ${data?.name}`}
-              description="Aqui você irá editar a propriedade em questão"
+              description="Aqui, você irá editar a propriedade em questão"
               isLoading={isEmpty(data)}
             />
           </SectionHeader>

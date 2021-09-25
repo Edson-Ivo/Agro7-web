@@ -120,7 +120,7 @@ function Culturas() {
                 '%talhao': data?.name
               }}
               title={`Culturas do Talhão ${data?.name}`}
-              description={`Aqui você irá ver as culturas do talhão ${data?.name} da propriedade ${data?.properties?.name}.`}
+              description={`Aqui, você irá ver as culturas do talhão ${data?.name} da propriedade ${data?.properties?.name}.`}
               isLoading={isEmpty(data)}
             >
               <Link href={`${baseUrl}/cadastrar`}>

@@ -54,7 +54,7 @@ function AdminUsersNotActiveDetails() {
                 '%usuario': data?.name
               }}
               title={`Informações do Usuário ${data?.name}`}
-              description="Aqui você irá ver informações detalhadas do usuário não ativado em questão"
+              description="Aqui, você irá ver informações detalhadas do usuário não ativado em questão"
               isLoading={isEmpty(data)}
             />
           </SectionHeader>

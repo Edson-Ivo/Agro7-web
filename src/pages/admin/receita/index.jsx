@@ -73,7 +73,7 @@ function AdminReceita() {
           <SectionHeader>
             <SectionHeaderContent
               title="Gerenciar Receita"
-              description="Aqui você poderá gerenciar todas as receitas (lucros e despesas) dos usuários do sistema."
+              description="Aqui, você poderá gerenciar todas as receitas (lucros e despesas) dos usuários do sistema."
             />
           </SectionHeader>
           <SectionBody>

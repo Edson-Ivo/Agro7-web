@@ -51,7 +51,7 @@ function AdminCategoriesDetails() {
                 '%categoria': dataCategory?.name
               }}
               title={`Informações da Categoria ${dataCategory?.name}`}
-              description="Aqui você irá ver informações da categoria em questão"
+              description="Aqui, você irá ver informações da categoria em questão"
               isLoading={isEmpty(dataCategory)}
             />
           </SectionHeader>

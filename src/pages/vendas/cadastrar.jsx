@@ -360,7 +360,7 @@ function VendasCreate() {
           <SectionHeader>
             <SectionHeaderContent
               title="Nova Venda"
-              description="Aqui você irá cadastrar uma nova venda de um produto."
+              description="Aqui, você irá cadastrar uma nova venda de um produto."
             />
           </SectionHeader>
           <SectionBody>

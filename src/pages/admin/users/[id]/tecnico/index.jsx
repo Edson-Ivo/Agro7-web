@@ -24,14 +24,14 @@ const data = [
     href: '/admin/users/[id]/tecnico/propriedades',
     title: 'Propriedades Relacionadas',
     description:
-      'Aqui você irá ver todas as propriedades que estão relacionadas para esse técnico.',
+      'Aqui, você irá ver todas as propriedades que estão relacionadas para esse técnico.',
     icon: faMapMarkedAlt
   },
   {
     href: '/admin/users/[id]/tecnico/solicitacoes',
     title: 'Solicitação Técnica',
     description:
-      'Aqui você irá gerenciar todas as solicitações técnicas de propriedades para esse técnico.',
+      'Aqui, você irá gerenciar todas as solicitações técnicas de propriedades para esse técnico.',
     icon: faBell
   }
 ];

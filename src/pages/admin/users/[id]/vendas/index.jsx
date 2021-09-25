@@ -30,6 +30,7 @@ import isEmpty from '@/helpers/isEmpty';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 import SalesService from '@/services/SalesService';
 import { dateConversor } from '@/helpers/date';
+import maskString from '@/helpers/maskString';
 
 function Vendas() {
   const [alertMsg, setAlertMsg] = useState({ type: '', message: '' });
@@ -172,7 +173,7 @@ function Vendas() {
                                   }`}
                                 </td>
                                 <td>{`${p?.total_quantity}${p?.type_unity}`}</td>
-                                <td>R$ {p?.value}</td>
+                                <td>{maskString(p?.value, 'money')}</td>
                                 <td>{dateConversor(p?.created_at, false)}</td>
                                 <td>{p?.distributors?.name}</td>
                                 <td>

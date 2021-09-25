@@ -123,7 +123,7 @@ function SolicitacoesTecnicos() {
               }}
               title={`Solicitações de Técnicos na propriedade
                 ${data?.name}`}
-              description="Aqui você irá ver as solicitações de técnicos para relacioná-los
+              description="Aqui, você irá ver as solicitações de técnicos para relacioná-los
                 a propriedade em questão"
               isLoading={isEmpty(data)}
             />

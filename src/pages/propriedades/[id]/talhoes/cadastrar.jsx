@@ -167,7 +167,7 @@ function TalhoesCadastrar() {
                 '%propriedade': data?.name
               }}
               title={`Adicionar Talhão ${data?.name}`}
-              description={`Aqui você irá adicionar um talhão para propriedade ${data?.name}`}
+              description={`Aqui, você irá adicionar um talhão para propriedade ${data?.name}`}
               isLoading={isEmpty(data)}
             />
           </SectionHeader>

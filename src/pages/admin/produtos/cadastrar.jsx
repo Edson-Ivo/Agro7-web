@@ -183,7 +183,7 @@ function AdminProductsCreate() {
           <SectionHeader>
             <SectionHeaderContent
               title="Cadastrar Produtos"
-              description="Aqui você irá cadastrar um produto no sistema"
+              description="Aqui, você irá cadastrar um produto no sistema"
             />
           </SectionHeader>
           <SectionBody>

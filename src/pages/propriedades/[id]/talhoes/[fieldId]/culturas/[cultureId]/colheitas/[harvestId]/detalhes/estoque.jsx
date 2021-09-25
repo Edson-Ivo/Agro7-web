@@ -81,7 +81,7 @@ function EstoqueColheitasDetalhes() {
                 '%data': dateConversor(dataHarvests?.date, false)
               }}
               title={`Estoque da Colheita na Cultura de ${dataCultures?.products?.name}`}
-              description={`Aqui você irá ver o estoque da colheita da cultura de ${dataCultures?.products?.name} do talhão ${data?.name} da propriedade ${data?.properties.name}.`}
+              description={`Aqui, você irá ver o estoque da colheita da cultura de ${dataCultures?.products?.name} do talhão ${data?.name} da propriedade ${data?.properties.name}.`}
               isLoading={
                 isEmpty(data) || isEmpty(dataCultures) || isEmpty(dataHarvests)
               }

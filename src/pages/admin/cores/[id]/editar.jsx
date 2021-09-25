@@ -102,7 +102,7 @@ function AdminCoresEdit() {
                 '%cor': dataColor?.name
               }}
               title="Editar Cor"
-              description="Aqui você irá editar a cor em questão"
+              description="Aqui, você irá editar a cor em questão"
             />
           </SectionHeader>
           <SectionBody>

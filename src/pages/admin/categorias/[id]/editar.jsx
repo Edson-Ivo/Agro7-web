@@ -131,7 +131,7 @@ function AdminCategoriesEdit() {
                 '%categoria': dataCategory?.name
               }}
               title={`Editar Categoria ${dataCategory?.name}`}
-              description="Aqui você irá editar a categoria em questão"
+              description="Aqui, você irá editar a categoria em questão"
               isLoading={isEmpty(dataCategory)}
             />
           </SectionHeader>

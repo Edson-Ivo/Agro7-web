@@ -201,7 +201,7 @@ function AcoesCulturaCadastrar() {
                 '%cultura': dataCultures?.products?.name
               }}
               title={`Registrar Ação na Cultura de ${dataCultures?.products?.name}`}
-              description={`Aqui você irá registrar uma ação na cultura de ${dataCultures?.products?.name} do talhão ${data?.name} da propriedade ${data?.properties?.name}.`}
+              description={`Aqui, você irá registrar uma ação da cultura de ${dataCultures?.products?.name} do talhão ${data?.name} da propriedade ${data?.properties?.name}.`}
               isLoading={isEmpty(data) || isEmpty(dataCultures)}
             />
           </SectionHeader>
