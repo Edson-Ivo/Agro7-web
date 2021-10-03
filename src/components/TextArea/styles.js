@@ -30,13 +30,13 @@ export const StyledTextArea = styled.textarea`
       : css`
           border: 1px solid ${props.theme.colors.gray};
 
-          &:hover,
+          &:hover:not(:disabled),
           &:focus {
             border: 1px solid ${props.theme.colors.border};
           }
         `}
 
-  &:hover,
+  &:hover:not(:disabled),
   &:focus {
     background-color: ${props => props.theme.colors.white};
   }

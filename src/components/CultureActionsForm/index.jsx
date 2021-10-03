@@ -225,6 +225,7 @@ const CulturesActionsForm = ({
             />
           </div>
         </div>
+
         <div className="form-group">
           <div>
             <Input
@@ -245,6 +246,13 @@ const CulturesActionsForm = ({
             />
           </div>
         </div>
+
+        <TextArea
+          name="plant_health_control"
+          label="Controle de Fitossanidade"
+          required
+          disabled={disabled}
+        />
       </>
     ))
   );

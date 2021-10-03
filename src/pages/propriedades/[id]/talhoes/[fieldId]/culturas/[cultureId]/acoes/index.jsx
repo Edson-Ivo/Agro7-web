@@ -40,13 +40,7 @@ function AcoesCultura() {
   const router = useRouter();
   const formRef = useRef(null);
 
-  const {
-    id,
-    fieldId,
-    cultureId,
-    typeAction = 'services',
-    page = 1
-  } = router.query;
+  const { id, fieldId, cultureId, typeAction = 'services' } = router.query;
 
   const perPage = 10;
 
@@ -55,6 +49,7 @@ function AcoesCultura() {
   const [route, setRoute] = useState({});
   const [baseUrl, setBaseUrl] = useState('');
   const [cultureSupplyDataRoute, setCultureSupplyDataRoute] = useState('');
+  const [page, setPage] = useState(1);
 
   const { type } = useSelector(state => state.user);
 
@@ -137,8 +132,10 @@ function AcoesCultura() {
     [addModal, removeModal]
   );
 
-  const handleChangeTypeAction = e =>
+  const handleChangeTypeAction = e => {
+    setPage(1);
     router.replace(`${baseUrl}?typeAction=${e?.value || ''}`);
+  };
 
   if (error || errorCultures || errorActions)
     return <Error error={error || errorCultures || errorActions} />;
@@ -250,7 +247,7 @@ function AcoesCultura() {
                         </Table>
                       </div>
                       <Pagination
-                        url={`${baseUrl}`}
+                        setPage={setPage}
                         currentPage={page}
                         itemsPerPage={perPage}
                         totalPages={dataActions?.meta?.totalPages}
