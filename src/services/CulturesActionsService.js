@@ -104,7 +104,14 @@ class CulturesActionsService {
           .required('O insumo precisa ser selecionado.'),
         value: yup
           .number()
-          .transform(value => (Number.isNaN(value) ? undefined : value))
+          .transform(value => (Number.isNaN(value) ? undefined : value)),
+        plant_health_control: yup
+          .string()
+          .max(
+            500,
+            'O campo controle de fitossanidade não deve ultrapassar 500 caracteres!'
+          )
+          .required('O campo controle de fitossanidade é obrigatório!')
       });
 
     if (action === 'others')
