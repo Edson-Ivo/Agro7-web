@@ -47,7 +47,7 @@ function AdminProductsCreate() {
     router.back();
   };
 
-  const handleSubmit = async (d, { reset }, e) => {
+  const handleSubmit = async (...{ 0: d, 2: e }) => {
     setDisableButton(true);
 
     ProductsService.schema()
@@ -60,7 +60,8 @@ function AdminProductsCreate() {
 
         if (
           inputRef.current.error.message ||
-          inputNutricionalRef.current.error.message ||
+          (e.target.fileNutricional.files.length > 0 &&
+            inputNutricionalRef.current.error.message) ||
           (e.target.fileNutricionalVerde.files.length > 0 &&
             inputNutricionalVerdeRef.current.error.message)
         ) {
@@ -87,70 +88,85 @@ function AdminProductsCreate() {
               }, 1000);
             } else {
               let success = false;
+
+              const canAddNutritionalTable =
+                e.target.fileNutricional.files.length > 0;
               const productId = res.data.id;
+
               const nutricionalFormData = new FormData();
 
-              Object.keys(data).forEach(key => {
-                if (key !== 'green') nutricionalFormData.append(key, data[key]);
-              });
+              if (canAddNutritionalTable) {
+                nutricionalFormData.append(
+                  'file',
+                  e.target.fileNutricional.files[0]
+                );
 
-              nutricionalFormData.append(
-                'file',
-                e.target.fileNutricional.files[0]
-              );
-
-              nutricionalFormData.append('products', productId);
-              nutricionalFormData.append('is_green', String(0));
-
-              await NutricionalService.create(nutricionalFormData).then(
-                async res2 => {
-                  if (res2.status !== 201 || res2?.statusCode) {
-                    setAlert({ type: 'error', message: errorMessage(res2) });
-                    setTimeout(() => {
-                      setDisableButton(false);
-                    }, 1000);
-                  } else if (
-                    !isEmpty(data?.green?.length) ||
-                    e.target.fileNutricionalVerde.files.length > 0
-                  ) {
-                    const nutricionalGreenFormData = new FormData();
-
-                    Object.keys(data.green).forEach(key => {
-                      nutricionalGreenFormData.append(key, data.green[key]);
-                    });
-
-                    nutricionalGreenFormData.append(
-                      'file',
-                      e.target.fileNutricionalVerde.files[0]
-                    );
-
-                    nutricionalGreenFormData.append('products', productId);
-                    nutricionalGreenFormData.append('is_green', String(1));
-
-                    await NutricionalService.create(
-                      nutricionalGreenFormData
-                    ).then(res3 => {
-                      if (res3.status !== 201 || res3?.statusCode) {
-                        setAlert({
-                          type: 'error',
-                          message: errorMessage(res3)
-                        });
-                        setTimeout(() => {
-                          setDisableButton(false);
-                        }, 1000);
-                      } else {
-                        success = true;
-                      }
-                    });
-                  } else {
-                    success = true;
+                Object.keys(data).forEach(key => {
+                  if (!['green', 'name', 'description'].includes(key)) {
+                    nutricionalFormData.append(key, data[key]);
                   }
-                }
-              );
+                });
+
+                nutricionalFormData.append('products', productId);
+                nutricionalFormData.append('is_green', String(0));
+
+                await NutricionalService.create(nutricionalFormData).then(
+                  async res2 => {
+                    if (res2.status !== 201 || res2?.statusCode) {
+                      setAlert({ type: 'error', message: errorMessage(res2) });
+
+                      setTimeout(() => {
+                        setDisableButton(false);
+                      }, 1000);
+                    } else {
+                      success = true;
+                    }
+                  }
+                );
+              }
+
+              if (
+                !isEmpty(data?.green?.length) ||
+                e.target.fileNutricionalVerde.files.length > 0
+              ) {
+                success = false;
+
+                const nutricionalGreenFormData = new FormData();
+
+                nutricionalGreenFormData.append(
+                  'file',
+                  e.target.fileNutricionalVerde.files[0]
+                );
+
+                Object.keys(data.green).forEach(key => {
+                  nutricionalGreenFormData.append(key, data.green[key]);
+                });
+
+                nutricionalGreenFormData.append('products', productId);
+                nutricionalGreenFormData.append('is_green', String(1));
+
+                await NutricionalService.create(nutricionalGreenFormData).then(
+                  res3 => {
+                    if (res3.status !== 201 || res3?.statusCode) {
+                      setAlert({
+                        type: 'error',
+                        message: errorMessage(res3)
+                      });
+
+                      setTimeout(() => {
+                        setDisableButton(false);
+                      }, 1000);
+                    } else {
+                      success = true;
+                    }
+                  }
+                );
+              }
 
               if (success) {
                 setTimeout(() => {
                   router.push(`/admin/produtos/${productId}/detalhes`);
+
                   setDisableButton(false);
                 }, 1000);
               }
