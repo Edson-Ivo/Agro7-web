@@ -8,7 +8,11 @@ class CulturesActionsService {
   static text(action, data) {
     let txt = actionsList[action].text;
 
-    if (action === 'services') {
+    if (
+      action === 'services' ||
+      action === 'durable-goods' ||
+      action === 'consumable-goods'
+    ) {
       txt = txt
         .replace('%name', data?.name)
         .replace('%value', maskString(data?.value, 'money'));
@@ -55,7 +59,11 @@ class CulturesActionsService {
   static schema(action) {
     let schema = null;
 
-    if (action === 'services')
+    if (
+      action === 'services' ||
+      action === 'durable-goods' ||
+      action === 'consumable-goods'
+    )
       schema = yup.object().shape({
         name: yup.string().required('O campo nome é obrigatório!'),
         description: yup.string().required('O campo descrição é obrigatório!'),
@@ -242,6 +250,18 @@ export const actionsList = {
     label: 'Aplicação de Insumos',
     text:
       'Insumo %name aplicado (%dose%type_dose) em %date_start até %date_finish'
+  },
+  'durable-goods': {
+    value: 'durable-goods',
+    singleValue: 'durable-good',
+    label: 'Bens Duráveis',
+    text: 'Bem durável %name registrado'
+  },
+  'consumable-goods': {
+    value: 'consumable-goods',
+    singleValue: 'consumable-good',
+    label: 'Bens Consumíveis',
+    text: 'Bem consumível %name registrado'
   },
   others: {
     value: 'others',

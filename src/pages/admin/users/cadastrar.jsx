@@ -156,7 +156,7 @@ function AdminUsers() {
         });
 
         setTimeout(() => {
-          router.push('/admin/users');
+          router.push('/admin/users/nao-ativado');
           setDisableButton(false);
         }, 1000);
       }

@@ -39,7 +39,9 @@ const CulturesActionsForm = ({
   if (loading) return <Loader />;
 
   return (
-    (typeAction === 'services' && (
+    ((typeAction === 'services' ||
+      typeAction === 'durable-goods' ||
+      typeAction === 'consumable-goods') && (
       <>
         <Input
           type="text"
