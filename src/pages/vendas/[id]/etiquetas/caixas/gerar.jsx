@@ -134,7 +134,7 @@ function VendasEtiquetasCaixas() {
                         cada embalagem primeiro:
                       </Alert>
                     )}
-                    <h4>
+                    <h4 style={{ marginLeft: 10, marginBottom: 10 }}>
                       Quantidade Máxima: {dataSale?.total_quantity}
                       {dataSale?.type_unity}
                     </h4>
