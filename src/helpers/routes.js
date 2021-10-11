@@ -659,7 +659,8 @@ const namedRoutes = {
 
   '/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]/acoes/[type]/[actionId]/documentos': {
     name: 'Documentos',
-    path: '/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]/acoes/[type]/[actionId]/detalhes'
+    path:
+      '/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]/acoes/[type]/[actionId]/detalhes'
   },
 
   '/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]/acoes/[type]/[actionId]/documentos/cadastrar': {

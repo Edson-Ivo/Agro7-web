@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import * as yup from 'yup';
@@ -95,7 +95,19 @@ function VendasEtiquetasProdutosNutricional() {
     }, 1000);
   };
 
-  if (errorSale || errorLabel) return <Error error={errorSale || errorLabel} />;
+  useEffect(() => {
+    setAlert({ type: '', message: '' });
+
+    if (errorLabel?.response?.status === 430)
+      setAlert({
+        type: 'error',
+        message:
+          'Você não pode gerar esta etiqueta, pois o produto não tem a imagem da tabela nutricional disponível'
+      });
+  }, [errorLabel]);
+
+  if (errorSale || (errorLabel && errorLabel?.response?.status !== 430))
+    return <Error error={errorSale || errorLabel} />;
 
   return (
     <>
@@ -134,7 +146,7 @@ function VendasEtiquetasProdutosNutricional() {
                         cada embalagem primeiro:
                       </Alert>
                     )}
-                    <h4>
+                    <h4 style={{ marginLeft: 10, marginBottom: 10 }}>
                       Quantidade Máxima: {dataSale?.total_quantity}
                       {dataSale?.type_unity}
                     </h4>
