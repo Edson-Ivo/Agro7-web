@@ -34,6 +34,7 @@ import { useSelector } from 'react-redux';
 import isEmpty from '@/helpers/isEmpty';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 import maskString from '@/helpers/maskString';
+import scrollTo from '@/helpers/scrollTo';
 
 const schema = yup.object().shape({
   name: yup.string().required('O campo nome é obrigatório!'),
@@ -102,6 +103,7 @@ function PropertiesEdit() {
   );
 
   const formRef = useRef(null);
+  const alertRef = useRef(null);
   const [alert, setAlert] = useState({ type: '', message: '' });
   const [disableButton, setDisableButton] = useState(false);
   const [activeStep, setActiveStep] = useState(1);
@@ -158,6 +160,8 @@ function PropertiesEdit() {
           type: 'success',
           message: 'Enviando...'
         });
+
+        scrollTo(alertRef);
 
         await PropertiesService.update(id, d).then(async res => {
           if (res.status >= 400 || res?.statusCode) {
@@ -219,7 +223,9 @@ function PropertiesEdit() {
             <div className="SectionBody__content">
               <CardContainer>
                 {alert.message !== '' && (
-                  <Alert type={alert.type}>{alert.message}</Alert>
+                  <Alert type={alert.type} ref={alertRef}>
+                    {alert.message}
+                  </Alert>
                 )}
 
                 {(data && dataTypeOwner && dataTypeDimension && (

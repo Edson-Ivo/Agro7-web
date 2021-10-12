@@ -31,6 +31,7 @@ import Error from '@/components/Error/index';
 import isEmpty from '@/helpers/isEmpty';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 import maskString from '@/helpers/maskString';
+import scrollTo from '@/helpers/scrollTo';
 
 const schema = yup.object().shape({
   name: yup.string().required('O campo nome é obrigatório!'),
@@ -90,6 +91,7 @@ function AdminUsersEdit() {
   const [loadingAddresses, setLoadingAddresses] = useState(false);
   const router = useRouter();
   const formRef = useRef(null);
+  const alertRef = useRef(null);
 
   const { id } = router.query;
 
@@ -124,6 +126,8 @@ function AdminUsersEdit() {
           type: 'success',
           message: 'Enviando...'
         });
+
+        scrollTo(alertRef);
 
         if (d.document.length <= 14) d.type_document = false;
         else d.type_document = true;
@@ -198,7 +202,9 @@ function AdminUsersEdit() {
             <div className="SectionBody__content">
               <CardContainer>
                 {alert.message !== '' && (
-                  <Alert type={alert.type}>{alert.message}</Alert>
+                  <Alert type={alert.type} ref={alertRef}>
+                    {alert.message}
+                  </Alert>
                 )}
                 {(data && dataTypes && (
                   <>

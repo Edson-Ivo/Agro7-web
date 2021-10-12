@@ -20,6 +20,7 @@ import Loader from '@/components/Loader';
 import UsersService from '@/services/UsersService';
 import errorMessage from '@/helpers/errorMessage';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
+import scrollTo from '@/helpers/scrollTo';
 
 const schema = yup.object().shape({
   password: yup.string().required('O campo Senha nova é obrigatório!'),
@@ -34,6 +35,7 @@ function ConfiguracoesSenha() {
   const [alertMsg, setAlertMsg] = useState({ type: '', message: '' });
   const [loading, setLoading] = useState(false);
   const formRef = useRef(null);
+  const alertRef = useRef(null);
 
   const handleSubmit = async dt => {
     setLoading(true);
@@ -45,6 +47,8 @@ function ConfiguracoesSenha() {
           type: 'success',
           message: 'Enviando...'
         });
+
+        scrollTo(alertRef);
 
         setLoading(true);
 
@@ -95,7 +99,9 @@ function ConfiguracoesSenha() {
             <div className="SectionBody__content">
               <CardContainer>
                 {alertMsg.message && (
-                  <Alert type={alertMsg.type}>{alertMsg.message}</Alert>
+                  <Alert type={alertMsg.type} ref={alertRef}>
+                    {alertMsg.message}
+                  </Alert>
                 )}
 
                 <Form method="post" ref={formRef} onSubmit={handleSubmit}>

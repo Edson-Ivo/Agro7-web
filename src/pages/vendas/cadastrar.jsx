@@ -26,9 +26,11 @@ import SalesService from '@/services/SalesService';
 import AddressesService from '@/services/AddressesService';
 import Divider from '@/components/Divider/index';
 import TextArea from '@/components/TextArea/index';
+import scrollTo from '@/helpers/scrollTo';
 
 function VendasCreate() {
   const formRef = useRef(null);
+  const alertRef = useRef(null);
   const [alert, setAlert] = useState({ type: '', message: '' });
   const [disableButton, setDisableButton] = useState(false);
 
@@ -271,6 +273,8 @@ function VendasCreate() {
           message: 'Enviando...'
         });
 
+        scrollTo(alertRef);
+
         if (!product) {
           setAlert({
             type: 'error',
@@ -367,7 +371,9 @@ function VendasCreate() {
             <div className="SectionBody__content">
               <CardContainer>
                 {alert.message !== '' && (
-                  <Alert type={alert.type}>{alert.message}</Alert>
+                  <Alert type={alert.type} ref={alertRef}>
+                    {alert.message}
+                  </Alert>
                 )}
 
                 <>

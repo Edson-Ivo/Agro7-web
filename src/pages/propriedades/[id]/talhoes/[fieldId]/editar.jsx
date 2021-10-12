@@ -28,6 +28,7 @@ import urlRoute from '@/helpers/urlRoute';
 import { useSelector } from 'react-redux';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 import maskString from '@/helpers/maskString';
+import scrollTo from '@/helpers/scrollTo';
 
 const schema = yup.object().shape({
   name: yup.string().required('O campo nome é obrigatório!'),
@@ -43,6 +44,7 @@ const schema = yup.object().shape({
 
 function TalhoesEdit() {
   const formRef = useRef(null);
+  const alertRef = useRef(null);
   const [alert, setAlert] = useState({ type: '', message: '' });
   const [disableButton, setDisableButton] = useState(false);
   const [coordinates, setCoordinates] = useState([]);
@@ -103,6 +105,8 @@ function TalhoesEdit() {
           type: 'success',
           message: 'Enviando...'
         });
+
+        scrollTo(alertRef);
 
         d.coordinates = !isEmpty(coordinates)
           ? coordinates
@@ -169,7 +173,9 @@ function TalhoesEdit() {
             <div className="SectionBody__content">
               <CardContainer>
                 {alert.message !== '' && (
-                  <Alert type={alert.type}>{alert.message}</Alert>
+                  <Alert type={alert.type} ref={alertRef}>
+                    {alert.message}
+                  </Alert>
                 )}
 
                 {(data && dataTypeDimension && dataFields && (

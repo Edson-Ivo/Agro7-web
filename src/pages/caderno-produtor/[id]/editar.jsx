@@ -27,6 +27,7 @@ import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 import { useSelector } from 'react-redux';
 import urlRoute from '@/helpers/urlRoute';
 import isEmpty from '@/helpers/isEmpty';
+import scrollTo from '@/helpers/scrollTo';
 
 const schema = yup.object().shape({
   name: yup.string().required('O campo nome é obrigatório!'),
@@ -40,6 +41,7 @@ function ProducerNotebookEdit() {
   const [disableButton, setDisableButton] = useState(false);
   const router = useRouter();
   const formRef = useRef(null);
+  const alertRef = useRef(null);
 
   const { id } = router.query;
   const { data: dataProducerNotebook, error, mutate } = useFetch(
@@ -63,6 +65,8 @@ function ProducerNotebookEdit() {
           type: 'success',
           message: 'Enviando...'
         });
+
+        scrollTo(alertRef);
 
         d.date = dateToISOString(d.date);
         d.categories = Number(d.categories);
@@ -132,7 +136,9 @@ function ProducerNotebookEdit() {
             <div className="SectionBody__content">
               <CardContainer>
                 {alert.message !== '' && (
-                  <Alert type={alert.type}>{alert.message}</Alert>
+                  <Alert type={alert.type} ref={alertRef}>
+                    {alert.message}
+                  </Alert>
                 )}
 
                 {(dataProducerNotebook && dataCategories && (

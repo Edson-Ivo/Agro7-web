@@ -26,6 +26,7 @@ import Loader from '@/components/Loader/index';
 import isEmpty from '@/helpers/isEmpty';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 import { useModal } from '@/hooks/useModal';
+import scrollTo from '@/helpers/scrollTo';
 
 const schema = yup.object().shape({
   name: yup.string().required('O campo nome é obrigatório!'),
@@ -84,6 +85,7 @@ function AdminUsers() {
   const [loadingAddresses, setLoadingAddresses] = useState(false);
   const router = useRouter();
   const formRef = useRef(null);
+  const alertRef = useRef(null);
 
   const { addModal, removeModal } = useModal();
 
@@ -118,6 +120,8 @@ function AdminUsers() {
           type: 'success',
           message: 'Enviando...'
         });
+
+        scrollTo(alertRef);
 
         if (data.document.length <= 14) data.type_document = false;
         else data.type_document = true;
@@ -204,7 +208,9 @@ function AdminUsers() {
             <div className="SectionBody__content">
               <CardContainer>
                 {alert.message !== '' && (
-                  <Alert type={alert.type}>{alert.message}</Alert>
+                  <Alert type={alert.type} ref={alertRef}>
+                    {alert.message}
+                  </Alert>
                 )}
                 {(dataTypes && (
                   <>
