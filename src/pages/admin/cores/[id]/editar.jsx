@@ -21,6 +21,7 @@ import { useFetch } from '@/hooks/useFetch';
 import Loader from '@/components/Loader/index';
 import InputColor from '@/components/InputColor/index';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
+import scrollTo from '@/helpers/scrollTo';
 
 const schema = yup.object().shape({
   name: yup.string().required('O campo nome é obrigatório!'),
@@ -37,6 +38,7 @@ function AdminCoresEdit() {
   const [alert, setAlert] = useState({ type: '', message: '' });
   const [disableButton, setDisableButton] = useState(false);
   const formRef = useRef(null);
+  const alertRef = useRef(null);
   const router = useRouter();
 
   const { id } = router.query;
@@ -54,6 +56,8 @@ function AdminCoresEdit() {
           type: 'success',
           message: 'Enviando...'
         });
+
+        scrollTo(alertRef);
 
         d.hexadecimal = d.hexadecimal.replaceAll('#', '');
 
@@ -109,7 +113,9 @@ function AdminCoresEdit() {
             <div className="SectionBody__content">
               <CardContainer>
                 {alert.message !== '' && (
-                  <Alert type={alert.type}>{alert.message}</Alert>
+                  <Alert type={alert.type} ref={alertRef}>
+                    {alert.message}
+                  </Alert>
                 )}
                 {(dataColor && (
                   <>

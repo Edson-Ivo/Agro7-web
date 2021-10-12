@@ -25,6 +25,7 @@ import isEmpty from '@/helpers/isEmpty';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 import SalesService from '@/services/SalesService';
 import useRewriteRoute from '@/hooks/useRewriteRoute';
+import scrollTo from '@/helpers/scrollTo';
 
 const schema = yup.object().shape({
   name: yup.string().required('Você precisa dar um nome para o documento')
@@ -32,6 +33,7 @@ const schema = yup.object().shape({
 
 function VendasTransportadorasDocumentosCreate() {
   const formRef = useRef(null);
+  const alertRef = useRef(null);
   const inputRef = useRef(null);
   const [alert, setAlert] = useState({ type: '', message: '' });
   const [disableButton, setDisableButton] = useState(false);
@@ -67,6 +69,8 @@ function VendasTransportadorasDocumentosCreate() {
           type: 'success',
           message: 'Enviando...'
         });
+
+        scrollTo(alertRef);
 
         if (inputRef.current.error.message) {
           setAlert({ type: 'error', message: inputRef.current.error.message });
@@ -146,7 +150,9 @@ function VendasTransportadorasDocumentosCreate() {
             <div className="SectionBody__content">
               <CardContainer>
                 {alert.message !== '' && (
-                  <Alert type={alert.type}>{alert.message}</Alert>
+                  <Alert type={alert.type} ref={alertRef}>
+                    {alert.message}
+                  </Alert>
                 )}
                 <Form ref={formRef} method="post" onSubmit={handleSubmit}>
                   <Input

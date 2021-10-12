@@ -64,7 +64,7 @@ const Input = ({
         error={!!error}
         disabled={disabled}
         placeholder={label || ''}
-        min={type === 'date' ? '1950-01-01' : null}
+        min={type === 'date' ? '1950-01-01' : otherProps?.min}
         step={type === 'number' ? step : null}
         {...otherProps}
       />

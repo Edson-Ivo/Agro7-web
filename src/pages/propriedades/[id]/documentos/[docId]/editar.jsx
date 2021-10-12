@@ -27,6 +27,7 @@ import { useSelector } from 'react-redux';
 import isEmpty from '@/helpers/isEmpty';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 import downloadDocument from '@/helpers/downloadDocument';
+import scrollTo from '@/helpers/scrollTo';
 
 const schema = yup.object().shape({
   name: yup.string().required('Você precisa dar um nome para o documento')
@@ -34,6 +35,7 @@ const schema = yup.object().shape({
 
 function DocumentosEdit() {
   const formRef = useRef(null);
+  const alertRef = useRef(null);
   const inputRef = useRef(null);
   const [alert, setAlert] = useState({ type: '', message: '' });
   const [disableButton, setDisableButton] = useState(false);
@@ -65,6 +67,8 @@ function DocumentosEdit() {
           type: 'success',
           message: 'Enviando...'
         });
+
+        scrollTo(alertRef);
 
         if (e.target.file.files.length > 0 && inputRef.current.error.message) {
           setAlert({ type: 'error', message: inputRef.current.error.message });
@@ -133,7 +137,9 @@ function DocumentosEdit() {
             <div className="SectionBody__content">
               <CardContainer>
                 {alert.message !== '' && (
-                  <Alert type={alert.type}>{alert.message}</Alert>
+                  <Alert type={alert.type} ref={alertRef}>
+                    {alert.message}
+                  </Alert>
                 )}
 
                 {(dataDocs && (

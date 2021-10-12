@@ -27,6 +27,7 @@ import Error from '@/components/Error/index';
 import { useSelector } from 'react-redux';
 import urlRoute from '@/helpers/urlRoute';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
+import scrollTo from '@/helpers/scrollTo';
 
 const schema = yup.object().shape({
   name: yup.string().required('O campo nome é obrigatório!'),
@@ -42,6 +43,7 @@ const schema = yup.object().shape({
 
 function TalhoesCadastrar() {
   const formRef = useRef(null);
+  const alertRef = useRef(null);
   const [alert, setAlert] = useState({ type: '', message: '' });
   const [disableButton, setDisableButton] = useState(false);
   const [coordinates, setCoordinates] = useState([]);
@@ -100,6 +102,8 @@ function TalhoesCadastrar() {
             type: 'success',
             message: 'Enviando...'
           });
+
+          scrollTo(alertRef);
 
           d.properties = Number(id);
           d.coordinates = coordinates;
@@ -175,7 +179,9 @@ function TalhoesCadastrar() {
             <div className="SectionBody__content">
               <CardContainer>
                 {alert.message !== '' && (
-                  <Alert type={alert.type}>{alert.message}</Alert>
+                  <Alert type={alert.type} ref={alertRef}>
+                    {alert.message}
+                  </Alert>
                 )}
                 {(data && dataTypeDimension && (
                   <>

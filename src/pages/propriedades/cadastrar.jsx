@@ -29,6 +29,7 @@ import { useFetch } from '@/hooks/useFetch';
 import Loader from '@/components/Loader/index';
 import isEmpty from '@/helpers/isEmpty';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
+import scrollTo from '@/helpers/scrollTo';
 
 const schema = yup.object().shape({
   name: yup.string().required('O campo nome é obrigatório!'),
@@ -82,6 +83,7 @@ const schema = yup.object().shape({
 
 function Properties() {
   const formRef = useRef(null);
+  const alertRef = useRef(null);
   const [alert, setAlert] = useState({ type: '', message: '' });
   const [disableButton, setDisableButton] = useState(false);
   const [activeStep, setActiveStep] = useState(1);
@@ -142,6 +144,8 @@ function Properties() {
           message: 'Enviando...'
         });
 
+        scrollTo(alertRef);
+
         await PropertiesService.create(data).then(res => {
           if (res.status !== 201 || res?.statusCode) {
             setAlert({ type: 'error', message: errorMessage(res) });
@@ -195,7 +199,9 @@ function Properties() {
             <div className="SectionBody__content">
               <CardContainer>
                 {alert.message !== '' && (
-                  <Alert type={alert.type}>{alert.message}</Alert>
+                  <Alert type={alert.type} ref={alertRef}>
+                    {alert.message}
+                  </Alert>
                 )}
 
                 {(dataTypeDimension && dataTypeOwner && (

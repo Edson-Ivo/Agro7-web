@@ -27,6 +27,7 @@ import urlRoute from '@/helpers/urlRoute';
 import isEmpty from '@/helpers/isEmpty';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 import maskString from '@/helpers/maskString';
+import scrollTo from '@/helpers/scrollTo';
 
 const schema = yup.object().shape({
   date_start: yup.string().required('O campo data é obrigatório!'),
@@ -43,6 +44,7 @@ const schema = yup.object().shape({
 
 function CulturasEdit() {
   const formRef = useRef(null);
+  const alertRef = useRef(null);
   const [alert, setAlert] = useState({ type: '', message: '' });
   const [disableButton, setDisableButton] = useState(false);
 
@@ -84,6 +86,8 @@ function CulturasEdit() {
           type: 'success',
           message: 'Enviando...'
         });
+
+        scrollTo(alertRef);
 
         d.date_start = dateToISOString(d.date_start);
         d.fields = Number(fieldId);
@@ -157,7 +161,9 @@ function CulturasEdit() {
             <div className="SectionBody__content">
               <CardContainer>
                 {alert.message !== '' && (
-                  <Alert type={alert.type}>{alert.message}</Alert>
+                  <Alert type={alert.type} ref={alertRef}>
+                    {alert.message}
+                  </Alert>
                 )}
                 {(data && dataCultures && dataTypeDimension && (
                   <>

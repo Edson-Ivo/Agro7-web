@@ -24,6 +24,7 @@ import urlRoute from '@/helpers/urlRoute';
 import PropertiesService from '@/services/PropertiesService';
 import SearchSelect from '@/components/SearchSelect/index';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
+import scrollTo from '@/helpers/scrollTo';
 
 const schema = yup.object().shape({
   technicians: yup.string().required('Selecione um técnico primeiro.')
@@ -31,6 +32,7 @@ const schema = yup.object().shape({
 
 function TecnicosCadastrar() {
   const formRef = useRef(null);
+  const alertRef = useRef(null);
   const [alert, setAlert] = useState({ type: '', message: '' });
   const [disableButton, setDisableButton] = useState(false);
   const [willAccess, setWillAccess] = useState(true);
@@ -68,6 +70,8 @@ function TecnicosCadastrar() {
           type: 'success',
           message: 'Enviando...'
         });
+
+        scrollTo(alertRef);
 
         d.technicians = Number(d.technicians);
         d.properties = Number(id);
@@ -131,7 +135,9 @@ function TecnicosCadastrar() {
             <div className="SectionBody__content">
               <CardContainer>
                 {alert.message !== '' && (
-                  <Alert type={alert.type}>{alert.message}</Alert>
+                  <Alert type={alert.type} ref={alertRef}>
+                    {alert.message}
+                  </Alert>
                 )}
 
                 {(data && (

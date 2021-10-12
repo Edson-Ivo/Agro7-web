@@ -28,9 +28,11 @@ import isEmpty from '@/helpers/isEmpty';
 import objectKeyExists from '@/helpers/objectKeyExists';
 import ImageContainer from '@/components/ImageContainer/index';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
+import scrollTo from '@/helpers/scrollTo';
 
 function AdminProductsEdit() {
   const formRef = useRef(null);
+  const alertRef = useRef(null);
   const inputRef = useRef(null);
   const inputNutricionalRef = useRef(null);
   const inputNutricionalVerdeRef = useRef(null);
@@ -89,6 +91,8 @@ function AdminProductsEdit() {
           type: 'success',
           message: 'Enviando...'
         });
+
+        scrollTo(alertRef);
 
         if (
           (e.target.file.files.length > 0 && inputRef.current.error.message) ||
@@ -370,7 +374,9 @@ function AdminProductsEdit() {
             <div className="SectionBody__content">
               <CardContainer>
                 {alert.message !== '' && (
-                  <Alert type={alert.type}>{alert.message}</Alert>
+                  <Alert type={alert.type} ref={alertRef}>
+                    {alert.message}
+                  </Alert>
                 )}
                 {(data && !isEmpty(productData) && (
                   <>
