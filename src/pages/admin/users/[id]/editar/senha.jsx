@@ -21,6 +21,7 @@ import { useFetch } from '@/hooks/useFetch';
 import Error from '@/components/Error/index';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 import isEmpty from '@/helpers/isEmpty';
+import scrollTo from '@/helpers/scrollTo';
 
 const schema = yup.object().shape({
   password: yup.string().required('O campo Senha nova é obrigatório!'),
@@ -35,6 +36,7 @@ function AdminUsersEditPassword() {
   const [alertMsg, setAlertMsg] = useState({ type: '', message: '' });
   const [loading, setLoading] = useState(false);
   const formRef = useRef(null);
+  const alertRef = useRef(null);
 
   const router = useRouter();
   const { id } = router.query;
@@ -51,6 +53,8 @@ function AdminUsersEditPassword() {
           type: 'success',
           message: 'Enviando...'
         });
+
+        scrollTo(alertRef);
 
         setLoading(true);
 
@@ -111,7 +115,9 @@ function AdminUsersEditPassword() {
             <div className="SectionBody__content">
               <CardContainer>
                 {alertMsg.message && (
-                  <Alert type={alertMsg.type}>{alertMsg.message}</Alert>
+                  <Alert type={alertMsg.type} ref={alertRef}>
+                    {alertMsg.message}
+                  </Alert>
                 )}
 
                 <Form method="post" ref={formRef} onSubmit={handleSubmit}>

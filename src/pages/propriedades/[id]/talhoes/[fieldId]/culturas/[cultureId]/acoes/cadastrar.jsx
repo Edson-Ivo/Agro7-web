@@ -29,9 +29,11 @@ import objectKeyExists from '@/helpers/objectKeyExists';
 import CulturesActionsForm from '@/components/CultureActionsForm/index';
 import { dateToISOString } from '@/helpers/date';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
+import scrollTo from '@/helpers/scrollTo';
 
 function AcoesCulturaCadastrar() {
   const formRef = useRef(null);
+  const alertRef = useRef(null);
 
   const [alert, setAlert] = useState({ type: '', message: '' });
   const [disableButton, setDisableButton] = useState(false);
@@ -96,6 +98,8 @@ function AcoesCulturaCadastrar() {
             type: 'success',
             message: 'Enviando...'
           });
+
+          scrollTo(alertRef);
 
           let withAdminUserId = null;
 
@@ -217,7 +221,9 @@ function AcoesCulturaCadastrar() {
             <div className="SectionBody__content">
               <CardContainer>
                 {alert.message !== '' && (
-                  <Alert type={alert.type}>{alert.message}</Alert>
+                  <Alert type={alert.type} ref={alertRef}>
+                    {alert.message}
+                  </Alert>
                 )}
                 {(data && dataCultures && (
                   <>

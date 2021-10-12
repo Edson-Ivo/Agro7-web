@@ -25,9 +25,11 @@ import TextArea from '@/components/TextArea/index';
 import NutricionalService from '@/services/NutricionalService';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 import isEmpty from '@/helpers/isEmpty';
+import scrollTo from '@/helpers/scrollTo';
 
 function AdminProductsCreate() {
   const formRef = useRef(null);
+  const alertRef = useRef(null);
   const inputRef = useRef(null);
   const inputNutricionalRef = useRef(null);
   const inputNutricionalVerdeRef = useRef(null);
@@ -57,6 +59,8 @@ function AdminProductsCreate() {
           type: 'success',
           message: 'Enviando...'
         });
+
+        scrollTo(alertRef);
 
         if (
           inputRef.current.error.message ||
@@ -206,7 +210,9 @@ function AdminProductsCreate() {
             <div className="SectionBody__content">
               <CardContainer>
                 {alert.message !== '' && (
-                  <Alert type={alert.type}>{alert.message}</Alert>
+                  <Alert type={alert.type} ref={alertRef}>
+                    {alert.message}
+                  </Alert>
                 )}
                 <Form ref={formRef} method="post" onSubmit={handleSubmit}>
                   <MultiStep activeStep={activeStep}>

@@ -18,6 +18,7 @@ import errorMessage from '@/helpers/errorMessage';
 import ColorsService from '@/services/ColorsService';
 import InputColor from '@/components/InputColor/index';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
+import scrollTo from '@/helpers/scrollTo';
 
 const schema = yup.object().shape({
   name: yup.string().required('O campo nome é obrigatório!'),
@@ -35,6 +36,7 @@ function AdminCoresCreate() {
   const [disableButton, setDisableButton] = useState(false);
   const router = useRouter();
   const formRef = useRef(null);
+  const alertRef = useRef(null);
 
   const handleSubmit = async data => {
     setDisableButton(true);
@@ -46,6 +48,8 @@ function AdminCoresCreate() {
           type: 'success',
           message: 'Enviando...'
         });
+
+        scrollTo(alertRef);
 
         d.hexadecimal = d.hexadecimal.replaceAll('#', '');
 
@@ -95,7 +99,9 @@ function AdminCoresCreate() {
             <div className="SectionBody__content">
               <CardContainer>
                 {alert.message !== '' && (
-                  <Alert type={alert.type}>{alert.message}</Alert>
+                  <Alert type={alert.type} ref={alertRef}>
+                    {alert.message}
+                  </Alert>
                 )}
                 <Form ref={formRef} method="post" onSubmit={handleSubmit}>
                   <Input type="text" label="Nome" name="name" required />

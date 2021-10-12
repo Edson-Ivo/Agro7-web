@@ -24,6 +24,7 @@ import { useSelector } from 'react-redux';
 import urlRoute from '@/helpers/urlRoute';
 import isEmpty from '@/helpers/isEmpty';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
+import scrollTo from '@/helpers/scrollTo';
 
 const schema = yup.object().shape({
   diagnostics: yup.string().nullable(),
@@ -34,6 +35,8 @@ const schema = yup.object().shape({
 
 function RelatoriosCreate() {
   const formRef = useRef(null);
+  const alertRef = useRef(null);
+
   const [alert, setAlert] = useState({ type: '', message: '' });
   const [disableButton, setDisableButton] = useState(false);
 
@@ -69,6 +72,8 @@ function RelatoriosCreate() {
           type: 'success',
           message: 'Enviando...'
         });
+
+        scrollTo(alertRef);
 
         let isValidRegister = false;
 
@@ -153,7 +158,9 @@ function RelatoriosCreate() {
             <div className="SectionBody__content">
               <CardContainer>
                 {alert.message !== '' && (
-                  <Alert type={alert.type}>{alert.message}</Alert>
+                  <Alert type={alert.type} ref={alertRef}>
+                    {alert.message}
+                  </Alert>
                 )}
 
                 {(data && dataCultures && (

@@ -30,9 +30,11 @@ import isEmpty from '@/helpers/isEmpty';
 import Table from '@/components/Table/index';
 import ActionButton from '@/components/ActionButton/index';
 import { useModal } from '@/hooks/useModal';
+import scrollTo from '@/helpers/scrollTo';
 
 function AdminConfiguracoesPerfilEdit() {
   const formRef = useRef(null);
+  const alertRef = useRef(null);
   const inputRef = useRef(null);
   const inputGalleryRef = useRef(null);
 
@@ -64,6 +66,8 @@ function AdminConfiguracoesPerfilEdit() {
           type: 'success',
           message: 'Enviando...'
         });
+
+        scrollTo(alertRef);
 
         const profileFormData = new FormData();
         const galleryFormData = new FormData();
@@ -205,7 +209,9 @@ function AdminConfiguracoesPerfilEdit() {
             <div className="SectionBody__content">
               <CardContainer>
                 {alert.message && (
-                  <Alert type={alert.type}>{alert.message}</Alert>
+                  <Alert type={alert.type} ref={alertRef}>
+                    {alert.message}
+                  </Alert>
                 )}
                 {(data && (
                   <Form

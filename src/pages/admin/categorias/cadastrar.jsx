@@ -24,6 +24,7 @@ import TextArea from '@/components/TextArea/index';
 import Pagination from '@/components/Pagination/index';
 import ColorsContainer, { ColorsGrid } from '@/components/ColorsContainer';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
+import scrollTo from '@/helpers/scrollTo';
 
 const schema = yup.object().shape({
   name: yup.string().required('O campo nome é obrigatório!'),
@@ -35,6 +36,7 @@ function AdminCategoriesCreate() {
   const [disableButton, setDisableButton] = useState(false);
   const [activeStep, setActiveStep] = useState(1);
   const formRef = useRef(null);
+  const alertRef = useRef(null);
 
   const router = useRouter();
 
@@ -62,11 +64,15 @@ function AdminCategoriesCreate() {
           message: 'Enviando...'
         });
 
+        scrollTo(alertRef);
+
         if (selectedColor === null) {
           setAlert({
             type: 'error',
             message: 'Selecione uma cor!'
           });
+
+          setDisableButton(false);
         } else {
           d.colors = selectedColor;
 
@@ -124,7 +130,9 @@ function AdminCategoriesCreate() {
             <div className="SectionBody__content">
               <CardContainer>
                 {alert.message !== '' && (
-                  <Alert type={alert.type}>{alert.message}</Alert>
+                  <Alert type={alert.type} ref={alertRef}>
+                    {alert.message}
+                  </Alert>
                 )}
                 <Form ref={formRef} method="post" onSubmit={handleSubmit}>
                   <MultiStep activeStep={activeStep}>

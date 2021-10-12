@@ -33,9 +33,11 @@ import ActionButton from '@/components/ActionButton/index';
 import { useModal } from '@/hooks/useModal';
 import AuthService from '@/services/AuthService';
 import { UserAuthAction } from '@/store/modules/User/actions';
+import scrollTo from '@/helpers/scrollTo';
 
 function ConfiguracoesPerfilEdit() {
   const formRef = useRef(null);
+  const alertRef = useRef(null);
   const inputRef = useRef(null);
   const inputGalleryRef = useRef(null);
 
@@ -68,6 +70,8 @@ function ConfiguracoesPerfilEdit() {
           type: 'success',
           message: 'Enviando...'
         });
+
+        scrollTo(alertRef);
 
         let success = false;
         const profileFormData = new FormData();
@@ -224,7 +228,9 @@ function ConfiguracoesPerfilEdit() {
             <div className="SectionBody__content">
               <CardContainer>
                 {alert.message && (
-                  <Alert type={alert.type}>{alert.message}</Alert>
+                  <Alert type={alert.type} ref={alertRef}>
+                    {alert.message}
+                  </Alert>
                 )}
                 {(data && (
                   <Form

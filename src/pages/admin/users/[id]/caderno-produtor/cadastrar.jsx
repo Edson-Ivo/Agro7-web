@@ -25,6 +25,7 @@ import ProducerNotebookService from '@/services/ProducerNotebookService';
 import { dateToInput, dateToISOString } from '@/helpers/date';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 import isEmpty from '@/helpers/isEmpty';
+import scrollTo from '@/helpers/scrollTo';
 
 const schema = yup.object().shape({
   name: yup.string().required('O campo nome é obrigatório!'),
@@ -38,6 +39,7 @@ function UserProducerNotebookCreate() {
   const [disableButton, setDisableButton] = useState(false);
   const router = useRouter();
   const formRef = useRef(null);
+  const alertRef = useRef(null);
 
   const { id } = router.query;
 
@@ -55,6 +57,8 @@ function UserProducerNotebookCreate() {
           type: 'success',
           message: 'Enviando...'
         });
+
+        scrollTo(alertRef);
 
         d.date = dateToISOString(d.date);
         d.categories = Number(d.categories);
@@ -127,7 +131,9 @@ function UserProducerNotebookCreate() {
             <div className="SectionBody__content">
               <CardContainer>
                 {alert.message !== '' && (
-                  <Alert type={alert.type}>{alert.message}</Alert>
+                  <Alert type={alert.type} ref={alertRef}>
+                    {alert.message}
+                  </Alert>
                 )}
 
                 {(dataCategories && (
