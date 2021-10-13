@@ -2,7 +2,6 @@ import React from 'react';
 import Head from 'next/head';
 import { ThemeProvider } from 'styled-components';
 import { Provider as ReduxProvider } from 'react-redux';
-import { GoogleReCaptchaProvider } from 'react-google-recaptcha-v3';
 
 import '@fortawesome/fontawesome-svg-core/styles.css';
 import { config } from '@fortawesome/fontawesome-svg-core';
