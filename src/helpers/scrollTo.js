@@ -1,5 +1,5 @@
 const scrollTo = ref => {
-  if (ref.current !== null && window !== 'undefined') {
+  if (ref.current !== null && typeof window !== 'undefined') {
     const headerOffset = 100;
     const elementPosition = ref.current.offsetTop;
     const offsetPosition = elementPosition - headerOffset;

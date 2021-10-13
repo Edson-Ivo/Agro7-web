@@ -15,18 +15,20 @@ import Loader from '@/components/Loader/index';
 import Container, { CenterContainer } from '@/components/Container';
 import Input from '@/components/Input';
 import Button from '@/components/Button';
+import { captchaProvider } from '@/components/CaptchaProvider';
 import { Alert } from '@/components/Alert';
 
 import AuthService from '@/services/AuthService';
 import { UserAuthAction } from '@/store/modules/User/actions';
 import errorMessage from '@/helpers/errorMessage';
+import LogoLoader from '@/components/Loader/LogoLoader';
 
 const schema = yup.object().shape({
   document: yup.string().required('Por favor, preencha o campo CPF ou CNPJ.'),
   password: yup.string().required('Por favor, preencha o campo senha.')
 });
 
-export default function Login() {
+function Login() {
   const formRef = useRef(null);
   const { executeRecaptcha } = useGoogleReCaptcha();
   const router = useRouter();
@@ -34,7 +36,7 @@ export default function Login() {
   const [reCaptcha, setReCaptcha] = useState('');
   const [alertMsg, setAlertMsg] = useState('');
   const [alertType, setAlertType] = useState('error');
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const dispatch = useDispatch();
 
@@ -50,6 +52,7 @@ export default function Login() {
         const token = await executeRecaptcha('login');
 
         setReCaptcha(token);
+        setLoading(false);
       } catch (error) {
         setAlertType('error');
         setAlertMsg(
@@ -104,6 +107,8 @@ export default function Login() {
         }
       });
   };
+
+  if (!reCaptcha) return <LogoLoader />;
 
   return (
     <>
@@ -163,3 +168,5 @@ export default function Login() {
     </>
   );
 }
+
+export default captchaProvider(Login);
