@@ -41,7 +41,7 @@ function AlterarSenha() {
   const [reCaptcha, setReCaptcha] = useState('');
   const [alertMsg, setAlertMsg] = useState('');
   const [alertType, setAlertType] = useState('error');
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   const { id } = useSelector(state => state.user);
 
@@ -55,7 +55,6 @@ function AlterarSenha() {
         const tokenCaptcha = await executeRecaptcha('login');
 
         setReCaptcha(tokenCaptcha);
-        setLoading(false);
       } catch (error) {
         setAlertType('error');
         setAlertMsg(
