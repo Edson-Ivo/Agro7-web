@@ -20,6 +20,8 @@ import { Alert } from '@/components/Alert';
 
 import AuthService from '@/services/AuthService';
 import errorMessage from '@/helpers/errorMessage';
+import { captchaProvider } from '@/components/CaptchaProvider/index';
+import LogoLoader from '@/components/Loader/LogoLoader';
 
 const schema = yup.object().shape({
   password: yup.string().required('O campo nova senha é obrigatório!'),
@@ -29,7 +31,7 @@ const schema = yup.object().shape({
     .required('O campo confirme a nova senha é obrigatório!')
 });
 
-export default function AlterarSenha() {
+function AlterarSenha() {
   const formRef = useRef(null);
   const router = useRouter();
   const { executeRecaptcha } = useGoogleReCaptcha();
@@ -39,7 +41,7 @@ export default function AlterarSenha() {
   const [reCaptcha, setReCaptcha] = useState('');
   const [alertMsg, setAlertMsg] = useState('');
   const [alertType, setAlertType] = useState('error');
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const { id } = useSelector(state => state.user);
 
@@ -53,6 +55,7 @@ export default function AlterarSenha() {
         const tokenCaptcha = await executeRecaptcha('login');
 
         setReCaptcha(tokenCaptcha);
+        setLoading(false);
       } catch (error) {
         setAlertType('error');
         setAlertMsg(
@@ -110,6 +113,7 @@ export default function AlterarSenha() {
       });
   };
 
+  if (!reCaptcha) return <LogoLoader />;
   if (!token) return <Error error={405} />;
 
   return (
@@ -171,3 +175,5 @@ export default function AlterarSenha() {
     </>
   );
 }
+
+export default captchaProvider(AlterarSenha);

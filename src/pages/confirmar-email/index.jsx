@@ -18,8 +18,10 @@ import Error from '@/components/Error';
 
 import AuthService from '@/services/AuthService';
 import errorMessage from '@/helpers/errorMessage';
+import { captchaProvider } from '@/components/CaptchaProvider/index';
+import LogoLoader from '@/components/Loader/LogoLoader';
 
-export default function ConfirmarEmail() {
+function ConfirmarEmail() {
   const formRef = useRef(null);
   const router = useRouter();
   const { executeRecaptcha } = useGoogleReCaptcha();
@@ -27,7 +29,7 @@ export default function ConfirmarEmail() {
   const [reCaptcha, setReCaptcha] = useState('');
   const [alertMsg, setAlertMsg] = useState('');
   const [alertType, setAlertType] = useState('error');
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const { id } = useSelector(state => state.user);
 
@@ -43,6 +45,7 @@ export default function ConfirmarEmail() {
         const tokenCaptcha = await executeRecaptcha('login');
 
         setReCaptcha(tokenCaptcha);
+        setLoading(false);
       } catch (error) {
         setAlertType('error');
         setAlertMsg(
@@ -84,6 +87,7 @@ export default function ConfirmarEmail() {
     });
   };
 
+  if (!reCaptcha) return <LogoLoader />;
   if (!token) return <Error error={405} />;
 
   return (
@@ -135,3 +139,5 @@ export default function ConfirmarEmail() {
     </>
   );
 }
+
+export default captchaProvider(ConfirmarEmail);
