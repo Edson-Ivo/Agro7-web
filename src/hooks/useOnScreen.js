@@ -1,3 +1,5 @@
+import 'intersection-observer';
+
 import { useState, useEffect } from 'react';
 import isEmpty from '@/helpers/isEmpty';
 
