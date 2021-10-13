@@ -112,7 +112,15 @@ function AcoesCulturaEditar() {
           )
             d.date_finish = dateToISOString(d.date_finish);
 
-          if (!isEmpty(d?.date) && ['services', 'others'].includes(typeAction))
+          if (
+            !isEmpty(d?.date) &&
+            [
+              'services',
+              'others',
+              'durable-goods',
+              'consumable-goods'
+            ].includes(typeAction)
+          )
             d.date = dateToISOString(d.date);
 
           await CulturesActionsService.update(actionId, d, typeAction).then(

@@ -198,7 +198,7 @@ function AcoesCulturaCadastrar() {
   return (
     <>
       <Head>
-        <title>Registrar Ação na Cultura - Agro7</title>
+        <title>Cadastrar Ação na Cultura - Agro7</title>
       </Head>
 
       <Navbar />
@@ -212,8 +212,8 @@ function AcoesCulturaCadastrar() {
                 '%talhao': data?.name,
                 '%cultura': dataCultures?.products?.name
               }}
-              title={`Registrar Ação na Cultura de ${dataCultures?.products?.name}`}
-              description={`Aqui, você irá registrar uma ação da cultura de ${dataCultures?.products?.name} do talhão ${data?.name} da propriedade ${data?.properties?.name}.`}
+              title={`Cadastrar Ação na Cultura de ${dataCultures?.products?.name}`}
+              description={`Aqui, você irá cadastrar uma ação da cultura de ${dataCultures?.products?.name} do talhão ${data?.name} da propriedade ${data?.properties?.name}.`}
               isLoading={isEmpty(data) || isEmpty(dataCultures)}
             />
           </SectionHeader>
@@ -246,7 +246,7 @@ function AcoesCulturaCadastrar() {
                       {typeAction && (
                         <div style={{ marginBottom: 15, marginLeft: 10 }}>
                           <h4>
-                            Registrar Ação de {actionsList[typeAction]?.label}:
+                            Cadastrar Ação de {actionsList[typeAction]?.label}:
                           </h4>
                         </div>
                       )}
@@ -269,7 +269,7 @@ function AcoesCulturaCadastrar() {
                             className="primary"
                             type="submit"
                           >
-                            Registrar Ação
+                            Cadastrar Ação
                           </Button>
                         </div>
                       </div>

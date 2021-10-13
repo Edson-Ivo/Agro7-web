@@ -128,7 +128,7 @@ function VendasTransportadorasDocumentosCreate() {
   return (
     <>
       <Head>
-        <title>Adicionar Documento para Transportadora - Agro7</title>
+        <title>Cadastrar Documento para Transportadora - Agro7</title>
       </Head>
 
       <Navbar />
@@ -140,8 +140,8 @@ function VendasTransportadorasDocumentosCreate() {
               breadcrumbTitles={{
                 '%transportadora': data?.name
               }}
-              title={`Adicionar Documento para ${data?.name}`}
-              description={`Aqui, você irá adicionar um documento para o seu registro da transportadora ${data?.name}.`}
+              title={`Cadastrar Documento para ${data?.name}`}
+              description={`Aqui, você irá cadastrar um documento para o seu registro da transportadora ${data?.name}.`}
               isLoading={isEmpty(data)}
             />
           </SectionHeader>
@@ -170,7 +170,7 @@ function VendasTransportadorasDocumentosCreate() {
                   <div className="form-group buttons">
                     <div>
                       <Button type="button" onClick={handleCancel}>
-                        {(createSale && 'Adicionar depois') || 'Cancelar'}
+                        {(createSale && 'Cadastrar depois') || 'Cancelar'}
                       </Button>
                     </div>
                     <div>
@@ -179,7 +179,7 @@ function VendasTransportadorasDocumentosCreate() {
                         className="primary"
                         type="submit"
                       >
-                        Adicionar Documento
+                        Cadastrar Documento
                       </Button>
                     </div>
                   </div>

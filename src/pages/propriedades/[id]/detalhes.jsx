@@ -388,7 +388,7 @@ function PropertieInfo() {
                                 )
                               }
                             >
-                              Adicionar Documento
+                              Cadastrar Documento
                             </Button>
                           </div>
                         </div>

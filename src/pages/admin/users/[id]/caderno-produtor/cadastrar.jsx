@@ -168,7 +168,7 @@ function UserProducerNotebookCreate() {
                             className="primary"
                             type="submit"
                           >
-                            Adicionar Anotação
+                            Cadastrar Anotação
                           </Button>
                         </div>
                       </div>

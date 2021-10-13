@@ -158,7 +158,7 @@ function TalhoesCadastrar() {
   return (
     <>
       <Head>
-        <title>Adicionar Talhão - Agro7</title>
+        <title>Cadastrar Talhão - Agro7</title>
       </Head>
 
       <Navbar />
@@ -170,8 +170,8 @@ function TalhoesCadastrar() {
               breadcrumbTitles={{
                 '%propriedade': data?.name
               }}
-              title={`Adicionar Talhão ${data?.name}`}
-              description={`Aqui, você irá adicionar um talhão para propriedade ${data?.name}`}
+              title={`Cadastrar Talhão ${data?.name}`}
+              description={`Aqui, você irá cadastrar um talhão para propriedade ${data?.name}`}
               isLoading={isEmpty(data)}
             />
           </SectionHeader>
@@ -224,7 +224,7 @@ function TalhoesCadastrar() {
                       <div className="form-group buttons">
                         <div>
                           <Button type="button" onClick={handleCancel}>
-                            {(createProperty && 'Adicionar depois') ||
+                            {(createProperty && 'Cadastrar depois') ||
                               'Cancelar'}
                           </Button>
                         </div>
@@ -234,7 +234,7 @@ function TalhoesCadastrar() {
                             className="primary"
                             type="submit"
                           >
-                            Adicionar Talhão
+                            Cadastrar Talhão
                           </Button>
                         </div>
                       </div>

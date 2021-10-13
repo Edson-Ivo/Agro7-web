@@ -245,7 +245,7 @@ function VendasTransportadorasDetalhes() {
                                   )
                                 }
                               >
-                                Adicionar Documento
+                                Cadastrar Documento
                               </Button>
                             </div>
                           </div>
