@@ -1,4 +1,4 @@
-import { useSWRInfinite } from 'swr';
+import useSWRInfinite from 'swr/infinite';
 import { api } from '../services/api';
 
 const getKey = (pageIndex, previousPageData, url, pageSize) => {
