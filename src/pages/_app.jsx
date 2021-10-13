@@ -25,20 +25,14 @@ const Agro7App = ({ Component, pageProps }) => (
       />
       <title>Agro7</title>
     </Head>
-    <GoogleReCaptchaProvider
-      language="pt-BR"
-      reCaptchaKey="6LcqN3ccAAAAABkIKLCs_b7UrpgLdJ01_LJHxLpu"
-      scriptProps={{ async: true }}
-    >
-      <ReduxProvider store={store}>
-        <ThemeProvider theme={theme}>
-          <ModalProvider>
-            <Component {...pageProps} />
-          </ModalProvider>
-          <GlobalStyle />
-        </ThemeProvider>
-      </ReduxProvider>
-    </GoogleReCaptchaProvider>
+    <ReduxProvider store={store}>
+      <ThemeProvider theme={theme}>
+        <ModalProvider>
+          <Component {...pageProps} />
+        </ModalProvider>
+        <GlobalStyle />
+      </ThemeProvider>
+    </ReduxProvider>
   </>
 );
 
