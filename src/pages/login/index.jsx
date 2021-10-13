@@ -36,7 +36,7 @@ function Login() {
   const [reCaptcha, setReCaptcha] = useState('');
   const [alertMsg, setAlertMsg] = useState('');
   const [alertType, setAlertType] = useState('error');
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   const dispatch = useDispatch();
 
@@ -52,7 +52,6 @@ function Login() {
         const token = await executeRecaptcha('login');
 
         setReCaptcha(token);
-        setLoading(false);
       } catch (error) {
         setAlertType('error');
         setAlertMsg(
