@@ -12,6 +12,7 @@ module.exports = {
   plugins: [
     'inline-react-svg',
     ['styled-components', { ssr: true, displayName: false }],
+    ['polyfill-corejs3', { method: 'usage-global' }],
     [
       'module-resolver',
       {
