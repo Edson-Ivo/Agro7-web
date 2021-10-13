@@ -19,6 +19,8 @@ import { Alert } from '@/components/Alert';
 
 import AuthService from '@/services/AuthService';
 import errorMessage from '@/helpers/errorMessage';
+import { captchaProvider } from '@/components/CaptchaProvider/index';
+import LogoLoader from '@/components/Loader/LogoLoader';
 
 const schema = yup.object().shape({
   email: yup
@@ -27,7 +29,7 @@ const schema = yup.object().shape({
     .required('O campo e-mail é obrigatório!')
 });
 
-export default function EsqueceuSenha() {
+function EsqueceuSenha() {
   const formRef = useRef(null);
   const router = useRouter();
   const { executeRecaptcha } = useGoogleReCaptcha();
@@ -35,7 +37,7 @@ export default function EsqueceuSenha() {
   const [reCaptcha, setReCaptcha] = useState('');
   const [alertMsg, setAlertMsg] = useState('');
   const [alertType, setAlertType] = useState('error');
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const { id } = useSelector(state => state.user);
 
@@ -51,6 +53,7 @@ export default function EsqueceuSenha() {
         const token = await executeRecaptcha('login');
 
         setReCaptcha(token);
+        setLoading(false);
       } catch (error) {
         setAlertType('error');
         setAlertMsg(
@@ -100,6 +103,8 @@ export default function EsqueceuSenha() {
         }
       });
   };
+
+  if (!reCaptcha) return <LogoLoader />;
 
   return (
     <>
@@ -165,3 +170,5 @@ export default function EsqueceuSenha() {
     </>
   );
 }
+
+export default captchaProvider(EsqueceuSenha);
