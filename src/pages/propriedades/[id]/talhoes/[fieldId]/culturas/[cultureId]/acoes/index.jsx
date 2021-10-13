@@ -171,7 +171,7 @@ function AcoesCultura() {
             >
               <Link href={`${baseUrl}/cadastrar`}>
                 <Button className="primary">
-                  <FontAwesomeIcon icon={faPlus} /> Registrar Ação
+                  <FontAwesomeIcon icon={faPlus} /> Cadastrar Ação
                 </Button>
               </Link>
             </SectionHeaderContent>

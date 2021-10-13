@@ -16,7 +16,7 @@ const adminUserPropertyRoute = {
   },
 
   '/admin/users/[userId]/propriedades/[id]/documentos/cadastrar': {
-    name: 'Adicionar Documento'
+    name: 'Cadastrar Documento'
   },
   '/admin/users/[userId]/propriedades/[id]/editar': { name: 'Editar' },
   '/admin/users/[userId]/propriedades/[id]/talhoes': { name: 'Talhões' },
@@ -44,7 +44,7 @@ const adminUserPropertyRoute = {
   },
 
   '/admin/users/[userId]/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]/acoes/cadastrar': {
-    name: 'Registrar'
+    name: 'Cadastrar'
   },
 
   '/admin/users/[userId]/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]/colheitas': {
@@ -62,7 +62,7 @@ const adminUserPropertyRoute = {
   },
 
   '/admin/users/[userId]/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]/colheitas/cadastrar': {
-    name: 'Registrar'
+    name: 'Cadastrar'
   },
 
   '/admin/users/[userId]/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]': {
@@ -84,7 +84,7 @@ const adminUserPropertyRoute = {
   },
 
   '/admin/users/[userId]/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]/relatorios/cadastrar': {
-    name: 'Adicionar'
+    name: 'Cadastrar'
   },
 
   '/admin/users/[userId]/propriedades/[id]/talhoes/[fieldId]/culturas/cadastrar': {
@@ -138,7 +138,7 @@ const adminUserTechPropertyRoute = {
   },
 
   '/admin/users/[userId]/tecnico/propriedades/[id]/documentos/cadastrar': {
-    name: 'Adicionar Documento'
+    name: 'Cadastrar Documento'
   },
   '/admin/users/[userId]/tecnico/propriedades/[id]/editar': { name: 'Editar' },
   '/admin/users/[userId]/tecnico/propriedades/[id]/talhoes': {
@@ -164,7 +164,7 @@ const adminUserTechPropertyRoute = {
   },
 
   '/admin/users/[userId]/tecnico/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]/acoes/cadastrar': {
-    name: 'Registrar'
+    name: 'Cadastrar'
   },
 
   '/admin/users/[userId]/tecnico/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]/colheitas': {
@@ -182,7 +182,7 @@ const adminUserTechPropertyRoute = {
   },
 
   '/admin/users/[userId]/tecnico/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]/colheitas/cadastrar': {
-    name: 'Registrar'
+    name: 'Cadastrar'
   },
 
   '/admin/users/[userId]/tecnico/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]': {
@@ -204,7 +204,7 @@ const adminUserTechPropertyRoute = {
   },
 
   '/admin/users/[userId]/tecnico/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]/relatorios/cadastrar': {
-    name: 'Adicionar'
+    name: 'Cadastrar'
   },
 
   '/admin/users/[userId]/tecnico/propriedades/[id]/talhoes/[fieldId]/culturas/cadastrar': {
@@ -246,7 +246,7 @@ const adminPropertyRoute = {
     name: 'Editar Documento'
   },
   '/admin/propriedades/[id]/documentos/cadastrar': {
-    name: 'Adicionar Documento'
+    name: 'Cadastrar Documento'
   },
   '/admin/propriedades/[id]/editar': { name: 'Editar' },
   '/admin/propriedades/[id]/talhoes': { name: 'Talhões' },
@@ -267,7 +267,7 @@ const adminPropertyRoute = {
   },
 
   '/admin/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]/acoes/cadastrar': {
-    name: 'Registrar'
+    name: 'Cadastrar'
   },
 
   '/admin/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]/colheitas': {
@@ -285,7 +285,7 @@ const adminPropertyRoute = {
   },
 
   '/admin/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]/colheitas/cadastrar': {
-    name: 'Registrar'
+    name: 'Cadastrar'
   },
 
   '/admin/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]': {
@@ -307,7 +307,7 @@ const adminPropertyRoute = {
   },
 
   '/admin/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]/relatorios/cadastrar': {
-    name: 'Adicionar'
+    name: 'Cadastrar'
   },
 
   '/admin/propriedades/[id]/talhoes/[fieldId]/culturas/cadastrar': {
@@ -335,7 +335,7 @@ const technicianPropertyRoute = {
     name: 'Editar Documento'
   },
   '/tecnico/propriedades/[id]/documentos/cadastrar': {
-    name: 'Adicionar Documento'
+    name: 'Cadastrar Documento'
   },
   '/tecnico/propriedades/[id]/editar': { name: 'Editar' },
   '/tecnico/propriedades/[id]/talhoes': { name: 'Talhões' },
@@ -356,7 +356,7 @@ const technicianPropertyRoute = {
   },
 
   '/tecnico/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]/colheitas/cadastrar': {
-    name: 'Registrar'
+    name: 'Cadastrar'
   },
 
   '/tecnico/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]': {
@@ -378,7 +378,7 @@ const technicianPropertyRoute = {
   },
 
   '/tecnico/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]/relatorios/cadastrar': {
-    name: 'Adicionar'
+    name: 'Cadastrar'
   },
 
   '/tecnico/propriedades/[id]/talhoes/[fieldId]/culturas/cadastrar': {
@@ -604,9 +604,9 @@ const namedRoutes = {
   '/admin/users/[id]': { name: '%usuario', path: '/admin/users/[id]' },
   '/admin/users/[id]/caderno-produtor': { name: 'Caderno do Produtor' },
   '/admin/users/[id]/caderno-produtor/cadastrar': { name: 'Anotação' },
-  '/admin/users/[id]/editar': { name: 'Alterar Dados' },
+  '/admin/users/[id]/editar': { name: 'Editar Dados' },
   '/admin/users/[id]/editar/senha': { name: 'Alterar Senha' },
-  '/admin/users/[id]/editar/perfil': { name: 'Alterar Perfil Público' },
+  '/admin/users/[id]/editar/perfil': { name: 'Editar Perfil Público' },
   '/admin/users/[id]/propriedades': { name: 'Propriedades' },
   '/admin/users/[id]/propriedades/cadastrar': { name: 'Cadastrar' },
   '/admin/users/[id]/tecnico': { name: 'Técnico' },
@@ -633,7 +633,7 @@ const namedRoutes = {
     path: '/propriedades/[id]/detalhes'
   },
   '/propriedades/[id]/documentos/[docId]/editar': { name: 'Editar Documento' },
-  '/propriedades/[id]/documentos/cadastrar': { name: 'Adicionar Documento' },
+  '/propriedades/[id]/documentos/cadastrar': { name: 'Cadastrar Documento' },
   '/propriedades/[id]/editar': { name: 'Editar' },
   '/propriedades/[id]/talhoes': { name: 'Talhões' },
   '/propriedades/[id]/talhoes/[fieldId]': {
@@ -654,7 +654,7 @@ const namedRoutes = {
   },
 
   '/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]/acoes/cadastrar': {
-    name: 'Registrar'
+    name: 'Cadastrar'
   },
 
   '/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]/acoes/[type]/[actionId]/documentos': {
@@ -664,7 +664,7 @@ const namedRoutes = {
   },
 
   '/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]/acoes/[type]/[actionId]/documentos/cadastrar': {
-    name: 'Adicionar'
+    name: 'Cadastrar'
   },
 
   '/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]/acoes/[type]/[actionId]/documentos/[docId]/editar': {
@@ -686,7 +686,7 @@ const namedRoutes = {
   },
 
   '/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]/colheitas/cadastrar': {
-    name: 'Registrar'
+    name: 'Cadastrar'
   },
 
   '/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]': {
@@ -710,7 +710,7 @@ const namedRoutes = {
     name: 'Relatório'
   },
   '/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]/relatorios/cadastrar': {
-    name: 'Adicionar'
+    name: 'Cadastrar'
   },
   '/propriedades/[id]/talhoes/[fieldId]/culturas/cadastrar': {
     name: 'Cadastrar'

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import * as yup from 'yup';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
@@ -27,6 +27,7 @@ import urlRoute from '@/helpers/urlRoute';
 import isEmpty from '@/helpers/isEmpty';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 import scrollTo from '@/helpers/scrollTo';
+import { useModal } from '@/hooks/useModal';
 
 const schema = yup.object().shape({
   date: yup.string().required('O campo data é obrigatório!'),
@@ -67,6 +68,8 @@ function ColheitasCreate() {
   const { type } = useSelector(state => state.user);
   const [route, setRoute] = useState({});
 
+  const { addModal, removeModal } = useModal();
+
   useEffect(() => {
     setAlert({ type: '', message: '' });
     setDisableButton(false);
@@ -94,26 +97,7 @@ function ColheitasCreate() {
         d.forecast = dateToISOString(d.forecast);
         d.cultures = Number(cultureId);
 
-        await HarvestsService.create(d).then(res => {
-          if (res.status !== 201 || res?.statusCode) {
-            setAlert({ type: 'error', message: errorMessage(res) });
-            setTimeout(() => {
-              setDisableButton(false);
-            }, 1000);
-          } else {
-            setAlert({
-              type: 'success',
-              message: 'Colheita registrada com sucesso!'
-            });
-
-            setTimeout(() => {
-              router.push(
-                `${route.path}/${id}/talhoes/${fieldId}/culturas/${cultureId}/colheitas`
-              );
-              setDisableButton(false);
-            }, 1000);
-          }
-        });
+        handleConfirmCreateHarvest(d);
       })
       .catch(err => {
         setAlert({ type: 'error', message: err.errors[0] });
@@ -127,6 +111,55 @@ function ColheitasCreate() {
       });
   };
 
+  const handleCreateHarvest = async d => {
+    removeModal();
+
+    await HarvestsService.create(d).then(res => {
+      if (res.status !== 201 || res?.statusCode) {
+        setAlert({ type: 'error', message: errorMessage(res) });
+        setTimeout(() => {
+          setDisableButton(false);
+        }, 1000);
+      } else {
+        setAlert({
+          type: 'success',
+          message: 'Colheita registrada com sucesso!'
+        });
+
+        setTimeout(() => {
+          router.push(
+            `${route.path}/${id}/talhoes/${fieldId}/culturas/${cultureId}/colheitas`
+          );
+          setDisableButton(false);
+        }, 1000);
+      }
+    });
+  };
+
+  const handleConfirmCreateHarvest = useCallback(
+    d => {
+      addModal({
+        title: 'Cadastrar nova Colheita?',
+        text:
+          'Antes de confirmar o cadastro dessa colheita, verifique se os dados foram inseridos corretamente, pois não poderão ser editados.',
+        confirm: true,
+        onConfirm: () => handleCreateHarvest(d),
+        onCancel: () => handleCancelModal(removeModal)
+      });
+    },
+    [addModal, removeModal, route]
+  );
+
+  const handleCancelModal = removeModalAction => {
+    setDisableButton(false);
+    setAlert({
+      type: 'info',
+      message:
+        'Você está revisando os dados... Após revisar, clique em Cadastrar Colheita novamente e selecione "sim" para cadastrar essa colheita.'
+    });
+    removeModalAction();
+  };
+
   if (error || errorCultures) return <Error error={error || errorCultures} />;
   if (data && id !== String(data?.properties?.id)) return <Error error={404} />;
   if (dataCultures && fieldId !== String(dataCultures?.fields?.id))
@@ -136,7 +169,7 @@ function ColheitasCreate() {
   return (
     <>
       <Head>
-        <title>Registrar Colheita - Agro7</title>
+        <title>Cadastrar Colheita - Agro7</title>
       </Head>
 
       <Navbar />
@@ -150,8 +183,8 @@ function ColheitasCreate() {
                 '%talhao': data?.name,
                 '%cultura': dataCultures?.products?.name
               }}
-              title={`Registrar Colheita na Cultura de ${dataCultures?.products?.name}`}
-              description={`Aqui, você irá registrar uma colheita para cultura de ${dataCultures?.products?.name} do talhão ${data?.name} da propriedade ${data?.properties?.name}.`}
+              title={`Cadastrar Colheita na Cultura de ${dataCultures?.products?.name}`}
+              description={`Aqui, você irá cadastrar uma colheita para cultura de ${dataCultures?.products?.name} do talhão ${data?.name} da propriedade ${data?.properties?.name}.`}
               isLoading={isEmpty(data) || isEmpty(dataCultures)}
             />
           </SectionHeader>
@@ -235,7 +268,7 @@ function ColheitasCreate() {
                             className="primary"
                             type="submit"
                           >
-                            Registrar Colheita
+                            Cadastrar Colheita
                           </Button>
                         </div>
                       </div>

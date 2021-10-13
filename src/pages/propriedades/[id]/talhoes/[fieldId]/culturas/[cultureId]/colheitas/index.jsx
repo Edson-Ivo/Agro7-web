@@ -137,7 +137,7 @@ function Colheitas() {
             >
               <Link href={`${baseUrl}/cadastrar`}>
                 <Button className="primary">
-                  <FontAwesomeIcon icon={faPlus} /> Registrar Colheita
+                  <FontAwesomeIcon icon={faPlus} /> Cadastrar Colheita
                 </Button>
               </Link>
             </SectionHeaderContent>

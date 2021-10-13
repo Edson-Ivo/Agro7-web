@@ -149,7 +149,7 @@ function Relatorios() {
               {willCreate && (
                 <Link href={`${baseUrl}/cadastrar`}>
                   <Button className="primary">
-                    <FontAwesomeIcon icon={faPlus} /> Adicionar Relatório
+                    <FontAwesomeIcon icon={faPlus} /> Cadastrar Relatório
                   </Button>
                 </Link>
               )}

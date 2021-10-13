@@ -151,7 +151,7 @@ function AcoesCulturasDocumentosCreate() {
     <>
       <Head>
         <title>
-          Adicionar Documento para Ação de {actionsList[typeAction]?.label} na
+          Cadastrar Documento para Ação de {actionsList[typeAction]?.label} na
           Cultura {dataCultures?.products?.name} - Agro7
         </title>
       </Head>
@@ -167,9 +167,9 @@ function AcoesCulturasDocumentosCreate() {
                 '%talhao': data?.name,
                 '%cultura': dataCultures?.products?.name
               }}
-              title={`Adicionar Documento para Ação de ${actionsList[typeAction]?.label} na
+              title={`Cadastrar Documento para Ação de ${actionsList[typeAction]?.label} na
               Cultura ${dataCultures?.products?.name}`}
-              description={`Aqui, você irá adicionar um documento para a ação ${actionsList[
+              description={`Aqui, você irá cadastrar um documento para a ação ${actionsList[
                 typeAction
               ]?.label.toLowerCase()} em questão da cultura de ${
                 dataCultures?.products?.name
@@ -204,7 +204,7 @@ function AcoesCulturasDocumentosCreate() {
                   <div className="form-group buttons">
                     <div>
                       <Button type="button" onClick={handleCancel}>
-                        {(createAction && 'Adicionar depois') || 'Cancelar'}
+                        {(createAction && 'Cadastrar depois') || 'Cancelar'}
                       </Button>
                     </div>
                     <div>
@@ -213,7 +213,7 @@ function AcoesCulturasDocumentosCreate() {
                         className="primary"
                         type="submit"
                       >
-                        Adicionar Documento
+                        Cadastrar Documento
                       </Button>
                     </div>
                   </div>

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import * as yup from 'yup';
 import Skeleton from 'react-loading-skeleton';
 import Head from 'next/head';
@@ -27,6 +27,7 @@ import AddressesService from '@/services/AddressesService';
 import Divider from '@/components/Divider/index';
 import TextArea from '@/components/TextArea/index';
 import scrollTo from '@/helpers/scrollTo';
+import { useModal } from '@/hooks/useModal';
 
 function VendasCreate() {
   const formRef = useRef(null);
@@ -66,6 +67,8 @@ function VendasCreate() {
       ? `/harvests/find/by/product/${product}/in-stock/by/user-logged?properties=${property}&type=${typeUnt}&is_green=${isGreen}&limit=1000`
       : null
   );
+
+  const { addModal, removeModal } = useModal();
 
   const router = useRouter();
 
@@ -289,35 +292,7 @@ function VendasCreate() {
             d.transporters.document.length <= 14
           );
 
-          await SalesService.create(d).then(res => {
-            if (res.status !== 201 || res?.statusCode) {
-              setAlert({ type: 'error', message: errorMessage(res) });
-              setTimeout(() => {
-                setDisableButton(false);
-              }, 1000);
-            } else {
-              const transporterId =
-                res.data.vehicles_sales.vehicles.transporters.id;
-              const transporterFiles =
-                res.data.vehicles_sales.vehicles.transporters.documents_files;
-
-              setAlert({
-                type: 'success',
-                message: 'Venda cadastrada com sucesso!'
-              });
-
-              setTimeout(() => {
-                if (!transporter && transporterFiles?.length === 0) {
-                  router.replace(
-                    `/vendas/transportadoras/${transporterId}/documentos/cadastrar?createSale=${res.data.id}`
-                  );
-                } else {
-                  router.push(`/vendas/${res.data.id}/detalhes`);
-                }
-                setDisableButton(false);
-              }, 1000);
-            }
-          });
+          handleConfirmCreateSale(d);
         }
       })
       .catch(err => {
@@ -330,6 +305,63 @@ function VendasCreate() {
           formRef.current.setFieldError(path, message);
         }
       });
+  };
+
+  const handleCreateSale = async d => {
+    removeModal();
+
+    await SalesService.create(d).then(res => {
+      if (res.status !== 201 || res?.statusCode) {
+        setAlert({ type: 'error', message: errorMessage(res) });
+        setTimeout(() => {
+          setDisableButton(false);
+        }, 1000);
+      } else {
+        const transporterId = res.data.vehicles_sales.vehicles.transporters.id;
+        const transporterFiles =
+          res.data.vehicles_sales.vehicles.transporters.documents_files;
+
+        setAlert({
+          type: 'success',
+          message: 'Venda cadastrada com sucesso!'
+        });
+
+        setTimeout(() => {
+          if (!transporter && transporterFiles?.length === 0) {
+            router.replace(
+              `/vendas/transportadoras/${transporterId}/documentos/cadastrar?createSale=${res.data.id}`
+            );
+          } else {
+            router.push(`/vendas/${res.data.id}/detalhes`);
+          }
+          setDisableButton(false);
+        }, 1000);
+      }
+    });
+  };
+
+  const handleConfirmCreateSale = useCallback(
+    d => {
+      addModal({
+        title: 'Cadastrar nova Venda?',
+        text:
+          'Antes de confirmar o cadastro dessa venda, verifique se todos os dados da venda, transportadora e distribuidora foram inseridos corretamente, pois não poderão ser editados.',
+        confirm: true,
+        onConfirm: () => handleCreateSale(d),
+        onCancel: () => handleCancelModal(removeModal)
+      });
+    },
+    [addModal, removeModal]
+  );
+
+  const handleCancelModal = removeModalAction => {
+    setDisableButton(false);
+    setAlert({
+      type: 'info',
+      message:
+        'Você está revisando os dados... Após revisar, clique em Cadastrar Venda novamente e selecione "sim" para cadastrar essa venda.'
+    });
+    removeModalAction();
   };
 
   useEffect(() => {
