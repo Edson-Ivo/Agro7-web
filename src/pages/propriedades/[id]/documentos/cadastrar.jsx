@@ -133,7 +133,7 @@ function DocumentosCreate() {
   return (
     <>
       <Head>
-        <title>Adicionar Documento - Agro7</title>
+        <title>Cadastrar Documento - Agro7</title>
       </Head>
 
       <Navbar />
@@ -145,8 +145,8 @@ function DocumentosCreate() {
               breadcrumbTitles={{
                 '%propriedade': data?.name
               }}
-              title={`Adicionar Documento ${data?.name}`}
-              description={`Aqui, você irá adicionar um documento para propriedade ${data?.name}`}
+              title={`Cadastrar Documento ${data?.name}`}
+              description={`Aqui, você irá cadastrar um documento para propriedade ${data?.name}`}
               isLoading={isEmpty(data)}
             />
           </SectionHeader>
@@ -175,7 +175,7 @@ function DocumentosCreate() {
                   <div className="form-group buttons">
                     <div>
                       <Button type="button" onClick={handleCancel}>
-                        {(createProperty && 'Adicionar depois') || 'Cancelar'}
+                        {(createProperty && 'Cadastrar depois') || 'Cancelar'}
                       </Button>
                     </div>
                     <div>
@@ -184,7 +184,7 @@ function DocumentosCreate() {
                         className="primary"
                         type="submit"
                       >
-                        Adicionar Documento
+                        Cadastrar Documento
                       </Button>
                     </div>
                   </div>

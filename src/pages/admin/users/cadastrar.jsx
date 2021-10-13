@@ -132,7 +132,7 @@ function AdminUsers() {
         if (isEmpty(data.phone_whatsapp)) delete data.phone_whatsapp;
 
         if (data?.type === 'administrador') handleConfirmAdminCreate(data);
-        else handleCreateUser(data);
+        else handleConfirmCreateUser(data);
       })
       .catch(err => {
         setAlert({ type: 'error', message: err.errors[0] });
@@ -147,6 +147,8 @@ function AdminUsers() {
   };
 
   const handleCreateUser = async data => {
+    removeModal();
+
     await UsersService.create(data).then(res => {
       if (res.status !== 201 || res?.statusCode) {
         setAlert({ type: 'error', message: errorMessage(res) });
@@ -167,6 +169,20 @@ function AdminUsers() {
     });
   };
 
+  const handleConfirmCreateUser = useCallback(
+    data => {
+      addModal({
+        title: 'Cadastrar novo Usuário?',
+        text:
+          'Antes de confirmar o cadastro desse usuário, verifique se os dados do usuário foram inseridos corretamente.',
+        confirm: true,
+        onConfirm: () => handleCreateUser(data),
+        onCancel: () => handleCancelModalUser(removeModal)
+      });
+    },
+    [addModal, removeModal]
+  );
+
   const handleConfirmAdminCreate = useCallback(
     data => {
       addModal({
@@ -184,6 +200,16 @@ function AdminUsers() {
   const handleCancelModal = removeModalAction => {
     setDisableButton(false);
     setAlert({ type: 'info', message: 'Cadastro de usuário cancelado.' });
+    removeModalAction();
+  };
+
+  const handleCancelModalUser = removeModalAction => {
+    setDisableButton(false);
+    setAlert({
+      type: 'info',
+      message:
+        'Você está revisando os dados... Após revisar, clique em Cadastrar Usuário novamente e selecione "sim" para cadastrar esse usuário.'
+    });
     removeModalAction();
   };
 

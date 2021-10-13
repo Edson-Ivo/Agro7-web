@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import Head from 'next/head';
 import * as yup from 'yup';
 import { useRouter } from 'next/router';
@@ -28,6 +28,7 @@ import urlRoute from '@/helpers/urlRoute';
 import isEmpty from '@/helpers/isEmpty';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 import scrollTo from '@/helpers/scrollTo';
+import { useModal } from '@/hooks/useModal';
 
 const schema = yup.object().shape({
   date_start: yup.string().required('O campo data é obrigatório!'),
@@ -57,6 +58,8 @@ function CulturasCreate() {
 
   const { type } = useSelector(state => state.user);
   const [route, setRoute] = useState({});
+
+  const { addModal, removeModal } = useModal();
 
   const { data, error } = useFetch(`/fields/find/by/id/${fieldId}`);
 
@@ -94,26 +97,7 @@ function CulturasCreate() {
           d.date_finish = dateToISOString(d.date_finish);
         else delete d.date_finish;
 
-        await CulturesService.create(d).then(res => {
-          if (res.status !== 201 || res?.statusCode) {
-            setAlert({ type: 'error', message: errorMessage(res) });
-            setTimeout(() => {
-              setDisableButton(false);
-            }, 1000);
-          } else {
-            setAlert({
-              type: 'success',
-              message: 'Cultura cadastrada com sucesso!'
-            });
-
-            setTimeout(() => {
-              router.push(
-                `${route.path}/${id}/talhoes/${fieldId}/culturas/${res.data.id}/detalhes`
-              );
-              setDisableButton(false);
-            }, 1000);
-          }
-        });
+        handleConfirmCreateCulture(d);
       })
       .catch(err => {
         setAlert({ type: 'error', message: err.errors[0] });
@@ -127,6 +111,55 @@ function CulturasCreate() {
       });
   };
 
+  const handleCreateCulture = async d => {
+    removeModal();
+
+    await CulturesService.create(d).then(res => {
+      if (res.status !== 201 || res?.statusCode) {
+        setAlert({ type: 'error', message: errorMessage(res) });
+        setTimeout(() => {
+          setDisableButton(false);
+        }, 1000);
+      } else {
+        setAlert({
+          type: 'success',
+          message: 'Cultura cadastrada com sucesso!'
+        });
+
+        setTimeout(() => {
+          router.push(
+            `${route.path}/${id}/talhoes/${fieldId}/culturas/${res.data.id}/detalhes`
+          );
+          setDisableButton(false);
+        }, 1000);
+      }
+    });
+  };
+
+  const handleConfirmCreateCulture = useCallback(
+    d => {
+      addModal({
+        title: 'Cadastrar nova Cultura?',
+        text:
+          'Antes de confirmar o cadastro dessa cultura, verifique se o produto foi inserido corretamente, pois o produto não poderá ser editado.',
+        confirm: true,
+        onConfirm: () => handleCreateCulture(d),
+        onCancel: () => handleCancelModal(removeModal)
+      });
+    },
+    [addModal, removeModal, route]
+  );
+
+  const handleCancelModal = removeModalAction => {
+    setDisableButton(false);
+    setAlert({
+      type: 'info',
+      message:
+        'Você está revisando os dados... Após revisar, clique em Cadastrar Cultura novamente e selecione "sim" para cadastrar essa colheita.'
+    });
+    removeModalAction();
+  };
+
   if (error) return <Error error={error} />;
   if (data && id !== String(data?.properties?.id)) return <Error error={404} />;
   if (!isEmpty(route) && !route.hasPermission) return <Error error={404} />;
@@ -134,7 +167,7 @@ function CulturasCreate() {
   return (
     <>
       <Head>
-        <title>Adicionar Cultura - Agro7</title>
+        <title>Cadastrar Cultura - Agro7</title>
       </Head>
 
       <Navbar />
@@ -147,8 +180,8 @@ function CulturasCreate() {
                 '%propriedade': data?.properties.name,
                 '%talhao': data?.name
               }}
-              title={`Adicionar Cultura ${data?.name}`}
-              description={`Aqui, você irá adicionar uma cultura para o talhão ${data?.name} da propriedade ${data?.properties?.name}.`}
+              title={`Cadastrar Cultura ${data?.name}`}
+              description={`Aqui, você irá cadastrar uma cultura para o talhão ${data?.name} da propriedade ${data?.properties?.name}.`}
               isLoading={isEmpty(data)}
             />
           </SectionHeader>
@@ -213,7 +246,7 @@ function CulturasCreate() {
                             className="primary"
                             type="submit"
                           >
-                            Adicionar Cultura
+                            Cadastrar Cultura
                           </Button>
                         </div>
                       </div>

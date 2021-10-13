@@ -288,7 +288,7 @@ function AcoesCulturasDetalhes() {
                                 )
                               }
                             >
-                              Adicionar Documento
+                              Cadastrar Documento
                             </Button>
                           </div>
                         </div>

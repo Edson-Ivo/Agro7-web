@@ -135,7 +135,7 @@ function RelatoriosCreate() {
   return (
     <>
       <Head>
-        <title>Adicionar Relatório - Agro7</title>
+        <title>Cadastrar Relatório - Agro7</title>
       </Head>
 
       <Navbar />
@@ -149,7 +149,7 @@ function RelatoriosCreate() {
                 '%talhao': data?.name,
                 '%cultura': dataCultures?.products?.name
               }}
-              title={`Adicionar Relatório na Cultura de ${dataCultures?.products?.name}`}
+              title={`Cadastrar Relatório na Cultura de ${dataCultures?.products?.name}`}
               description={`Aqui, você irá fazer um relatório da cultura de ${dataCultures?.products?.name} do talhão ${data?.name} da propriedade ${data?.properties?.name}.`}
               isLoading={isEmpty(data) || isEmpty(dataCultures)}
             />
@@ -187,7 +187,7 @@ function RelatoriosCreate() {
                             className="primary"
                             type="submit"
                           >
-                            Adicionar Relatório
+                            Cadastrar Relatório
                           </Button>
                         </div>
                       </div>
