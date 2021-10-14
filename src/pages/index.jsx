@@ -30,7 +30,7 @@ const data = [
     href: '/painel-controle',
     title: 'Painel de Controle',
     description:
-      'Gerencie sua receita e suas projeções de colheitas em um período de tempo.',
+      'Gerencie suas receitas, despesas e suas projeções de colheitas em um período de tempo.',
     icon: faChartPie
   },
   {

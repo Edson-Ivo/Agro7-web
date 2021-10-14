@@ -556,14 +556,14 @@ const adminUserSalesRoute = {
 };
 
 const chartRoutes = {
-  '/admin/receita': {
-    name: 'Receita'
+  '/admin/receitas-despesas': {
+    name: 'Receitas e Despesas'
   },
   '/admin/projecao-colheita': {
     name: 'Projeção das Colheitas'
   },
-  '/admin/users/[id]/receita': {
-    name: 'Receita'
+  '/admin/users/[id]/receitas-despesas': {
+    name: 'Receitas e Despesas'
   },
   '/admin/users/[id]/projecao-colheita': {
     name: 'Projeção das Colheitas'
@@ -574,8 +574,8 @@ const chartRoutes = {
   '/painel-controle/projecao-colheita': {
     name: 'Projeção das Colheitas'
   },
-  '/painel-controle/receita': {
-    name: 'Receita'
+  '/painel-controle/receitas-despesas': {
+    name: 'Receitas e Despesas'
   }
 };
 

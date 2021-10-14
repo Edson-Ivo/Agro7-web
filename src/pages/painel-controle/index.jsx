@@ -19,10 +19,10 @@ import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 
 const data = [
   {
-    href: '/painel-controle/receita',
-    title: 'Gerenciar Receita',
+    href: '/painel-controle/receitas-despesas',
+    title: 'Gerenciar Receitas e Despesas',
     description:
-      'Aqui, você poderá checar a sua receita (ganhos e despesas) em determinado período de tempo.',
+      'Aqui, você poderá checar a suas receitas e despesas em determinado período de tempo.',
     icon: faWallet
   },
   {
@@ -50,7 +50,7 @@ function ControlPanel() {
           <SectionHeader>
             <SectionHeaderContent
               title="Painel de Controle"
-              description={`Olá, ${name}! Esse é seu painel de controle. Aqui, você pode gerenciar suas receitas e as projeções das suas colheitas.`}
+              description={`Olá, ${name}! Esse é seu painel de controle. Aqui, você pode gerenciar suas receitas, despesas e as projeções das suas colheitas.`}
             />
           </SectionHeader>
           <SectionBody>

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Head from 'next/head';
+import { useRouter } from 'next/router';
 
 import Container from '@/components/Container';
 import Nav from '@/components/Nav';
@@ -20,8 +21,12 @@ import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 import { dateConversor } from '@/helpers/date';
 import InputDateInterval from '@/components/InputDateInterval/index';
 import Chart from '@/components/Chart/index';
+import maskString from '@/helpers/maskString';
+import Table from '@/components/Table/index';
 
-function ControlReceita() {
+function UserReceita() {
+  const router = useRouter();
+
   const [alertMsg, setAlertMsg] = useState('');
   const [dateStart, setDateStart] = useState(null);
   const [dateEnd, setDateEnd] = useState(null);
@@ -29,9 +34,15 @@ function ControlReceita() {
   const [dataCosts, setDataCosts] = useState(null);
   const [dataCostsList, setDataCostsList] = useState([]);
 
+  const { id } = router.query;
+
+  const { data: dataUser, error: errorUser } = useFetch(
+    `/users/find/by/id/${id}`
+  );
+
   const { data: dataChart, error: errorChart } = useFetch(
     dateStart && dateEnd
-      ? `/charts/find/revenue/by/user-logged?date_start=${dateStart}&date_finish=${dateEnd}`
+      ? `/charts/find/revenue/by/user/${id}?date_start=${dateStart}&date_finish=${dateEnd}`
       : null
   );
 
@@ -46,24 +57,38 @@ function ControlReceita() {
           applications_supplies: applicationsSupplies,
           others,
           sales,
-          services
+          services,
+          durable_goods: durableGoods,
+          consumable_goods: consumableGoods
         }
       } = dataChart;
 
       setDataProfits(sales);
       setDataCosts(
-        Number(applicationsSupplies) + Number(others) + Number(services)
+        Number(applicationsSupplies) +
+          Number(others) +
+          Number(services) +
+          Number(durableGoods) +
+          Number(consumableGoods)
       );
-      setDataCostsList([applicationsSupplies, services, others]);
+      setDataCostsList([
+        applicationsSupplies,
+        services,
+        durableGoods,
+        consumableGoods,
+        others
+      ]);
     }
   }, [dataChart]);
 
-  if (errorChart) return <Error error={errorChart} />;
+  if (errorUser || errorChart) return <Error error={errorUser || errorChart} />;
 
   return (
     <>
       <Head>
-        <title>Gerenciar Receita - Agro7</title>
+        <title>
+          Painel Administrativo | Gerenciar Receitas e Despesas - Agro7
+        </title>
       </Head>
 
       <Navbar />
@@ -71,7 +96,14 @@ function ControlReceita() {
         <Nav />
         <Section>
           <SectionHeader>
-            <SectionHeaderContent title="Gerenciar Receita" />
+            <SectionHeaderContent
+              breadcrumbTitles={{
+                '%usuario': dataUser?.name
+              }}
+              title="Gerenciar Receitas e Despesas"
+              description={`Aqui, você poderá gerenciar as receitas e despesas de ${dataUser?.name} no sistema.`}
+              isLoading={isEmpty(dataUser)}
+            />
           </SectionHeader>
           <SectionBody>
             <div className="SectionBody__content">
@@ -81,6 +113,7 @@ function ControlReceita() {
                 </Alert>
                 {alertMsg && <Alert type="error">{alertMsg}</Alert>}
                 <InputDateInterval
+                  url={`/admin/users/${id}/receitas-despesas`}
                   onError={setAlertMsg}
                   onDateStartSelect={handleChangeDateStart}
                   onDateEndSelect={handleChangeDateEnd}
@@ -97,9 +130,7 @@ function ControlReceita() {
                           {String(dataProfits) === '0' &&
                           String(dataCosts) === '0' ? (
                             <Alert type="error">
-                              Não há dados para o período selecionado:{' '}
-                              {dateConversor(dateStart, false)} -
-                              {dateConversor(dateEnd, false)}.
+                              Não há dados para o período selecionado.
                             </Alert>
                           ) : (
                             <div style={{ textAlign: 'center' }}>
@@ -110,7 +141,7 @@ function ControlReceita() {
                                   false
                                 )} - ${dateConversor(dateEnd, false)}`}
                                 labelPrefix="R$ "
-                                dataLabels={['Ganhos', 'Despesas']}
+                                dataLabels={['Receita', 'Despesas']}
                                 dataColors={['#3195BC', '#D5412D']}
                                 dataValues={[dataProfits, dataCosts]}
                                 dataLabelsActive
@@ -122,12 +153,64 @@ function ControlReceita() {
                                 dataLabels={[
                                   'Aplicação de Insumos',
                                   'Serviços',
+                                  'Bens Duráveis',
+                                  'Bens Consumíveis',
                                   'Outros'
                                 ]}
                                 dataColors="#D5412D"
                                 dataValues={[...dataCostsList]}
                                 legendActive={false}
                               />
+                              <Table noClick>
+                                <thead>
+                                  <tr>
+                                    <th>Ação</th>
+                                    <th>Despesa</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  <tr>
+                                    <td style={{ textAlign: 'left' }}>
+                                      Aplicação de Insumos
+                                    </td>
+                                    <td>
+                                      {maskString(dataCostsList[0], 'money')}
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td style={{ textAlign: 'left' }}>
+                                      Serviços
+                                    </td>
+                                    <td>
+                                      {maskString(dataCostsList[1], 'money')}
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td style={{ textAlign: 'left' }}>
+                                      Bens Duráveis
+                                    </td>
+                                    <td>
+                                      {maskString(dataCostsList[2], 'money')}
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td style={{ textAlign: 'left' }}>
+                                      Bens Consumíveis
+                                    </td>
+                                    <td>
+                                      {maskString(dataCostsList[3], 'money')}
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td style={{ textAlign: 'left' }}>
+                                      Outros
+                                    </td>
+                                    <td>
+                                      {maskString(dataCostsList[4], 'money')}
+                                    </td>
+                                  </tr>
+                                </tbody>
+                              </Table>
                             </div>
                           )}
                         </>
@@ -143,4 +226,4 @@ function ControlReceita() {
   );
 }
 
-export default privateRoute()(ControlReceita);
+export default privateRoute(['administrador'])(UserReceita);

@@ -10,7 +10,7 @@ const Table = styled.table`
 
   tbody {
     tr {
-      cursor: pointer;
+      cursor: ${props => (!props.noClick ? 'pointer' : 'default')};
       transition: background 0.8s;
       transition: transform ease-in-out 0.25s;
       background-position: center;
