@@ -130,9 +130,6 @@ function ProducerNotebook() {
 
   useEffect(() => {
     if (!isEmpty(activeDate)) {
-      if (daysRef.current !== null)
-        daysRef.current.scrollIntoView({ behavior: 'smooth' });
-
       const interval = getDateMonthInterval(activeDate, 1);
       setDateCalendarInterval(interval);
     }

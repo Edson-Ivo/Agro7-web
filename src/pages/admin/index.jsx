@@ -64,10 +64,10 @@ const data = [
     icon: faDollarSign
   },
   {
-    href: '/admin/receita',
-    title: 'Gerenciar Receita',
+    href: '/admin/receitas-despesas',
+    title: 'Gerenciar Receitas e Despesas',
     description:
-      'Aqui, você poderá checar a receita (ganhos e despesas) geral dos usuários do sistema em determinado um período de tempo.',
+      'Aqui, você poderá checar as receitas e as despesas gerais dos usuários do sistema em determinado um período de tempo.',
     icon: faWallet
   },
   {
