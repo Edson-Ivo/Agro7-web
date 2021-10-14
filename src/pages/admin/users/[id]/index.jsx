@@ -68,10 +68,10 @@ const data = [
     icon: faDollarSign
   },
   {
-    href: 'receita',
-    title: 'Receita',
+    href: 'receitas-despesas',
+    title: 'Receitas e Despesas',
     description:
-      'Aqui, você poderá checar a receita (ganhos e despesas) em determinado um período de tempo desse Usuário.',
+      'Aqui, você poderá checar as receitas e despesas em determinado um período de tempo desse Usuário.',
     icon: faWallet
   },
   {

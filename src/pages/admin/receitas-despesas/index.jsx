@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import Head from 'next/head';
-import { useRouter } from 'next/router';
 
 import Container from '@/components/Container';
 import Nav from '@/components/Nav';
@@ -21,10 +20,10 @@ import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 import { dateConversor } from '@/helpers/date';
 import InputDateInterval from '@/components/InputDateInterval/index';
 import Chart from '@/components/Chart/index';
+import maskString from '@/helpers/maskString';
+import Table from '@/components/Table/index';
 
-function UserReceita() {
-  const router = useRouter();
-
+function AdminReceita() {
   const [alertMsg, setAlertMsg] = useState('');
   const [dateStart, setDateStart] = useState(null);
   const [dateEnd, setDateEnd] = useState(null);
@@ -32,15 +31,9 @@ function UserReceita() {
   const [dataCosts, setDataCosts] = useState(null);
   const [dataCostsList, setDataCostsList] = useState([]);
 
-  const { id } = router.query;
-
-  const { data: dataUser, error: errorUser } = useFetch(
-    `/users/find/by/id/${id}`
-  );
-
   const { data: dataChart, error: errorChart } = useFetch(
     dateStart && dateEnd
-      ? `/charts/find/revenue/by/user/${id}?date_start=${dateStart}&date_finish=${dateEnd}`
+      ? `/charts/find/revenue/all?date_start=${dateStart}&date_finish=${dateEnd}`
       : null
   );
 
@@ -55,24 +48,38 @@ function UserReceita() {
           applications_supplies: applicationsSupplies,
           others,
           sales,
-          services
+          services,
+          durable_goods: durableGoods,
+          consumable_goods: consumableGoods
         }
       } = dataChart;
 
       setDataProfits(sales);
       setDataCosts(
-        Number(applicationsSupplies) + Number(others) + Number(services)
+        Number(applicationsSupplies) +
+          Number(others) +
+          Number(services) +
+          Number(durableGoods) +
+          Number(consumableGoods)
       );
-      setDataCostsList([applicationsSupplies, services, others]);
+      setDataCostsList([
+        applicationsSupplies,
+        services,
+        durableGoods,
+        consumableGoods,
+        others
+      ]);
     }
   }, [dataChart]);
 
-  if (errorUser || errorChart) return <Error error={errorUser || errorChart} />;
+  if (errorChart) return <Error error={errorChart} />;
 
   return (
     <>
       <Head>
-        <title>Painel Administrativo | Gerenciar Receita - Agro7</title>
+        <title>
+          Painel Administrativo | Gerenciar Receitas e Despesas - Agro7
+        </title>
       </Head>
 
       <Navbar />
@@ -81,12 +88,8 @@ function UserReceita() {
         <Section>
           <SectionHeader>
             <SectionHeaderContent
-              breadcrumbTitles={{
-                '%usuario': dataUser?.name
-              }}
-              title="Gerenciar Receita"
-              description={`Aqui, você poderá gerenciar a receita de ${dataUser?.name} no sistema.`}
-              isLoading={isEmpty(dataUser)}
+              title="Gerenciar Receitas e Despesas"
+              description="Aqui, você poderá gerenciar todas as receitas e despesas dos usuários do sistema."
             />
           </SectionHeader>
           <SectionBody>
@@ -97,7 +100,6 @@ function UserReceita() {
                 </Alert>
                 {alertMsg && <Alert type="error">{alertMsg}</Alert>}
                 <InputDateInterval
-                  url={`/admin/users/${id}/receita`}
                   onError={setAlertMsg}
                   onDateStartSelect={handleChangeDateStart}
                   onDateEndSelect={handleChangeDateEnd}
@@ -125,7 +127,7 @@ function UserReceita() {
                                   false
                                 )} - ${dateConversor(dateEnd, false)}`}
                                 labelPrefix="R$ "
-                                dataLabels={['Ganhos', 'Despesas']}
+                                dataLabels={['Receita', 'Despesas']}
                                 dataColors={['#3195BC', '#D5412D']}
                                 dataValues={[dataProfits, dataCosts]}
                                 dataLabelsActive
@@ -137,12 +139,64 @@ function UserReceita() {
                                 dataLabels={[
                                   'Aplicação de Insumos',
                                   'Serviços',
+                                  'Bens Duráveis',
+                                  'Bens Consumíveis',
                                   'Outros'
                                 ]}
                                 dataColors="#D5412D"
                                 dataValues={[...dataCostsList]}
                                 legendActive={false}
                               />
+                              <Table noClick>
+                                <thead>
+                                  <tr>
+                                    <th>Ação</th>
+                                    <th>Despesa</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  <tr>
+                                    <td style={{ textAlign: 'left' }}>
+                                      Aplicação de Insumos
+                                    </td>
+                                    <td>
+                                      {maskString(dataCostsList[0], 'money')}
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td style={{ textAlign: 'left' }}>
+                                      Serviços
+                                    </td>
+                                    <td>
+                                      {maskString(dataCostsList[1], 'money')}
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td style={{ textAlign: 'left' }}>
+                                      Bens Duráveis
+                                    </td>
+                                    <td>
+                                      {maskString(dataCostsList[2], 'money')}
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td style={{ textAlign: 'left' }}>
+                                      Bens Consumíveis
+                                    </td>
+                                    <td>
+                                      {maskString(dataCostsList[3], 'money')}
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td style={{ textAlign: 'left' }}>
+                                      Outros
+                                    </td>
+                                    <td>
+                                      {maskString(dataCostsList[4], 'money')}
+                                    </td>
+                                  </tr>
+                                </tbody>
+                              </Table>
                             </div>
                           )}
                         </>
@@ -158,4 +212,4 @@ function UserReceita() {
   );
 }
 
-export default privateRoute(['administrador'])(UserReceita);
+export default privateRoute(['administrador'])(AdminReceita);
