@@ -137,7 +137,8 @@ function AcoesCulturaCadastrar() {
               'services',
               'others',
               'durable-goods',
-              'consumable-goods'
+              'consumable-goods',
+              'rains'
             ].includes(typeAction)
           )
             d.date = dateToISOString(d.date);

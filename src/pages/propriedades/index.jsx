@@ -86,7 +86,7 @@ function Properties() {
   return (
     <>
       <Head>
-        <title>Suas propriedades - Agro7</title>
+        <title>Suas Propriedades - Agro7</title>
       </Head>
 
       <Navbar />
@@ -94,7 +94,7 @@ function Properties() {
         <Nav />
         <Section>
           <SectionHeader>
-            <SectionHeaderContent title="Suas propriedades">
+            <SectionHeaderContent title="Suas Propriedades">
               <Link href="/propriedades/cadastrar">
                 <Button className="primary">
                   <FontAwesomeIcon icon={faPlus} /> Nova Propriedade

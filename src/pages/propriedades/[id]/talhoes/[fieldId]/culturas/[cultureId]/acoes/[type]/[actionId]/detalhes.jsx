@@ -149,7 +149,7 @@ function AcoesCulturasDetalhes() {
                 '%cultura': dataCultures?.products?.name
               }}
               title={`Detalhes da Ação de ${actionsList[typeAction]?.label} na Cultura de ${dataCultures?.products?.name}`}
-              description={`Aqui, você irá vizualizar a ação ${actionsList[
+              description={`Aqui, você irá visualizar a ação ${actionsList[
                 typeAction
               ]?.label.toLowerCase()} em questão da cultura de ${
                 dataCultures?.products?.name
@@ -218,80 +218,95 @@ function AcoesCulturasDetalhes() {
                         </Form>
                       </Step>
                       <Step label="Documentos" onClick={() => setActiveStep(2)}>
-                        {errorDocs && (
-                          <Alert type="error">
-                            Houve um erro ao tentar carregar os documentos dessa
-                            ação da cultura.
-                          </Alert>
-                        )}
-                        {alertMsg.message && (
-                          <Alert type={alertMsg.type}>{alertMsg.message}</Alert>
-                        )}
-                        {(((data && dataDocs) || loading) && (
-                          <>
-                            <Table>
-                              <thead>
-                                <tr onClick={() => router.push('/')}>
-                                  <th>Nome do Documento</th>
-                                  <th>Ações</th>
-                                </tr>
-                              </thead>
-                              <tbody>
-                                {(dataDocs?.items.length > 0 &&
-                                  dataDocs.items.map(d => (
-                                    <tr key={d.id}>
-                                      <td>{d.name}</td>
-                                      <td>
-                                        <ActionButton
-                                          id={d.id}
-                                          download={d.url}
-                                          path={`${baseUrl}/${typeAction}/${actionId}/documentos`}
-                                          onDelete={() =>
-                                            handleDeleteModal(d.id)
-                                          }
-                                          noInfo
-                                        />
-                                      </td>
-                                    </tr>
-                                  ))) || (
-                                  <tr>
-                                    <td colSpan="2">
-                                      Não há documentos para essa ação na
-                                      cultura
-                                    </td>
-                                  </tr>
-                                )}
-                              </tbody>
-                            </Table>
-                            <Pagination
-                              url={`${route.path}/${actionId}/detalhes`}
-                              currentPage={pageDocs}
-                              itemsPerPage={perPageDocs}
-                              totalPages={dataDocs.meta.totalPages}
-                              page="pageDocs"
-                            />
-                          </>
-                        )) || <Loader />}
-                        <div className="form-group buttons">
-                          <div>
-                            <Button type="button" onClick={() => router.back()}>
-                              Voltar
-                            </Button>
-                          </div>
-                          <div>
-                            <Button
-                              type="button"
-                              className="primary"
-                              onClick={() =>
-                                router.push(
-                                  `${baseUrl}/${typeAction}/${actionId}/documentos/cadastrar`
-                                )
-                              }
-                            >
-                              Cadastrar Documento
-                            </Button>
-                          </div>
-                        </div>
+                        <>
+                          {actionsList[typeAction]?.documents ? (
+                            <>
+                              {errorDocs && (
+                                <Alert type="error">
+                                  Houve um erro ao tentar carregar os documentos
+                                  dessa ação da cultura.
+                                </Alert>
+                              )}
+                              {alertMsg.message && (
+                                <Alert type={alertMsg.type}>
+                                  {alertMsg.message}
+                                </Alert>
+                              )}
+                              {(((data && dataDocs) || loading) && (
+                                <>
+                                  <Table>
+                                    <thead>
+                                      <tr onClick={() => router.push('/')}>
+                                        <th>Nome do Documento</th>
+                                        <th>Ações</th>
+                                      </tr>
+                                    </thead>
+                                    <tbody>
+                                      {(dataDocs?.items.length > 0 &&
+                                        dataDocs.items.map(d => (
+                                          <tr key={d.id}>
+                                            <td>{d.name}</td>
+                                            <td>
+                                              <ActionButton
+                                                id={d.id}
+                                                download={d.url}
+                                                path={`${baseUrl}/${typeAction}/${actionId}/documentos`}
+                                                onDelete={() =>
+                                                  handleDeleteModal(d.id)
+                                                }
+                                                noInfo
+                                              />
+                                            </td>
+                                          </tr>
+                                        ))) || (
+                                        <tr>
+                                          <td colSpan="2">
+                                            Não há documentos para essa ação na
+                                            cultura
+                                          </td>
+                                        </tr>
+                                      )}
+                                    </tbody>
+                                  </Table>
+                                  <Pagination
+                                    url={`${route.path}/${actionId}/detalhes`}
+                                    currentPage={pageDocs}
+                                    itemsPerPage={perPageDocs}
+                                    totalPages={dataDocs.meta.totalPages}
+                                    page="pageDocs"
+                                  />
+                                </>
+                              )) || <Loader />}
+                              <div className="form-group buttons">
+                                <div>
+                                  <Button
+                                    type="button"
+                                    onClick={() => router.back()}
+                                  >
+                                    Voltar
+                                  </Button>
+                                </div>
+                                <div>
+                                  <Button
+                                    type="button"
+                                    className="primary"
+                                    onClick={() =>
+                                      router.push(
+                                        `${baseUrl}/${typeAction}/${actionId}/documentos/cadastrar`
+                                      )
+                                    }
+                                  >
+                                    Cadastrar Documento
+                                  </Button>
+                                </div>
+                              </div>
+                            </>
+                          ) : (
+                            <Alert type="info">
+                              Essa ação não necessita de documentos.
+                            </Alert>
+                          )}
+                        </>
                       </Step>
                     </MultiStep>
                   </>
