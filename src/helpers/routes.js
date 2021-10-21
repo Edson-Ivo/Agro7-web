@@ -83,6 +83,10 @@ const adminUserPropertyRoute = {
     name: 'Relatório'
   },
 
+  '/admin/users/[userId]/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]/relatorios/[actionId]/editar': {
+    name: 'Adicionar Imagens'
+  },
+
   '/admin/users/[userId]/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]/relatorios/cadastrar': {
     name: 'Cadastrar'
   },

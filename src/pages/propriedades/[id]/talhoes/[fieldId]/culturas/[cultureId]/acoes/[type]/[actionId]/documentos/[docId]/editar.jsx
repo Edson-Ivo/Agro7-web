@@ -144,7 +144,11 @@ function AcoesCulturasDocumentosCreate() {
   if (dataCultures && fieldId !== String(dataCultures?.fields?.id))
     return <Error error={404} />;
   if (!isEmpty(route) && !route.hasPermission) return <Error error={404} />;
-  if (!objectKeyExists(actionsList, typeAction)) return <Error error={404} />;
+  if (
+    !objectKeyExists(actionsList, typeAction) ||
+    !actionsList[typeAction]?.documents
+  )
+    return <Error error={404} />;
 
   return (
     <>

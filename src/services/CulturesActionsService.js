@@ -53,6 +53,11 @@ class CulturesActionsService {
       txt += '.';
     }
 
+    if (action === 'rains')
+      txt = txt
+        .replace('%date', dateConversor(data?.date, false))
+        .replace('%quantity', `${data?.quantity}mL`);
+
     return txt;
   }
 
@@ -130,6 +135,14 @@ class CulturesActionsService {
           .number()
           .transform(value => (Number.isNaN(value) ? undefined : value)),
         date: yup.string().nullable()
+      });
+
+    if (action === 'rains')
+      schema = yup.object().shape({
+        date: yup.string().required('O campo data é obrigatório!'),
+        quantity: yup
+          .number()
+          .transform(value => (Number.isNaN(value) ? undefined : value))
       });
 
     return schema;
@@ -229,45 +242,59 @@ export const actionsList = {
     value: 'services',
     singleValue: 'service',
     label: 'Serviços',
-    text: 'Serviço %name, custando %value, feito'
+    text: 'Serviço %name, custando %value, feito',
+    documents: true
   },
   irrigations: {
     value: 'irrigations',
     singleValue: 'irrigation',
     label: 'Irrigações',
     text:
-      'Irrigação feita em %date_start às %time_start até %date_finish às %time_finish.'
+      'Irrigação feita em %date_start às %time_start até %date_finish às %time_finish.',
+    documents: true
   },
   supplies: {
     value: 'supplies',
     singleValue: 'supply',
     label: 'Insumos',
-    text: 'Insumo %name foi adicionado.'
+    text: 'Insumo %name foi adicionado.',
+    documents: true
   },
   'applications-supplies': {
     value: 'applications-supplies',
     singleValue: 'application-supply',
     label: 'Aplicação de Insumos',
     text:
-      'Insumo %name aplicado (%dose%type_dose) em %date_start até %date_finish'
+      'Insumo %name aplicado (%dose%type_dose) em %date_start até %date_finish',
+    documents: true
   },
   'durable-goods': {
     value: 'durable-goods',
     singleValue: 'durable-good',
     label: 'Bens Duráveis',
-    text: 'Bem durável %name registrado'
+    text: 'Bem durável %name registrado',
+    documents: true
   },
   'consumable-goods': {
     value: 'consumable-goods',
     singleValue: 'consumable-good',
     label: 'Bens Consumíveis',
-    text: 'Bem consumível %name registrado'
+    text: 'Bem consumível %name registrado',
+    documents: true
+  },
+  rains: {
+    value: 'rains',
+    singleValue: 'rain',
+    label: 'Chuvas',
+    text: 'Choveu %quantity no dia %date.',
+    documents: false
   },
   others: {
     value: 'others',
     singleValue: 'other',
     label: 'Outros',
-    text: '%name foi realizado'
+    text: '%name foi realizado',
+    documents: true
   }
 };
 

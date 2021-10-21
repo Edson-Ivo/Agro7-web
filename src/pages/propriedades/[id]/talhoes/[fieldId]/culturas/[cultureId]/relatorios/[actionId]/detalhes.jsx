@@ -1,11 +1,12 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import Head from 'next/head';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { Form } from '@unform/web';
 import { MultiStepForm as MultiStep, Step } from '@/components/Multiform';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCheck } from '@fortawesome/free-solid-svg-icons';
+import { faCheck, faFileImage } from '@fortawesome/free-solid-svg-icons';
 
 import Container from '@/components/Container';
 import Nav from '@/components/Nav';
@@ -30,6 +31,8 @@ import urlRoute from '@/helpers/urlRoute';
 import isEmpty from '@/helpers/isEmpty';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 import PDFViewer from '@/components/PDFViewer/index';
+import Table from '@/components/Table/index';
+import ActionButton from '@/components/ActionButton/index';
 
 function RelatoriosDetails() {
   const router = useRouter();
@@ -59,10 +62,40 @@ function RelatoriosDetails() {
 
   const { type, id: userId } = useSelector(state => state.user);
   const [route, setRoute] = useState({});
+  const [isEditableImage, setEditableImage] = useState(false);
+  const [diagnosticsImages, setDiagnosticsImages] = useState([]);
+  const [cultivationImages, setCultivationImages] = useState([]);
+  const [fertilizingImages, setFertilizingImages] = useState([]);
+  const [plantHealthImages, setPlantHealthImages] = useState([]);
 
   useEffect(() => {
     setRoute(urlRoute(router, type));
   }, []);
+
+  useEffect(() => {
+    if (!isEmpty(dataActions))
+      setEditableImage(
+        ['tecnico', 'administrador'].includes(type) &&
+          dataActions?.technicians?.id === userId
+      );
+
+    if (!isEmpty(dataActions?.images)) {
+      const { images } = dataActions;
+
+      setDiagnosticsImages(
+        images.filter(image => image?.field === 'diagnostics')
+      );
+      setCultivationImages(
+        images.filter(image => image?.field === 'cultivation')
+      );
+      setFertilizingImages(
+        images.filter(image => image?.field === 'fertilizing')
+      );
+      setPlantHealthImages(
+        images.filter(image => image?.field === 'plant_health')
+      );
+    }
+  }, [dataActions]);
 
   const handleSubmit = async (value = true) => {
     const concluded = !!value;
@@ -117,6 +150,39 @@ function RelatoriosDetails() {
     });
   }, [addModal, removeModal]);
 
+  const handleDelete = useCallback(
+    async (identifier, action) => {
+      removeModal();
+
+      await TechnicianActionsService.deleteImage(identifier).then(res => {
+        if (res.status >= 400 || res?.statusCode) {
+          setAlert({ type: 'error', message: errorMessage(res) });
+        } else {
+          mutateActions();
+
+          setAlert({
+            type: 'success',
+            message: `Imagem de ${action} foi deletada com sucesso!`
+          });
+        }
+      });
+    },
+    [addModal, removeModal]
+  );
+
+  const handleDeleteModal = useCallback(
+    (identifier, action) => {
+      addModal({
+        title: `Deletar essa Imagem?`,
+        text: `Deseja realmente deletar essa imagem de ${action}`,
+        confirm: true,
+        onConfirm: () => handleDelete(identifier, action),
+        onCancel: removeModal
+      });
+    },
+    [addModal, removeModal]
+  );
+
   const handleCancel = () => {
     router.back();
   };
@@ -164,30 +230,41 @@ function RelatoriosDetails() {
                 isEmpty(data) || isEmpty(dataCultures) || isEmpty(dataActions)
               }
             >
-              {dataActions &&
-                (data?.properties?.users?.id === userId ||
-                  type === 'administrador') && (
-                  <>
-                    {(!dataActions?.concluded && (
-                      <Button
-                        type="button"
-                        className="primary"
-                        onClick={() => handleSubmit()}
-                        disabled={disableButton}
-                      >
-                        <FontAwesomeIcon icon={faCheck} /> Marcar Concluído
-                      </Button>
-                    )) || (
-                      <Button
-                        type="button"
-                        onClick={() => handleRemoveConcludedModal()}
-                        disabled={disableButton}
-                      >
-                        <FontAwesomeIcon icon={faCheck} /> Concluído
-                      </Button>
-                    )}
-                  </>
+              <>
+                {dataActions &&
+                  (data?.properties?.users?.id === userId ||
+                    type === 'administrador') && (
+                    <>
+                      {(!dataActions?.concluded && (
+                        <Button
+                          type="button"
+                          className="primary"
+                          onClick={() => handleSubmit()}
+                          disabled={disableButton}
+                        >
+                          <FontAwesomeIcon icon={faCheck} /> Marcar Concluído
+                        </Button>
+                      )) || (
+                        <Button
+                          type="button"
+                          onClick={() => handleRemoveConcludedModal()}
+                          disabled={disableButton}
+                        >
+                          <FontAwesomeIcon icon={faCheck} /> Concluído
+                        </Button>
+                      )}
+                    </>
+                  )}
+                {isEditableImage && type !== 'administrador' && (
+                  <Link
+                    href={`${route.path}/${id}/talhoes/${fieldId}/culturas/${cultureId}/relatorios/${actionId}/editar`}
+                  >
+                    <Button className="primary">
+                      <FontAwesomeIcon icon={faFileImage} /> Adicionar Imagens
+                    </Button>
+                  </Link>
                 )}
+              </>
             </SectionHeaderContent>
           </SectionHeader>
           <SectionBody>
@@ -215,21 +292,197 @@ function RelatoriosDetails() {
                             label="Diagnóstico da Cultura"
                             disabled
                           />
+
+                          <div
+                            className="table-responsive"
+                            style={{ marginBottom: 15 }}
+                          >
+                            <Table noClick>
+                              <thead>
+                                <tr>
+                                  <th>Imagem</th>
+                                  <th>Ações</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {(!isEmpty(diagnosticsImages) &&
+                                  diagnosticsImages.map((p, i) => (
+                                    <tr key={p.id}>
+                                      <td>
+                                        Imagem {i + 1} do Diagnóstico da Cultura
+                                      </td>
+                                      <td onClick={e => e.stopPropagation()}>
+                                        <ActionButton
+                                          id={p.id}
+                                          download={p?.image_url}
+                                          noEdit
+                                          noInfo
+                                          noDelete={!isEditableImage}
+                                          onDelete={() =>
+                                            handleDeleteModal(
+                                              p.id,
+                                              'Diagnóstico da Cultura'
+                                            )
+                                          }
+                                        />
+                                      </td>
+                                    </tr>
+                                  ))) || (
+                                  <tr>
+                                    <td colSpan="2">
+                                      Não há imagens para Diagnóstico da Cultura
+                                    </td>
+                                  </tr>
+                                )}
+                              </tbody>
+                            </Table>
+                          </div>
+
                           <TextArea
                             name="cultivation"
                             label="Tratos Culturais"
                             disabled
                           />
+
+                          <div
+                            className="table-responsive"
+                            style={{ marginBottom: 15 }}
+                          >
+                            <Table noClick>
+                              <thead>
+                                <tr>
+                                  <th>Imagem</th>
+                                  <th>Ações</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {(!isEmpty(cultivationImages) &&
+                                  cultivationImages.map((p, i) => (
+                                    <tr key={p.id}>
+                                      <td>
+                                        Imagem {i + 1} dos Tratos Culturais
+                                      </td>
+                                      <td onClick={e => e.stopPropagation()}>
+                                        <ActionButton
+                                          id={p.id}
+                                          download={p?.image_url}
+                                          noEdit
+                                          noInfo
+                                          noDelete={!isEditableImage}
+                                          onDelete={() =>
+                                            handleDeleteModal(
+                                              p.id,
+                                              'Tratos Culturais'
+                                            )
+                                          }
+                                        />
+                                      </td>
+                                    </tr>
+                                  ))) || (
+                                  <tr>
+                                    <td colSpan="2">
+                                      Não há imagens para Tratos Culturais
+                                    </td>
+                                  </tr>
+                                )}
+                              </tbody>
+                            </Table>
+                          </div>
+
                           <TextArea
                             name="fertilizing"
                             label="Adubação"
                             disabled
                           />
+
+                          <div
+                            className="table-responsive"
+                            style={{ marginBottom: 15 }}
+                          >
+                            <Table noClick>
+                              <thead>
+                                <tr>
+                                  <th>Imagem</th>
+                                  <th>Ações</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {(!isEmpty(fertilizingImages) &&
+                                  fertilizingImages.map((p, i) => (
+                                    <tr key={p.id}>
+                                      <td>Imagem {i + 1} da Adubação</td>
+                                      <td onClick={e => e.stopPropagation()}>
+                                        <ActionButton
+                                          id={p.id}
+                                          download={p?.image_url}
+                                          noEdit
+                                          noInfo
+                                          noDelete={!isEditableImage}
+                                          onDelete={() =>
+                                            handleDeleteModal(p.id, 'Adubação')
+                                          }
+                                        />
+                                      </td>
+                                    </tr>
+                                  ))) || (
+                                  <tr>
+                                    <td colSpan="2">
+                                      Não há imagens para Adubação
+                                    </td>
+                                  </tr>
+                                )}
+                              </tbody>
+                            </Table>
+                          </div>
+
                           <TextArea
                             name="plant_health"
                             label="Fitossanidade"
                             disabled
                           />
+
+                          <div
+                            className="table-responsive"
+                            style={{ marginBottom: 15 }}
+                          >
+                            <Table noClick>
+                              <thead>
+                                <tr>
+                                  <th>Imagem</th>
+                                  <th>Ações</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {(!isEmpty(plantHealthImages) &&
+                                  plantHealthImages.map((p, i) => (
+                                    <tr key={p.id}>
+                                      <td>Imagem {i + 1} de Fitossanidade</td>
+                                      <td onClick={e => e.stopPropagation()}>
+                                        <ActionButton
+                                          id={p.id}
+                                          download={p?.image_url}
+                                          noEdit
+                                          noInfo
+                                          noDelete={!isEditableImage}
+                                          onDelete={() =>
+                                            handleDeleteModal(
+                                              p.id,
+                                              'Fitossanidade'
+                                            )
+                                          }
+                                        />
+                                      </td>
+                                    </tr>
+                                  ))) || (
+                                  <tr>
+                                    <td colSpan="2">
+                                      Não há imagens para Fitossanidade
+                                    </td>
+                                  </tr>
+                                )}
+                              </tbody>
+                            </Table>
+                          </div>
                         </Step>
                         <Step label="Imprimir" onClick={() => setActiveStep(2)}>
                           <h4 className="step-title">
