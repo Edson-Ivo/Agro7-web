@@ -143,10 +143,10 @@ function ConfiguracoesPerfilEdit() {
                   message: 'Perfil alterado com sucesso!'
                 });
 
-                // setTimeout(() => {
-                //   router.push(`/configuracoes/perfil`);
-                //   setDisableButton(false);
-                // }, 1000);
+                setTimeout(() => {
+                  router.push(`/configuracoes/perfil`);
+                  setDisableButton(false);
+                }, 1000);
               }
             }
           });
@@ -255,7 +255,14 @@ function ConfiguracoesPerfilEdit() {
                           ref={inputRef}
                           name="file"
                           label="Selecione uma nova Foto de Perfil"
-                          extensions={['.jpg', '.jpeg', '.png', '.gif']}
+                          extensions={[
+                            '.jpg',
+                            '.jpeg',
+                            '.png',
+                            '.gif',
+                            '.webp',
+                            '.webm'
+                          ]}
                           min={0}
                           max={1}
                         />
@@ -279,7 +286,14 @@ function ConfiguracoesPerfilEdit() {
                                   ref={inputGalleryRef}
                                   name="files"
                                   label={`Selecione novas fotos para sua galeria: (máximo ${maxGallery})`}
-                                  extensions={['.jpg', '.jpeg', '.png', '.gif']}
+                                  extensions={[
+                                    '.jpg',
+                                    '.jpeg',
+                                    '.png',
+                                    '.gif',
+                                    '.webp',
+                                    '.webm'
+                                  ]}
                                   min={0}
                                   max={maxGallery}
                                 />

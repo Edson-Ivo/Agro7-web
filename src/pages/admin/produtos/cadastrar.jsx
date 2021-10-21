@@ -227,7 +227,14 @@ function AdminProductsCreate() {
                         ref={inputRef}
                         name="file"
                         label="Selecione a Imagem do Produto"
-                        extensions={['.jpg', '.jpeg', '.png', '.gif']}
+                        extensions={[
+                          '.jpg',
+                          '.jpeg',
+                          '.png',
+                          '.gif',
+                          '.webp',
+                          '.webm'
+                        ]}
                         max={1}
                       />
                     </Step>
@@ -237,7 +244,14 @@ function AdminProductsCreate() {
                         ref={inputNutricionalRef}
                         name="fileNutricional"
                         label="Selecione a Imagem da Tabela Nutricional"
-                        extensions={['.jpg', '.jpeg', '.png', '.gif']}
+                        extensions={[
+                          '.jpg',
+                          '.jpeg',
+                          '.png',
+                          '.gif',
+                          '.webp',
+                          '.webm'
+                        ]}
                         max={1}
                       />
                       <h4 className="step-title">
@@ -405,7 +419,14 @@ function AdminProductsCreate() {
                         ref={inputNutricionalVerdeRef}
                         name="fileNutricionalVerde"
                         label="Selecione a Imagem da Tabela Nutricional Verde (opcional)"
-                        extensions={['.jpg', '.jpeg', '.png', '.gif']}
+                        extensions={[
+                          '.jpg',
+                          '.jpeg',
+                          '.png',
+                          '.gif',
+                          '.webp',
+                          '.webm'
+                        ]}
                         max={1}
                       />
                       <h4 className="step-title">

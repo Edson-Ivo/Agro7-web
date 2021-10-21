@@ -215,7 +215,9 @@ function Relatorios() {
                                       id={d.id}
                                       path={baseUrl}
                                       noEdit
-                                      noDelete={!willCreate}
+                                      noDelete={
+                                        type !== 'administrador' && !willCreate
+                                      }
                                       onDelete={() => handleDeleteModal(d.id)}
                                     />
                                   </td>
