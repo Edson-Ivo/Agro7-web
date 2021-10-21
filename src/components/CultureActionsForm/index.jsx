@@ -165,6 +165,24 @@ const CulturesActionsForm = ({
         />
       </>
     )) ||
+    (typeAction === 'rains' && (
+      <>
+        <Input
+          type="date"
+          label="Data"
+          name="date"
+          required
+          disabled={disabled}
+        />
+        <Input
+          type="number"
+          label="Quantidade (mL)"
+          name="quantity"
+          required
+          disabled={disabled}
+        />
+      </>
+    )) ||
     (typeAction === 'applications-supplies' && !isEmpty(dataTypes) && (
       <>
         {!editForm && !details && isEmpty(dataAction) ? (
