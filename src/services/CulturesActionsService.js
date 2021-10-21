@@ -56,7 +56,7 @@ class CulturesActionsService {
     if (action === 'rains')
       txt = txt
         .replace('%date', dateConversor(data?.date, false))
-        .replace('%quantity', `${data?.quantity}mL`);
+        .replace('%quantity', `${data?.quantity}mm`);
 
     return txt;
   }
@@ -245,12 +245,18 @@ export const actionsList = {
     text: 'Serviço %name, custando %value, feito',
     documents: true
   },
-  irrigations: {
-    value: 'irrigations',
-    singleValue: 'irrigation',
-    label: 'Irrigações',
-    text:
-      'Irrigação feita em %date_start às %time_start até %date_finish às %time_finish.',
+  'durable-goods': {
+    value: 'durable-goods',
+    singleValue: 'durable-good',
+    label: 'Bens Duráveis',
+    text: 'Bem durável %name registrado',
+    documents: true
+  },
+  'consumable-goods': {
+    value: 'consumable-goods',
+    singleValue: 'consumable-good',
+    label: 'Bens Consumíveis',
+    text: 'Bem consumível %name registrado',
     documents: true
   },
   supplies: {
@@ -268,18 +274,12 @@ export const actionsList = {
       'Insumo %name aplicado (%dose%type_dose) em %date_start até %date_finish',
     documents: true
   },
-  'durable-goods': {
-    value: 'durable-goods',
-    singleValue: 'durable-good',
-    label: 'Bens Duráveis',
-    text: 'Bem durável %name registrado',
-    documents: true
-  },
-  'consumable-goods': {
-    value: 'consumable-goods',
-    singleValue: 'consumable-good',
-    label: 'Bens Consumíveis',
-    text: 'Bem consumível %name registrado',
+  irrigations: {
+    value: 'irrigations',
+    singleValue: 'irrigation',
+    label: 'Irrigações',
+    text:
+      'Irrigação feita em %date_start às %time_start até %date_finish às %time_finish.',
     documents: true
   },
   rains: {
