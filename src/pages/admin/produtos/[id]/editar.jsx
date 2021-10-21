@@ -404,7 +404,14 @@ function AdminProductsEdit() {
                             ref={inputRef}
                             name="file"
                             label="Selecione a nova imagem do Produto"
-                            extensions={['.jpg', '.jpeg', '.png', '.gif']}
+                            extensions={[
+                              '.jpg',
+                              '.jpeg',
+                              '.png',
+                              '.gif',
+                              '.webp',
+                              '.webm'
+                            ]}
                             max={1}
                             text="Clique aqui para substituir a imagem atual ou apenas arraste-a."
                           />
@@ -426,7 +433,14 @@ function AdminProductsEdit() {
                             ref={inputNutricionalRef}
                             name="fileNutricional"
                             label="Selecione a nova imagem da Tabela Nutricional"
-                            extensions={['.jpg', '.jpeg', '.png', '.gif']}
+                            extensions={[
+                              '.jpg',
+                              '.jpeg',
+                              '.png',
+                              '.gif',
+                              '.webp',
+                              '.webm'
+                            ]}
                             max={1}
                           />
 
@@ -616,7 +630,14 @@ function AdminProductsEdit() {
                             ref={inputNutricionalVerdeRef}
                             name="fileNutricionalVerde"
                             label="Selecione a nova imagem da Tabela Nutricional Verde"
-                            extensions={['.jpg', '.jpeg', '.png', '.gif']}
+                            extensions={[
+                              '.jpg',
+                              '.jpeg',
+                              '.png',
+                              '.gif',
+                              '.webp',
+                              '.webm'
+                            ]}
                             max={1}
                           />
 

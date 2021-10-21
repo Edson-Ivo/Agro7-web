@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import * as yup from 'yup';
 import { useRouter } from 'next/router';
 import { Form } from '@unform/web';
+import { MultiStepForm as MultiStep, Step } from '@/components/Multiform';
 import Head from 'next/head';
 
 import Container from '@/components/Container';
@@ -25,6 +26,7 @@ import urlRoute from '@/helpers/urlRoute';
 import isEmpty from '@/helpers/isEmpty';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 import scrollTo from '@/helpers/scrollTo';
+import FileInput from '@/components/FileInput/index';
 
 const schema = yup.object().shape({
   diagnostics: yup.string().nullable(),
@@ -36,9 +38,14 @@ const schema = yup.object().shape({
 function RelatoriosCreate() {
   const formRef = useRef(null);
   const alertRef = useRef(null);
+  const inputDiagnosticsRef = useRef(null);
+  const inputCultivationRef = useRef(null);
+  const inputFertilizingRef = useRef(null);
+  const inputPlantHealthRef = useRef(null);
 
   const [alert, setAlert] = useState({ type: '', message: '' });
   const [disableButton, setDisableButton] = useState(false);
+  const [activeStep, setActiveStep] = useState(1);
 
   const router = useRouter();
   const { id, fieldId, cultureId } = router.query;
@@ -58,11 +65,7 @@ function RelatoriosCreate() {
     setRoute(urlRoute(router, type));
   }, []);
 
-  const handleCancel = () => {
-    router.back();
-  };
-
-  const handleSubmit = async dt => {
+  const handleSubmit = async (...{ 0: dt, 2: e }) => {
     setDisableButton(true);
 
     schema
@@ -75,35 +78,114 @@ function RelatoriosCreate() {
 
         scrollTo(alertRef);
 
-        let isValidRegister = false;
-
-        Object.keys(d).forEach(key => {
-          if (!isEmpty(d[key])) isValidRegister = true;
-        });
+        const isValidRegister =
+          !isEmpty(d.diagnostics) ||
+          !isEmpty(d.cultivation) ||
+          !isEmpty(d.fertilizing) ||
+          !isEmpty(d.plant_health);
 
         if (isValidRegister) {
-          d.cultures = Number(cultureId);
+          const diagnosticsFile = e.target.diagnostics_file.files;
+          const cultivationFile = e.target.cultivation_file.files;
+          const fertilizingFile = e.target.fertilizing_file.files;
+          const plantHealthFile = e.target.plant_health_file.files;
 
-          await TechnicianActionsService.create(d).then(res => {
-            if (res.status !== 201 || res?.statusCode) {
-              setAlert({ type: 'error', message: errorMessage(res) });
-              setTimeout(() => {
-                setDisableButton(false);
-              }, 1000);
-            } else {
-              setAlert({
-                type: 'success',
-                message: 'Relatório Técnico adicionado com sucesso!'
-              });
+          if (
+            (diagnosticsFile.length > 0 &&
+              inputDiagnosticsRef.current.error.message) ||
+            (cultivationFile.length > 0 &&
+              inputCultivationRef.current.error.message) ||
+            (fertilizingFile.length > 0 &&
+              inputFertilizingRef.current.error.message) ||
+            (plantHealthFile.length > 0 &&
+              inputPlantHealthRef.current.error.message)
+          ) {
+            setAlert({
+              type: 'error',
+              message:
+                inputDiagnosticsRef.current.error.message ||
+                inputCultivationRef.current.error.message ||
+                inputFertilizingRef.current.error.message ||
+                inputPlantHealthRef.current.error.message
+            });
+          } else if (diagnosticsFile.length > 0 && isEmpty(d.diagnostics)) {
+            setAlert({
+              type: 'error',
+              message:
+                'Você precisa escrever alguma coisa para os Diagnósticos da Cultura para inserir imagens sobre.'
+            });
+          } else if (cultivationFile.length > 0 && isEmpty(d.cultivation)) {
+            setAlert({
+              type: 'error',
+              message:
+                'Você precisa escrever alguma coisa para os Tratos Culturais para inserir imagens sobre.'
+            });
+          } else if (fertilizingFile.length > 0 && isEmpty(d.fertilizing)) {
+            setAlert({
+              type: 'error',
+              message:
+                'Você precisa escrever alguma coisa para Adubação para inserir imagens sobre.'
+            });
+          } else if (plantHealthFile.length > 0 && isEmpty(d.plant_health)) {
+            setAlert({
+              type: 'error',
+              message:
+                'Você precisa escrever alguma coisa para Fitossanidade para inserir imagens sobre.'
+            });
+          } else {
+            d.cultures = Number(cultureId);
 
-              setTimeout(() => {
-                router.push(
-                  `${route.path}/${id}/talhoes/${fieldId}/culturas/${cultureId}/relatorios/${res.data.id}/detalhes`
-                );
-                setDisableButton(false);
-              }, 1000);
-            }
-          });
+            await TechnicianActionsService.create(d).then(async res => {
+              if (res.status !== 201 || res?.statusCode) {
+                setAlert({ type: 'error', message: errorMessage(res) });
+              } else {
+                if (
+                  diagnosticsFile.length > 0 ||
+                  cultivationFile.length > 0 ||
+                  fertilizingFile.length > 0 ||
+                  plantHealthFile.length > 0
+                ) {
+                  const imagesFormData = new FormData();
+
+                  for (let i = 0; i < diagnosticsFile.length; i++)
+                    imagesFormData.append('diagnostics', diagnosticsFile[i]);
+
+                  for (let i = 0; i < cultivationFile.length; i++)
+                    imagesFormData.append('cultivation', cultivationFile[i]);
+
+                  for (let i = 0; i < fertilizingFile.length; i++)
+                    imagesFormData.append('fertilizing', fertilizingFile[i]);
+
+                  for (let i = 0; i < plantHealthFile.length; i++)
+                    imagesFormData.append('plant_health', plantHealthFile[i]);
+
+                  await TechnicianActionsService.createImages(
+                    res.data.id,
+                    imagesFormData
+                  ).then(res2 => {
+                    if (res2.status !== 201 || res2?.statusCode) {
+                      setAlert({
+                        type: 'error',
+                        message: errorMessage(res2)
+                      });
+                    }
+                  });
+                }
+
+                setAlert({
+                  type: 'success',
+                  message: 'Relatório Técnico adicionado com sucesso!'
+                });
+
+                setTimeout(() => {
+                  router.push(
+                    `${route.path}/${id}/talhoes/${fieldId}/culturas/${cultureId}/relatorios/${res.data.id}/detalhes`
+                  );
+                  setDisableButton(false);
+                }, 1000);
+              }
+            });
+          }
         } else {
           setAlert({
             type: 'error',
@@ -122,6 +204,10 @@ function RelatoriosCreate() {
           formRef.current.setFieldError(path, message);
         }
       });
+
+    setTimeout(() => {
+      setDisableButton(false);
+    }, 1000);
   };
 
   if (error || errorCultures) return <Error error={error || errorCultures} />;
@@ -166,29 +252,148 @@ function RelatoriosCreate() {
                 {(data && dataCultures && (
                   <>
                     <Form ref={formRef} method="post" onSubmit={handleSubmit}>
-                      <TextArea
-                        name="diagnostics"
-                        label="Diagnóstico da Cultura"
-                      />
-                      <TextArea name="cultivation" label="Tratos Culturais" />
-                      <TextArea name="fertilizing" label="Adubação" />
-                      <TextArea name="plant_health" label="Fitossanidade" />
+                      <MultiStep activeStep={activeStep}>
+                        <Step
+                          label="Diagnóstico"
+                          onClick={() => setActiveStep(1)}
+                        >
+                          <Alert type="info">
+                            Você pode inserir somente 10 imagens para
+                            diagnóstico da cultura
+                          </Alert>
+                          <TextArea
+                            name="diagnostics"
+                            label="Diagnóstico da Cultura"
+                          />
+                          <FileInput
+                            ref={inputDiagnosticsRef}
+                            name="diagnostics_file"
+                            label="Selecione as fotos para o diagnóstico da cultura"
+                            extensions={[
+                              '.jpg',
+                              '.jpeg',
+                              '.png',
+                              '.gif',
+                              '.webp',
+                              '.webm'
+                            ]}
+                            min={0}
+                            max={10}
+                          />
+                        </Step>
+                        <Step
+                          label="Tratos Culturais"
+                          onClick={() => setActiveStep(2)}
+                        >
+                          <Alert type="info">
+                            Você pode inserir somente 10 imagens para tratos
+                            culturais
+                          </Alert>
+                          <TextArea
+                            name="cultivation"
+                            label="Tratos Culturais"
+                          />
+                          <FileInput
+                            ref={inputCultivationRef}
+                            name="cultivation_file"
+                            label="Selecione as fotos para o tratos culturais"
+                            extensions={[
+                              '.jpg',
+                              '.jpeg',
+                              '.png',
+                              '.gif',
+                              '.webp',
+                              '.webm'
+                            ]}
+                            min={0}
+                            max={10}
+                          />
+                        </Step>
+                        <Step label="Adubação" onClick={() => setActiveStep(3)}>
+                          <Alert type="info">
+                            Você pode inserir somente 10 imagens para adubação
+                          </Alert>
+                          <TextArea name="fertilizing" label="Adubação" />
+                          <FileInput
+                            ref={inputFertilizingRef}
+                            name="fertilizing_file"
+                            label="Selecione as fotos para o adubação"
+                            extensions={[
+                              '.jpg',
+                              '.jpeg',
+                              '.png',
+                              '.gif',
+                              '.webp',
+                              '.webm'
+                            ]}
+                            min={0}
+                            max={10}
+                          />
+                        </Step>
+                        <Step
+                          label="Fitossanidade"
+                          onClick={() => setActiveStep(4)}
+                        >
+                          <Alert type="info">
+                            Você pode inserir somente 10 imagens para
+                            fitossanidade
+                          </Alert>
+                          <TextArea name="plant_health" label="Fitossanidade" />
+                          <FileInput
+                            ref={inputPlantHealthRef}
+                            name="plant_health_file"
+                            label="Selecione as fotos para o fitossanidade"
+                            extensions={[
+                              '.jpg',
+                              '.jpeg',
+                              '.png',
+                              '.gif',
+                              '.webp',
+                              '.webm'
+                            ]}
+                            min={0}
+                            max={10}
+                          />
+                        </Step>
+                      </MultiStep>
 
                       <div className="form-group buttons">
+                        {(activeStep !== 1 && (
+                          <div>
+                            <Button
+                              type="button"
+                              onClick={() => setActiveStep(activeStep - 1)}
+                            >
+                              Voltar
+                            </Button>
+                          </div>
+                        )) || (
+                          <div>
+                            <Button type="button" onClick={() => router.back()}>
+                              Cancelar
+                            </Button>
+                          </div>
+                        )}
                         <div>
-                          <Button type="button" onClick={handleCancel}>
-                            Cancelar
-                          </Button>
-                        </div>
+                          {activeStep !== 4 && (
+                            <Button
+                              type="button"
+                              onClick={() => setActiveStep(activeStep + 1)}
+                              className="primary"
+                            >
+                              Continuar
+                            </Button>
+                          )}
 
-                        <div>
-                          <Button
-                            disabled={disableButton}
-                            className="primary"
-                            type="submit"
-                          >
-                            Cadastrar Relatório
-                          </Button>
+                          {activeStep === 4 && (
+                            <Button
+                              disabled={disableButton}
+                              className="primary"
+                              type="submit"
+                            >
+                              Cadastrar Relatório
+                            </Button>
+                          )}
                         </div>
                       </div>
                     </Form>
@@ -203,4 +408,4 @@ function RelatoriosCreate() {
   );
 }
 
-export default privateRoute(['tecnico', 'administrador'])(RelatoriosCreate);
+export default privateRoute(['tecnico'])(RelatoriosCreate);

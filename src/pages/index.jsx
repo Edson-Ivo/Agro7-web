@@ -9,7 +9,9 @@ import {
   faMapMarkerAlt,
   faDollarSign,
   faUser,
-  faChartPie
+  faChartPie,
+  faUserSecret,
+  faUserCog
 } from '@fortawesome/free-solid-svg-icons';
 
 import { useSelector } from 'react-redux';
@@ -32,6 +34,21 @@ const data = [
     description:
       'Gerencie suas receitas, despesas e suas projeções de colheitas em um período de tempo.',
     icon: faChartPie
+  },
+  {
+    href: '/tecnico',
+    title: 'Painel Técnico',
+    description:
+      'Gerencie suas solicitações para trabalhar em uma propriedade, como também, as propriedades em que você já está relacionado.',
+    icon: faUserSecret,
+    typeAccess: 'tecnico'
+  },
+  {
+    href: '/admin',
+    title: 'Painel Administrativo',
+    description: 'Gerencie toda sua aplicação aqui.',
+    icon: faUserCog,
+    typeAccess: 'administrador'
   },
   {
     href: '/propriedades',
@@ -66,7 +83,7 @@ const data = [
 ];
 
 function Home() {
-  const { name } = useSelector(state => state.user);
+  const { name, type } = useSelector(state => state.user);
   const greeting = greetings();
 
   return (
@@ -87,19 +104,28 @@ function Home() {
           </SectionHeader>
           <SectionBody>
             <div className="SectionBody__content">
-              {data.map(({ href, title, description, icon }, i) => (
-                <Link href={href} key={i.toString()}>
-                  <Card height="90px" isLight>
-                    <div className="card-info">
-                      <h4>{title}</h4>
-                      <p>{description}</p>
-                    </div>
-                    <div className="card-image">
-                      <FontAwesomeIcon icon={icon} className="card-icon" />
-                    </div>
-                  </Card>
-                </Link>
-              ))}
+              {data.map(
+                ({ href, title, description, icon, typeAccess = null }, i) => (
+                  <div key={i.toString()}>
+                    {typeAccess === null || type === typeAccess ? (
+                      <Link href={href}>
+                        <Card height="90px" isLight>
+                          <div className="card-info">
+                            <h4>{title}</h4>
+                            <p>{description}</p>
+                          </div>
+                          <div className="card-image">
+                            <FontAwesomeIcon
+                              icon={icon}
+                              className="card-icon"
+                            />
+                          </div>
+                        </Card>
+                      </Link>
+                    ) : null}
+                  </div>
+                )
+              )}
             </div>
           </SectionBody>
         </Section>

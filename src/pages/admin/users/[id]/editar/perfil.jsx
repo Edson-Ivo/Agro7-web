@@ -236,7 +236,14 @@ function AdminConfiguracoesPerfilEdit() {
                           ref={inputRef}
                           name="file"
                           label="Selecione uma nova Foto de Perfil"
-                          extensions={['.jpg', '.jpeg', '.png', '.gif']}
+                          extensions={[
+                            '.jpg',
+                            '.jpeg',
+                            '.png',
+                            '.gif',
+                            '.webp',
+                            '.webm'
+                          ]}
                           min={0}
                           max={1}
                         />
@@ -260,7 +267,14 @@ function AdminConfiguracoesPerfilEdit() {
                                   ref={inputGalleryRef}
                                   name="files"
                                   label={`Selecione novas fotos para sua galeria: (máximo ${maxGallery})`}
-                                  extensions={['.jpg', '.jpeg', '.png', '.gif']}
+                                  extensions={[
+                                    '.jpg',
+                                    '.jpeg',
+                                    '.png',
+                                    '.gif',
+                                    '.webp',
+                                    '.webm'
+                                  ]}
                                   min={0}
                                   max={maxGallery}
                                 />
