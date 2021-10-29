@@ -25,6 +25,7 @@ import PropertiesService from '@/services/PropertiesService';
 import SearchSelect from '@/components/SearchSelect/index';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 import scrollTo from '@/helpers/scrollTo';
+import usersTypes from '@/helpers/usersTypes';
 
 const schema = yup.object().shape({
   technicians: yup.string().required('Selecione um técnico primeiro.')
@@ -53,7 +54,12 @@ function TecnicosCadastrar() {
 
   useEffect(() => {
     if (data)
-      setWillAccess(!(type === 'tecnico' && data?.users?.id !== userId));
+      setWillAccess(
+        !(
+          [usersTypes[3], usersTypes[4]].includes(type) &&
+          data?.users?.id !== userId
+        )
+      );
   }, [data]);
 
   const handleCancel = () => {

@@ -27,6 +27,8 @@ import urlRoute from '@/helpers/urlRoute';
 import isEmpty from '@/helpers/isEmpty';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 import scrollTo from '@/helpers/scrollTo';
+import useUserAccess from '@/hooks/useUserAccess';
+import LogoLoader from '@/components/Loader/LogoLoader';
 
 const schema = yup.object().shape({
   name: yup.string().required('Você precisa dar um nome para o documento')
@@ -46,6 +48,8 @@ function DocumentosCreate() {
 
   const { type } = useSelector(state => state.user);
   const [route, setRoute] = useState({});
+
+  const [userAccess, loadingUserAccess] = useUserAccess(route, data?.users?.id);
 
   useEffect(() => {
     setAlert({ type: '', message: '' });
@@ -127,8 +131,14 @@ function DocumentosCreate() {
       });
   };
 
+  if (loadingUserAccess) return <LogoLoader />;
+
   if (error) return <Error error={error} />;
-  if (!isEmpty(route) && !route.hasPermission) return <Error error={404} />;
+  if (
+    (!isEmpty(route) && !route.hasPermission) ||
+    (!loadingUserAccess && !userAccess)
+  )
+    return <Error error={404} />;
 
   return (
     <>

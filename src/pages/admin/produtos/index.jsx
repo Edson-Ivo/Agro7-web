@@ -29,6 +29,7 @@ import truncate from '@/helpers/truncate';
 import { dateConversor } from '@/helpers/date';
 import isEmpty from '@/helpers/isEmpty';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
+import usersTypes from '@/helpers/usersTypes';
 
 function AdminProducts() {
   const [alertMsg, setAlertMsg] = useState({ type: '', message: '' });
@@ -166,4 +167,4 @@ function AdminProducts() {
   );
 }
 
-export default privateRoute(['administrador'])(AdminProducts);
+export default privateRoute([usersTypes[0]])(AdminProducts);

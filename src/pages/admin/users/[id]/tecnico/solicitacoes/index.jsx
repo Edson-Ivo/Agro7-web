@@ -24,6 +24,7 @@ import PropertiesService from '@/services/PropertiesService';
 import { Alert } from '@/components/Alert/index';
 import isEmpty from '@/helpers/isEmpty';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
+import usersTypes from '@/helpers/usersTypes';
 
 function RequestsTechnichian() {
   const [alertMsg, setAlertMsg] = useState({ type: '', message: '' });
@@ -87,7 +88,8 @@ function RequestsTechnichian() {
   );
 
   if (error || errorUser) return <Error error={error || errorUser} />;
-  if (dataUser && dataUser?.type !== 'tecnico') return <Error error={404} />;
+  if (dataUser && ![usersTypes[3], usersTypes[4]].includes(dataUser?.type))
+    return <Error error={404} />;
 
   return (
     <>
@@ -176,4 +178,4 @@ function RequestsTechnichian() {
   );
 }
 
-export default privateRoute(['administrador'])(RequestsTechnichian);
+export default privateRoute([usersTypes[0]])(RequestsTechnichian);

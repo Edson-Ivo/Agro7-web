@@ -19,6 +19,7 @@ import { ColorViewer } from '@/components/ColorsContainer/index';
 import { isLight } from '@/helpers/colors';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 import isEmpty from '@/helpers/isEmpty';
+import usersTypes from '@/helpers/usersTypes';
 
 function AdminCoresDetails() {
   const router = useRouter();
@@ -100,4 +101,4 @@ function AdminCoresDetails() {
   );
 }
 
-export default privateRoute(['administrador'])(AdminCoresDetails);
+export default privateRoute([usersTypes[0]])(AdminCoresDetails);

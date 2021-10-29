@@ -30,6 +30,7 @@ import urlRoute from '@/helpers/urlRoute';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 import { dateConversor } from '@/helpers/date';
 import maskString from '@/helpers/maskString';
+import useUserAccess from '@/hooks/useUserAccess';
 
 function Culturas() {
   const router = useRouter();
@@ -46,6 +47,11 @@ function Culturas() {
   const { type } = useSelector(state => state.user);
   const [route, setRoute] = useState({});
   const [baseUrl, setBaseUrl] = useState('');
+
+  const [userAccess, loadingUserAccess] = useUserAccess(
+    route,
+    data?.properties?.users?.id
+  );
 
   useEffect(() => {
     setRoute(urlRoute(router, type));
@@ -121,13 +127,15 @@ function Culturas() {
               }}
               title={`Culturas do Talhão ${data?.name}`}
               description={`Aqui, você irá ver as culturas do talhão ${data?.name} da propriedade ${data?.properties?.name}.`}
-              isLoading={isEmpty(data)}
+              isLoading={isEmpty(data) || loadingUserAccess}
             >
-              <Link href={`${baseUrl}/cadastrar`}>
-                <Button className="primary">
-                  <FontAwesomeIcon icon={faPlus} /> Nova Cultura
-                </Button>
-              </Link>
+              {userAccess && (
+                <Link href={`${baseUrl}/cadastrar`}>
+                  <Button className="primary">
+                    <FontAwesomeIcon icon={faPlus} /> Nova Cultura
+                  </Button>
+                </Link>
+              )}
             </SectionHeaderContent>
           </SectionHeader>
           <SectionBody>
@@ -137,7 +145,8 @@ function Culturas() {
                   {alertMsg.message && (
                     <Alert type={alertMsg.type}>{alertMsg.message}</Alert>
                   )}
-                  {(((data && dataCultures) || loading) && (
+                  {(((data && dataCultures && !loadingUserAccess) ||
+                    loading) && (
                     <>
                       <div className="table-responsive">
                         <Table>
@@ -174,6 +183,7 @@ function Culturas() {
                                     <ActionButton
                                       id={d.id}
                                       path={baseUrl}
+                                      onlyView={!userAccess}
                                       onDelete={() => handleDeleteModal(d.id)}
                                     />
                                   </td>

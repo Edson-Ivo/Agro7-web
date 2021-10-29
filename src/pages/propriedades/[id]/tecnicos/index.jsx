@@ -29,6 +29,7 @@ import urlRoute from '@/helpers/urlRoute';
 import PropertiesService from '@/services/PropertiesService';
 import { dateConversor } from '@/helpers/date';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
+import usersTypes from '@/helpers/usersTypes';
 
 function Tecnicos() {
   const router = useRouter();
@@ -63,7 +64,12 @@ function Tecnicos() {
 
   useEffect(() => {
     if (data)
-      setWillAccess(!(type === 'tecnico' && data?.users?.id !== userId));
+      setWillAccess(
+        !(
+          [usersTypes[3], usersTypes[4]].includes(type) &&
+          data?.users?.id !== userId
+        )
+      );
   }, [data]);
 
   const handleDelete = useCallback(

@@ -32,6 +32,7 @@ import isEmpty from '@/helpers/isEmpty';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 import maskString from '@/helpers/maskString';
 import scrollTo from '@/helpers/scrollTo';
+import usersTypes from '@/helpers/usersTypes';
 
 const schema = yup.object().shape({
   name: yup.string().required('O campo nome é obrigatório!'),
@@ -138,7 +139,7 @@ function AdminUsersEdit() {
         if (isEmpty(d.phone_whatsapp)) delete d.phone_whatsapp;
 
         await UsersService.updateByAdmin(id, d).then(res => {
-          if (res.status !== 201 || res?.statusCode) {
+          if (res.status !== 200 || res?.statusCode) {
             setAlert({ type: 'error', message: errorMessage(res) });
             setTimeout(() => {
               setDisableButton(false);
@@ -357,4 +358,4 @@ function AdminUsersEdit() {
   );
 }
 
-export default privateRoute(['administrador'])(AdminUsersEdit);
+export default privateRoute([usersTypes[0]])(AdminUsersEdit);

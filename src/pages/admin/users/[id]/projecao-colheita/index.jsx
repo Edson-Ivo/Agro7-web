@@ -23,6 +23,7 @@ import InputDateInterval from '@/components/InputDateInterval/index';
 import Chart from '@/components/Chart/index';
 import theme from '@/styles/theme';
 import { colorShade } from '@/helpers/colors';
+import usersTypes from '@/helpers/usersTypes';
 
 function UserProjecaoColheita() {
   const router = useRouter();
@@ -269,4 +270,4 @@ function UserProjecaoColheita() {
   );
 }
 
-export default privateRoute(['administrador'])(UserProjecaoColheita);
+export default privateRoute([usersTypes[0]])(UserProjecaoColheita);

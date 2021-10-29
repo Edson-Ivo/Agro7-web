@@ -26,6 +26,7 @@ import NutricionalService from '@/services/NutricionalService';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 import isEmpty from '@/helpers/isEmpty';
 import scrollTo from '@/helpers/scrollTo';
+import usersTypes from '@/helpers/usersTypes';
 
 function AdminProductsCreate() {
   const formRef = useRef(null);
@@ -645,4 +646,4 @@ function AdminProductsCreate() {
   );
 }
 
-export default privateRoute(['administrador'])(AdminProductsCreate);
+export default privateRoute([usersTypes[0]])(AdminProductsCreate);

@@ -29,6 +29,7 @@ import objectKeyExists from '@/helpers/objectKeyExists';
 import ImageContainer from '@/components/ImageContainer/index';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 import scrollTo from '@/helpers/scrollTo';
+import usersTypes from '@/helpers/usersTypes';
 
 function AdminProductsEdit() {
   const formRef = useRef(null);
@@ -864,4 +865,4 @@ function AdminProductsEdit() {
   );
 }
 
-export default privateRoute(['administrador'])(AdminProductsEdit);
+export default privateRoute([usersTypes[0]])(AdminProductsEdit);

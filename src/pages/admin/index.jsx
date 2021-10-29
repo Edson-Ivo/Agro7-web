@@ -28,6 +28,7 @@ import { Section, SectionHeader, SectionBody } from '@/components/Section';
 
 import { privateRoute } from '@/components/PrivateRoute';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
+import usersTypes from '@/helpers/usersTypes';
 
 const data = [
   {
@@ -150,4 +151,4 @@ function AdminHome() {
   );
 }
 
-export default privateRoute(['administrador'])(AdminHome);
+export default privateRoute([usersTypes[0]])(AdminHome);

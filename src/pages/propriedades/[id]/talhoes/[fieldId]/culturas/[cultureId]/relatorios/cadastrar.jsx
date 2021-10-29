@@ -27,6 +27,7 @@ import isEmpty from '@/helpers/isEmpty';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 import scrollTo from '@/helpers/scrollTo';
 import FileInput from '@/components/FileInput/index';
+import usersTypes from '@/helpers/usersTypes';
 
 const schema = yup.object().shape({
   diagnostics: yup.string().nullable(),
@@ -408,4 +409,4 @@ function RelatoriosCreate() {
   );
 }
 
-export default privateRoute(['tecnico'])(RelatoriosCreate);
+export default privateRoute([usersTypes[3], usersTypes[4]])(RelatoriosCreate);

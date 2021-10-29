@@ -28,6 +28,7 @@ import ColorsContainer from '@/components/ColorsContainer/index';
 import truncate from '@/helpers/truncate';
 import CategoriesService from '@/services/CategoriesService';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
+import usersTypes from '@/helpers/usersTypes';
 
 function AdminCategories() {
   const [alertMsg, setAlertMsg] = useState({ type: '', message: '' });
@@ -175,4 +176,4 @@ function AdminCategories() {
   );
 }
 
-export default privateRoute(['administrador'])(AdminCategories);
+export default privateRoute([usersTypes[0]])(AdminCategories);

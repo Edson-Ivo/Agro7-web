@@ -22,6 +22,7 @@ import InputDateInterval from '@/components/InputDateInterval/index';
 import Chart from '@/components/Chart/index';
 import maskString from '@/helpers/maskString';
 import Table from '@/components/Table/index';
+import usersTypes from '@/helpers/usersTypes';
 
 function AdminReceita() {
   const [alertMsg, setAlertMsg] = useState('');
@@ -212,4 +213,4 @@ function AdminReceita() {
   );
 }
 
-export default privateRoute(['administrador'])(AdminReceita);
+export default privateRoute([usersTypes[0]])(AdminReceita);

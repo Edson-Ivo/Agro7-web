@@ -25,6 +25,7 @@ import PropertiesService from '@/services/PropertiesService';
 import { Alert } from '@/components/Alert/index';
 import isEmpty from '@/helpers/isEmpty';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
+import usersTypes from '@/helpers/usersTypes';
 
 function RequestsTechnichian() {
   const [alertMsg, setAlertMsg] = useState({ type: '', message: '' });
@@ -169,4 +170,6 @@ function RequestsTechnichian() {
   );
 }
 
-export default privateRoute(['tecnico'])(RequestsTechnichian);
+export default privateRoute([usersTypes[3], usersTypes[4]])(
+  RequestsTechnichian
+);

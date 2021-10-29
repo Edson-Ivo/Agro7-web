@@ -28,6 +28,7 @@ import Divider from '@/components/Divider/index';
 import TextArea from '@/components/TextArea/index';
 import scrollTo from '@/helpers/scrollTo';
 import { useModal } from '@/hooks/useModal';
+import usersTypes from '@/helpers/usersTypes';
 
 function VendasCreate() {
   const formRef = useRef(null);
@@ -829,4 +830,9 @@ function VendasCreate() {
   );
 }
 
-export default privateRoute()(VendasCreate);
+export default privateRoute([
+  usersTypes[0],
+  usersTypes[1],
+  usersTypes[2],
+  usersTypes[4]
+])(VendasCreate);

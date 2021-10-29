@@ -26,6 +26,7 @@ import { Section, SectionHeader, SectionBody } from '@/components/Section';
 import { privateRoute } from '@/components/PrivateRoute';
 import { greetings } from '@/helpers/greetings';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
+import usersTypes from '@/helpers/usersTypes';
 
 const data = [
   {
@@ -33,7 +34,8 @@ const data = [
     title: 'Painel de Controle',
     description:
       'Gerencie suas receitas, despesas e suas projeções de colheitas em um período de tempo.',
-    icon: faChartPie
+    icon: faChartPie,
+    typeBlock: [usersTypes[3]]
   },
   {
     href: '/tecnico',
@@ -41,26 +43,28 @@ const data = [
     description:
       'Gerencie suas solicitações para trabalhar em uma propriedade, como também, as propriedades em que você já está relacionado.',
     icon: faUserSecret,
-    typeAccess: 'tecnico'
+    typeAccess: [usersTypes[3], usersTypes[4]]
   },
   {
     href: '/admin',
     title: 'Painel Administrativo',
     description: 'Gerencie toda sua aplicação aqui.',
     icon: faUserCog,
-    typeAccess: 'administrador'
+    typeAccess: [usersTypes[0]]
   },
   {
     href: '/propriedades',
     title: 'Suas Propriedades',
     description: 'Gerencie ou edite suas propriedades e relacionados.',
-    icon: faMapMarkerAlt
+    icon: faMapMarkerAlt,
+    typeBlock: [usersTypes[3]]
   },
   {
     href: '/vendas',
     title: 'Suas Vendas',
     description: 'Gerencie e realize suas vendas e relacionados.',
-    icon: faDollarSign
+    icon: faDollarSign,
+    typeBlock: [usersTypes[3]]
   },
   {
     href: '/caderno-produtor',
@@ -105,9 +109,20 @@ function Home() {
           <SectionBody>
             <div className="SectionBody__content">
               {data.map(
-                ({ href, title, description, icon, typeAccess = null }, i) => (
+                (
+                  {
+                    href,
+                    title,
+                    description,
+                    icon,
+                    typeAccess = null,
+                    typeBlock = null
+                  },
+                  i
+                ) => (
                   <div key={i.toString()}>
-                    {typeAccess === null || type === typeAccess ? (
+                    {(typeAccess === null || typeAccess.includes(type)) &&
+                    (typeBlock === null || !typeBlock.includes(type)) ? (
                       <Link href={href}>
                         <Card height="90px" isLight>
                           <div className="card-info">

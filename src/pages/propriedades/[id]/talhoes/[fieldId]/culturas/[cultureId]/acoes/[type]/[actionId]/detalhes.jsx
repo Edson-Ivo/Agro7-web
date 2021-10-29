@@ -33,6 +33,7 @@ import ActionButton from '@/components/ActionButton/index';
 import Table from '@/components/Table/index';
 import { Alert } from '@/components/Alert/index';
 import maskString from '@/helpers/maskString';
+import usersTypes from '@/helpers/usersTypes';
 
 function AcoesCulturasDetalhes() {
   const formRef = useRef(null);
@@ -72,7 +73,7 @@ function AcoesCulturasDetalhes() {
   const { type } = useSelector(state => state.user);
 
   useEffect(() => {
-    setRoute(urlRoute(router, type, ['tecnico']));
+    setRoute(urlRoute(router, type, [usersTypes[3], usersTypes[4]]));
   }, []);
 
   useEffect(() => {

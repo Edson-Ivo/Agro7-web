@@ -29,6 +29,7 @@ import Error from '@/components/Error/index';
 import { useModal } from '@/hooks/useModal';
 import ActionButton from '@/components/ActionButton/index';
 import Table from '@/components/Table/index';
+import usersTypes from '@/helpers/usersTypes';
 
 function RelatoriosEdit() {
   const formRef = useRef(null);
@@ -75,7 +76,8 @@ function RelatoriosEdit() {
   useEffect(() => {
     if (!isEmpty(dataActions))
       setEditableImage(
-        ['tecnico'].includes(type) && dataActions?.technicians?.id === userId
+        [usersTypes[3], usersTypes[4]].includes(type) &&
+          dataActions?.technicians?.id === userId
       );
 
     if (!isEmpty(dataActions?.images)) {
@@ -640,4 +642,4 @@ function RelatoriosEdit() {
   );
 }
 
-export default privateRoute(['tecnico'])(RelatoriosEdit);
+export default privateRoute([usersTypes[3], usersTypes[4]])(RelatoriosEdit);

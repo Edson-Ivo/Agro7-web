@@ -29,6 +29,7 @@ const ActionButton = ({
   noAccept = true,
   noRemove = true,
   download = '',
+  onlyView = false,
   edit = '/editar'
 }) => (
   <ActionButtonContainer>
@@ -56,7 +57,7 @@ const ActionButton = ({
       </Link>
     )}
 
-    {!noEdit && (
+    {!noEdit && !onlyView && (
       <Link href={`${path}/${id}${edit}`}>
         <a title="Editar">
           <div>
@@ -80,7 +81,7 @@ const ActionButton = ({
       </div>
     )}
 
-    {!noAccept && (
+    {!noAccept && !onlyView && (
       <div
         onClick={() => onAccept()}
         onKeyPress={() => onAccept()}
@@ -94,7 +95,7 @@ const ActionButton = ({
       </div>
     )}
 
-    {!noRemove && (
+    {!noRemove && !onlyView && (
       <div
         onClick={() => onRemove() || onDelete()}
         onKeyPress={() => onRemove() || onDelete()}
@@ -108,7 +109,7 @@ const ActionButton = ({
       </div>
     )}
 
-    {!noDelete && (
+    {!noDelete && !onlyView && (
       <div
         onClick={() => onDelete()}
         onKeyPress={() => onDelete()}

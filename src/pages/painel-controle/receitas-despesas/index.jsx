@@ -22,6 +22,7 @@ import InputDateInterval from '@/components/InputDateInterval/index';
 import Chart from '@/components/Chart/index';
 import Table from '@/components/Table/index';
 import maskString from '@/helpers/maskString';
+import usersTypes from '@/helpers/usersTypes';
 
 function ControlReceita() {
   const [alertMsg, setAlertMsg] = useState('');
@@ -209,4 +210,9 @@ function ControlReceita() {
   );
 }
 
-export default privateRoute()(ControlReceita);
+export default privateRoute([
+  usersTypes[0],
+  usersTypes[1],
+  usersTypes[2],
+  usersTypes[4]
+])(ControlReceita);

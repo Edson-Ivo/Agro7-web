@@ -29,6 +29,7 @@ import { useSelector } from 'react-redux';
 import urlRoute from '@/helpers/urlRoute';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 import maskString from '@/helpers/maskString';
+import useUserAccess from '@/hooks/useUserAccess';
 
 function Talhoes() {
   const router = useRouter();
@@ -46,6 +47,10 @@ function Talhoes() {
   const [route, setRoute] = useState({});
   const [baseUrl, setBaseUrl] = useState('');
 
+  const { data, error } = useFetch(`/properties/find/by/id/${id}`);
+
+  const [userAccess, loadingUserAccess] = useUserAccess(route, data?.users?.id);
+
   useEffect(() => {
     setRoute(urlRoute(router, type));
   }, []);
@@ -53,8 +58,6 @@ function Talhoes() {
   useEffect(() => {
     setBaseUrl(`${route.path}/${id}/talhoes`);
   }, [route]);
-
-  const { data, error } = useFetch(`/properties/find/by/id/${id}`);
 
   const {
     data: dataFields,
@@ -118,13 +121,15 @@ function Talhoes() {
               }}
               title={`Talhões da propriedade ${data?.name}`}
               description="Aqui, você irá ver os talhões da propriedade em questão"
-              isLoading={isEmpty(data)}
+              isLoading={isEmpty(data) || loadingUserAccess}
             >
-              <Link href={`${baseUrl}/cadastrar`}>
-                <Button className="primary">
-                  <FontAwesomeIcon icon={faPlus} /> Novo Talhão
-                </Button>
-              </Link>
+              {userAccess && (
+                <Link href={`${baseUrl}/cadastrar`}>
+                  <Button className="primary">
+                    <FontAwesomeIcon icon={faPlus} /> Novo Talhão
+                  </Button>
+                </Link>
+              )}
             </SectionHeaderContent>
           </SectionHeader>
           <SectionBody>
@@ -134,7 +139,7 @@ function Talhoes() {
                   {alertMsg.message && (
                     <Alert type={alertMsg.type}>{alertMsg.message}</Alert>
                   )}
-                  {(((data && dataFields) || loading) && (
+                  {(((data && dataFields && !loadingUserAccess) || loading) && (
                     <>
                       <div className="table-responsive">
                         <Table>
@@ -162,6 +167,7 @@ function Talhoes() {
                                     <ActionButton
                                       id={d.id}
                                       path={baseUrl}
+                                      onlyView={!userAccess}
                                       onDelete={() => handleDeleteModal(d.id)}
                                     />
                                   </td>

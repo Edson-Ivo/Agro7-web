@@ -30,6 +30,7 @@ import CulturesActionsForm from '@/components/CultureActionsForm/index';
 import { dateToISOString } from '@/helpers/date';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 import scrollTo from '@/helpers/scrollTo';
+import usersTypes from '@/helpers/usersTypes';
 
 function AcoesCulturaCadastrar() {
   const formRef = useRef(null);
@@ -56,7 +57,7 @@ function AcoesCulturaCadastrar() {
   useEffect(() => {
     setAlert({ type: '', message: '' });
     setDisableButton(false);
-    setRoute(urlRoute(router, type, ['tecnico']));
+    setRoute(urlRoute(router, type, [usersTypes[3], usersTypes[4]]));
   }, []);
 
   useEffect(() => {
@@ -64,15 +65,15 @@ function AcoesCulturaCadastrar() {
 
     if (!isEmpty(data)) {
       const userIdProperty = data?.properties?.users?.id;
-      const cultesSuppliesBase = '/cultures-supplies/find/by';
+      const culturesSuppliesBase = '/cultures-supplies/find/by';
 
       if (
-        type === 'administrador' &&
+        type === usersTypes[0] &&
         router.query?.userId === String(userIdProperty)
       ) {
-        setUserSuppliesRoute(`${cultesSuppliesBase}/user/${userIdProperty}`);
+        setUserSuppliesRoute(`${culturesSuppliesBase}/user/${userIdProperty}`);
       } else {
-        setUserSuppliesRoute(`${cultesSuppliesBase}/user-logged`);
+        setUserSuppliesRoute(`${culturesSuppliesBase}/user-logged`);
       }
     }
   }, [data]);
@@ -105,7 +106,7 @@ function AcoesCulturaCadastrar() {
 
           if (
             typeAction === 'supplies' &&
-            type === 'administrador' &&
+            type === usersTypes[0] &&
             userId !== data?.properties?.users?.id
           )
             withAdminUserId = data?.properties?.users?.id;
