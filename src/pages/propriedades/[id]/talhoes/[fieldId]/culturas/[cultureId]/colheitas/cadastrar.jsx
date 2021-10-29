@@ -28,6 +28,7 @@ import isEmpty from '@/helpers/isEmpty';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 import scrollTo from '@/helpers/scrollTo';
 import { useModal } from '@/hooks/useModal';
+import usersTypes from '@/helpers/usersTypes';
 
 const schema = yup.object().shape({
   date: yup.string().required('O campo data é obrigatório!'),
@@ -73,7 +74,7 @@ function ColheitasCreate() {
   useEffect(() => {
     setAlert({ type: '', message: '' });
     setDisableButton(false);
-    setRoute(urlRoute(router, type, ['tecnico']));
+    setRoute(urlRoute(router, type, [usersTypes[3], usersTypes[4]]));
   }, []);
 
   const handleCancel = () => {

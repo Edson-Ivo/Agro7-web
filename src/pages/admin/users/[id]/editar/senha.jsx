@@ -22,6 +22,7 @@ import Error from '@/components/Error/index';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 import isEmpty from '@/helpers/isEmpty';
 import scrollTo from '@/helpers/scrollTo';
+import usersTypes from '@/helpers/usersTypes';
 
 const schema = yup.object().shape({
   password: yup.string().required('O campo Senha nova é obrigatório!'),
@@ -164,4 +165,4 @@ function AdminUsersEditPassword() {
   );
 }
 
-export default privateRoute(['administrador'])(AdminUsersEditPassword);
+export default privateRoute([usersTypes[0]])(AdminUsersEditPassword);

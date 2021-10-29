@@ -22,6 +22,7 @@ import Loader from '@/components/Loader/index';
 import InputColor from '@/components/InputColor/index';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 import scrollTo from '@/helpers/scrollTo';
+import usersTypes from '@/helpers/usersTypes';
 
 const schema = yup.object().shape({
   name: yup.string().required('O campo nome é obrigatório!'),
@@ -161,4 +162,4 @@ function AdminCoresEdit() {
   );
 }
 
-export default privateRoute(['administrador'])(AdminCoresEdit);
+export default privateRoute([usersTypes[0]])(AdminCoresEdit);

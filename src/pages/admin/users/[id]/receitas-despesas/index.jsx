@@ -23,6 +23,7 @@ import InputDateInterval from '@/components/InputDateInterval/index';
 import Chart from '@/components/Chart/index';
 import maskString from '@/helpers/maskString';
 import Table from '@/components/Table/index';
+import usersTypes from '@/helpers/usersTypes';
 
 function UserReceita() {
   const router = useRouter();
@@ -226,4 +227,4 @@ function UserReceita() {
   );
 }
 
-export default privateRoute(['administrador'])(UserReceita);
+export default privateRoute([usersTypes[0]])(UserReceita);

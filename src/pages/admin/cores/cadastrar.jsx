@@ -19,6 +19,7 @@ import ColorsService from '@/services/ColorsService';
 import InputColor from '@/components/InputColor/index';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 import scrollTo from '@/helpers/scrollTo';
+import usersTypes from '@/helpers/usersTypes';
 
 const schema = yup.object().shape({
   name: yup.string().required('O campo nome é obrigatório!'),
@@ -133,4 +134,4 @@ function AdminCoresCreate() {
   );
 }
 
-export default privateRoute(['administrador'])(AdminCoresCreate);
+export default privateRoute([usersTypes[0]])(AdminCoresCreate);

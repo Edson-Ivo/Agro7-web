@@ -26,6 +26,7 @@ import capitalize from '@/helpers/capitalize';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 import isEmpty from '@/helpers/isEmpty';
 import maskString from '@/helpers/maskString';
+import usersTypes from '@/helpers/usersTypes';
 
 function AdminUsers() {
   const router = useRouter();
@@ -216,4 +217,4 @@ function AdminUsers() {
   );
 }
 
-export default privateRoute(['administrador'])(AdminUsers);
+export default privateRoute([usersTypes[0]])(AdminUsers);

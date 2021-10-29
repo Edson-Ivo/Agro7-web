@@ -53,6 +53,7 @@ import { useInfiniteFetch } from '@/hooks/useInfiniteFetch';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 import { truncateProducerNotebook } from '@/helpers/truncate';
 import isEmpty, { isArrayOfEmpty } from '@/helpers/isEmpty';
+import usersTypes from '@/helpers/usersTypes';
 
 function UserProducerNotebook() {
   const daysRef = createRef();
@@ -388,4 +389,4 @@ function UserProducerNotebook() {
   );
 }
 
-export default privateRoute(['administrador'])(UserProducerNotebook);
+export default privateRoute([usersTypes[0]])(UserProducerNotebook);

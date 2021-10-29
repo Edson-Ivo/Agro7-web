@@ -21,6 +21,7 @@ import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 import { dateConversor } from '@/helpers/date';
 import PDFViewer from '@/components/PDFViewer/index';
 import InputDateInterval from '@/components/InputDateInterval/index';
+import usersTypes from '@/helpers/usersTypes';
 
 function AdminUsersVendasRelatorio() {
   const [alertMsg, setAlertMsg] = useState('');
@@ -132,4 +133,4 @@ function AdminUsersVendasRelatorio() {
   );
 }
 
-export default privateRoute(['administrador'])(AdminUsersVendasRelatorio);
+export default privateRoute([usersTypes[0]])(AdminUsersVendasRelatorio);

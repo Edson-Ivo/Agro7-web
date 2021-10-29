@@ -26,6 +26,7 @@ import ColorsContainer, { ColorsGrid } from '@/components/ColorsContainer';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 import isEmpty from '@/helpers/isEmpty';
 import scrollTo from '@/helpers/scrollTo';
+import usersTypes from '@/helpers/usersTypes';
 
 const schema = yup.object().shape({
   name: yup.string().required('O campo nome é obrigatório!'),
@@ -251,4 +252,4 @@ function AdminCategoriesEdit() {
   );
 }
 
-export default privateRoute(['administrador'])(AdminCategoriesEdit);
+export default privateRoute([usersTypes[0]])(AdminCategoriesEdit);

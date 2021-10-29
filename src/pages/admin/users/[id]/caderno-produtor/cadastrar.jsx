@@ -26,6 +26,7 @@ import { dateToInput, dateToISOString } from '@/helpers/date';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 import isEmpty from '@/helpers/isEmpty';
 import scrollTo from '@/helpers/scrollTo';
+import usersTypes from '@/helpers/usersTypes';
 
 const schema = yup.object().shape({
   name: yup.string().required('O campo nome é obrigatório!'),
@@ -184,4 +185,4 @@ function UserProducerNotebookCreate() {
   );
 }
 
-export default privateRoute(['administrador'])(UserProducerNotebookCreate);
+export default privateRoute([usersTypes[0]])(UserProducerNotebookCreate);

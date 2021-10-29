@@ -26,6 +26,7 @@ import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 import SalesService from '@/services/SalesService';
 import { dateConversor } from '@/helpers/date';
 import maskString from '@/helpers/maskString';
+import usersTypes from '@/helpers/usersTypes';
 
 function AdminVendasDistribuidoras() {
   const [alertMsg, setAlertMsg] = useState({ type: '', message: '' });
@@ -174,4 +175,4 @@ function AdminVendasDistribuidoras() {
   );
 }
 
-export default privateRoute(['administrador'])(AdminVendasDistribuidoras);
+export default privateRoute([usersTypes[0]])(AdminVendasDistribuidoras);

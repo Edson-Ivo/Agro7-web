@@ -27,6 +27,7 @@ import isEmpty from '@/helpers/isEmpty';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 import { useModal } from '@/hooks/useModal';
 import scrollTo from '@/helpers/scrollTo';
+import usersTypes from '@/helpers/usersTypes';
 
 const schema = yup.object().shape({
   name: yup.string().required('O campo nome é obrigatório!'),
@@ -387,4 +388,4 @@ function AdminUsers() {
   );
 }
 
-export default privateRoute(['administrador'])(AdminUsers);
+export default privateRoute([usersTypes[0]])(AdminUsers);

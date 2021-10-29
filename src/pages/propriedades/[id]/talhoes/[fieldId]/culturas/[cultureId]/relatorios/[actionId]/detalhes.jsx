@@ -33,6 +33,7 @@ import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 import PDFViewer from '@/components/PDFViewer/index';
 import Table from '@/components/Table/index';
 import ActionButton from '@/components/ActionButton/index';
+import usersTypes from '@/helpers/usersTypes';
 
 function RelatoriosDetails() {
   const router = useRouter();
@@ -75,7 +76,7 @@ function RelatoriosDetails() {
   useEffect(() => {
     if (!isEmpty(dataActions))
       setEditableImage(
-        ['tecnico', 'administrador'].includes(type) &&
+        [usersTypes[3], usersTypes[4], usersTypes[0]].includes(type) &&
           dataActions?.technicians?.id === userId
       );
 
@@ -233,7 +234,7 @@ function RelatoriosDetails() {
               <>
                 {dataActions &&
                   (data?.properties?.users?.id === userId ||
-                    type === 'administrador') && (
+                    type === usersTypes[0]) && (
                     <>
                       {(!dataActions?.concluded && (
                         <Button
@@ -255,7 +256,7 @@ function RelatoriosDetails() {
                       )}
                     </>
                   )}
-                {isEditableImage && type !== 'administrador' && (
+                {isEditableImage && type !== usersTypes[0] && (
                   <Link
                     href={`${route.path}/${id}/talhoes/${fieldId}/culturas/${cultureId}/relatorios/${actionId}/editar`}
                   >

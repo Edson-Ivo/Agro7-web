@@ -32,6 +32,7 @@ import urlRoute from '@/helpers/urlRoute';
 import isEmpty from '@/helpers/isEmpty';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 import maskString from '@/helpers/maskString';
+import useUserAccess from '@/hooks/useUserAccess';
 
 function CulturasInfo() {
   const router = useRouter();
@@ -44,23 +45,17 @@ function CulturasInfo() {
     `/cultures/find/by/id/${cultureId}`
   );
 
-  const { type, id: userId } = useSelector(state => state.user);
+  const { type } = useSelector(state => state.user);
   const [route, setRoute] = useState({});
-  const [loadingWillAccess, setLoadingWillAccess] = useState(false);
-  const [willAccess, setWillAccess] = useState(false);
+
+  const [userAccess, loadingUserAccess] = useUserAccess(
+    route,
+    data?.properties?.users?.id
+  );
 
   useEffect(() => {
     setRoute(urlRoute(router, type));
   }, []);
-
-  useEffect(() => {
-    if (data) {
-      setWillAccess(
-        !(type === 'tecnico' && data?.properties?.users?.id !== userId)
-      );
-      setLoadingWillAccess(true);
-    }
-  }, [data]);
 
   if (error || errorCultures) return <Error error={error || errorCultures} />;
   if (data && id !== String(data?.properties?.id)) return <Error error={404} />;
@@ -85,50 +80,50 @@ function CulturasInfo() {
               }}
               title={`Informações Cultura ${dataCultures?.products?.name}`}
               description={`Você está vendo informações detalhadas da cultura de ${dataCultures?.products?.name} no talhão ${data?.name} da propriedade ${data?.properties?.name}.`}
-              isLoading={isEmpty(data) || isEmpty(dataCultures)}
+              isLoading={
+                isEmpty(data) || isEmpty(dataCultures) || loadingUserAccess
+              }
             >
-              {loadingWillAccess && (
-                <div className="buttons__container">
-                  <Link
-                    href={`${route.path}/${id}/talhoes/${fieldId}/culturas/${cultureId}/relatorios`}
-                  >
-                    <Button className="primary">
-                      <FontAwesomeIcon icon={faFileAlt} /> Relatórios Técnicos
-                    </Button>
-                  </Link>
-                  {willAccess && (
-                    <>
-                      <Link
-                        href={`${route.path}/${id}/talhoes/${fieldId}/culturas/${cultureId}/relatorio`}
-                      >
-                        <Button className="primary">
-                          <FontAwesomeIcon icon={faFileAlt} /> Relatório
-                        </Button>
-                      </Link>
-                      <Link
-                        href={`${route.path}/${id}/talhoes/${fieldId}/culturas/${cultureId}/colheitas`}
-                      >
-                        <Button className="primary">
-                          <FontAwesomeIcon icon={faSeedling} /> Colheitas
-                        </Button>
-                      </Link>
-                      <Link
-                        href={`${route.path}/${id}/talhoes/${fieldId}/culturas/${cultureId}/acoes`}
-                      >
-                        <Button className="primary">
-                          <FontAwesomeIcon icon={faHandHoldingWater} /> Ações
-                        </Button>
-                      </Link>
-                    </>
-                  )}
-                </div>
-              )}
+              <div className="buttons__container">
+                <Link
+                  href={`${route.path}/${id}/talhoes/${fieldId}/culturas/${cultureId}/relatorios`}
+                >
+                  <Button className="primary">
+                    <FontAwesomeIcon icon={faFileAlt} /> Relatórios Técnicos
+                  </Button>
+                </Link>
+                {userAccess && (
+                  <>
+                    <Link
+                      href={`${route.path}/${id}/talhoes/${fieldId}/culturas/${cultureId}/relatorio`}
+                    >
+                      <Button className="primary">
+                        <FontAwesomeIcon icon={faFileAlt} /> Relatório
+                      </Button>
+                    </Link>
+                    <Link
+                      href={`${route.path}/${id}/talhoes/${fieldId}/culturas/${cultureId}/colheitas`}
+                    >
+                      <Button className="primary">
+                        <FontAwesomeIcon icon={faSeedling} /> Colheitas
+                      </Button>
+                    </Link>
+                    <Link
+                      href={`${route.path}/${id}/talhoes/${fieldId}/culturas/${cultureId}/acoes`}
+                    >
+                      <Button className="primary">
+                        <FontAwesomeIcon icon={faHandHoldingWater} /> Ações
+                      </Button>
+                    </Link>
+                  </>
+                )}
+              </div>
             </SectionHeaderContent>
           </SectionHeader>
           <SectionBody>
             <div className="SectionBody__content">
               <CardContainer>
-                {(data && dataCultures && (
+                {(data && dataCultures && !loadingUserAccess && (
                   <>
                     <Form
                       ref={formRef}
@@ -203,19 +198,21 @@ function CulturasInfo() {
                           </Button>
                         </div>
 
-                        <div>
-                          <Button
-                            type="button"
-                            className="primary"
-                            onClick={() =>
-                              router.push(
-                                `${route.path}/${id}/talhoes/${fieldId}/culturas/${cultureId}/editar`
-                              )
-                            }
-                          >
-                            Editar
-                          </Button>
-                        </div>
+                        {userAccess && (
+                          <div>
+                            <Button
+                              type="button"
+                              className="primary"
+                              onClick={() =>
+                                router.push(
+                                  `${route.path}/${id}/talhoes/${fieldId}/culturas/${cultureId}/editar`
+                                )
+                              }
+                            >
+                              Editar
+                            </Button>
+                          </div>
+                        )}
                       </div>
                     </Form>
                   </>

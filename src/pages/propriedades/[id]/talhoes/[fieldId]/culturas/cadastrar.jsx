@@ -29,6 +29,8 @@ import isEmpty from '@/helpers/isEmpty';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 import scrollTo from '@/helpers/scrollTo';
 import { useModal } from '@/hooks/useModal';
+import LogoLoader from '@/components/Loader/LogoLoader';
+import useUserAccess from '@/hooks/useUserAccess';
 
 const schema = yup.object().shape({
   date_start: yup.string().required('O campo data é obrigatório!'),
@@ -65,6 +67,11 @@ function CulturasCreate() {
 
   const { data: dataTypeDimension } = useFetch(
     '/cultures/find/all/types-dimension'
+  );
+
+  const [userAccess, loadingUserAccess] = useUserAccess(
+    route,
+    data?.properties?.users?.id
   );
 
   useEffect(() => {
@@ -160,9 +167,15 @@ function CulturasCreate() {
     removeModalAction();
   };
 
+  if (loadingUserAccess) return <LogoLoader />;
+
   if (error) return <Error error={error} />;
   if (data && id !== String(data?.properties?.id)) return <Error error={404} />;
-  if (!isEmpty(route) && !route.hasPermission) return <Error error={404} />;
+  if (
+    (!isEmpty(route) && !route.hasPermission) ||
+    (!loadingUserAccess && !userAccess)
+  )
+    return <Error error={404} />;
 
   return (
     <>
