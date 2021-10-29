@@ -25,6 +25,7 @@ import PropertiesService from '@/services/PropertiesService';
 import { Alert } from '@/components/Alert/index';
 import isEmpty from '@/helpers/isEmpty';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
+import usersTypes from '@/helpers/usersTypes';
 
 function PropertiesTechnichian() {
   const [alertMsg, setAlertMsg] = useState({ type: '', message: '' });
@@ -138,6 +139,7 @@ function PropertiesTechnichian() {
                                     id={p.properties.id}
                                     path="/tecnico/propriedades"
                                     onDelete={() => handleDeleteModal(p.id)}
+                                    noEdit
                                     noRemove={false}
                                     noDelete
                                   />
@@ -170,4 +172,6 @@ function PropertiesTechnichian() {
   );
 }
 
-export default privateRoute(['tecnico'])(PropertiesTechnichian);
+export default privateRoute([usersTypes[3], usersTypes[4]])(
+  PropertiesTechnichian
+);

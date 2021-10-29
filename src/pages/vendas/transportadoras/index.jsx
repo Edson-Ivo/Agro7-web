@@ -26,6 +26,7 @@ import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 import SalesService from '@/services/SalesService';
 import { dateConversor } from '@/helpers/date';
 import maskString from '@/helpers/maskString';
+import usersTypes from '@/helpers/usersTypes';
 
 function VendasTransportadoras() {
   const [alertMsg, setAlertMsg] = useState({ type: '', message: '' });
@@ -167,4 +168,9 @@ function VendasTransportadoras() {
   );
 }
 
-export default privateRoute()(VendasTransportadoras);
+export default privateRoute([
+  usersTypes[0],
+  usersTypes[1],
+  usersTypes[2],
+  usersTypes[4]
+])(VendasTransportadoras);

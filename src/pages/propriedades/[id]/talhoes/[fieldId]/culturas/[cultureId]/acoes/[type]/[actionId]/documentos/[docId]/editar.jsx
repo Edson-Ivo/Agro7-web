@@ -29,6 +29,7 @@ import CulturesActionsService, {
 import objectKeyExists from '@/helpers/objectKeyExists';
 import downloadDocument from '@/helpers/downloadDocument';
 import scrollTo from '@/helpers/scrollTo';
+import usersTypes from '@/helpers/usersTypes';
 
 const schema = yup.object().shape({
   name: yup.string().required('Você precisa dar um nome para o documento')
@@ -70,7 +71,7 @@ function AcoesCulturasDocumentosCreate() {
   const [route, setRoute] = useState({});
 
   useEffect(() => {
-    setRoute(urlRoute(router, type, ['tecnico']));
+    setRoute(urlRoute(router, type, [usersTypes[3], usersTypes[4]]));
   }, []);
 
   useEffect(() => {

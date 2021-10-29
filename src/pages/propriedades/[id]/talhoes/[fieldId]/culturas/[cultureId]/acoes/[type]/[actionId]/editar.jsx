@@ -32,6 +32,7 @@ import {
 } from '@/helpers/date';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 import scrollTo from '@/helpers/scrollTo';
+import usersTypes from '@/helpers/usersTypes';
 
 function AcoesCulturaEditar() {
   const formRef = useRef(null);
@@ -62,7 +63,7 @@ function AcoesCulturaEditar() {
   useEffect(() => {
     setAlert({ type: '', message: '' });
     setDisableButton(false);
-    setRoute(urlRoute(router, type, ['tecnico']));
+    setRoute(urlRoute(router, type, [usersTypes[3], usersTypes[4]]));
   }, []);
 
   useEffect(() => {

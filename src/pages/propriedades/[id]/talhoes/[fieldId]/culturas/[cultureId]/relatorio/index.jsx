@@ -22,6 +22,7 @@ import { dateConversor } from '@/helpers/date';
 import PDFViewer from '@/components/PDFViewer/index';
 import useRewriteRoute from '@/hooks/useRewriteRoute';
 import InputDateInterval from '@/components/InputDateInterval/index';
+import usersTypes from '@/helpers/usersTypes';
 
 function CulturasRelatorio() {
   const router = useRouter();
@@ -30,7 +31,7 @@ function CulturasRelatorio() {
   const [dateStart, setDateStart] = useState(null);
   const [dateEnd, setDateEnd] = useState(null);
 
-  const route = useRewriteRoute(router, null, ['tecnico']);
+  const route = useRewriteRoute(router, null, [usersTypes[3], usersTypes[4]]);
 
   const { id, fieldId, cultureId } = router.query;
 

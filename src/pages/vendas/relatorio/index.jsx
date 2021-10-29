@@ -20,6 +20,7 @@ import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 import { dateConversor } from '@/helpers/date';
 import PDFViewer from '@/components/PDFViewer/index';
 import InputDateInterval from '@/components/InputDateInterval/index';
+import usersTypes from '@/helpers/usersTypes';
 
 function VendasRelatorio() {
   const [alertMsg, setAlertMsg] = useState('');
@@ -110,4 +111,9 @@ function VendasRelatorio() {
   );
 }
 
-export default privateRoute()(VendasRelatorio);
+export default privateRoute([
+  usersTypes[0],
+  usersTypes[1],
+  usersTypes[2],
+  usersTypes[4]
+])(VendasRelatorio);

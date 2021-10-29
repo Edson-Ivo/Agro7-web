@@ -16,6 +16,7 @@ import { Section, SectionHeader, SectionBody } from '@/components/Section';
 
 import { privateRoute } from '@/components/PrivateRoute';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
+import usersTypes from '@/helpers/usersTypes';
 
 const data = [
   {
@@ -76,4 +77,4 @@ function TechnichianHome() {
   );
 }
 
-export default privateRoute(['tecnico'])(TechnichianHome);
+export default privateRoute([usersTypes[3], usersTypes[4]])(TechnichianHome);

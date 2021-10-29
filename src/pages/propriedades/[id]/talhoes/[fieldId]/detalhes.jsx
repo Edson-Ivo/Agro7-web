@@ -28,6 +28,7 @@ import urlRoute from '@/helpers/urlRoute';
 import isEmpty from '@/helpers/isEmpty';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 import maskString from '@/helpers/maskString';
+import useUserAccess from '@/hooks/useUserAccess';
 
 function TalhoesInfo() {
   const router = useRouter();
@@ -43,6 +44,8 @@ function TalhoesInfo() {
 
   const { type } = useSelector(state => state.user);
   const [route, setRoute] = useState({});
+
+  const [userAccess, loadingUserAccess] = useUserAccess(route, data?.users?.id);
 
   useEffect(() => {
     setRoute(urlRoute(router, type));
@@ -81,7 +84,7 @@ function TalhoesInfo() {
           <SectionBody>
             <div className="SectionBody__content">
               <CardContainer>
-                {(data && dataFields && (
+                {(data && dataFields && !loadingUserAccess && (
                   <>
                     <Form
                       ref={formRef}
@@ -134,19 +137,21 @@ function TalhoesInfo() {
                             Voltar
                           </Button>
                         </div>
-                        <div>
-                          <Button
-                            type="button"
-                            className="primary"
-                            onClick={() =>
-                              router.push(
-                                `${route.path}/${id}/talhoes/${fieldId}/editar`
-                              )
-                            }
-                          >
-                            Editar
-                          </Button>
-                        </div>
+                        {userAccess && (
+                          <div>
+                            <Button
+                              type="button"
+                              className="primary"
+                              onClick={() =>
+                                router.push(
+                                  `${route.path}/${id}/talhoes/${fieldId}/editar`
+                                )
+                              }
+                            >
+                              Editar
+                            </Button>
+                          </div>
+                        )}
                       </div>
                     </Form>
                   </>

@@ -8,6 +8,10 @@ const urlRoute = (router, types, blockTypes = []) => {
 
   let routesList = {};
 
+  const typesSave = types;
+
+  if (types === 'tecnico produtor') types = 'tecnico';
+
   if (path === 'propriedades') {
     routesList = {
       tecnico: ['/tecnico/propriedades'],
@@ -38,7 +42,7 @@ const urlRoute = (router, types, blockTypes = []) => {
 
         if (type === types && !blockTypes.includes(types)) {
           path = queried;
-          permission = type;
+          permission = typesSave;
           hasPermission = true;
         }
       }

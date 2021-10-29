@@ -20,6 +20,7 @@ import { isLight } from '@/helpers/colors';
 import TextArea from '@/components/TextArea/index';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 import isEmpty from '@/helpers/isEmpty';
+import usersTypes from '@/helpers/usersTypes';
 
 function AdminCategoriesDetails() {
   const router = useRouter();
@@ -105,4 +106,4 @@ function AdminCategoriesDetails() {
   );
 }
 
-export default privateRoute(['administrador'])(AdminCategoriesDetails);
+export default privateRoute([usersTypes[0]])(AdminCategoriesDetails);

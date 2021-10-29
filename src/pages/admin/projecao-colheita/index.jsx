@@ -23,6 +23,7 @@ import { dateConversor } from '@/helpers/date';
 import InputDateInterval from '@/components/InputDateInterval/index';
 import Chart from '@/components/Chart/index';
 import theme from '@/styles/theme';
+import usersTypes from '@/helpers/usersTypes';
 
 function AdminProjecaoColheita() {
   const perPage = 30;
@@ -254,4 +255,4 @@ function AdminProjecaoColheita() {
   );
 }
 
-export default privateRoute(['administrador'])(AdminProjecaoColheita);
+export default privateRoute([usersTypes[0]])(AdminProjecaoColheita);

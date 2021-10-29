@@ -29,6 +29,7 @@ import { Alert } from '@/components/Alert/index';
 import Pagination from '@/components/Pagination/index';
 import isEmpty from '@/helpers/isEmpty';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
+import usersTypes from '@/helpers/usersTypes';
 
 function Properties() {
   const [alertMsg, setAlertMsg] = useState({ type: '', message: '' });
@@ -180,4 +181,4 @@ function Properties() {
   );
 }
 
-export default privateRoute(['administrador'])(Properties);
+export default privateRoute([usersTypes[0]])(Properties);

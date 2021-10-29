@@ -31,6 +31,7 @@ import Input from '@/components/Input/index';
 import isEmpty from '@/helpers/isEmpty';
 import maskString from '@/helpers/maskString';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
+import usersTypes from '@/helpers/usersTypes';
 
 function AdminUsers() {
   const [alertMsg, setAlertMsg] = useState({ type: '', message: '' });
@@ -226,4 +227,4 @@ function AdminUsers() {
   );
 }
 
-export default privateRoute(['administrador'])(AdminUsers);
+export default privateRoute([usersTypes[0]])(AdminUsers);

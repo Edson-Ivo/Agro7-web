@@ -14,6 +14,7 @@ import {
   faChartPie
 } from '@fortawesome/free-solid-svg-icons';
 
+import usersTypes from '@/helpers/usersTypes';
 import { useRouter } from 'next/router';
 
 import { NavChangeAction } from '@/store/modules/Nav/actions';
@@ -149,23 +150,33 @@ const Nav = () => {
       <NavContent>
         <NavList>
           <NavButton link="/" icon={faHome} text="Página Inicial" />
-          <NavButton
-            link="/painel-controle"
-            icon={faChartPie}
-            text="Painel de Controle"
-          />
-          <NavButton
-            link="/propriedades"
-            icon={faMapMarkerAlt}
-            text="Suas Propriedades"
-          />
-          <NavButton link="/vendas" icon={faDollarSign} text="Suas Vendas" />
+          {usersTypes[3] !== type && (
+            <>
+              <NavButton
+                link="/painel-controle"
+                icon={faChartPie}
+                text="Painel de Controle"
+              />
+              <NavButton
+                link="/propriedades"
+                icon={faMapMarkerAlt}
+                text="Suas Propriedades"
+              />
+              <NavButton
+                link="/vendas"
+                icon={faDollarSign}
+                text="Suas Vendas"
+              />
+            </>
+          )}
+
           <NavButton
             link="/caderno-produtor"
             icon={faBook}
             text="Caderno do Produtor"
           />
-          {type === 'tecnico' && (
+
+          {[usersTypes[3], usersTypes[4]].includes(type) && (
             <>
               <hr />
               <NavButton
@@ -175,7 +186,7 @@ const Nav = () => {
               />
             </>
           )}
-          {type === 'administrador' && (
+          {type === usersTypes[0] && (
             <>
               <hr />
               <NavButton

@@ -29,6 +29,7 @@ import Error from '@/components/Error/index';
 import { useSelector } from 'react-redux';
 import urlRoute from '@/helpers/urlRoute';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
+import usersTypes from '@/helpers/usersTypes';
 
 function Colheitas() {
   const router = useRouter();
@@ -59,7 +60,7 @@ function Colheitas() {
   const [baseUrl, setBaseUrl] = useState('');
 
   useEffect(() => {
-    setRoute(urlRoute(router, type, ['tecnico']));
+    setRoute(urlRoute(router, type, [usersTypes[3], usersTypes[4]]));
   }, []);
 
   useEffect(() => {

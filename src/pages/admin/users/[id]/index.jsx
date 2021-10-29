@@ -30,6 +30,7 @@ import { useFetch } from '@/hooks/useFetch';
 import Error from '@/components/Error/index';
 import isEmpty from '@/helpers/isEmpty';
 import Loader from '@/components/Loader/index';
+import usersTypes from '@/helpers/usersTypes';
 
 const data = [
   {
@@ -101,7 +102,7 @@ const data = [
     description:
       'Aqui, você terá acesso ao Painel Técnico e relacionados desse Usuário',
     icon: faUserSecret,
-    types: ['tecnico']
+    types: [usersTypes[3], usersTypes[4]]
   }
 ];
 
@@ -177,4 +178,4 @@ function AdminUsersOptions() {
   );
 }
 
-export default privateRoute(['administrador'])(AdminUsersOptions);
+export default privateRoute([usersTypes[0]])(AdminUsersOptions);

@@ -30,6 +30,7 @@ import { dateConversor } from '@/helpers/date';
 import Error from '@/components/Error/index';
 import urlRoute from '@/helpers/urlRoute';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
+import usersTypes from '@/helpers/usersTypes';
 
 function Relatorios() {
   const [willCreate, setWillCreate] = useState(false);
@@ -74,7 +75,7 @@ function Relatorios() {
   useEffect(() => {
     if (data)
       setWillCreate(
-        ['tecnico', 'administrador'].includes(type) &&
+        [usersTypes[3], usersTypes[4], usersTypes[0]].includes(type) &&
           data?.properties?.users?.id !== userId
       );
   }, [data]);
@@ -216,7 +217,9 @@ function Relatorios() {
                                       path={baseUrl}
                                       noEdit
                                       noDelete={
-                                        type !== 'administrador' && !willCreate
+                                        (type !== usersTypes[0] &&
+                                          !willCreate) ||
+                                        !(d?.technicians?.id === userId)
                                       }
                                       onDelete={() => handleDeleteModal(d.id)}
                                     />

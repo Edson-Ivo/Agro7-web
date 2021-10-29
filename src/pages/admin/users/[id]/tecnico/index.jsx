@@ -18,6 +18,7 @@ import { privateRoute } from '@/components/PrivateRoute';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 import { useFetch } from '@/hooks/useFetch';
 import isEmpty from '@/helpers/isEmpty';
+import usersTypes from '@/helpers/usersTypes';
 
 const data = [
   {
@@ -45,7 +46,8 @@ function TechnichianHome() {
   );
 
   if (errorUser) return <Error error={errorUser} />;
-  if (dataUser && dataUser?.type !== 'tecnico') return <Error error={404} />;
+  if (dataUser && ![usersTypes[3], usersTypes[4]].includes(dataUser?.type))
+    return <Error error={404} />;
 
   return (
     <>
@@ -93,4 +95,4 @@ function TechnichianHome() {
   );
 }
 
-export default privateRoute(['administrador'])(TechnichianHome);
+export default privateRoute([usersTypes[0]])(TechnichianHome);

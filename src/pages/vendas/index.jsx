@@ -37,6 +37,7 @@ import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 import SalesService from '@/services/SalesService';
 import { dateConversor } from '@/helpers/date';
 import maskString from '@/helpers/maskString';
+import usersTypes from '@/helpers/usersTypes';
 
 function Vendas() {
   const [alertMsg, setAlertMsg] = useState({ type: '', message: '' });
@@ -193,7 +194,7 @@ function Vendas() {
                                     id={p.id}
                                     path="/vendas"
                                     noEdit
-                                    noDelete={type !== 'administrador'}
+                                    noDelete={type !== usersTypes[0]}
                                     onDelete={() => handleDeleteModal(p.id)}
                                   />
                                 </td>
@@ -223,4 +224,9 @@ function Vendas() {
   );
 }
 
-export default privateRoute()(Vendas);
+export default privateRoute([
+  usersTypes[0],
+  usersTypes[1],
+  usersTypes[2],
+  usersTypes[4]
+])(Vendas);

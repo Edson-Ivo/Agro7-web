@@ -27,6 +27,7 @@ import errorMessage from '@/helpers/errorMessage';
 import ColorsContainer from '@/components/ColorsContainer/index';
 import ColorsService from '@/services/ColorsService';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
+import usersTypes from '@/helpers/usersTypes';
 
 function AdminColors() {
   const [alertMsg, setAlertMsg] = useState({ type: '', message: '' });
@@ -180,4 +181,4 @@ function AdminColors() {
   );
 }
 
-export default privateRoute(['administrador'])(AdminColors);
+export default privateRoute([usersTypes[0]])(AdminColors);

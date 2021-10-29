@@ -28,6 +28,8 @@ import isEmpty from '@/helpers/isEmpty';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 import maskString from '@/helpers/maskString';
 import scrollTo from '@/helpers/scrollTo';
+import useUserAccess from '@/hooks/useUserAccess';
+import LogoLoader from '@/components/Loader/LogoLoader';
 
 const schema = yup.object().shape({
   date_start: yup.string().required('O campo data é obrigatório!'),
@@ -65,6 +67,11 @@ function CulturasEdit() {
 
   const { type } = useSelector(state => state.user);
   const [route, setRoute] = useState({});
+
+  const [userAccess, loadingUserAccess] = useUserAccess(
+    route,
+    data?.properties?.users?.id
+  );
 
   useEffect(() => {
     setAlert({ type: '', message: '' });
@@ -131,9 +138,15 @@ function CulturasEdit() {
       });
   };
 
+  if (loadingUserAccess) return <LogoLoader />;
+
   if (error || errorCultures) return <Error error={error || errorCultures} />;
   if (data && id !== String(data?.properties?.id)) return <Error error={404} />;
-  if (!isEmpty(route) && !route.hasPermission) return <Error error={404} />;
+  if (
+    (!isEmpty(route) && !route.hasPermission) ||
+    (!loadingUserAccess && !userAccess)
+  )
+    return <Error error={404} />;
 
   return (
     <>

@@ -28,6 +28,8 @@ import { useSelector } from 'react-redux';
 import urlRoute from '@/helpers/urlRoute';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 import scrollTo from '@/helpers/scrollTo';
+import useUserAccess from '@/hooks/useUserAccess';
+import LogoLoader from '@/components/Loader/LogoLoader';
 
 const schema = yup.object().shape({
   name: yup.string().required('O campo nome é obrigatório!'),
@@ -59,6 +61,8 @@ function TalhoesCadastrar() {
   const { data: dataTypeDimension } = useFetch(
     '/fields/find/all/types-dimension'
   );
+
+  const [userAccess, loadingUserAccess] = useUserAccess(route, data?.users?.id);
 
   useEffect(() => {
     setAlert({ type: '', message: '' });
@@ -152,8 +156,14 @@ function TalhoesCadastrar() {
       });
   };
 
+  if (loadingUserAccess) return <LogoLoader />;
+
   if (error) return <Error error={error} />;
-  if (!isEmpty(route) && !route.hasPermission) return <Error error={404} />;
+  if (
+    (!isEmpty(route) && !route.hasPermission) ||
+    (!loadingUserAccess && !userAccess)
+  )
+    return <Error error={404} />;
 
   return (
     <>

@@ -23,6 +23,7 @@ import Loader from '@/components/Loader/index';
 import ImageContainer from '@/components/ImageContainer/index';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 import isEmpty from '@/helpers/isEmpty';
+import usersTypes from '@/helpers/usersTypes';
 
 function AdminProductsDetails() {
   const router = useRouter();
@@ -539,4 +540,4 @@ function AdminProductsDetails() {
   );
 }
 
-export default privateRoute(['administrador'])(AdminProductsDetails);
+export default privateRoute([usersTypes[0]])(AdminProductsDetails);

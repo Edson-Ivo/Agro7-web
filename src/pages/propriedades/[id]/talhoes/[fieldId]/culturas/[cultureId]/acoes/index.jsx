@@ -35,6 +35,7 @@ import CulturesActionsService, {
 } from '@/services/CulturesActionsService';
 import objectKeyExists from '@/helpers/objectKeyExists';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
+import usersTypes from '@/helpers/usersTypes';
 
 function AcoesCultura() {
   const router = useRouter();
@@ -73,7 +74,7 @@ function AcoesCultura() {
   );
 
   useEffect(() => {
-    setRoute(urlRoute(router, type, ['tecnico']));
+    setRoute(urlRoute(router, type, [usersTypes[3], usersTypes[4]]));
   }, []);
 
   useEffect(() => {
@@ -82,7 +83,7 @@ function AcoesCultura() {
     if (!isEmpty(data)) {
       const userId = data?.properties?.users?.id;
 
-      if (type === 'administrador' && router.query?.userId === String(userId)) {
+      if (type === usersTypes[0] && router.query?.userId === String(userId)) {
         setCultureSupplyDataRoute(`user/${userId}`);
       } else {
         setCultureSupplyDataRoute(`user-logged`);

@@ -36,8 +36,9 @@ import urlRoute from '@/helpers/urlRoute';
 import isEmpty from '@/helpers/isEmpty';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 import maskString from '@/helpers/maskString';
+import useUserAccess from '@/hooks/useUserAccess';
 
-function PropertieInfo() {
+function PropertyInfo() {
   const [activeStep, setActiveStep] = useState(1);
   const formRef = useRef(null);
 
@@ -49,33 +50,21 @@ function PropertieInfo() {
   const [alertMsg, setAlertMsg] = useState({ type: '', message: '' });
   const { addModal, removeModal } = useModal();
   const [loading, setLoading] = useState(false);
-  const [loadingWillAccess, setLoadingWillAccess] = useState(false);
-  const [willAccess, setWillAccess] = useState(false);
 
   const { data, error } = useFetch(`/properties/find/by/id/${id}`);
 
   const { data: dataDocs, error: errorDocs, mutate: mutateDocs } = useFetch(
     `/properties-documents/find/property/${id}?limit=${perPageDocs}&page=${pageDocs}`
   );
-  const { data: dataTypeOwner } = useFetch('/properties/find/all/types-owner');
 
-  const { data: dataTypeDimension } = useFetch(
-    '/properties/find/all/types-dimension'
-  );
-
-  const { id: userId, type } = useSelector(state => state.user);
+  const { type } = useSelector(state => state.user);
   const [route, setRoute] = useState({});
+
+  const [userAccess, loadingUserAccess] = useUserAccess(route, data?.users?.id);
 
   useEffect(() => {
     setRoute(urlRoute(router, type));
   }, []);
-
-  useEffect(() => {
-    if (data) {
-      setWillAccess(!(type === 'tecnico' && data?.users?.id !== userId));
-      setLoadingWillAccess(true);
-    }
-  }, [data]);
 
   const handleDelete = useCallback(
     async identifier => {
@@ -134,30 +123,28 @@ function PropertieInfo() {
               title={`Informações da propriedade ${data?.name}`}
               description="Aqui, você irá ver informações detalhadas da propriedade em
                 questão"
-              isLoading={isEmpty(data)}
+              isLoading={isEmpty(data) || loadingUserAccess}
             >
-              {loadingWillAccess && (
-                <div className="buttons__container">
-                  <Link href={`${route.path}/${id}/talhoes/`}>
+              <div className="buttons__container">
+                <Link href={`${route.path}/${id}/talhoes/`}>
+                  <Button className="primary">
+                    <FontAwesomeIcon icon={faThumbtack} /> Talhões
+                  </Button>
+                </Link>
+                {userAccess && (
+                  <Link href={`${route.path}/${id}/tecnicos/`}>
                     <Button className="primary">
-                      <FontAwesomeIcon icon={faThumbtack} /> Talhões
+                      <FontAwesomeIcon icon={faUserFriends} /> Técnicos
                     </Button>
                   </Link>
-                  {willAccess && (
-                    <Link href={`${route.path}/${id}/tecnicos/`}>
-                      <Button className="primary">
-                        <FontAwesomeIcon icon={faUserFriends} /> Técnicos
-                      </Button>
-                    </Link>
-                  )}
-                </div>
-              )}
+                )}
+              </div>
             </SectionHeaderContent>
           </SectionHeader>
           <SectionBody>
             <div className="SectionBody__content">
               <CardContainer>
-                {(data && dataTypeOwner && dataTypeDimension && (
+                {(data && !loadingUserAccess && (
                   <>
                     <MultiStep activeStep={activeStep} onlyView>
                       <Step
@@ -190,12 +177,12 @@ function PropertieInfo() {
                             </div>
                             <div>
                               <Select
-                                options={dataTypeOwner?.typesOwner.map(
-                                  owner => ({
-                                    value: owner,
-                                    label: capitalize(owner)
-                                  })
-                                )}
+                                options={[
+                                  {
+                                    value: data?.type_owner,
+                                    label: capitalize(data?.type_owner)
+                                  }
+                                ]}
                                 label="Quem é você para esta propriedade?"
                                 name="type_owner"
                                 disabled
@@ -213,12 +200,12 @@ function PropertieInfo() {
                             </div>
                             <div>
                               <Select
-                                options={dataTypeDimension?.typesDimension.map(
-                                  dimension => ({
-                                    value: dimension,
-                                    label: dimension
-                                  })
-                                )}
+                                options={[
+                                  {
+                                    value: data?.type_dimension,
+                                    label: data?.type_dimension
+                                  }
+                                ]}
                                 label="Unidade de medida"
                                 name="type_dimension"
                                 disabled
@@ -304,17 +291,19 @@ function PropertieInfo() {
                                 Voltar
                               </Button>
                             </div>
-                            <div>
-                              <Button
-                                type="button"
-                                className="primary"
-                                onClick={() =>
-                                  router.push(`${route.path}/${id}/editar`)
-                                }
-                              >
-                                Editar
-                              </Button>
-                            </div>
+                            {userAccess && (
+                              <div>
+                                <Button
+                                  type="button"
+                                  className="primary"
+                                  onClick={() =>
+                                    router.push(`${route.path}/${id}/editar`)
+                                  }
+                                >
+                                  Editar
+                                </Button>
+                              </div>
+                            )}
                           </div>
                         </Form>
                       </Step>
@@ -328,7 +317,8 @@ function PropertieInfo() {
                         {alertMsg.message && (
                           <Alert type={alertMsg.type}>{alertMsg.message}</Alert>
                         )}
-                        {(((data && dataDocs) || loading) && (
+                        {(((data && !loadingUserAccess && dataDocs) ||
+                          loading) && (
                           <>
                             <Table>
                               <thead>
@@ -347,6 +337,7 @@ function PropertieInfo() {
                                           id={d.id}
                                           download={d.url}
                                           path={`${route.path}/${id}/documentos`}
+                                          onlyView={!userAccess}
                                           onDelete={() =>
                                             handleDeleteModal(d.id)
                                           }
@@ -378,19 +369,21 @@ function PropertieInfo() {
                               Voltar
                             </Button>
                           </div>
-                          <div>
-                            <Button
-                              type="button"
-                              className="primary"
-                              onClick={() =>
-                                router.push(
-                                  `${route.path}/${id}/documentos/cadastrar`
-                                )
-                              }
-                            >
-                              Cadastrar Documento
-                            </Button>
-                          </div>
+                          {userAccess && (
+                            <div>
+                              <Button
+                                type="button"
+                                className="primary"
+                                onClick={() =>
+                                  router.push(
+                                    `${route.path}/${id}/documentos/cadastrar`
+                                  )
+                                }
+                              >
+                                Cadastrar Documento
+                              </Button>
+                            </div>
+                          )}
                         </div>
                       </Step>
                     </MultiStep>
@@ -405,4 +398,4 @@ function PropertieInfo() {
   );
 }
 
-export default privateRoute()(PropertieInfo);
+export default privateRoute()(PropertyInfo);

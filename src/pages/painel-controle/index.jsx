@@ -16,6 +16,7 @@ import { Section, SectionHeader, SectionBody } from '@/components/Section';
 
 import { privateRoute } from '@/components/PrivateRoute';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
+import usersTypes from '@/helpers/usersTypes';
 
 const data = [
   {
@@ -76,4 +77,9 @@ function ControlPanel() {
   );
 }
 
-export default privateRoute()(ControlPanel);
+export default privateRoute([
+  usersTypes[0],
+  usersTypes[1],
+  usersTypes[2],
+  usersTypes[4]
+])(ControlPanel);

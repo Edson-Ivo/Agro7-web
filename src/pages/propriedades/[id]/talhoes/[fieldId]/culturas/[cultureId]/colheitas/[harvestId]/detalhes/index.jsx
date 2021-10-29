@@ -26,6 +26,7 @@ import urlRoute from '@/helpers/urlRoute';
 import { useSelector } from 'react-redux';
 import isEmpty from '@/helpers/isEmpty';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
+import usersTypes from '@/helpers/usersTypes';
 
 function ColheitasDetalhes() {
   const formRef = useRef(null);
@@ -47,7 +48,7 @@ function ColheitasDetalhes() {
   const [route, setRoute] = useState({});
 
   useEffect(() => {
-    setRoute(urlRoute(router, type, ['tecnico']));
+    setRoute(urlRoute(router, type, [usersTypes[3], usersTypes[4]]));
   }, []);
 
   const handleCancel = () => {
