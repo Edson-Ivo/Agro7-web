@@ -37,6 +37,7 @@ import isEmpty from '@/helpers/isEmpty';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 import maskString from '@/helpers/maskString';
 import useUserAccess from '@/hooks/useUserAccess';
+import downloadDocument from '@/helpers/downloadDocument';
 
 function PropertyInfo() {
   const [activeStep, setActiveStep] = useState(1);
@@ -330,7 +331,10 @@ function PropertyInfo() {
                               <tbody>
                                 {(dataDocs?.items.length > 0 &&
                                   dataDocs.items.map(d => (
-                                    <tr key={d.id}>
+                                    <tr
+                                      key={d.id}
+                                      onClick={() => downloadDocument(d.url)}
+                                    >
                                       <td>{d.name}</td>
                                       <td>
                                         <ActionButton
