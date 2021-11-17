@@ -34,6 +34,7 @@ import Table from '@/components/Table/index';
 import { Alert } from '@/components/Alert/index';
 import maskString from '@/helpers/maskString';
 import usersTypes from '@/helpers/usersTypes';
+import downloadDocument from '@/helpers/downloadDocument';
 
 function AcoesCulturasDetalhes() {
   const formRef = useRef(null);
@@ -245,7 +246,12 @@ function AcoesCulturasDetalhes() {
                                     <tbody>
                                       {(dataDocs?.items.length > 0 &&
                                         dataDocs.items.map(d => (
-                                          <tr key={d.id}>
+                                          <tr
+                                            key={d.id}
+                                            onClick={() =>
+                                              downloadDocument(d.url)
+                                            }
+                                          >
                                             <td>{d.name}</td>
                                             <td>
                                               <ActionButton

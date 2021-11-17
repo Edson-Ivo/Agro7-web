@@ -33,6 +33,7 @@ import { useModal } from '@/hooks/useModal';
 import truncate from '@/helpers/truncate';
 import useRewriteRoute from '@/hooks/useRewriteRoute';
 import maskString from '@/helpers/maskString';
+import downloadDocument from '@/helpers/downloadDocument';
 
 function VendasTransportadorasDetalhes() {
   const formRef = useRef(null);
@@ -200,7 +201,7 @@ function VendasTransportadorasDetalhes() {
                                     dataDocs.items.map(d => (
                                       <tr
                                         key={d?.id.toString()}
-                                        onClick={() => router.push(d?.url)}
+                                        onClick={() => downloadDocument(d.url)}
                                       >
                                         <td>{d?.name}</td>
                                         <td onClick={e => e.stopPropagation()}>
