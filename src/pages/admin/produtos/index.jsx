@@ -30,6 +30,7 @@ import { dateConversor } from '@/helpers/date';
 import isEmpty from '@/helpers/isEmpty';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 import usersTypes from '@/helpers/usersTypes';
+import InputSearch from '@/components/InputSearch/index';
 
 function AdminProducts() {
   const [alertMsg, setAlertMsg] = useState({ type: '', message: '' });
@@ -108,6 +109,17 @@ function AdminProducts() {
                 {alertMsg.message && (
                   <Alert type={alertMsg.type}>{alertMsg.message}</Alert>
                 )}
+                <InputSearch
+                  filters={{
+                    date: true,
+                    checkboxes: {
+                      is_green: {
+                        name: 'Buscar por verde',
+                        defaultValue: true
+                      }
+                    }
+                  }}
+                />
                 {((data || loading) && (
                   <>
                     <div className="table-responsive">

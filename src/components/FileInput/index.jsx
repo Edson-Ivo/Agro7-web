@@ -161,7 +161,7 @@ const FileInput = (
       </span>
       {selected.count > 0 && (
         <div className={style.files}>
-          <div className={style.selecteds}>
+          <div className={style.selected}>
             {selected.count > 1
               ? 'Arquivos selecionados'
               : 'Arquivo selecionado'}

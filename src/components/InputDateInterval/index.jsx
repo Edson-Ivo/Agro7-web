@@ -2,6 +2,9 @@ import React, { useState, useEffect, useRef, memo } from 'react';
 import { useRouter } from 'next/router';
 import { Form } from '@unform/web';
 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTimes } from '@fortawesome/free-solid-svg-icons';
+
 import Input from '@/components/Input';
 import Button from '@/components/Button';
 import Select from '@/components/Select';
@@ -15,6 +18,7 @@ import {
   isValidDate
 } from '@/helpers/date';
 import isEmpty from '@/helpers/isEmpty';
+import mountQuery from '@/helpers/mountQuery';
 
 const selectOptions = [
   {
@@ -49,8 +53,11 @@ const selectOptions = [
 
 const InputDateInterval = ({
   url = '',
+  toQuery = true,
+  resetDateOption = false,
   onDateStartSelect = () => null,
   onDateEndSelect = () => null,
+  onPeriodSelect = () => null,
   onError = () => null,
   ...rest
 }) => {
@@ -76,12 +83,31 @@ const InputDateInterval = ({
     setDateEvent(dateValue);
   };
 
+  const handleResetDates = () => {
+    setError('');
+    setDateStart(null);
+    setDateEnd(null);
+    setDateStartSearch(null);
+    setDateEndSearch(null);
+    setPeriod('undefined');
+
+    formRef.current.reset();
+
+    if (toQuery)
+      router.push(
+        mountQuery(router, url, {}, ['period', 'dateStart', 'dateEnd'])
+      );
+  };
+
   const handleChangeSetPeriod = e => {
     const val = e?.value;
 
     if (val) {
       setPeriod(val);
-      router.push(`${url}?period=${val}`);
+      if (toQuery)
+        router.push(
+          mountQuery(router, url, { period: val }, ['dateStart', 'dateEnd'])
+        );
 
       if (val === 'custom') {
         setLoadingCustom(true);
@@ -90,6 +116,8 @@ const InputDateInterval = ({
           setLoadingCustom(false);
         }, 500);
       }
+
+      onPeriodSelect(val);
     }
   };
 
@@ -104,9 +132,8 @@ const InputDateInterval = ({
       setDateStartSearch(dateStart);
       setDateEndSearch(dateEnd);
 
-      router.push(
-        `${url}?period=custom&dateStart=${dateStart}&dateEnd=${dateEnd}`
-      );
+      if (toQuery)
+        router.push(mountQuery(router, url, { period, dateStart, dateEnd }));
     } else {
       setError('Selecione um período válido!');
     }
@@ -132,8 +159,7 @@ const InputDateInterval = ({
     if (!isEmpty(queryPeriod)) {
       const validQueryPeriod = isValidPeriod(queryPeriod);
 
-      if (validQueryPeriod) setPeriod(queryPeriod);
-      else setPeriod('undefined');
+      setPeriod(validQueryPeriod ? queryPeriod : 'undefined');
     } else {
       setPeriod('undefined');
     }
@@ -255,16 +281,23 @@ const InputDateInterval = ({
                         />
                       </div>
                     </div>
-                    <Button
-                      type="button"
-                      className="primary"
-                      onClick={() => handleSubmitDates()}
-                    >
-                      Filtrar pelo período escolhido
-                    </Button>
+                    <div className="form-group">
+                      <Button
+                        type="button"
+                        className="primary"
+                        onClick={() => handleSubmitDates()}
+                      >
+                        Filtrar pelo período escolhido
+                      </Button>
+                    </div>
                   </>
                 )) || <Loader />}
               </>
+            )}
+            {resetDateOption && (
+              <Button type="button" onClick={() => handleResetDates()}>
+                <FontAwesomeIcon icon={faTimes} /> Limpar Filtro
+              </Button>
             )}
           </Form>
         </div>

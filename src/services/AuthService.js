@@ -1,6 +1,12 @@
+import Router from 'next/router';
 import { Base64 } from 'js-base64';
 import isValidJSON from '@/helpers/isValidJSON';
-import { AUTH_COOKIE_NAME, AUTH_COOKIE_TOKEN } from './constants';
+import isEmpty from '@/helpers/isEmpty';
+import {
+  AUTH_COOKIE_NAME,
+  AUTH_COOKIE_TOKEN,
+  REDIRECT_COOKIE_NAME
+} from './constants';
 import { getCookie, setCookie, removeCookie } from '../helpers/cookies';
 
 import { api } from './api';
@@ -26,11 +32,16 @@ class AuthService {
           this.setUserDataCookie(user);
         }
 
-        return response.data;
+        const redirect = this.getSavePage();
+        removeCookie(REDIRECT_COOKIE_NAME);
+
+        return { data: response.data, redirect };
       });
   }
 
-  static logout() {
+  static logout(savePage = false) {
+    if (savePage) this.savePage();
+
     removeCookie(AUTH_COOKIE_TOKEN);
     removeCookie(AUTH_COOKIE_NAME);
   }
@@ -61,6 +72,16 @@ class AuthService {
         image_url: ''
       }
     };
+  }
+
+  static savePage() {
+    setCookie(REDIRECT_COOKIE_NAME, Base64.encode(Router.router.asPath));
+  }
+
+  static getSavePage() {
+    const page = getCookie(REDIRECT_COOKIE_NAME);
+
+    return !isEmpty(page) ? Base64.decode(page) : '/';
   }
 
   static setUserDataCookie(data) {

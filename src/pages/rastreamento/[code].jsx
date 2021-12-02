@@ -18,6 +18,7 @@ import { CardContentButton } from '@/components/CardContentButton';
 import { SectionDate } from '@/components/SectionDate';
 import Error from '@/components/Error';
 import Loader from '@/components/Loader';
+import ReadMore from '@/components/ReadMore';
 
 import {
   Container,
@@ -129,10 +130,12 @@ export default function Rastreamento({ sale }) {
                 </div>
                 <div className="card__body">
                   <p className="card__body__description">
-                    {
-                      sale?.harvests_sales?.[0]?.harvests?.cultures?.products
-                        ?.description
-                    }
+                    <ReadMore>
+                      {
+                        sale?.harvests_sales?.[0]?.harvests?.cultures?.products
+                          ?.description
+                      }
+                    </ReadMore>
                   </p>
                   <CardContentButtons>
                     <CardContentButton

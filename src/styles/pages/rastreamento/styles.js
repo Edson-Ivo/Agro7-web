@@ -224,7 +224,7 @@ export const CardContentButtons = styled.div`
 export const HeaderMoreInfo = styled.div`
   position: absolute;
   bottom: 0;
-  padding-bottom: 46px;
+  margin-bottom: 46px;
   left: 0;
   margin-top: 0;
   display: flex;

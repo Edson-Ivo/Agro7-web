@@ -33,7 +33,7 @@ const Navbar = () => {
   } = useSelector(state => state.user);
 
   const handleClick = () => {
-    setOpen(!open);
+    setOpen(prevOpen => !prevOpen);
   };
 
   const handleLogout = () => {
@@ -50,6 +50,9 @@ const Navbar = () => {
             <FontAwesomeIcon
               icon={!navOpen ? faBars : faTimes}
               onClick={() => dispatch(NavToogleAction())}
+              onKeyPress={() => dispatch(NavToogleAction())}
+              role="button"
+              tabIndex="0"
               className="navbar_toggle__icon"
             />
             <Link href="/">
@@ -91,7 +94,7 @@ const Navbar = () => {
                   className="navbar_button__icon"
                 />
               </h5>
-              <Tooltip opened={open} clickAction={handleClick}>
+              <Tooltip opened={open} onClickOutside={() => setOpen(false)}>
                 <ul>
                   <Link href="/configuracoes/perfil">
                     <li>

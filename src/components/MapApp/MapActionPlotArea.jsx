@@ -63,13 +63,13 @@ const MapActionPlotArea = ({
   }, []);
 
   useEffect(() => {
-    if (onAreaCalc !== undefined) {
+    if (typeof onAreaCalc !== 'undefined') {
       onAreaCalc(handleAreaCalc());
     }
   }, [initialPath, path]);
 
   const handleClick = e => {
-    if (onClick !== undefined) {
+    if (typeof onClick !== 'undefined') {
       const pos = { lat: e.latLng.lat(), lng: e.latLng.lng() };
       const keysMap = {
         lat: 'latitude',
@@ -97,7 +97,7 @@ const MapActionPlotArea = ({
   };
 
   const reset = () => {
-    if (onClick !== undefined) {
+    if (typeof onClick !== 'undefined') {
       setPath([]);
 
       onClick([]);
@@ -124,7 +124,7 @@ const MapActionPlotArea = ({
         {path.length > 0 && <Polygon paths={path} options={options} />}
       </MapWrapper>
 
-      {onClick !== undefined && (
+      {typeof onClick !== 'undefined' && (
         <Button type="button" className="primary" onClick={() => reset()}>
           Limpar desenho
         </Button>

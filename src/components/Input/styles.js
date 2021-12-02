@@ -2,6 +2,33 @@ import styled, { css } from 'styled-components';
 
 export const InputContainer = styled.div`
   position: relative;
+
+  ${props =>
+    props?.checkboxContainer &&
+    css`
+      align-items: center;
+      display: flex;
+      margin: 0;
+
+      & > input[type='checkbox'] {
+        accent-color: ${props.theme.colors.primary};
+        cursor: pointer;
+        height: auto;
+        margin: 0;
+        margin-left: 10px;
+      }
+
+      & > label {
+        align-items: center;
+        cursor: pointer;
+        display: flex;
+        font-weight: 600;
+        padding: 12px 8px;
+        margin: 0;
+        user-select: none;
+        width: 100%;
+      }
+    `}
 `;
 
 export const StyledInput = styled.input`
