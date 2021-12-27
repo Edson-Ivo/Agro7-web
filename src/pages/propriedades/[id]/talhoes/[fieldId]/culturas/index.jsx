@@ -25,12 +25,13 @@ import isEmpty from '@/helpers/isEmpty';
 import Pagination from '@/components/Pagination/index';
 import CulturesService from '@/services/CulturesService';
 import Error from '@/components/Error/index';
-import { useSelector } from 'react-redux';
-import urlRoute from '@/helpers/urlRoute';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 import { dateConversor } from '@/helpers/date';
 import maskString from '@/helpers/maskString';
 import useUserAccess from '@/hooks/useUserAccess';
+import InputSearch from '@/components/InputSearch/index';
+import objectToQuery from '@/helpers/objectToQuery';
+import useRewriteRoute from '@/hooks/useRewriteRoute';
 
 function Culturas() {
   const router = useRouter();
@@ -44,8 +45,7 @@ function Culturas() {
 
   const { data, error } = useFetch(`/fields/find/by/id/${fieldId}`);
 
-  const { type } = useSelector(state => state.user);
-  const [route, setRoute] = useState({});
+  const route = useRewriteRoute(router);
   const [baseUrl, setBaseUrl] = useState('');
 
   const [userAccess, loadingUserAccess] = useUserAccess(
@@ -54,19 +54,24 @@ function Culturas() {
   );
 
   useEffect(() => {
-    setRoute(urlRoute(router, type));
-  }, []);
-
-  useEffect(() => {
-    setBaseUrl(`${route.path}/${id}/talhoes/${fieldId}/culturas`);
+    if (!isEmpty(route?.path))
+      setBaseUrl(`${route.path}/${id}/talhoes/${fieldId}/culturas`);
   }, [route]);
+
+  const [search, setSearch] = useState('');
+  const [filters, setFilters] = useState({
+    date_start: '',
+    data_finish: ''
+  });
 
   const {
     data: dataCultures,
     error: errorCultures,
     mutate: mutateCultures
   } = useFetch(
-    `/cultures/find/by/field/${fieldId}?limit=${perPage}&page=${page}`
+    `/cultures/find/by/field/${fieldId}?limit=${perPage}&page=${page}&search=${search}&${objectToQuery(
+      filters
+    )}`
   );
 
   const handleDelete = useCallback(
@@ -144,6 +149,16 @@ function Culturas() {
                 <>
                   {alertMsg.message && (
                     <Alert type={alertMsg.type}>{alertMsg.message}</Alert>
+                  )}
+                  {!isEmpty(baseUrl) && (
+                    <InputSearch
+                      url={`${baseUrl}`}
+                      filters={{
+                        date: true
+                      }}
+                      onFilterChange={f => setFilters({ ...f })}
+                      onSubmitSearch={q => setSearch(q)}
+                    />
                   )}
                   {(((data && dataCultures && !loadingUserAccess) ||
                     loading) && (

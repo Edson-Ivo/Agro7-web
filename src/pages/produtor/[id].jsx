@@ -30,6 +30,7 @@ import { api } from '@/services/api';
 import isEmpty from '@/helpers/isEmpty';
 import extractYoutubeVideoID from '@/helpers/extractYoutubeVideoID';
 import YoutubeEmbed from '@/components/YoutubeEmbed/index';
+import ReadMore from '@/components/ReadMore/index';
 
 export default function Produtor({ profile }) {
   const router = useRouter();
@@ -133,8 +134,10 @@ export default function Produtor({ profile }) {
               <div>
                 <h2>Sobre mim:</h2>
                 <p>
-                  {profile?.profiles?.about ||
-                    'Esse produtor ainda não colocou uma descrição.'}
+                  <ReadMore>
+                    {profile?.profiles?.about ||
+                      'Esse produtor ainda não colocou uma descrição.'}
+                  </ReadMore>
                 </p>
               </div>
               {!isEmpty(profile?.embedId) && (
@@ -219,7 +222,7 @@ export const getStaticPaths = () => ({
 
 export const getStaticProps = async ctx => {
   const { id } = ctx.params;
-  const url = `/users/find-to-user/by/id/${id}`;
+  const url = `/users/find-to-client/by/id/${id}`;
 
   let profile = null;
   let notFound = false;

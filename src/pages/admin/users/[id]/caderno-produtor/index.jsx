@@ -4,7 +4,6 @@ import Head from 'next/head';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
-import { Form } from '@unform/web';
 import { useMediaQuery } from 'react-responsive';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -16,7 +15,6 @@ import Navbar from '@/components/Navbar';
 
 import Error from '@/components/Error';
 import Loader from '@/components/Loader';
-import Select from '@/components/Select';
 import Button from '@/components/Button';
 import DatePicker from '@/components/DatePicker';
 import { Section, SectionHeader, SectionBody } from '@/components/Section';
@@ -54,6 +52,8 @@ import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 import { truncateProducerNotebook } from '@/helpers/truncate';
 import isEmpty, { isArrayOfEmpty } from '@/helpers/isEmpty';
 import usersTypes from '@/helpers/usersTypes';
+import objectToQuery from '@/helpers/objectToQuery';
+import InputSearch from '@/components/InputSearch/index';
 
 function UserProducerNotebook() {
   const daysRef = createRef();
@@ -78,13 +78,22 @@ function UserProducerNotebook() {
   const [userWeekRecords, setUserWeekRecords] = useState([]);
   const [monthSelected, setMonthSelected] = useState('');
 
+  const [search, setSearch] = useState('');
+  const [filters, setFilters] = useState({
+    is_log: '',
+    categories: ''
+  });
+  const [dataCategoriesOptions, setDataCategoriesOptions] = useState([]);
+
   const { id, searchDate = null } = router.query;
 
   const { data, error, size, setSize, isValidating } = useInfiniteFetch(
     activeDate !== null
       ? `/producer-notebook/find/by/user/${id}?date_start=${activeDate}&date_finish=${dateToISOStringFinish(
           activeDate
-        )}${activeCategory !== '' ? `&categories=${activeCategory}` : ''}`
+        )}&search=${search}${
+          objectToQuery(filters) ? `&${objectToQuery(filters)}` : ''
+        }`
       : null,
     pageSize
   );
@@ -129,9 +138,7 @@ function UserProducerNotebook() {
     if (isVisible && !isReachingEnd && !isRefreshing) setSize(size + 1);
   }, [isVisible, isRefreshing]);
 
-  useEffect(() => {
-    handleDate();
-  }, [searchDate]);
+  useEffect(() => handleDate(), [searchDate]);
 
   useEffect(() => {
     if (!isEmpty(activeDate)) {
@@ -179,6 +186,17 @@ function UserProducerNotebook() {
     }
   }, [dataUserRecordsWeek]);
 
+  useEffect(() => {
+    if (!isEmpty(dataCategories)) {
+      const c = dataCategories?.items?.map(item => ({
+        value: item?.id,
+        label: item?.name
+      }));
+
+      setDataCategoriesOptions([{ value: 'all', label: 'Todas' }, ...c]);
+    }
+  }, [dataCategories]);
+
   const handleDate = () => {
     const actualWeek = weekDays();
     let actualDate = null;
@@ -201,8 +219,6 @@ function UserProducerNotebook() {
     router.push(`/admin/users/${id}/caderno-produtor?searchDate=${date}`);
     setHideCalendar(true);
   };
-
-  const handleChangeCategory = e => setActiveCategory(e?.value || '');
 
   if (
     errorCategories ||
@@ -322,25 +338,40 @@ function UserProducerNotebook() {
                       Anotações do dia {dateConversor(activeDate, false)}:
                     </h4>
                   </div>
-                  {dataCategories && (
-                    <div>
-                      <Form
-                        ref={formRef}
-                        initialData={{ types: activeCategory }}
-                      >
-                        <Select
-                          options={dataCategories?.items.map(category => ({
-                            value: category.id,
-                            label: category.name
-                          }))}
-                          label="Filtrar por categoria"
-                          name="types"
-                          clearable
-                          noLabel
-                          onChange={handleChangeCategory}
-                        />
-                      </Form>
-                    </div>
+
+                  {dataCategoriesOptions && (
+                    <InputSearch
+                      url={`/admin/users/${id}/caderno-produtor`}
+                      filters={{
+                        selects: {
+                          is_log: {
+                            options: [
+                              {
+                                value: 'all',
+                                label: 'Todos'
+                              },
+                              {
+                                value: '1',
+                                label: 'Histórico'
+                              },
+                              {
+                                value: '0',
+                                label: 'Anotações'
+                              }
+                            ],
+                            label: 'Listar somente',
+                            defaultValue: 'all'
+                          },
+                          categories: {
+                            options: dataCategoriesOptions,
+                            label: 'Categoria',
+                            defaultValue: 'all'
+                          }
+                        }
+                      }}
+                      onFilterChange={f => setFilters({ ...f })}
+                      onSubmitSearch={q => setSearch(q)}
+                    />
                   )}
                 </div>
                 {!isEmpty(activeDate) && data && (

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import styled from 'styled-components';
 import ReactPaginate from 'react-paginate';
+import mountQuery from '@/helpers/mountQuery';
 
 export const PaginationWrapper = styled.div`
   display: flex;
@@ -89,7 +90,9 @@ const Pagination = ({
 
   const handlePageClick = data => {
     if (setPage === null) {
-      router.push(`${url}?${page}=${Number(data.selected) + 1}`);
+      router.push(
+        mountQuery(router, url, { [page]: Number(data.selected) + 1 })
+      );
     } else {
       setPage(Number(data.selected) + 1);
     }

@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect, useRef } from 'react';
+import React, { useState, useCallback, useRef } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
 import { Form } from '@unform/web';
@@ -31,13 +31,13 @@ import capitalize from '@/helpers/capitalize';
 import DocumentsService from '@/services/DocumentsService';
 import Pagination from '@/components/Pagination/index';
 import Error from '@/components/Error/index';
-import { useSelector } from 'react-redux';
-import urlRoute from '@/helpers/urlRoute';
 import isEmpty from '@/helpers/isEmpty';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 import maskString from '@/helpers/maskString';
 import useUserAccess from '@/hooks/useUserAccess';
 import downloadDocument from '@/helpers/downloadDocument';
+import InputSearch from '@/components/InputSearch/index';
+import useRewriteRoute from '@/hooks/useRewriteRoute';
 
 function PropertyInfo() {
   const [activeStep, setActiveStep] = useState(1);
@@ -54,18 +54,14 @@ function PropertyInfo() {
 
   const { data, error } = useFetch(`/properties/find/by/id/${id}`);
 
+  const [search, setSearch] = useState('');
+
   const { data: dataDocs, error: errorDocs, mutate: mutateDocs } = useFetch(
-    `/properties-documents/find/property/${id}?limit=${perPageDocs}&page=${pageDocs}`
+    `/properties-documents/find/property/${id}?limit=${perPageDocs}&page=${pageDocs}&search=${search}`
   );
 
-  const { type } = useSelector(state => state.user);
-  const [route, setRoute] = useState({});
-
+  const route = useRewriteRoute(router);
   const [userAccess, loadingUserAccess] = useUserAccess(route, data?.users?.id);
-
-  useEffect(() => {
-    setRoute(urlRoute(router, type));
-  }, []);
 
   const handleDelete = useCallback(
     async identifier => {
@@ -318,8 +314,11 @@ function PropertyInfo() {
                         {alertMsg.message && (
                           <Alert type={alertMsg.type}>{alertMsg.message}</Alert>
                         )}
-                        {(((data && !loadingUserAccess && dataDocs) ||
-                          loading) && (
+                        <InputSearch
+                          url={`${route.path}/${id}/detalhes`}
+                          onSubmitSearch={q => setSearch(q)}
+                        />
+                        {(((data && dataDocs) || loading) && (
                           <>
                             <Table>
                               <thead>
@@ -336,7 +335,7 @@ function PropertyInfo() {
                                       onClick={() => downloadDocument(d.url)}
                                     >
                                       <td>{d.name}</td>
-                                      <td>
+                                      <td onClick={e => e.stopPropagation()}>
                                         <ActionButton
                                           id={d.id}
                                           download={d.url}

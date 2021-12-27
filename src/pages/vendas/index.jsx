@@ -38,6 +38,8 @@ import SalesService from '@/services/SalesService';
 import { dateConversor } from '@/helpers/date';
 import maskString from '@/helpers/maskString';
 import usersTypes from '@/helpers/usersTypes';
+import InputSearch from '@/components/InputSearch/index';
+import objectToQuery from '@/helpers/objectToQuery';
 
 function Vendas() {
   const [alertMsg, setAlertMsg] = useState({ type: '', message: '' });
@@ -52,8 +54,16 @@ function Vendas() {
 
   const { addModal, removeModal } = useModal();
 
+  const [search, setSearch] = useState('');
+  const [filters, setFilters] = useState({
+    date_start: '',
+    date_finish: ''
+  });
+
   const { data, error, mutate } = useFetch(
-    `/sales/find/by/user-logged?limit=${perPage}&page=${page}`
+    `/sales/find/by/user-logged?limit=${perPage}&page=${page}&search=${search}&${objectToQuery(
+      filters
+    )}`
   );
 
   const handleDelete = useCallback(
@@ -136,6 +146,12 @@ function Vendas() {
                 {alertMsg.message && (
                   <Alert type={alertMsg.type}>{alertMsg.message}</Alert>
                 )}
+                <InputSearch
+                  url="/vendas"
+                  filters={{ date: true }}
+                  onFilterChange={f => setFilters({ ...f })}
+                  onSubmitSearch={q => setSearch(q)}
+                />
                 {((data || loading) && (
                   <>
                     <div className="table-responsive">

@@ -30,6 +30,7 @@ import { dateConversor } from '@/helpers/date';
 import isEmpty from '@/helpers/isEmpty';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 import usersTypes from '@/helpers/usersTypes';
+import InputSearch from '@/components/InputSearch/index';
 
 function AdminProducts() {
   const [alertMsg, setAlertMsg] = useState({ type: '', message: '' });
@@ -40,8 +41,10 @@ function AdminProducts() {
   const perPage = 10;
   const { page = 1 } = router.query;
 
+  const [search, setSearch] = useState('');
+
   const { data, error, mutate } = useFetch(
-    `/products/find/all?limit=${perPage}&page=${page}`
+    `/products/find/all?limit=${perPage}&page=${page}&search=${search}`
   );
   const { addModal, removeModal } = useModal();
 
@@ -108,6 +111,10 @@ function AdminProducts() {
                 {alertMsg.message && (
                   <Alert type={alertMsg.type}>{alertMsg.message}</Alert>
                 )}
+                <InputSearch
+                  url="/admin/produtos"
+                  onSubmitSearch={q => setSearch(q)}
+                />
                 {((data || loading) && (
                   <>
                     <div className="table-responsive">

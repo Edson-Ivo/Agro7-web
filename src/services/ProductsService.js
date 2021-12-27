@@ -3,14 +3,6 @@ import * as yup from 'yup';
 import { api } from './api';
 
 class ProductsService {
-  static async findAll() {
-    return api.get(`/products/find/all`);
-  }
-
-  static async findById(id) {
-    return api.get(`/products/find/by/id/${id}`);
-  }
-
   static async create(data) {
     try {
       const response = await api.post(`/products/create`, data, {

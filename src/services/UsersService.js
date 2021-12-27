@@ -1,18 +1,6 @@
 import { api } from './api';
 
 class UsersService {
-  static async findAll() {
-    return api.get('/users/find/all');
-  }
-
-  static async findById(id) {
-    return api.get(`/users/find/by/id/${id}`);
-  }
-
-  static async findByLogged() {
-    return api.get('/users/find/by/logged/');
-  }
-
   static async create(data) {
     try {
       const response = await api.post(`/users/create`, { ...data });

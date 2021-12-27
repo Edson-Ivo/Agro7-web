@@ -21,11 +21,12 @@ import isEmpty from '@/helpers/isEmpty';
 import Pagination from '@/components/Pagination/index';
 import Error from '@/components/Error/index';
 import { useSelector } from 'react-redux';
-import urlRoute from '@/helpers/urlRoute';
 import PropertiesService from '@/services/PropertiesService';
 import { dateConversor } from '@/helpers/date';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 import usersTypes from '@/helpers/usersTypes';
+import InputSearch from '@/components/InputSearch/index';
+import useRewriteRoute from '@/hooks/useRewriteRoute';
 
 function SolicitacoesTecnicos() {
   const router = useRouter();
@@ -40,22 +41,21 @@ function SolicitacoesTecnicos() {
   const [loading, setLoading] = useState(false);
 
   const { id: userId, type } = useSelector(state => state.user);
-  const [route, setRoute] = useState({});
+
+  const route = useRewriteRoute(router);
   const [baseUrl, setBaseUrl] = useState('');
   const [willAccess, setWillAccess] = useState(true);
 
   const { data, error } = useFetch(`/properties/find/by/id/${id}`);
 
+  const [search, setSearch] = useState('');
+
   const { data: dataTec, error: errorTec, mutate: mutateTec } = useFetch(
-    `/technicians-requests/find/by/property/${id}?limit=${perPage}&page=${page}`
+    `/technicians-requests/find/by/property/${id}?limit=${perPage}&page=${page}&search=${search}`
   );
 
   useEffect(() => {
-    setRoute(urlRoute(router, type));
-  }, []);
-
-  useEffect(() => {
-    setBaseUrl(`${route.path}/${id}/tecnicos`);
+    if (!isEmpty(route?.path)) setBaseUrl(`${route.path}/${id}/tecnicos`);
   }, [route]);
 
   useEffect(() => {
@@ -140,6 +140,12 @@ function SolicitacoesTecnicos() {
                 <>
                   {alertMsg.message && (
                     <Alert type={alertMsg.type}>{alertMsg.message}</Alert>
+                  )}
+                  {!isEmpty(baseUrl) && (
+                    <InputSearch
+                      url={`${baseUrl}`}
+                      onSubmitSearch={q => setSearch(q)}
+                    />
                   )}
                   {(((data && dataTec) || loading) && (
                     <>

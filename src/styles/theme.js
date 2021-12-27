@@ -8,6 +8,7 @@ const theme = {
     gray: '#F4F5F5',
     white: '#FFFFFF',
     primary: '#23424E',
+    primary_65: 'rgba(35, 66, 78, 0.65)',
     blue: '#3195BC',
     secondary: 'rgba(87, 229, 199, 0.5)',
     green: '#27AB8F',

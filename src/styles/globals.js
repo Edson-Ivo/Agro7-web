@@ -4,9 +4,24 @@ import { ShowTransition } from './mixins';
 export default createGlobalStyle`
 
   * {
-    margin: 0;
-    padding: 0;
     box-sizing: border-box;
+    margin: 0;
+    outline: 0;
+    padding: 0;
+  }
+
+  a, button, input, [role="button"] {
+    &:focus {
+      box-shadow: 0 0 0 2px ${props => props.theme.colors.primary_65};
+    }
+  }
+
+  .select__control:focus-within {
+    box-shadow: 0 0 0 2px ${props => props.theme.colors.primary_65};
+  }
+
+  .select__input > input:focus {
+    box-shadow: none !important;
   }
 
   body {
@@ -107,6 +122,10 @@ export default createGlobalStyle`
     flex-direction: row;
     position: relative;
     width: 100%;
+
+    button {
+      width: 100%;
+    }
 
     &.buttons {
       margin-top: 15px;

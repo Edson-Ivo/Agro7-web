@@ -11,7 +11,7 @@ const Select = ({
   disabled,
   searchable = false,
   clearable = false,
-  onChange = null,
+  onChange = () => null,
   noLabel = false,
   ...rest
 }) => {
@@ -43,7 +43,7 @@ const Select = ({
   }, [fieldName, registerField, rest.isMulti]);
 
   const handleChange = e => {
-    if (onChange !== null) onChange(e);
+    onChange(e);
   };
 
   return (

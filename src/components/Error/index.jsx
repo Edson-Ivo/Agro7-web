@@ -44,7 +44,7 @@ export default function Error({ error }) {
     const catchedError =
       typeof error === 'object' ? error?.response?.data?.statusCode : error;
 
-    if (catchedError === 401) AuthService.logout();
+    if (catchedError === 401) AuthService.logout(true);
 
     setDataError(
       errorExists(catchedError) ? dataErrors[catchedError] : dataErrors.default

@@ -1,14 +1,6 @@
 import { api } from './api';
 
 class ProducerNotebookService {
-  static async findAll() {
-    return api.get('/producer-notebook/find/all');
-  }
-
-  static async findById(id) {
-    return api.get(`/producer-notebook/find/by/id/${id}`);
-  }
-
   static async create(data) {
     try {
       const response = await api.post(`/producer-notebook/create`, { ...data });

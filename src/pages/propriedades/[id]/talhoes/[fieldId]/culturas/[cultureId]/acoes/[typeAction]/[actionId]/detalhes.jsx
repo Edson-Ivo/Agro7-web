@@ -51,7 +51,7 @@ function AcoesCulturasDetalhes() {
     fieldId,
     cultureId,
     actionId,
-    type: typeAction,
+    typeAction,
     pageDocs = 1
   } = router.query;
 
@@ -253,7 +253,9 @@ function AcoesCulturasDetalhes() {
                                             }
                                           >
                                             <td>{d.name}</td>
-                                            <td>
+                                            <td
+                                              onClick={e => e.stopPropagation()}
+                                            >
                                               <ActionButton
                                                 id={d.id}
                                                 download={d.url}

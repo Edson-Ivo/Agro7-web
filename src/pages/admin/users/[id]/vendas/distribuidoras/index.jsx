@@ -27,6 +27,7 @@ import SalesService from '@/services/SalesService';
 import { dateConversor } from '@/helpers/date';
 import maskString from '@/helpers/maskString';
 import usersTypes from '@/helpers/usersTypes';
+import InputSearch from '@/components/InputSearch/index';
 
 function AdminUsersVendasDistribuidoras() {
   const [alertMsg, setAlertMsg] = useState({ type: '', message: '' });
@@ -39,8 +40,10 @@ function AdminUsersVendasDistribuidoras() {
 
   const { addModal, removeModal } = useModal();
 
+  const [search, setSearch] = useState('');
+
   const { data, error, mutate } = useFetch(
-    `/distributors/find/by/user/${id}?limit=${perPage}&page=${page}`
+    `/distributors/find/by/user/${id}?limit=${perPage}&page=${page}&search=${search}`
   );
 
   const { data: dataUser, error: errorUser } = useFetch(
@@ -112,6 +115,10 @@ function AdminUsersVendasDistribuidoras() {
                 {alertMsg.message && (
                   <Alert type={alertMsg.type}>{alertMsg.message}</Alert>
                 )}
+                <InputSearch
+                  url={`/admin/users/${id}/vendas/distribuidoras`}
+                  onSubmitSearch={q => setSearch(q)}
+                />
                 {((data || loading) && (
                   <>
                     <div className="table-responsive">

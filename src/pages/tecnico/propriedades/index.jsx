@@ -26,6 +26,7 @@ import { Alert } from '@/components/Alert/index';
 import isEmpty from '@/helpers/isEmpty';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 import usersTypes from '@/helpers/usersTypes';
+import InputSearch from '@/components/InputSearch/index';
 
 function PropertiesTechnichian() {
   const [alertMsg, setAlertMsg] = useState({ type: '', message: '' });
@@ -37,8 +38,10 @@ function PropertiesTechnichian() {
   const { page = 1 } = router.query;
   const perPage = 10;
 
+  const [search, setSearch] = useState('');
+
   const { data, error, mutate } = useFetch(
-    `/technicians-properties/find/by/technician/${id}?limit=${perPage}&page=${page}`
+    `/technicians-properties/find/by/technician/${id}?limit=${perPage}&page=${page}&search=${search}`
   );
 
   const { addModal, removeModal } = useModal();
@@ -57,7 +60,7 @@ function PropertiesTechnichian() {
 
             setAlertMsg({
               type: 'success',
-              message: 'Propriedade desconctada com sucesso!'
+              message: 'Propriedade desconectada com sucesso!'
             });
           }
         }
@@ -106,6 +109,10 @@ function PropertiesTechnichian() {
                 {alertMsg.message && (
                   <Alert type={alertMsg.type}>{alertMsg.message}</Alert>
                 )}
+                <InputSearch
+                  url="/tecnico/propriedades"
+                  onSubmitSearch={q => setSearch(q)}
+                />
                 {((data || loading) && (
                   <>
                     <div className="table-responsive">
