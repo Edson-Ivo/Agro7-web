@@ -41,8 +41,10 @@ function AdminProducts() {
   const perPage = 10;
   const { page = 1 } = router.query;
 
+  const [search, setSearch] = useState('');
+
   const { data, error, mutate } = useFetch(
-    `/products/find/all?limit=${perPage}&page=${page}`
+    `/products/find/all?limit=${perPage}&page=${page}&search=${search}`
   );
   const { addModal, removeModal } = useModal();
 
@@ -110,15 +112,8 @@ function AdminProducts() {
                   <Alert type={alertMsg.type}>{alertMsg.message}</Alert>
                 )}
                 <InputSearch
-                  filters={{
-                    date: true,
-                    checkboxes: {
-                      is_green: {
-                        name: 'Buscar por verde',
-                        defaultValue: true
-                      }
-                    }
-                  }}
+                  url="/admin/produtos"
+                  onSubmitSearch={q => setSearch(q)}
                 />
                 {((data || loading) && (
                   <>

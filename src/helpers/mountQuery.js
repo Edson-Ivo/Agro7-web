@@ -11,21 +11,36 @@ const mountQuery = (
   let newQuery = [];
   let { query } = router;
   const { pathname } = router;
+  const params = pathname.split('/');
 
   query = {
     ...query,
     ...queryParams
   };
 
-  Object.keys(query).forEach(type => {
-    const q = query?.[type];
+  const blocked = [
+    'id',
+    'userId',
+    'fieldId',
+    'docId',
+    'cultureId',
+    'actionId',
+    'harvestId',
+    'vehicleId',
+    'typeAction'
+  ].concat(blockedQueryList);
 
+  Object.entries(query).forEach(([type, q]) => {
     if (
-      !blockedQueryList.includes(type) ||
+      !blocked.includes(type) ||
       (allowedQueryList && allowedQueryList.includes(type))
     ) {
-      if ((allowedEmpty && isEmpty(q)) || !isEmpty(q))
-        newQuery.push(`${type}=${encodeURIComponent(q)}`);
+      if ((allowedEmpty && isEmpty(q)) || !isEmpty(q)) {
+        const t = `[${type}]`;
+
+        if (!params.includes(t))
+          newQuery.push(`${type}=${encodeURIComponent(q)}`);
+      }
     }
   });
 

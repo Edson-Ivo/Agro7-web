@@ -28,9 +28,11 @@ import TechnicianActionsService from '@/services/TechnicianActionsService';
 import truncate from '@/helpers/truncate';
 import { dateConversor } from '@/helpers/date';
 import Error from '@/components/Error/index';
-import urlRoute from '@/helpers/urlRoute';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
+import InputSearch from '@/components/InputSearch/index';
 import usersTypes from '@/helpers/usersTypes';
+import objectToQuery from '@/helpers/objectToQuery';
+import useRewriteRoute from '@/hooks/useRewriteRoute';
 
 function Relatorios() {
   const [willCreate, setWillCreate] = useState(false);
@@ -45,6 +47,13 @@ function Relatorios() {
   const { addModal, removeModal } = useModal();
   const [loading, setLoading] = useState(false);
 
+  const [search, setSearch] = useState('');
+  const [filters, setFilters] = useState({
+    date_start: '',
+    date_finish: '',
+    concluded: ''
+  });
+
   const { data, error } = useFetch(`/fields/find/by/id/${fieldId}`);
 
   const { data: dataCultures, error: errorCultures } = useFetch(
@@ -56,28 +65,28 @@ function Relatorios() {
     error: errorTechActions,
     mutate: mutateTechActions
   } = useFetch(
-    `/technician-actions/find/by/culture/${cultureId}?limit=${perPage}&page=${page}`
+    `/technician-actions/find/by/culture/${cultureId}?limit=${perPage}&page=${page}&search=${search}&${objectToQuery(
+      filters
+    )}`
   );
 
-  const [route, setRoute] = useState({});
+  const route = useRewriteRoute(router);
   const [baseUrl, setBaseUrl] = useState('');
 
   useEffect(() => {
-    setRoute(urlRoute(router, type));
-  }, []);
-
-  useEffect(() => {
-    setBaseUrl(
-      `${route.path}/${id}/talhoes/${fieldId}/culturas/${cultureId}/relatorios`
-    );
+    if (!isEmpty(route?.path))
+      setBaseUrl(
+        `${route.path}/${id}/talhoes/${fieldId}/culturas/${cultureId}/relatorios`
+      );
   }, [route]);
 
   useEffect(() => {
-    if (data)
+    if (data) {
       setWillCreate(
         [usersTypes[3], usersTypes[4], usersTypes[0]].includes(type) &&
           data?.properties?.users?.id !== userId
       );
+    }
   }, [data]);
 
   const handleDelete = useCallback(
@@ -162,6 +171,36 @@ function Relatorios() {
                 <>
                   {alertMsg.message && (
                     <Alert type={alertMsg.type}>{alertMsg.message}</Alert>
+                  )}
+                  {!isEmpty(baseUrl) && (
+                    <InputSearch
+                      url={`${baseUrl}`}
+                      filters={{
+                        date: true,
+                        selects: {
+                          concluded: {
+                            options: [
+                              {
+                                value: 'all',
+                                label: 'Todos'
+                              },
+                              {
+                                value: '1',
+                                label: 'Sim'
+                              },
+                              {
+                                value: '0',
+                                label: 'Não'
+                              }
+                            ],
+                            label: 'Concluído',
+                            defaultValue: 'all'
+                          }
+                        }
+                      }}
+                      onFilterChange={f => setFilters({ ...f })}
+                      onSubmitSearch={q => setSearch(q)}
+                    />
                   )}
                   {(((data && dataCultures && dataTechActions) || loading) && (
                     <>

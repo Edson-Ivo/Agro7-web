@@ -15,7 +15,7 @@ const Checkbox = ({
   const inputRef = useRef();
   const { fieldName, defaultValue, registerField, error } = useField(name);
 
-  const defaultChecked = defaultValue === value;
+  const defaultChecked = defaultValue;
 
   useEffect(() => {
     registerField({
@@ -26,7 +26,7 @@ const Checkbox = ({
         ref.current.checked = defaultChecked;
       },
       setValue: (ref, v) => {
-        ref.current.checked = v;
+        ref.current.checked = String(v).toLowerCase() === 'true';
       }
     });
   }, [defaultValue, fieldName, registerField, defaultChecked]);

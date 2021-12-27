@@ -36,7 +36,7 @@ export const InputSearchFilter = styled.div`
   }
 
   @media screen and (max-width: ${props => props.theme.breakpoints.mobile}px) {
-    width: 50px;
+    width: ${({ searchable }) => (searchable ? '50px' : '100px')};
 
     button > svg {
       margin: 0 auto;

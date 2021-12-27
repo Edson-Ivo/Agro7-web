@@ -33,13 +33,13 @@ const adminUserPropertyRoute = {
     name: 'Relatórios'
   },
 
-  '/admin/users/[userId]/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]/acoes/[type]/[actionId]': {
+  '/admin/users/[userId]/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]/acoes/[typeAction]/[actionId]': {
     name: 'Detalhes',
     path:
-      '/admin/users/[userId]/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]/acoes/[type]/[actionId]/detalhes'
+      '/admin/users/[userId]/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]/acoes/[typeAction]/[actionId]/detalhes'
   },
 
-  '/admin/users/[userId]/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]/acoes/[type]/[actionId]/editar': {
+  '/admin/users/[userId]/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]/acoes/[typeAction]/[actionId]/editar': {
     name: 'Editar'
   },
 
@@ -157,13 +157,13 @@ const adminUserTechPropertyRoute = {
     name: 'Ações'
   },
 
-  '/admin/users/[userId]/tecnico/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]/acoes/[type]/[actionId]': {
+  '/admin/users/[userId]/tecnico/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]/acoes/[typeAction]/[actionId]': {
     name: 'Detalhes',
     path:
-      '/admin/users/[userId]/tecnico/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]/acoes/[type]/[actionId]/detalhes'
+      '/admin/users/[userId]/tecnico/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]/acoes/[typeAction]/[actionId]/detalhes'
   },
 
-  '/admin/users/[userId]/tecnico/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]/acoes/[type]/[actionId]/editar': {
+  '/admin/users/[userId]/tecnico/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]/acoes/[typeAction]/[actionId]/editar': {
     name: 'Editar'
   },
 
@@ -260,13 +260,13 @@ const adminPropertyRoute = {
     name: 'Ações'
   },
 
-  '/admin/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]/acoes/[type]/[actionId]': {
+  '/admin/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]/acoes/[typeAction]/[actionId]': {
     name: 'Detalhes',
     path:
-      '/admin/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]/acoes/[type]/[actionId]/detalhes'
+      '/admin/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]/acoes/[typeAction]/[actionId]/detalhes'
   },
 
-  '/admin/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]/acoes/[type]/[actionId]/editar': {
+  '/admin/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]/acoes/[typeAction]/[actionId]/editar': {
     name: 'Editar'
   },
 
@@ -451,9 +451,9 @@ const namedSales = {
   '/vendas/transportadoras/[id]/documentos/cadastrar': {
     name: 'Cadastrar Documentos'
   },
-  '/vendas/transportadoras/[id]/veiculos/[idVehicle]': {
+  '/vendas/transportadoras/[id]/veiculos/[vehicleId]': {
     name: '%veiculo',
-    path: '/vendas/transportadoras/[id]/veiculos/[idVehicle]/detalhes'
+    path: '/vendas/transportadoras/[id]/veiculos/[vehicleId]/detalhes'
   },
   '/vendas/transportadoras/[id]/relatorio': {
     name: 'Relatório'
@@ -519,10 +519,10 @@ const adminUserSalesRoute = {
   '/admin/users/[userId]/vendas/transportadoras/[id]/relatorio': {
     name: 'Relatório'
   },
-  '/admin/users/[userId]/vendas/transportadoras/[id]/veiculos/[idVehicle]': {
+  '/admin/users/[userId]/vendas/transportadoras/[id]/veiculos/[vehicleId]': {
     name: '%veiculo',
     path:
-      '/admin/users/[userId]/vendas/transportadoras/[id]/veiculos/[idVehicle]/detalhes'
+      '/admin/users/[userId]/vendas/transportadoras/[id]/veiculos/[vehicleId]/detalhes'
   },
   '/admin/vendas': {
     name: 'Vendas'
@@ -649,11 +649,11 @@ const namedRoutes = {
     name: 'Ações'
   },
 
-  '/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]/acoes/[type]/[actionId]/detalhes': {
+  '/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]/acoes/[typeAction]/[actionId]/detalhes': {
     name: 'Detalhes'
   },
 
-  '/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]/acoes/[type]/[actionId]/editar': {
+  '/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]/acoes/[typeAction]/[actionId]/editar': {
     name: 'Editar'
   },
 
@@ -661,17 +661,17 @@ const namedRoutes = {
     name: 'Cadastrar'
   },
 
-  '/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]/acoes/[type]/[actionId]/documentos': {
+  '/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]/acoes/[typeAction]/[actionId]/documentos': {
     name: 'Documentos',
     path:
-      '/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]/acoes/[type]/[actionId]/detalhes'
+      '/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]/acoes/[typeAction]/[actionId]/detalhes'
   },
 
-  '/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]/acoes/[type]/[actionId]/documentos/cadastrar': {
+  '/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]/acoes/[typeAction]/[actionId]/documentos/cadastrar': {
     name: 'Cadastrar'
   },
 
-  '/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]/acoes/[type]/[actionId]/documentos/[docId]/editar': {
+  '/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]/acoes/[typeAction]/[actionId]/documentos/[docId]/editar': {
     name: 'Editar'
   },
 

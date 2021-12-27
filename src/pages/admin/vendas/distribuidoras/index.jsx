@@ -27,6 +27,7 @@ import SalesService from '@/services/SalesService';
 import { dateConversor } from '@/helpers/date';
 import maskString from '@/helpers/maskString';
 import usersTypes from '@/helpers/usersTypes';
+import InputSearch from '@/components/InputSearch/index';
 
 function AdminVendasDistribuidoras() {
   const [alertMsg, setAlertMsg] = useState({ type: '', message: '' });
@@ -39,8 +40,10 @@ function AdminVendasDistribuidoras() {
 
   const { addModal, removeModal } = useModal();
 
+  const [search, setSearch] = useState('');
+
   const { data, error, mutate } = useFetch(
-    `/distributors/find/all?limit=${perPage}&page=${page}`
+    `/distributors/find/all?limit=${perPage}&page=${page}&search=${search}`
   );
 
   const handleDelete = useCallback(
@@ -100,6 +103,10 @@ function AdminVendasDistribuidoras() {
                 {alertMsg.message && (
                   <Alert type={alertMsg.type}>{alertMsg.message}</Alert>
                 )}
+                <InputSearch
+                  url="/admin/vendas/distribuidoras"
+                  onSubmitSearch={q => setSearch(q)}
+                />
                 {((data || loading) && (
                   <>
                     <div className="table-responsive">

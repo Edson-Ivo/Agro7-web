@@ -29,6 +29,7 @@ import truncate from '@/helpers/truncate';
 import CategoriesService from '@/services/CategoriesService';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 import usersTypes from '@/helpers/usersTypes';
+import InputSearch from '@/components/InputSearch/index';
 
 function AdminCategories() {
   const [alertMsg, setAlertMsg] = useState({ type: '', message: '' });
@@ -39,11 +40,13 @@ function AdminCategories() {
   const perPage = 10;
   const { page = 1 } = router.query;
 
+  const [search, setSearch] = useState('');
+
   const { data, error, mutate } = useFetch(
-    `/categories/find/all?limit=${perPage}&page=${page}`
+    `/categories/find/all?limit=${perPage}&page=${page}&search=${search}`
   );
 
-  const [baseUrl] = useState(`/admin/categorias`);
+  const baseUrl = '/admin/categorias';
 
   const { addModal, removeModal } = useModal();
 
@@ -113,6 +116,7 @@ function AdminCategories() {
                 {alertMsg.message && (
                   <Alert type={alertMsg.type}>{alertMsg.message}</Alert>
                 )}
+                <InputSearch url={baseUrl} onSubmitSearch={q => setSearch(q)} />
                 {((data || loading) && (
                   <>
                     <div className="table-responsive">

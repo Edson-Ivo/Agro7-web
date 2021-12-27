@@ -26,6 +26,7 @@ const options = {
 const MapActionPlotArea = ({
   onClick,
   onAreaCalc,
+  autoCenter = false,
   initialPosition = [],
   initialPath = []
 }) => {
@@ -35,32 +36,43 @@ const MapActionPlotArea = ({
 
   useEffect(() => {
     if (initialPosition.length > 1) {
-      const centerObj = {
+      setCenter({
         lat: Number(initialPosition[0]),
         lng: Number(initialPosition[1])
-      };
-
-      initialPosition = [centerObj.lat, centerObj.lng];
-
-      const keysMap = {
-        latitude: 'lat',
-        longitude: 'lng'
-      };
-
-      const initialPathProps = [];
-
-      initialPath.forEach(pathEl => {
-        delete pathEl.id;
-        pathEl.latitude = Number(pathEl.latitude);
-        pathEl.longitude = Number(pathEl.longitude);
-        initialPathProps.push(renameKeys(keysMap, pathEl));
       });
-
-      setPath(initialPathProps);
-
-      setCenter(centerObj);
     }
+
+    const keysMap = {
+      latitude: 'lat',
+      longitude: 'lng'
+    };
+
+    const initialPathProps = [];
+
+    initialPath.forEach(pathEl => {
+      delete pathEl.id;
+
+      pathEl.latitude = Number(pathEl.latitude);
+      pathEl.longitude = Number(pathEl.longitude);
+
+      initialPathProps.push(renameKeys(keysMap, pathEl));
+    });
+
+    setPath(initialPathProps);
   }, []);
+
+  useEffect(() => {
+    if (autoCenter && windowMaps !== null) {
+      const bounds = new windowMaps.LatLngBounds();
+
+      path.forEach(el => bounds.extend(el));
+
+      setCenter({
+        lat: bounds.getCenter().lat(),
+        lng: bounds.getCenter().lng()
+      });
+    }
+  }, [windowMaps]);
 
   useEffect(() => {
     if (typeof onAreaCalc !== 'undefined') {
@@ -99,7 +111,6 @@ const MapActionPlotArea = ({
   const reset = () => {
     if (typeof onClick !== 'undefined') {
       setPath([]);
-
       onClick([]);
     }
   };

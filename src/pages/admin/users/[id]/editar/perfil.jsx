@@ -56,7 +56,7 @@ function AdminConfiguracoesPerfilEdit() {
     data: dataGallery,
     error: errorGallery,
     mutate: mutateGallery
-  } = useFetch(`/profiles-galleries/find/by/user-logged?limit=20&page=1`);
+  } = useFetch(`/profiles-galleries/find/by/user/${id}?limit=20&page=1`);
 
   const handleSubmit = async (d, { reset }, e) => {
     setDisableButton(true);

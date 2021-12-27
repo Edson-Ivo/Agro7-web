@@ -13,7 +13,7 @@ export const TooltipContainer = styled.div`
   position: absolute;
   top: 65px;
   width: ${props => props.minWidth};
-  z-index: 3;
+  z-index: 99999;
   ${props => [props.position]}: -20px;
 
   @media (prefers-reduced-motion: reduce) {

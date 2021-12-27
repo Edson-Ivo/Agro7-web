@@ -1,18 +1,6 @@
 import { api } from './api';
 
 class CulturesService {
-  static async findAll() {
-    return api.get('/cultures/find/all');
-  }
-
-  static async findById(id) {
-    return api.get(`/cultures/find/by/id/${id}`);
-  }
-
-  static async findByField(fieldId) {
-    return api.get(`/cultures/find/by/field/${fieldId}`);
-  }
-
   static async create(data) {
     try {
       const response = await api.post(`/cultures/create`, { ...data });

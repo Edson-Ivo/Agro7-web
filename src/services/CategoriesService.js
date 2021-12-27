@@ -1,14 +1,6 @@
 import { api } from './api';
 
 class CategoriesService {
-  static async findAll() {
-    return api.get('/categories/find/all');
-  }
-
-  static async findById(id) {
-    return api.get(`/categories/find/by/id/${id}`);
-  }
-
   static async create(data) {
     try {
       const response = await api.post(`/categories/create`, { ...data });

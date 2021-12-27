@@ -1,6 +1,6 @@
 {
   "name": "agro7-web",
-  "version": "0.1.0",
+  "version": "2.0.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -21,6 +21,7 @@
     "axios": "^0.21.1",
     "chart.js": "^3.5.1",
     "chartjs-plugin-datalabels": "^2.0.0",
+    "core-js": "^3.19.3",
     "intersection-observer": "^0.12.0",
     "js-base64": "^3.6.0",
     "js-cookie": "^2.2.1",
@@ -45,18 +46,19 @@
     "react-select": "^4.2.1",
     "react-slick": "^0.28.1",
     "redux": "^4.0.5",
+    "resize-observer-polyfill": "^1.5.1",
     "slick-carousel": "^1.8.1",
     "styled-components": "^5.3.1",
     "swr": "^1.0.1",
     "yup": "^0.32.9"
   },
   "devDependencies": {
-    "@babel/core": "^7.15.8",
+    "@babel/core": "^7.16.0",
+    "@babel/plugin-proposal-object-rest-spread": "^7.16.0",
     "babel-eslint": "^10.1.0",
     "babel-plugin-inline-react-svg": "^2.0.1",
     "babel-plugin-module-resolver": "^4.1.0",
     "babel-plugin-polyfill-corejs3": "^0.2.5",
-    "core-js": "^3.18.3",
     "eslint": "^7.19.0",
     "eslint-config-airbnb": "^18.2.1",
     "eslint-config-prettier": "^7.2.0",

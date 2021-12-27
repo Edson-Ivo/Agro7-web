@@ -1,4 +1,11 @@
-import React, { useState, useEffect, useRef, memo } from 'react';
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  memo,
+  forwardRef,
+  useImperativeHandle
+} from 'react';
 import { useRouter } from 'next/router';
 import { Form } from '@unform/web';
 
@@ -51,16 +58,20 @@ const selectOptions = [
   }
 ];
 
-const InputDateInterval = ({
-  url = '',
-  toQuery = true,
-  resetDateOption = false,
-  onDateStartSelect = () => null,
-  onDateEndSelect = () => null,
-  onPeriodSelect = () => null,
-  onError = () => null,
-  ...rest
-}) => {
+const InputDateInterval = (
+  {
+    url = '',
+    toQuery = true,
+    autoDateEnd = true,
+    resetDateOption = false,
+    onDateStartSelect = () => null,
+    onDateEndSelect = () => null,
+    onPeriodSelect = () => null,
+    onError = () => null,
+    ...rest
+  },
+  ref
+) => {
   const formRef = useRef(null);
   const router = useRouter();
   const [error, setError] = useState('');
@@ -83,7 +94,7 @@ const InputDateInterval = ({
     setDateEvent(dateValue);
   };
 
-  const handleResetDates = () => {
+  const clearFields = () => {
     setError('');
     setDateStart(null);
     setDateEnd(null);
@@ -92,6 +103,10 @@ const InputDateInterval = ({
     setPeriod('undefined');
 
     formRef.current.reset();
+  };
+
+  const handleResetDates = () => {
+    clearFields();
 
     if (toQuery)
       router.push(
@@ -172,7 +187,7 @@ const InputDateInterval = ({
     if (queryDateEnd && isValidDate(queryDateEnd)) {
       setDateEnd(dateToInput(queryDateEnd));
       setDateEndSearch(dateToInput(queryDateEnd));
-    } else {
+    } else if (autoDateEnd) {
       const today = getCurrentDate();
 
       setDateEnd(dateToInput(today));
@@ -236,6 +251,10 @@ const InputDateInterval = ({
   useEffect(() => {
     onError(error);
   }, [error]);
+
+  useImperativeHandle(ref, () => ({
+    clearFields: () => handleResetDates()
+  }));
 
   return (
     <>
@@ -306,4 +325,4 @@ const InputDateInterval = ({
   );
 };
 
-export default memo(InputDateInterval);
+export default memo(forwardRef(InputDateInterval));

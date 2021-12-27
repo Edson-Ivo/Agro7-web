@@ -34,6 +34,7 @@ import truncate from '@/helpers/truncate';
 import useRewriteRoute from '@/hooks/useRewriteRoute';
 import maskString from '@/helpers/maskString';
 import downloadDocument from '@/helpers/downloadDocument';
+import InputSearch from '@/components/InputSearch/index';
 
 function VendasTransportadorasDetalhes() {
   const formRef = useRef(null);
@@ -50,9 +51,11 @@ function VendasTransportadorasDetalhes() {
 
   const { id } = router.query;
 
+  const [search, setSearch] = useState('');
+
   const { data, error } = useFetch(`/transporters/find/by/id/${id}`);
   const { data: dataDocs, error: errorDocs, mutate: mutateDocs } = useFetch(
-    `/transporters-documents/find/by/transporter/${id}?limit=${perPageDocs}&page=${pageDocs}`
+    `/transporters-documents/find/by/transporter/${id}?limit=${perPageDocs}&page=${pageDocs}&search=${search}`
   );
   const { data: dataVehicles, error: errorVehicles } = useFetch(
     `/transporters-vehicles/find/by/transporter/${id}?limit=${perPageVehicles}&page=${pageVehicles}`
@@ -187,6 +190,10 @@ function VendasTransportadorasDetalhes() {
                               dessa transportadora.
                             </Alert>
                           )}
+                          <InputSearch
+                            url={`${routePath}/transportadoras/${id}/detalhes`}
+                            onSubmitSearch={q => setSearch(q)}
+                          />
                           {(data && dataDocs && (
                             <>
                               <Table>

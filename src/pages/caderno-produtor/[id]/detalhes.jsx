@@ -45,10 +45,6 @@ function ProducerNotebookDetails() {
     `/producer-notebook/find/by/id/${id}`
   );
 
-  const { data: dataCategories, error: errorCategories } = useFetch(
-    `/categories/find/all?limit=30`
-  );
-
   const { type } = useSelector(state => state.user);
   const [route, setRoute] = useState({});
 
@@ -88,8 +84,7 @@ function ProducerNotebookDetails() {
     });
   }, [addModal, removeModal]);
 
-  if (errorCategories || error)
-    return <Error error={errorCategories || error} />;
+  if (error) return <Error error={error} />;
   if (!isEmpty(route) && !route.hasPermission) return <Error error={404} />;
 
   return (
@@ -138,7 +133,7 @@ function ProducerNotebookDetails() {
                 {alert.message !== '' && (
                   <Alert type={alert.type}>{alert.message}</Alert>
                 )}
-                {(data && dataCategories && (
+                {(data && (
                   <>
                     <Form
                       ref={formRef}
@@ -146,10 +141,12 @@ function ProducerNotebookDetails() {
                     >
                       <Input type="text" label="Nome" name="name" disabled />
                       <Select
-                        options={dataCategories?.items.map(category => ({
-                          value: category.id,
-                          label: category.name
-                        }))}
+                        options={[
+                          {
+                            value: data?.categories?.id,
+                            label: data?.categories?.name
+                          }
+                        ]}
                         label="Categoria"
                         name="categories.id"
                         disabled

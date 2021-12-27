@@ -28,6 +28,7 @@ import ColorsContainer from '@/components/ColorsContainer/index';
 import ColorsService from '@/services/ColorsService';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 import usersTypes from '@/helpers/usersTypes';
+import InputSearch from '@/components/InputSearch/index';
 
 function AdminColors() {
   const [alertMsg, setAlertMsg] = useState({ type: '', message: '' });
@@ -38,11 +39,13 @@ function AdminColors() {
   const perPage = 10;
   const { page = 1 } = router.query;
 
+  const [search, setSearch] = useState('');
+
   const { data, error, mutate } = useFetch(
-    `/colors/find/all?limit=${perPage}&page=${page}`
+    `/colors/find/all?limit=${perPage}&page=${page}&search=${search}`
   );
 
-  const [baseUrl] = useState(`/admin/cores`);
+  const baseUrl = '/admin/cores';
 
   const { addModal, removeModal } = useModal();
 
@@ -115,6 +118,7 @@ function AdminColors() {
                 {alertMsg.message && (
                   <Alert type={alertMsg.type}>{alertMsg.message}</Alert>
                 )}
+                <InputSearch url={baseUrl} onSubmitSearch={q => setSearch(q)} />
                 {((data || loading) && (
                   <>
                     <div className="table-responsive">

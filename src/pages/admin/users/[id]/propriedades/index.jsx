@@ -30,6 +30,7 @@ import Pagination from '@/components/Pagination/index';
 import isEmpty from '@/helpers/isEmpty';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 import usersTypes from '@/helpers/usersTypes';
+import InputSearch from '@/components/InputSearch/index';
 
 function Properties() {
   const [alertMsg, setAlertMsg] = useState({ type: '', message: '' });
@@ -46,8 +47,10 @@ function Properties() {
     `/users/find/by/id/${id}`
   );
 
+  const [search, setSearch] = useState('');
+
   const { data, error, mutate } = useFetch(
-    `/properties/find/by/user/${id}?limit=${perPage}&page=${page}`
+    `/properties/find/by/user/${id}?limit=${perPage}&page=${page}&search=${search}`
   );
 
   const handleDelete = useCallback(
@@ -119,6 +122,10 @@ function Properties() {
                 {alertMsg.message && (
                   <Alert type={alertMsg.type}>{alertMsg.message}</Alert>
                 )}
+                <InputSearch
+                  url={`/admin/users/${id}/propriedades`}
+                  onSubmitSearch={q => setSearch(q)}
+                />
                 {((data || loading) && !isEmpty(dataUser) && (
                   <>
                     <div className="table-responsive">

@@ -129,6 +129,7 @@ function TalhoesInfo() {
                           data.coordinates.longitude
                         ]}
                         initialPath={dataFields.coordinates}
+                        autoCenter
                       />
 
                       <div className="form-group buttons">
