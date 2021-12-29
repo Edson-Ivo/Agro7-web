@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Head from 'next/head';
-import Link from 'next/link';
 import * as yup from 'yup';
 import { Form } from '@unform/web';
 
@@ -10,7 +9,6 @@ import Navbar from '@/components/Navbar';
 
 import Input from '@/components/Input';
 import Button from '@/components/Button';
-import FileInput from '@/components/FileInput';
 import { Section, SectionHeader, SectionBody } from '@/components/Section';
 import { CardContainer } from '@/components/CardContainer';
 
@@ -30,6 +28,7 @@ import downloadDocument from '@/helpers/downloadDocument';
 import scrollTo from '@/helpers/scrollTo';
 import useUserAccess from '@/hooks/useUserAccess';
 import LogoLoader from '@/components/Loader/LogoLoader';
+import InputFile from '@/components/InputFile/index';
 
 const schema = yup.object().shape({
   name: yup.string().required('Você precisa dar um nome para o documento')
@@ -61,7 +60,7 @@ function DocumentosEdit() {
     setRoute(urlRoute(router, type));
   }, []);
 
-  const handleSubmit = async (dt, { reset }, e) => {
+  const handleSubmit = async dt => {
     setDisableButton(true);
 
     schema
@@ -74,7 +73,9 @@ function DocumentosEdit() {
 
         scrollTo(alertRef);
 
-        if (e.target.file.files.length > 0 && inputRef.current.error.message) {
+        const inputDocumentFile = inputRef.current.getFiles();
+
+        if (inputDocumentFile.length > 0 && inputRef.current.error.message) {
           setAlert({ type: 'error', message: inputRef.current.error.message });
         } else {
           const formData = new FormData();
@@ -86,8 +87,8 @@ function DocumentosEdit() {
 
           formData.append('name', d.name);
 
-          if (e.target.file.files.length > 0)
-            formData.append('file', e.target.file.files[0]);
+          if (inputDocumentFile.length > 0)
+            formData.append('file', inputDocumentFile[0]);
 
           await DocumentsService.update(docId, formData).then(() => {
             setAlert({
@@ -174,13 +175,14 @@ function DocumentosEdit() {
                         Clique aqui para ver o documento atual
                       </Button>
 
-                      <FileInput
-                        ref={inputRef}
+                      <InputFile
                         name="file"
-                        label="Selecione o arquivo"
+                        ref={inputRef}
+                        label="Selecione um arquivo para substituir o atual"
+                        min={0}
                         max={1}
-                        text="Clique aqui para substituir o documento atual ou apenas arraste-o."
                       />
+
                       <div className="form-group buttons">
                         <div>
                           <Button type="button" onClick={() => router.back()}>

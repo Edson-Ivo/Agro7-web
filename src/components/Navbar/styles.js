@@ -70,10 +70,6 @@ export const NavbarContainer = styled.div`
       vertical-align: -0.6em;
       object-fit: cover;
       width: 2em;
-
-      img {
-        width: 100%;
-      }
     }
 
     .navbar_button__icon {

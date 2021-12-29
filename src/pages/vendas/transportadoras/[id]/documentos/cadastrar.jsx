@@ -9,7 +9,6 @@ import Navbar from '@/components/Navbar';
 
 import Input from '@/components/Input';
 import Button from '@/components/Button';
-import FileInput from '@/components/FileInput';
 import { Section, SectionHeader, SectionBody } from '@/components/Section';
 import { CardContainer } from '@/components/CardContainer';
 
@@ -26,6 +25,7 @@ import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 import SalesService from '@/services/SalesService';
 import useRewriteRoute from '@/hooks/useRewriteRoute';
 import scrollTo from '@/helpers/scrollTo';
+import InputFile from '@/components/InputFile/index';
 
 const schema = yup.object().shape({
   name: yup.string().required('Você precisa dar um nome para o documento')
@@ -59,7 +59,7 @@ function VendasTransportadorasDocumentosCreate() {
     }
   };
 
-  const handleSubmit = async (dt, { reset }, e) => {
+  const handleSubmit = async dt => {
     setDisableButton(true);
 
     schema
@@ -72,6 +72,8 @@ function VendasTransportadorasDocumentosCreate() {
 
         scrollTo(alertRef);
 
+        const inputDocumentFile = inputRef.current.getFiles();
+
         if (inputRef.current.error.message) {
           setAlert({ type: 'error', message: inputRef.current.error.message });
         } else {
@@ -83,7 +85,7 @@ function VendasTransportadorasDocumentosCreate() {
           });
 
           formData.append('name', d.name);
-          formData.append('file', e.target.file.files[0]);
+          formData.append('file', inputDocumentFile[0]);
 
           await SalesService.createTransporterDocument(id, formData).then(
             res => {
@@ -161,10 +163,11 @@ function VendasTransportadorasDocumentosCreate() {
                     label="Nome do documento"
                     required
                   />
-                  <FileInput
+                  <InputFile
                     ref={inputRef}
                     name="file"
-                    label="Selecione o arquivo"
+                    label="Selecione um arquivo"
+                    min={0}
                     max={1}
                   />
                   <div className="form-group buttons">
