@@ -11,7 +11,7 @@ const nextConfig = {
   },
 
   images: {
-    domains: ['agro7dev.herokuapp.com']
+    domains: ['agrofind.com.br']
   },
 
   rewrites: async () => {
