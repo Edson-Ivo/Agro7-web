@@ -103,13 +103,21 @@ function ProducerNotebook() {
 
   const { data: dataUserRecords, error: errorUserRecords } = useFetch(
     !isArrayOfEmpty(dateCalendarInterval)
-      ? `/producer-notebook/find/count/by/user-logged?date_start=${dateCalendarInterval[0]}&date_finish=${dateCalendarInterval[1]}`
+      ? `/producer-notebook/find/count/by/user-logged?date_start=${
+          dateCalendarInterval[0]
+        }&date_finish=${dateCalendarInterval[1]}&search=${search}${
+          objectToQuery(filters) ? `&${objectToQuery(filters)}` : ''
+        }`
       : null
   );
 
   const { data: dataUserRecordsWeek, error: errorUserRecordsWeek } = useFetch(
     !isArrayOfEmpty(dateWeekInterval)
-      ? `/producer-notebook/find/count/by/user-logged?date_start=${dateWeekInterval[0]}&date_finish=${dateWeekInterval[1]}`
+      ? `/producer-notebook/find/count/by/user-logged?date_start=${
+          dateWeekInterval[0]
+        }&date_finish=${dateWeekInterval[1]}&search=${search}${
+          objectToQuery(filters) ? `&${objectToQuery(filters)}` : ''
+        }`
       : null
   );
 
@@ -144,18 +152,17 @@ function ProducerNotebook() {
 
   useEffect(() => {
     const query = dataUserRecords?.producer_notebook;
+    const months = [];
 
     if (!isEmpty(query)) {
-      const months = [];
-
       Object.keys(query).forEach(key => {
         const { date } = query[key];
 
         months.push(String(dateToInput(addOneDay(date))));
       });
-
-      setUserRecords(months);
     }
+
+    setUserRecords(months);
   }, [dataUserRecords]);
 
   useEffect(() => {
@@ -167,18 +174,17 @@ function ProducerNotebook() {
 
   useEffect(() => {
     const query = dataUserRecordsWeek?.producer_notebook;
+    const days = [];
 
     if (!isEmpty(query)) {
-      const days = [];
-
       Object.keys(query).forEach(key => {
         const { date } = query[key];
 
         days.push(String(dateToInput(addOneDay(date))));
       });
-
-      setUserWeekRecords(days);
     }
+
+    setUserWeekRecords(days);
   }, [dataUserRecordsWeek]);
 
   useEffect(() => {
