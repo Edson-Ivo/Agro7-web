@@ -2,7 +2,6 @@ import { createGlobalStyle } from 'styled-components';
 import { ShowTransition } from './mixins';
 
 export default createGlobalStyle`
-
   * {
     box-sizing: border-box;
     margin: 0;
@@ -288,5 +287,4 @@ export default createGlobalStyle`
       background-color: ${({ theme }) => theme.colors.green};
     }
   }
-
 `;
