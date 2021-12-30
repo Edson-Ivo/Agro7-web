@@ -249,7 +249,12 @@ function VendasCreate() {
       AddressesService.getCep(value.replace('-', '')).then(
         ({ data: dataAddressCep }) => {
           if (!isEmpty(dataAddressCep)) {
-            const { state, city, neighborhood, street } = dataAddressCep;
+            const {
+              state = '',
+              city = '',
+              neighborhood = '',
+              street = ''
+            } = dataAddressCep;
 
             formRef.current.setFieldValue('distributors.state', state);
             formRef.current.setFieldValue('distributors.city', city);

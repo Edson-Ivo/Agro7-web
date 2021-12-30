@@ -10,7 +10,6 @@ import Nav from '@/components/Nav';
 import Navbar from '@/components/Navbar';
 import Input from '@/components/Input';
 import Button from '@/components/Button';
-import FileInput from '@/components/FileInput';
 import { Section, SectionHeader, SectionBody } from '@/components/Section';
 import { CardContainer } from '@/components/CardContainer';
 
@@ -27,6 +26,7 @@ import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 import isEmpty from '@/helpers/isEmpty';
 import scrollTo from '@/helpers/scrollTo';
 import usersTypes from '@/helpers/usersTypes';
+import InputFile from '@/components/InputFile/index';
 
 function AdminProductsCreate() {
   const formRef = useRef(null);
@@ -50,7 +50,7 @@ function AdminProductsCreate() {
     router.back();
   };
 
-  const handleSubmit = async (...{ 0: d, 2: e }) => {
+  const handleSubmit = async d => {
     setDisableButton(true);
 
     ProductsService.schema()
@@ -63,11 +63,15 @@ function AdminProductsCreate() {
 
         scrollTo(alertRef);
 
+        const inputFile = inputRef.current.getFiles();
+        const inputNutricionalFile = inputNutricionalRef.current.getFiles();
+        const inputNutricionalVerdeFile = inputNutricionalVerdeRef.current.getFiles();
+
         if (
           inputRef.current.error.message ||
-          (e.target.fileNutricional.files.length > 0 &&
+          (inputNutricionalFile.length > 0 &&
             inputNutricionalRef.current.error.message) ||
-          (e.target.fileNutricionalVerde.files.length > 0 &&
+          (inputNutricionalVerdeFile.length > 0 &&
             inputNutricionalVerdeRef.current.error.message)
         ) {
           setAlert({
@@ -83,7 +87,7 @@ function AdminProductsCreate() {
 
           productFormData.append('name', data.name);
           productFormData.append('description', data.description);
-          productFormData.append('file', e.target.file.files[0]);
+          productFormData.append('file', inputFile[0]);
 
           await ProductsService.create(productFormData).then(async res => {
             if (res.status !== 201 || res?.statusCode) {
@@ -94,17 +98,13 @@ function AdminProductsCreate() {
             } else {
               let success = false;
 
-              const canAddNutritionalTable =
-                e.target.fileNutricional.files.length > 0;
+              const canAddNutritionalTable = inputNutricionalFile.length > 0;
               const productId = res.data.id;
 
               const nutricionalFormData = new FormData();
 
               if (canAddNutritionalTable) {
-                nutricionalFormData.append(
-                  'file',
-                  e.target.fileNutricional.files[0]
-                );
+                nutricionalFormData.append('file', inputNutricionalFile[0]);
 
                 Object.keys(data).forEach(key => {
                   if (!['green', 'name', 'description'].includes(key)) {
@@ -132,7 +132,7 @@ function AdminProductsCreate() {
 
               if (
                 !isEmpty(data?.green?.length) ||
-                e.target.fileNutricionalVerde.files.length > 0
+                inputNutricionalVerdeFile.length > 0
               ) {
                 success = false;
 
@@ -140,7 +140,7 @@ function AdminProductsCreate() {
 
                 nutricionalGreenFormData.append(
                   'file',
-                  e.target.fileNutricionalVerde.files[0]
+                  inputNutricionalVerdeFile[0]
                 );
 
                 Object.keys(data.green).forEach(key => {
@@ -224,37 +224,28 @@ function AdminProductsCreate() {
                         name="description"
                         label="Descrição do produto"
                       />
-                      <FileInput
-                        ref={inputRef}
+
+                      <InputFile
                         name="file"
+                        ref={inputRef}
                         label="Selecione a Imagem do Produto"
-                        extensions={[
-                          '.jpg',
-                          '.jpeg',
-                          '.png',
-                          '.gif',
-                          '.webp',
-                          '.webm'
-                        ]}
+                        min={1}
                         max={1}
+                        extensions={['image/*']}
                       />
                     </Step>
                     <Step label="Nutricional" onClick={() => setActiveStep(2)}>
                       <h4 className="step-title">Tabela Nutricional:</h4>
-                      <FileInput
-                        ref={inputNutricionalRef}
+
+                      <InputFile
                         name="fileNutricional"
+                        ref={inputNutricionalRef}
                         label="Selecione a Imagem da Tabela Nutricional"
-                        extensions={[
-                          '.jpg',
-                          '.jpeg',
-                          '.png',
-                          '.gif',
-                          '.webp',
-                          '.webm'
-                        ]}
+                        min={0}
                         max={1}
+                        extensions={['image/*']}
                       />
+
                       <h4 className="step-title">
                         Escrever Nutricional (opcional)
                       </h4>
@@ -416,20 +407,16 @@ function AdminProductsCreate() {
                       onClick={() => setActiveStep(3)}
                     >
                       <h4 className="step-title">Tabela Nutricional Verde:</h4>
-                      <FileInput
-                        ref={inputNutricionalVerdeRef}
+
+                      <InputFile
                         name="fileNutricionalVerde"
+                        ref={inputNutricionalVerdeRef}
                         label="Selecione a Imagem da Tabela Nutricional Verde (opcional)"
-                        extensions={[
-                          '.jpg',
-                          '.jpeg',
-                          '.png',
-                          '.gif',
-                          '.webp',
-                          '.webm'
-                        ]}
+                        min={0}
                         max={1}
+                        extensions={['image/*']}
                       />
+
                       <h4 className="step-title">
                         Escrever Nutricional Verde (opcional)
                       </h4>

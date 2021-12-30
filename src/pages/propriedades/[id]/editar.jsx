@@ -132,7 +132,7 @@ function PropertiesEdit() {
       AddressesService.getCep(value.replace('-', '')).then(
         ({ data: dataAddressCep }) => {
           if (!isEmpty(dataAddressCep)) {
-            const { state, city } = dataAddressCep;
+            const { state = '', city = '' } = dataAddressCep;
 
             formRef.current.setFieldValue('state', state);
             formRef.current.setFieldValue('city', city);

@@ -9,10 +9,9 @@ import Navbar from '@/components/Navbar';
 
 import Input from '@/components/Input';
 import Button from '@/components/Button';
-import FileInput from '@/components/FileInput';
 import { Section, SectionHeader, SectionBody } from '@/components/Section';
 import { CardContainer } from '@/components/CardContainer';
-import InputDropzone from '@/components/InputDropzone';
+import InputFile from '@/components/InputFile';
 
 import { privateRoute } from '@/components/PrivateRoute';
 import { Alert } from '@/components/Alert';
@@ -39,7 +38,7 @@ function DocumentosCreate() {
   const formRef = useRef(null);
   const alertRef = useRef(null);
   const inputRef = useRef(null);
-  const filesRef = useRef(null);
+
   const [alert, setAlert] = useState({ type: '', message: '' });
   const [disableButton, setDisableButton] = useState(false);
 
@@ -69,7 +68,7 @@ function DocumentosCreate() {
     }
   };
 
-  const handleSubmit = async (dt, { reset }, e) => {
+  const handleSubmit = async dt => {
     setDisableButton(true);
 
     schema
@@ -81,7 +80,6 @@ function DocumentosCreate() {
         });
 
         scrollTo(alertRef);
-        console.log(filesRef.current.getFiles());
 
         if (inputRef.current.error.message) {
           setAlert({ type: 'error', message: inputRef.current.error.message });
@@ -94,41 +92,41 @@ function DocumentosCreate() {
           });
 
           formData.append('name', d.name);
-          formData.append('file', e.target.file.files[0]);
+          formData.append('file', inputRef.current.getFiles()[0]);
 
-          // await DocumentsService.create(id, formData).then(res => {
-          //   if (res.status !== 201 || res?.statusCode) {
-          //     setAlert({ type: 'error', message: errorMessage(res) });
-          //     setTimeout(() => {
-          //       setDisableButton(false);
-          //     }, 1000);
-          //   } else {
-          //     setAlert({
-          //       type: 'success',
-          //       message: 'Documento cadastrado com sucesso!'
-          //     });
+          await DocumentsService.create(id, formData).then(res => {
+            if (res.status !== 201 || res?.statusCode) {
+              setAlert({ type: 'error', message: errorMessage(res) });
+              setTimeout(() => {
+                setDisableButton(false);
+              }, 1000);
+            } else {
+              setAlert({
+                type: 'success',
+                message: 'Documento cadastrado com sucesso!'
+              });
 
-          //     if (!createProperty) {
-          //       setTimeout(() => {
-          //         router.push(`${route.path}/${id}/detalhes`);
-          //         setDisableButton(false);
-          //       }, 1000);
-          //     } else {
-          //       router.replace(
-          //         `${route.path}/${id}/talhoes/cadastrar?createProperty=true`
-          //       );
-          //     }
-          //   }
-          // });
+              if (!createProperty) {
+                setTimeout(() => {
+                  router.push(`${route.path}/${id}/detalhes`);
+                  setDisableButton(false);
+                }, 1000);
+              } else {
+                router.replace(
+                  `${route.path}/${id}/talhoes/cadastrar?createProperty=true`
+                );
+              }
+            }
+          });
         }
       })
       .catch(err => {
-        // setAlert({ type: 'error', message: err.errors[0] });
-        // setDisableButton(false);
-        // if (err instanceof yup.ValidationError) {
-        //   const { path, message } = err;
-        //   formRef.current.setFieldError(path, message);
-        // }
+        setAlert({ type: 'error', message: err.errors[0] });
+        setDisableButton(false);
+        if (err instanceof yup.ValidationError) {
+          const { path, message } = err;
+          formRef.current.setFieldError(path, message);
+        }
       });
   };
 
@@ -177,13 +175,15 @@ function DocumentosCreate() {
                     label="Nome do documento"
                     required
                   />
-                  {/* <FileInput
-                    ref={inputRef}
+
+                  <InputFile
                     name="file"
-                    label="Selecione o arquivo"
+                    ref={inputRef}
+                    label="Selecione um arquivo"
+                    min={1}
                     max={1}
-                  /> */}
-                  <InputDropzone name="teste" ref={filesRef} />
+                  />
+
                   <div className="form-group buttons">
                     <div>
                       <Button type="button" onClick={handleCancel}>

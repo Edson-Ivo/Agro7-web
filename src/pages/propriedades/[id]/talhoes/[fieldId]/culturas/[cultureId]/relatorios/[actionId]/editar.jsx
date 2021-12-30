@@ -23,13 +23,13 @@ import urlRoute from '@/helpers/urlRoute';
 import isEmpty from '@/helpers/isEmpty';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 import scrollTo from '@/helpers/scrollTo';
-import FileInput from '@/components/FileInput/index';
 import { dateConversor } from '@/helpers/date';
 import Error from '@/components/Error/index';
 import { useModal } from '@/hooks/useModal';
 import ActionButton from '@/components/ActionButton/index';
 import Table from '@/components/Table/index';
 import usersTypes from '@/helpers/usersTypes';
+import InputFile from '@/components/InputFile/index';
 
 function RelatoriosEdit() {
   const formRef = useRef(null);
@@ -98,7 +98,7 @@ function RelatoriosEdit() {
     }
   }, [dataActions]);
 
-  const handleSubmit = async (...{ 2: e }) => {
+  const handleSubmit = async () => {
     setDisableButton(true);
 
     setAlert({
@@ -108,10 +108,10 @@ function RelatoriosEdit() {
 
     scrollTo(alertRef);
 
-    const diagnosticsFile = e.target.diagnostics_file.files;
-    const cultivationFile = e.target.cultivation_file.files;
-    const fertilizingFile = e.target.fertilizing_file.files;
-    const plantHealthFile = e.target.plant_health_file.files;
+    const diagnosticsFile = inputDiagnosticsRef.current.getFiles();
+    const cultivationFile = inputCultivationRef.current.getFiles();
+    const fertilizingFile = inputFertilizingRef.current.getFiles();
+    const plantHealthFile = inputPlantHealthRef.current.getFiles();
 
     if (
       (diagnosticsFile.length > 0 &&
@@ -283,22 +283,14 @@ function RelatoriosEdit() {
                                 {10 - diagnosticsImages.length} imagens para
                                 diagnóstico da cultura
                               </Alert>
-                              <FileInput
+                              <InputFile
                                 ref={inputDiagnosticsRef}
                                 name="diagnostics_file"
                                 label="Selecione as fotos para o diagnóstico da cultura"
-                                extensions={[
-                                  '.jpg',
-                                  '.jpeg',
-                                  '.png',
-                                  '.gif',
-                                  '.webp',
-                                  '.webm'
-                                ]}
                                 min={0}
                                 max={10 - diagnosticsImages.length}
+                                extensions={['image/*']}
                               />
-
                               <div
                                 className="table-responsive"
                                 style={{ marginBottom: 15 }}
@@ -366,20 +358,13 @@ function RelatoriosEdit() {
                                 {10 - cultivationImages.length} imagens para
                                 diagnóstico da cultura
                               </Alert>
-                              <FileInput
+                              <InputFile
                                 ref={inputCultivationRef}
                                 name="cultivation_file"
                                 label="Selecione as fotos para o tratos culturais"
-                                extensions={[
-                                  '.jpg',
-                                  '.jpeg',
-                                  '.png',
-                                  '.gif',
-                                  '.webp',
-                                  '.webm'
-                                ]}
                                 min={0}
                                 max={10 - cultivationImages.length}
+                                extensions={['image/*']}
                               />
 
                               <div
@@ -443,21 +428,15 @@ function RelatoriosEdit() {
                                 {10 - fertilizingImages.length} imagens para
                                 diagnóstico da cultura
                               </Alert>
-                              <FileInput
+                              <InputFile
                                 ref={inputFertilizingRef}
                                 name="fertilizing_file"
                                 label="Selecione as fotos para o adubação"
-                                extensions={[
-                                  '.jpg',
-                                  '.jpeg',
-                                  '.png',
-                                  '.gif',
-                                  '.webp',
-                                  '.webm'
-                                ]}
                                 min={0}
                                 max={10 - fertilizingImages.length}
+                                extensions={['image/*']}
                               />
+
                               <div
                                 className="table-responsive"
                                 style={{ marginBottom: 15 }}
@@ -520,20 +499,14 @@ function RelatoriosEdit() {
                                 {10 - plantHealthImages.length} imagens para
                                 diagnóstico da cultura
                               </Alert>
-                              <FileInput
+
+                              <InputFile
                                 ref={inputPlantHealthRef}
                                 name="plant_health_file"
                                 label="Selecione as fotos para o fitossanidade"
-                                extensions={[
-                                  '.jpg',
-                                  '.jpeg',
-                                  '.png',
-                                  '.gif',
-                                  '.webp',
-                                  '.webm'
-                                ]}
                                 min={0}
                                 max={10 - plantHealthImages.length}
+                                extensions={['image/*']}
                               />
 
                               <div

@@ -9,7 +9,6 @@ import Navbar from '@/components/Navbar';
 
 import Input from '@/components/Input';
 import Button from '@/components/Button';
-import FileInput from '@/components/FileInput';
 import { Section, SectionHeader, SectionBody } from '@/components/Section';
 import { CardContainer } from '@/components/CardContainer';
 
@@ -31,6 +30,7 @@ import CulturesActionsService, {
 import objectKeyExists from '@/helpers/objectKeyExists';
 import scrollTo from '@/helpers/scrollTo';
 import usersTypes from '@/helpers/usersTypes';
+import InputFile from '@/components/InputFile/index';
 
 const schema = yup.object().shape({
   name: yup.string().required('Você precisa dar um nome para o documento')
@@ -85,7 +85,7 @@ function AcoesCulturasDocumentosCreate() {
     }
   };
 
-  const handleSubmit = async (...{ 0: dt, 2: e }) => {
+  const handleSubmit = async dt => {
     setDisableButton(true);
     schema
       .validate(dt)
@@ -97,6 +97,8 @@ function AcoesCulturasDocumentosCreate() {
 
         scrollTo(alertRef);
 
+        const inputDocumentFile = inputRef.current.getFiles();
+
         if (inputRef.current.error.message) {
           setAlert({ type: 'error', message: inputRef.current.error.message });
         } else {
@@ -106,7 +108,7 @@ function AcoesCulturasDocumentosCreate() {
             message: 'Enviando...'
           });
           formData.append('name', d.name);
-          formData.append('file', e.target.file.files[0]);
+          formData.append('file', inputDocumentFile[0]);
           await CulturesActionsService.createDocument(
             actionId,
             formData,
@@ -200,10 +202,12 @@ function AcoesCulturasDocumentosCreate() {
                     label="Nome do documento"
                     required
                   />
-                  <FileInput
+
+                  <InputFile
                     ref={inputRef}
                     name="file"
-                    label="Selecione o arquivo"
+                    label="Selecione um arquivo"
+                    min={0}
                     max={1}
                   />
                   <div className="form-group buttons">

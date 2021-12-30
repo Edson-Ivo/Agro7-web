@@ -11,7 +11,6 @@ import Navbar from '@/components/Navbar';
 
 import Input from '@/components/Input';
 import Button from '@/components/Button';
-import FileInput from '@/components/FileInput';
 import { Section, SectionHeader, SectionBody } from '@/components/Section';
 import { CardContainer } from '@/components/CardContainer';
 import { privateRoute } from '@/components/PrivateRoute';
@@ -30,6 +29,7 @@ import ImageContainer from '@/components/ImageContainer/index';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 import scrollTo from '@/helpers/scrollTo';
 import usersTypes from '@/helpers/usersTypes';
+import InputFile from '@/components/InputFile/index';
 
 function AdminProductsEdit() {
   const formRef = useRef(null);
@@ -82,7 +82,7 @@ function AdminProductsEdit() {
     router.back();
   };
 
-  const handleSubmit = async (...{ 0: d, 2: e }) => {
+  const handleSubmit = async d => {
     setDisableButton(true);
 
     ProductsService.schema(true)
@@ -95,11 +95,15 @@ function AdminProductsEdit() {
 
         scrollTo(alertRef);
 
+        const inputFile = inputRef.current.getFiles();
+        const inputNutricionalFile = inputNutricionalRef.current.getFiles();
+        const inputNutricionalVerdeFile = inputNutricionalVerdeRef.current.getFiles();
+
         if (
-          (e.target.file.files.length > 0 && inputRef.current.error.message) ||
-          (e.target.fileNutricional.files.length > 0 &&
+          (inputFile.length > 0 && inputRef.current.error.message) ||
+          (inputNutricionalFile.length > 0 &&
             inputNutricionalRef.current.error.message) ||
-          (e.target.fileNutricionalVerde.files.length > 0 &&
+          (inputNutricionalVerdeFile.length > 0 &&
             inputNutricionalVerdeRef.current.error.message)
         ) {
           setAlert({
@@ -117,8 +121,8 @@ function AdminProductsEdit() {
           productFormData.append('name', dataEdit.name);
           productFormData.append('description', dataEdit.description);
 
-          if (e.target.file.files.length > 0)
-            productFormData.append('file', e.target.file.files[0]);
+          if (inputFile.length > 0)
+            productFormData.append('file', inputFile[0]);
 
           await ProductsService.update(id, productFormData).then(async res => {
             if (res.status !== 200 || res?.statusCode) {
@@ -131,8 +135,7 @@ function AdminProductsEdit() {
 
               if (productData?.nutritional?.id) {
                 // Nutricional
-                const nutricionalImageEdit =
-                  e.target.fileNutricional.files.length > 0;
+                const nutricionalImageEdit = inputNutricionalFile.length > 0;
 
                 Object.keys(productData?.nutritional).forEach(key => {
                   if (objectKeyExists(dataEdit.nutritional, key)) {
@@ -160,7 +163,7 @@ function AdminProductsEdit() {
 
                     nutricionalImageFormData.append(
                       'file',
-                      e.target.fileNutricional.files[0]
+                      inputNutricionalFile[0]
                     );
 
                     await NutricionalService.updateNutritionalImage(
@@ -184,16 +187,12 @@ function AdminProductsEdit() {
                   }
                 });
               } else {
-                const canAddNutritionalTable =
-                  e.target.fileNutricional.files.length > 0;
+                const canAddNutritionalTable = inputNutricionalFile.length > 0;
 
                 const nutricionalFormData = new FormData();
 
                 if (canAddNutritionalTable) {
-                  nutricionalFormData.append(
-                    'file',
-                    e.target.fileNutricional.files[0]
-                  );
+                  nutricionalFormData.append('file', inputNutricionalFile[0]);
 
                   Object.keys(dataEdit).forEach(key => {
                     if (!['green', 'name', 'description'].includes(key)) {
@@ -227,7 +226,7 @@ function AdminProductsEdit() {
                 // Edit Nutritional Green
 
                 const nutricionalGreenImageEdit =
-                  e.target.fileNutricionalVerde.files.length > 0;
+                  inputNutricionalVerdeFile.length > 0;
 
                 if (!isEmpty(dataEdit?.green) || nutricionalGreenImageEdit) {
                   editSuccess = false;
@@ -258,7 +257,7 @@ function AdminProductsEdit() {
 
                       nutricionalVerdeImageFormData.append(
                         'file',
-                        e.target.fileNutricionalVerde.files[0]
+                        inputNutricionalVerdeFile[0]
                       );
 
                       await NutricionalService.updateNutritionalImage(
@@ -284,7 +283,7 @@ function AdminProductsEdit() {
                 }
               } else if (
                 !isEmpty(dataEdit?.green?.length) ||
-                e.target.fileNutricionalVerde.files.length > 0
+                inputNutricionalVerdeFile.length > 0
               ) {
                 editSuccess = false;
 
@@ -292,7 +291,7 @@ function AdminProductsEdit() {
 
                 nutricionalGreenFormData.append(
                   'file',
-                  e.target.fileNutricionalVerde.files[0]
+                  inputNutricionalVerdeFile[0]
                 );
 
                 Object.keys(dataEdit.green).forEach(key => {
@@ -401,20 +400,13 @@ function AdminProductsEdit() {
                             label="Descrição do produto"
                           />
 
-                          <FileInput
+                          <InputFile
                             ref={inputRef}
                             name="file"
                             label="Selecione a nova imagem do Produto"
-                            extensions={[
-                              '.jpg',
-                              '.jpeg',
-                              '.png',
-                              '.gif',
-                              '.webp',
-                              '.webm'
-                            ]}
+                            min={0}
                             max={1}
-                            text="Clique aqui para substituir a imagem atual ou apenas arraste-a."
+                            extensions={['image/*']}
                           />
 
                           <ImageContainer
@@ -430,19 +422,13 @@ function AdminProductsEdit() {
                         >
                           <h4 className="step-title">Tabela Nutricional:</h4>
 
-                          <FileInput
+                          <InputFile
                             ref={inputNutricionalRef}
                             name="fileNutricional"
                             label="Selecione a nova imagem da Tabela Nutricional"
-                            extensions={[
-                              '.jpg',
-                              '.jpeg',
-                              '.png',
-                              '.gif',
-                              '.webp',
-                              '.webm'
-                            ]}
+                            min={0}
                             max={1}
+                            extensions={['image/*']}
                           />
 
                           <ImageContainer
@@ -627,19 +613,13 @@ function AdminProductsEdit() {
                             Tabela Nutricional Verde:
                           </h4>
 
-                          <FileInput
+                          <InputFile
                             ref={inputNutricionalVerdeRef}
                             name="fileNutricionalVerde"
                             label="Selecione a nova imagem da Tabela Nutricional Verde"
-                            extensions={[
-                              '.jpg',
-                              '.jpeg',
-                              '.png',
-                              '.gif',
-                              '.webp',
-                              '.webm'
-                            ]}
+                            min={0}
                             max={1}
+                            extensions={['image/*']}
                           />
 
                           <ImageContainer

@@ -1,5 +1,7 @@
 import React from 'react';
 import Head from 'next/head';
+import ResizeObserver from 'resize-observer-polyfill';
+
 import { ThemeProvider } from 'styled-components';
 import { Provider as ReduxProvider } from 'react-redux';
 
@@ -12,6 +14,7 @@ import theme from '../styles/theme';
 import store from '../store';
 import { ModalProvider } from '../hooks/useModal';
 
+if (typeof window !== 'undefined') window.ResizeObserver ??= ResizeObserver;
 config.autoAddCss = false;
 
 const Agro7App = ({ Component, pageProps }) => (
