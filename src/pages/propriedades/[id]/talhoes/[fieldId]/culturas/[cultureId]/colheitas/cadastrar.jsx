@@ -32,17 +32,16 @@ import usersTypes from '@/helpers/usersTypes';
 
 const schema = yup.object().shape({
   date: yup.string().required('O campo data é obrigatório!'),
-  forecast: yup.string().required('O campo data previsão é obrigatório!'),
+  forecast: yup.string().nullable(),
   quantity: yup
     .number()
     .transform(value => (Number.isNaN(value) ? undefined : value))
-    .required('A quantidade precisa ser definida')
-    .positive('A quantidade precisa ser um valor positivo'),
+    .positive('A quantidade precisa ser um valor positivo')
+    .required('A quantidade precisa ser definida'),
   quantity_forecast: yup
     .number()
     .transform(value => (Number.isNaN(value) ? undefined : value))
-    .required('A quantidade prevista precisa ser definida')
-    .positive('A quantidade prevista precisa ser um valor positivo'),
+    .nullable(),
   type: yup.string().required('Unidade de medida obrigatória!'),
   is_green: yup
     .boolean()
@@ -95,8 +94,9 @@ function ColheitasCreate() {
         scrollTo(alertRef);
 
         d.date = dateToISOString(d.date);
-        d.forecast = dateToISOString(d.forecast);
         d.cultures = Number(cultureId);
+        if (!isEmpty(d?.forecast)) d.forecast = dateToISOString(d.forecast);
+        else delete d?.forecast;
 
         handleConfirmCreateHarvest(d);
       })

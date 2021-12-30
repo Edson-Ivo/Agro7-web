@@ -1,6 +1,5 @@
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import Head from 'next/head';
-import { Form } from '@unform/web';
 
 import Pagination from '@/components/Pagination/index';
 import { useRouter } from 'next/router';
@@ -23,25 +22,25 @@ import { useModal } from '@/hooks/useModal';
 
 import UsersService from '@/services/UsersService';
 import errorMessage from '@/helpers/errorMessage';
-import Input from '@/components/Input/index';
 import isEmpty from '@/helpers/isEmpty';
 import maskString from '@/helpers/maskString';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 import usersTypes from '@/helpers/usersTypes';
+import InputSearch from '@/components/InputSearch/index';
 
 function AdminUsersNotActive() {
   const [alertMsg, setAlertMsg] = useState({ type: '', message: '' });
   const [loading, setLoading] = useState(false);
-  const [searchedUser, setSearchedUser] = useState('');
-  const formRef = useRef(null);
 
   const router = useRouter();
 
   const perPage = 10;
   const { page = 1 } = router.query;
 
+  const [search, setSearch] = useState('');
+
   const { data, error, mutate } = useFetch(
-    `/users/find/without-verified-email/all?name=${searchedUser}&limit=${perPage}&page=${page}`
+    `/users/find/without-verified-email/all?&limit=${perPage}&page=${page}&search=${search}`
   );
   const { addModal, removeModal } = useModal();
 
@@ -120,8 +119,6 @@ function AdminUsersNotActive() {
     setLoading(false);
   };
 
-  const searchUser = e => setSearchedUser(e.target.value);
-
   if (error) return <Error error={error} />;
 
   return (
@@ -149,22 +146,10 @@ function AdminUsersNotActive() {
                 {alertMsg.message && (
                   <Alert type={alertMsg.type}>{alertMsg.message}</Alert>
                 )}
-                <div
-                  style={{
-                    borderBottom: '1px solid #EEEDEA',
-                    marginTop: -10,
-                    marginBottom: 14
-                  }}
-                >
-                  <Form ref={formRef} initialData={searchUser}>
-                    <Input
-                      type="text"
-                      name="userSelect"
-                      handleChange={searchUser}
-                      label="Pesquisar por Nome"
-                    />
-                  </Form>
-                </div>
+                <InputSearch
+                  url="/admin/users/nao-ativado"
+                  onSubmitSearch={q => setSearch(q)}
+                />
                 {((data || loading) && (
                   <>
                     <div className="table-responsive">
@@ -216,7 +201,7 @@ function AdminUsersNotActive() {
                             ))) || (
                             <tr>
                               <td colSpan="5">
-                                {!searchedUser
+                                {!search
                                   ? `Não há usuários não ativados cadastrados`
                                   : `Não há usuários não ativados correspondentes à pesquisa`}
                               </td>

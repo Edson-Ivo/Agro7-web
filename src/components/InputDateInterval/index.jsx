@@ -1,6 +1,16 @@
-import React, { useState, useEffect, useRef, memo } from 'react';
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  memo,
+  forwardRef,
+  useImperativeHandle
+} from 'react';
 import { useRouter } from 'next/router';
 import { Form } from '@unform/web';
+
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTimes } from '@fortawesome/free-solid-svg-icons';
 
 import Input from '@/components/Input';
 import Button from '@/components/Button';
@@ -15,6 +25,7 @@ import {
   isValidDate
 } from '@/helpers/date';
 import isEmpty from '@/helpers/isEmpty';
+import mountQuery from '@/helpers/mountQuery';
 
 const selectOptions = [
   {
@@ -47,13 +58,20 @@ const selectOptions = [
   }
 ];
 
-const InputDateInterval = ({
-  url = '',
-  onDateStartSelect = () => null,
-  onDateEndSelect = () => null,
-  onError = () => null,
-  ...rest
-}) => {
+const InputDateInterval = (
+  {
+    url = '',
+    toQuery = true,
+    autoDateEnd = true,
+    resetDateOption = false,
+    onDateStartSelect = () => null,
+    onDateEndSelect = () => null,
+    onPeriodSelect = () => null,
+    onError = () => null,
+    ...rest
+  },
+  ref
+) => {
   const formRef = useRef(null);
   const router = useRouter();
   const [error, setError] = useState('');
@@ -76,12 +94,35 @@ const InputDateInterval = ({
     setDateEvent(dateValue);
   };
 
+  const clearFields = () => {
+    setError('');
+    setDateStart(null);
+    setDateEnd(null);
+    setDateStartSearch(null);
+    setDateEndSearch(null);
+    setPeriod('undefined');
+
+    formRef.current.reset();
+  };
+
+  const handleResetDates = () => {
+    clearFields();
+
+    if (toQuery)
+      router.push(
+        mountQuery(router, url, {}, ['period', 'dateStart', 'dateEnd'])
+      );
+  };
+
   const handleChangeSetPeriod = e => {
     const val = e?.value;
 
     if (val) {
       setPeriod(val);
-      router.push(`${url}?period=${val}`);
+      if (toQuery)
+        router.push(
+          mountQuery(router, url, { period: val }, ['dateStart', 'dateEnd'])
+        );
 
       if (val === 'custom') {
         setLoadingCustom(true);
@@ -90,6 +131,8 @@ const InputDateInterval = ({
           setLoadingCustom(false);
         }, 500);
       }
+
+      onPeriodSelect(val);
     }
   };
 
@@ -104,9 +147,8 @@ const InputDateInterval = ({
       setDateStartSearch(dateStart);
       setDateEndSearch(dateEnd);
 
-      router.push(
-        `${url}?period=custom&dateStart=${dateStart}&dateEnd=${dateEnd}`
-      );
+      if (toQuery)
+        router.push(mountQuery(router, url, { period, dateStart, dateEnd }));
     } else {
       setError('Selecione um período válido!');
     }
@@ -132,8 +174,7 @@ const InputDateInterval = ({
     if (!isEmpty(queryPeriod)) {
       const validQueryPeriod = isValidPeriod(queryPeriod);
 
-      if (validQueryPeriod) setPeriod(queryPeriod);
-      else setPeriod('undefined');
+      setPeriod(validQueryPeriod ? queryPeriod : 'undefined');
     } else {
       setPeriod('undefined');
     }
@@ -146,7 +187,7 @@ const InputDateInterval = ({
     if (queryDateEnd && isValidDate(queryDateEnd)) {
       setDateEnd(dateToInput(queryDateEnd));
       setDateEndSearch(dateToInput(queryDateEnd));
-    } else {
+    } else if (autoDateEnd) {
       const today = getCurrentDate();
 
       setDateEnd(dateToInput(today));
@@ -211,6 +252,10 @@ const InputDateInterval = ({
     onError(error);
   }, [error]);
 
+  useImperativeHandle(ref, () => ({
+    clearFields: () => handleResetDates()
+  }));
+
   return (
     <>
       {period && (
@@ -255,16 +300,23 @@ const InputDateInterval = ({
                         />
                       </div>
                     </div>
-                    <Button
-                      type="button"
-                      className="primary"
-                      onClick={() => handleSubmitDates()}
-                    >
-                      Filtrar pelo período escolhido
-                    </Button>
+                    <div className="form-group">
+                      <Button
+                        type="button"
+                        className="primary"
+                        onClick={() => handleSubmitDates()}
+                      >
+                        Filtrar pelo período escolhido
+                      </Button>
+                    </div>
                   </>
                 )) || <Loader />}
               </>
+            )}
+            {resetDateOption && (
+              <Button type="button" onClick={() => handleResetDates()}>
+                <FontAwesomeIcon icon={faTimes} /> Limpar Filtro
+              </Button>
             )}
           </Form>
         </div>
@@ -273,4 +325,4 @@ const InputDateInterval = ({
   );
 };
 
-export default memo(InputDateInterval);
+export default memo(forwardRef(InputDateInterval));

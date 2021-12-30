@@ -25,11 +25,11 @@ import isEmpty from '@/helpers/isEmpty';
 import FieldsService from '@/services/FieldsService';
 import Pagination from '@/components/Pagination/index';
 import Error from '@/components/Error/index';
-import { useSelector } from 'react-redux';
-import urlRoute from '@/helpers/urlRoute';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 import maskString from '@/helpers/maskString';
 import useUserAccess from '@/hooks/useUserAccess';
+import InputSearch from '@/components/InputSearch/index';
+import useRewriteRoute from '@/hooks/useRewriteRoute';
 
 function Talhoes() {
   const router = useRouter();
@@ -43,8 +43,7 @@ function Talhoes() {
   const { addModal, removeModal } = useModal();
   const [loading, setLoading] = useState(false);
 
-  const { type } = useSelector(state => state.user);
-  const [route, setRoute] = useState({});
+  const route = useRewriteRoute(router);
   const [baseUrl, setBaseUrl] = useState('');
 
   const { data, error } = useFetch(`/properties/find/by/id/${id}`);
@@ -52,18 +51,18 @@ function Talhoes() {
   const [userAccess, loadingUserAccess] = useUserAccess(route, data?.users?.id);
 
   useEffect(() => {
-    setRoute(urlRoute(router, type));
-  }, []);
-
-  useEffect(() => {
-    setBaseUrl(`${route.path}/${id}/talhoes`);
+    if (!isEmpty(route?.path)) setBaseUrl(`${route.path}/${id}/talhoes`);
   }, [route]);
+
+  const [search, setSearch] = useState('');
 
   const {
     data: dataFields,
     error: errorFields,
     mutate: mutateFields
-  } = useFetch(`/fields/find/by/property/${id}?limit=${perPage}&page=${page}`);
+  } = useFetch(
+    `/fields/find/by/property/${id}?limit=${perPage}&page=${page}&search=${search}`
+  );
 
   const handleDelete = useCallback(
     async identifier => {
@@ -139,6 +138,14 @@ function Talhoes() {
                   {alertMsg.message && (
                     <Alert type={alertMsg.type}>{alertMsg.message}</Alert>
                   )}
+
+                  {!isEmpty(baseUrl) && (
+                    <InputSearch
+                      url={`${baseUrl}`}
+                      onSubmitSearch={q => setSearch(q)}
+                    />
+                  )}
+
                   {(((data && dataFields && !loadingUserAccess) || loading) && (
                     <>
                       <div className="table-responsive">

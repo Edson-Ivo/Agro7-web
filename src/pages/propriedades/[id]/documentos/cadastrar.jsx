@@ -9,9 +9,9 @@ import Navbar from '@/components/Navbar';
 
 import Input from '@/components/Input';
 import Button from '@/components/Button';
-import FileInput from '@/components/FileInput';
 import { Section, SectionHeader, SectionBody } from '@/components/Section';
 import { CardContainer } from '@/components/CardContainer';
+import InputFile from '@/components/InputFile';
 
 import { privateRoute } from '@/components/PrivateRoute';
 import { Alert } from '@/components/Alert';
@@ -38,6 +38,7 @@ function DocumentosCreate() {
   const formRef = useRef(null);
   const alertRef = useRef(null);
   const inputRef = useRef(null);
+
   const [alert, setAlert] = useState({ type: '', message: '' });
   const [disableButton, setDisableButton] = useState(false);
 
@@ -67,7 +68,7 @@ function DocumentosCreate() {
     }
   };
 
-  const handleSubmit = async (dt, { reset }, e) => {
+  const handleSubmit = async dt => {
     setDisableButton(true);
 
     schema
@@ -91,7 +92,7 @@ function DocumentosCreate() {
           });
 
           formData.append('name', d.name);
-          formData.append('file', e.target.file.files[0]);
+          formData.append('file', inputRef.current.getFiles()[0]);
 
           await DocumentsService.create(id, formData).then(res => {
             if (res.status !== 201 || res?.statusCode) {
@@ -122,10 +123,8 @@ function DocumentosCreate() {
       .catch(err => {
         setAlert({ type: 'error', message: err.errors[0] });
         setDisableButton(false);
-
         if (err instanceof yup.ValidationError) {
           const { path, message } = err;
-
           formRef.current.setFieldError(path, message);
         }
       });
@@ -176,12 +175,15 @@ function DocumentosCreate() {
                     label="Nome do documento"
                     required
                   />
-                  <FileInput
-                    ref={inputRef}
+
+                  <InputFile
                     name="file"
-                    label="Selecione o arquivo"
+                    ref={inputRef}
+                    label="Selecione um arquivo"
+                    min={1}
                     max={1}
                   />
+
                   <div className="form-group buttons">
                     <div>
                       <Button type="button" onClick={handleCancel}>

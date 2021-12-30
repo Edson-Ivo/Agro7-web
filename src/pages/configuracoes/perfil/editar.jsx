@@ -25,7 +25,6 @@ import errorMessage from '@/helpers/errorMessage';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 import ProfilesService from '@/services/ProfilesService';
 import TextArea from '@/components/TextArea/index';
-import FileInput from '@/components/FileInput/index';
 import ImageContainer from '@/components/ImageContainer/index';
 import isEmpty from '@/helpers/isEmpty';
 import Table from '@/components/Table/index';
@@ -34,6 +33,7 @@ import { useModal } from '@/hooks/useModal';
 import AuthService from '@/services/AuthService';
 import { UserAuthAction } from '@/store/modules/User/actions';
 import scrollTo from '@/helpers/scrollTo';
+import InputFile from '@/components/InputFile/index';
 
 function ConfiguracoesPerfilEdit() {
   const formRef = useRef(null);
@@ -62,7 +62,7 @@ function ConfiguracoesPerfilEdit() {
     mutate: mutateGallery
   } = useFetch(`/profiles-galleries/find/by/user-logged?limit=20&page=1`);
 
-  const handleSubmit = async (d, { reset }, e) => {
+  const handleSubmit = async d => {
     setDisableButton(true);
     (async () => {
       try {
@@ -77,9 +77,12 @@ function ConfiguracoesPerfilEdit() {
         const profileFormData = new FormData();
         const galleryFormData = new FormData();
 
+        const inputProfileFile = inputRef.current.getFiles();
+        const inputGalleryFiles = inputGalleryRef.current.getFiles();
+
         if (
-          (e.target.file.files.length > 0 && inputRef.current.error.message) ||
-          (e.target.files.files.length > 0 &&
+          (inputProfileFile.length > 0 && inputRef.current.error.message) ||
+          (inputGalleryFiles.length > 0 &&
             inputGalleryRef.current.error.message)
         ) {
           setAlert({
@@ -91,8 +94,8 @@ function ConfiguracoesPerfilEdit() {
         } else {
           if (d?.video_url) profileFormData.append('video_url', d.video_url);
           if (d?.about) profileFormData.append('about', d.about);
-          if (e.target.file.files.length > 0)
-            profileFormData.append('file', e.target.file.files[0]);
+          if (inputProfileFile.length > 0)
+            profileFormData.append('file', inputProfileFile[0]);
 
           await ProfilesService.update(data?.id, profileFormData).then(res => {
             if (res.status >= 400 || res?.statusCode) {
@@ -116,11 +119,11 @@ function ConfiguracoesPerfilEdit() {
                 })
               );
 
-              const galleryQtd = e.target.files.files.length;
+              const galleryQtd = inputGalleryFiles.length;
 
               if (galleryQtd > 0) {
                 for (let i = 0; i < galleryQtd; i++)
-                  galleryFormData.append('files', e.target.files.files[i]);
+                  galleryFormData.append('files', inputGalleryFiles[i]);
 
                 ProfilesService.createGallery(data?.id, galleryFormData).then(
                   res2 => {
@@ -251,20 +254,17 @@ function ConfiguracoesPerfilEdit() {
                             zoom
                           />
                         )}
-                        <FileInput
-                          ref={inputRef}
+                        <InputFile
                           name="file"
+                          ref={inputRef}
                           label="Selecione uma nova Foto de Perfil"
-                          extensions={[
-                            '.jpg',
-                            '.jpeg',
-                            '.png',
-                            '.gif',
-                            '.webp',
-                            '.webm'
-                          ]}
                           min={0}
                           max={1}
+                          extensions={['image/*']}
+                          useImageEditorOptions={{
+                            onlyCrop: true,
+                            aspectRatio: 1
+                          }}
                         />
                         <Input
                           type="text"
@@ -282,20 +282,14 @@ function ConfiguracoesPerfilEdit() {
                                   Você pode inserir até mais {maxGallery} fotos
                                   para sua galeria.
                                 </Alert>
-                                <FileInput
-                                  ref={inputGalleryRef}
+
+                                <InputFile
                                   name="files"
+                                  ref={inputGalleryRef}
                                   label={`Selecione novas fotos para sua galeria: (máximo ${maxGallery})`}
-                                  extensions={[
-                                    '.jpg',
-                                    '.jpeg',
-                                    '.png',
-                                    '.gif',
-                                    '.webp',
-                                    '.webm'
-                                  ]}
                                   min={0}
                                   max={maxGallery}
+                                  extensions={['image/*']}
                                 />
                               </>
                             )) || (

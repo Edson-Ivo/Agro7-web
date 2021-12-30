@@ -4,9 +4,24 @@ import { ShowTransition } from './mixins';
 export default createGlobalStyle`
 
   * {
-    margin: 0;
-    padding: 0;
     box-sizing: border-box;
+    margin: 0;
+    outline: 0;
+    padding: 0;
+  }
+
+  a, button, input, [role="button"] {
+    &:focus {
+      box-shadow: 0 0 0 2px ${props => props.theme.colors.primary_65};
+    }
+  }
+
+  .select__control:focus-within {
+    box-shadow: 0 0 0 2px ${props => props.theme.colors.primary_65};
+  }
+
+  .select__input > input:focus {
+    box-shadow: none !important;
   }
 
   body {
@@ -108,6 +123,10 @@ export default createGlobalStyle`
     position: relative;
     width: 100%;
 
+    button {
+      width: 100%;
+    }
+
     &.buttons {
       margin-top: 15px;
     }
@@ -170,14 +189,16 @@ export default createGlobalStyle`
 
   .CalendarDay__highlighted_calendar {
     background: ${props => props.theme.colors.green_highlight};
+
+    &:hover {
+      background: ${props => props.theme.colors.green_75};
+      color: ${props => props.theme.colors.white};
+    }
   }
 
-  .CalendarDay__highlighted_calendar:hover {
-    background: ${props => props.theme.colors.green_75};
-    color: ${props => props.theme.colors.white};
-  }
-
-  .CalendarDay__selected, .CalendarDay__selected:active, .CalendarDay__selected:hover {
+  .CalendarDay__selected,
+  .CalendarDay__selected:active,
+  .CalendarDay__selected:hover {
     background: ${props => props.theme.colors.green};
     border: 1px double ${props => props.theme.colors.green};
   }
@@ -217,6 +238,55 @@ export default createGlobalStyle`
     display: none;
     opacity: 0;
     visibility: hidden;
+  }
+
+  .uppy-Dashboard-inner {
+    background-color: ${({ theme }) => theme.colors.gray};
+    border: 1px solid ${({ theme }) => theme.colors.gray};
+    border-radius: 10px;
+    color: ${({ theme }) => theme.colors.black};
+    font-family: ${({ theme }) => theme.fonts.latoFamily};
+  }
+
+  .uppy-Dashboard-dropFilesHereHint {
+    background-image: url("data:image/svg+xml;charset=utf-8,<svg width='48' height='48' xmlns='http://www.w3.org/2000/svg'><path d='M24 1v1C11.85 2 2 11.85 2 24s9.85 22 22 22 22-9.85 22-22S36.15 2 24 2V1zm0 0V0c13.254 0 24 10.746 24 24S37.254 48 24 48 0 37.254 0 24 10.746 0 24 0v1zm7.707 19.293a.999.999 0 1 1-1.414 1.414L25 16.414V34a1 1 0 1 1-2 0V16.414l-5.293 5.293a.999.999 0 1 1-1.414-1.414l7-7a.999.999 0 0 1 1.414 0l7 7z' fill='%2327AB8F'/></svg>");
+    border: 1px dashed ${({ theme }) => theme.colors.green};
+    color: inherit;
+  }
+
+  [data-uppy-drag-drop-supported=true] .uppy-Dashboard-AddFiles {
+    border: 1px dashed ${({ theme }) => theme.colors.black_25};
+  }
+
+  .uppy-Dashboard-AddFiles-title {
+    color: ${({ theme }) => theme.colors.black};
+  }
+
+  .uppy-Dashboard-browse,
+  .uppy-DashboardContent-back,
+  .uppy-DashboardContent-save,
+  .uppy-DashboardContent-addMore {
+    color: ${({ theme }) => theme.colors.blue};
+  }
+
+  .uppy-Dashboard-Item-action--remove {
+    color: ${({ theme }) => theme.colors.red};
+  }
+
+  .uppy-Webcam-button {
+    background-color: ${({ theme }) => theme.colors.red};
+  }
+
+  .uppy-Dashboard-Item-action--remove:hover {
+    color: #d31b2d;
+  }
+
+  .cropper-line {
+    background-color: ${({ theme }) => theme.colors.green};
+
+    &:before {
+      background-color: ${({ theme }) => theme.colors.green};
+    }
   }
 
 `;

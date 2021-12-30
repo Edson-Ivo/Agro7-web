@@ -27,6 +27,8 @@ import SalesService from '@/services/SalesService';
 import { dateConversor } from '@/helpers/date';
 import maskString from '@/helpers/maskString';
 import usersTypes from '@/helpers/usersTypes';
+import objectToQuery from '@/helpers/objectToQuery';
+import InputSearch from '@/components/InputSearch/index';
 
 function AdminVendas() {
   const [alertMsg, setAlertMsg] = useState({ type: '', message: '' });
@@ -39,8 +41,16 @@ function AdminVendas() {
 
   const { addModal, removeModal } = useModal();
 
+  const [search, setSearch] = useState('');
+  const [filters, setFilters] = useState({
+    date_start: '',
+    date_finish: ''
+  });
+
   const { data, error, mutate } = useFetch(
-    `/sales/find/all?limit=${perPage}&page=${page}`
+    `/sales/find/all?limit=${perPage}&page=${page}&page=${page}&search=${search}&${objectToQuery(
+      filters
+    )}`
   );
 
   const handleDelete = useCallback(
@@ -100,6 +110,12 @@ function AdminVendas() {
                 {alertMsg.message && (
                   <Alert type={alertMsg.type}>{alertMsg.message}</Alert>
                 )}
+                <InputSearch
+                  url="/admin/vendas"
+                  filters={{ date: true }}
+                  onFilterChange={f => setFilters({ ...f })}
+                  onSubmitSearch={q => setSearch(q)}
+                />
                 {((data || loading) && (
                   <>
                     <div className="table-responsive">

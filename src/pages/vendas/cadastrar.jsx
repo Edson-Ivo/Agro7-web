@@ -65,7 +65,7 @@ function VendasCreate() {
   );
   const { data: dataStock, error: errorStock } = useFetch(
     getStock
-      ? `/harvests/find/by/product/${product}/in-stock/by/user-logged?properties=${property}&type=${typeUnt}&is_green=${isGreen}&limit=1000`
+      ? `/harvests/find/by/product/${product}/in-stock/user-logged/property/${property}?type=${typeUnt}&is_green=${isGreen}&limit=1000`
       : null
   );
 
@@ -249,7 +249,12 @@ function VendasCreate() {
       AddressesService.getCep(value.replace('-', '')).then(
         ({ data: dataAddressCep }) => {
           if (!isEmpty(dataAddressCep)) {
-            const { state, city, neighborhood, street } = dataAddressCep;
+            const {
+              state = '',
+              city = '',
+              neighborhood = '',
+              street = ''
+            } = dataAddressCep;
 
             formRef.current.setFieldValue('distributors.state', state);
             formRef.current.setFieldValue('distributors.city', city);
@@ -435,10 +440,7 @@ function VendasCreate() {
                             options
                             label="Selecione o produto (produtos em estoque):"
                             onChange={handleChangeProduct}
-                            url="/products/find/all/in-stock/by/user-logged"
-                            urlQuery={{
-                              properties: property
-                            }}
+                            url={`/products/find/in-stock/by/user-logged/property/${property}`}
                           />
                         )) || (
                           <Select

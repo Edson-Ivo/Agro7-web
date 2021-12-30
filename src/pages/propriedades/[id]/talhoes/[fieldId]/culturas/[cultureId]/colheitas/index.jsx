@@ -27,9 +27,11 @@ import HarvestsService from '@/services/HarvestsService';
 import { dateConversor } from '@/helpers/date';
 import Error from '@/components/Error/index';
 import { useSelector } from 'react-redux';
-import urlRoute from '@/helpers/urlRoute';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 import usersTypes from '@/helpers/usersTypes';
+import objectToQuery from '@/helpers/objectToQuery';
+import InputSearch from '@/components/InputSearch/index';
+import useRewriteRoute from '@/hooks/useRewriteRoute';
 
 function Colheitas() {
   const router = useRouter();
@@ -47,27 +49,48 @@ function Colheitas() {
     `/cultures/find/by/id/${cultureId}`
   );
 
+  const [search, setSearch] = useState('');
+  const [filters, setFilters] = useState({
+    date_start: '',
+    date_finish: '',
+    is_green: '',
+    type: ''
+  });
+  const [dataTypeOptions, setDataTypeOptions] = useState([]);
+
   const {
     data: dataHarvests,
     error: errorHarvests,
     mutate: mutateHarvests
   } = useFetch(
-    `/harvests/find/by/culture/${cultureId}?limit=${perPage}&page=${page}`
+    `/harvests/find/by/culture/${cultureId}?limit=${perPage}&page=${page}&search=${search}&${objectToQuery(
+      filters
+    )}`
   );
 
+  const { data: dataType } = useFetch('/harvests/find/all/types');
+
   const { type } = useSelector(state => state.user);
-  const [route, setRoute] = useState({});
+  const route = useRewriteRoute(router, type, [usersTypes[3], usersTypes[4]]);
   const [baseUrl, setBaseUrl] = useState('');
 
   useEffect(() => {
-    setRoute(urlRoute(router, type, [usersTypes[3], usersTypes[4]]));
-  }, []);
+    if (!isEmpty(route?.path))
+      setBaseUrl(
+        `${route.path}/${id}/talhoes/${fieldId}/culturas/${cultureId}/colheitas`
+      );
+  }, [route]);
 
   useEffect(() => {
-    setBaseUrl(
-      `${route.path}/${id}/talhoes/${fieldId}/culturas/${cultureId}/colheitas`
-    );
-  }, [route]);
+    if (!isEmpty(dataType)) {
+      const t = dataType?.typesHarvest.map(typeHarvest => ({
+        value: typeHarvest,
+        label: typeHarvest
+      }));
+
+      setDataTypeOptions([{ value: 'all', label: 'Todos' }, ...t]);
+    }
+  }, [dataType]);
 
   const handleDelete = useCallback(
     async identifier => {
@@ -150,6 +173,42 @@ function Colheitas() {
                   {alertMsg.message && (
                     <Alert type={alertMsg.type}>{alertMsg.message}</Alert>
                   )}
+                  {!isEmpty(dataTypeOptions) && !isEmpty(baseUrl) && (
+                    <InputSearch
+                      url={`${baseUrl}`}
+                      filters={{
+                        date: true,
+                        selects: {
+                          is_green: {
+                            options: [
+                              {
+                                value: 'all',
+                                label: 'Todos'
+                              },
+                              {
+                                value: '1',
+                                label: 'Sim'
+                              },
+                              {
+                                value: '0',
+                                label: 'Não'
+                              }
+                            ],
+                            label: 'Produto verde',
+                            defaultValue: 'all'
+                          },
+                          type: {
+                            options: dataTypeOptions,
+                            label: 'Unidade de Medida',
+                            defaultValue: 'all'
+                          }
+                        }
+                      }}
+                      onFilterChange={f => setFilters({ ...f })}
+                      onSubmitSearch={q => setSearch(q)}
+                      searchable={false}
+                    />
+                  )}
                   {(((data && dataCultures && dataHarvests) || loading) && (
                     <>
                       <div className="table-responsive">
@@ -175,8 +234,16 @@ function Colheitas() {
                                 >
                                   <td>{dateConversor(d?.date, false)}</td>
                                   <td>{`${d?.quantity}${d?.type}`}</td>
-                                  <td>{dateConversor(d?.forecast, false)}</td>
-                                  <td>{`${d?.quantity_forecast}${d?.type}`}</td>
+                                  <td>
+                                    {!isEmpty(d?.forecast)
+                                      ? dateConversor(d?.forecast, false)
+                                      : 'Nenhuma'}
+                                  </td>
+                                  <td>
+                                    {!isEmpty(d?.quantity_forecast)
+                                      ? `${d?.quantity_forecast}${d?.type}`
+                                      : 'Nenhuma'}
+                                  </td>
                                   <td>{d?.is_green ? 'Sim' : 'Não'}</td>
                                   <td onClick={e => e.stopPropagation()}>
                                     <ActionButton

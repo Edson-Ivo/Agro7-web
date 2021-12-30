@@ -27,6 +27,7 @@ import SalesService from '@/services/SalesService';
 import { dateConversor } from '@/helpers/date';
 import maskString from '@/helpers/maskString';
 import usersTypes from '@/helpers/usersTypes';
+import InputSearch from '@/components/InputSearch/index';
 
 function AdminUsersVendasTransportadoras() {
   const [alertMsg, setAlertMsg] = useState({ type: '', message: '' });
@@ -39,8 +40,10 @@ function AdminUsersVendasTransportadoras() {
 
   const { addModal, removeModal } = useModal();
 
+  const [search, setSearch] = useState('');
+
   const { data, error, mutate } = useFetch(
-    `/transporters/find/all?limit=${perPage}&page=${page}`
+    `/transporters/find/all?limit=${perPage}&page=${page}&search=${search}`
   );
 
   const { data: dataUser, error: errorUser } = useFetch(
@@ -112,6 +115,10 @@ function AdminUsersVendasTransportadoras() {
                 {alertMsg.message && (
                   <Alert type={alertMsg.type}>{alertMsg.message}</Alert>
                 )}
+                <InputSearch
+                  url={`/admin/users/${id}/vendas/transportadoras`}
+                  onSubmitSearch={q => setSearch(q)}
+                />
                 {((data || loading) && (
                   <>
                     <div className="table-responsive">

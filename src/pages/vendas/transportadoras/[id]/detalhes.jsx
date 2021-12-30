@@ -34,6 +34,7 @@ import truncate from '@/helpers/truncate';
 import useRewriteRoute from '@/hooks/useRewriteRoute';
 import maskString from '@/helpers/maskString';
 import downloadDocument from '@/helpers/downloadDocument';
+import InputSearch from '@/components/InputSearch/index';
 
 function VendasTransportadorasDetalhes() {
   const formRef = useRef(null);
@@ -50,9 +51,11 @@ function VendasTransportadorasDetalhes() {
 
   const { id } = router.query;
 
+  const [search, setSearch] = useState('');
+
   const { data, error } = useFetch(`/transporters/find/by/id/${id}`);
   const { data: dataDocs, error: errorDocs, mutate: mutateDocs } = useFetch(
-    `/transporters-documents/find/by/transporter/${id}?limit=${perPageDocs}&page=${pageDocs}`
+    `/transporters-documents/find/by/transporter/${id}?limit=${perPageDocs}&page=${pageDocs}&search=${search}`
   );
   const { data: dataVehicles, error: errorVehicles } = useFetch(
     `/transporters-vehicles/find/by/transporter/${id}?limit=${perPageVehicles}&page=${pageVehicles}`
@@ -141,18 +144,19 @@ function VendasTransportadorasDetalhes() {
                 )}
                 {data && (
                   <>
-                    <Form
-                      ref={formRef}
-                      initialData={{
-                        ...data,
-                        document: maskString(data?.document, 'document') || '',
-                        phone: maskString(data?.phone, 'phone') || ''
-                      }}
-                    >
-                      <MultiStep activeStep={activeStep} onlyView>
-                        <Step
-                          label="Transportadora"
-                          onClick={() => handleChangeActiveStep(1)}
+                    <MultiStep activeStep={activeStep} onlyView>
+                      <Step
+                        label="Transportadora"
+                        onClick={() => handleChangeActiveStep(1)}
+                      >
+                        <Form
+                          ref={formRef}
+                          initialData={{
+                            ...data,
+                            document:
+                              maskString(data?.document, 'document') || '',
+                            phone: maskString(data?.phone, 'phone') || ''
+                          }}
                         >
                           <Input
                             type="text"
@@ -176,146 +180,153 @@ function VendasTransportadorasDetalhes() {
                             maxLength={15}
                             disabled
                           />
-                        </Step>
-                        <Step
-                          label="Documentos"
-                          onClick={() => handleChangeActiveStep(2)}
-                        >
-                          {errorDocs && (
-                            <Alert type="error">
-                              Houve um erro ao tentar carregar os documentos
-                              dessa transportadora.
-                            </Alert>
-                          )}
-                          {(data && dataDocs && (
-                            <>
-                              <Table>
-                                <thead>
-                                  <tr onClick={() => router.push('/')}>
-                                    <th>Nome do Documento</th>
-                                    <th>Ações</th>
-                                  </tr>
-                                </thead>
-                                <tbody>
-                                  {(!isEmpty(dataDocs?.items) &&
-                                    dataDocs.items.map(d => (
-                                      <tr
-                                        key={d?.id.toString()}
-                                        onClick={() => downloadDocument(d.url)}
-                                      >
-                                        <td>{d?.name}</td>
-                                        <td onClick={e => e.stopPropagation()}>
-                                          <ActionButton
-                                            id={d?.id}
-                                            download={d?.url}
-                                            onDelete={() =>
-                                              handleDeleteModal(d.id)
-                                            }
-                                            noEdit
-                                            noInfo
-                                          />
-                                        </td>
-                                      </tr>
-                                    ))) || (
-                                    <tr>
-                                      <td colSpan="2">
-                                        Não há documentos para essa
-                                        transportadora
+                        </Form>
+                      </Step>
+                      <Step
+                        label="Documentos"
+                        onClick={() => handleChangeActiveStep(2)}
+                      >
+                        {errorDocs && (
+                          <Alert type="error">
+                            Houve um erro ao tentar carregar os documentos dessa
+                            transportadora.
+                          </Alert>
+                        )}
+
+                        {!isEmpty(routePath) && (
+                          <InputSearch
+                            url={`${routePath}/transportadoras/${id}/detalhes`}
+                            onSubmitSearch={q => setSearch(q)}
+                          />
+                        )}
+
+                        {(data && dataDocs && (
+                          <>
+                            <Table>
+                              <thead>
+                                <tr onClick={() => router.push('/')}>
+                                  <th>Nome do Documento</th>
+                                  <th>Ações</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {(!isEmpty(dataDocs?.items) &&
+                                  dataDocs.items.map(d => (
+                                    <tr
+                                      key={d?.id.toString()}
+                                      onClick={() => downloadDocument(d.url)}
+                                    >
+                                      <td>{d?.name}</td>
+                                      <td onClick={e => e.stopPropagation()}>
+                                        <ActionButton
+                                          id={d?.id}
+                                          download={d?.url}
+                                          onDelete={() =>
+                                            handleDeleteModal(d.id)
+                                          }
+                                          noEdit
+                                          noInfo
+                                        />
                                       </td>
                                     </tr>
-                                  )}
-                                </tbody>
-                              </Table>
-                              <Pagination
-                                url={`${routePath}/transportadoras/${id}/detalhes`}
-                                currentPage={pageDocs}
-                                itemsPerPage={perPageDocs}
-                                totalPages={dataDocs?.meta?.totalPages}
-                                page="pageDocs"
-                              />
-                            </>
-                          )) || <Loader />}
-                          <div className="form-group buttons">
-                            <div>
-                              <Button
-                                type="button"
-                                className="primary"
-                                onClick={() =>
-                                  router.push(
-                                    `${routePath}/transportadoras/${id}/documentos/cadastrar`
-                                  )
-                                }
-                              >
-                                Cadastrar Documento
-                              </Button>
-                            </div>
+                                  ))) || (
+                                  <tr>
+                                    <td colSpan="2">
+                                      Não há documentos para essa transportadora
+                                    </td>
+                                  </tr>
+                                )}
+                              </tbody>
+                            </Table>
+                            <Pagination
+                              url={`${routePath}/transportadoras/${id}/detalhes`}
+                              currentPage={pageDocs}
+                              itemsPerPage={perPageDocs}
+                              totalPages={dataDocs?.meta?.totalPages}
+                              page="pageDocs"
+                            />
+                          </>
+                        )) || <Loader />}
+                        <div className="form-group buttons">
+                          <div>
+                            <Button
+                              type="button"
+                              className="primary"
+                              onClick={() =>
+                                router.push(
+                                  `${routePath}/transportadoras/${id}/documentos/cadastrar`
+                                )
+                              }
+                            >
+                              Cadastrar Documento
+                            </Button>
                           </div>
-                        </Step>
-                        <Step
-                          label="Veículos"
-                          onClick={() => handleChangeActiveStep(3)}
-                        >
-                          {errorVehicles && (
-                            <Alert type="error">
-                              Houve um erro ao tentar carregar os veiculos dessa
-                              transportadora.
-                            </Alert>
-                          )}
-                          {(data && dataVehicles && (
-                            <>
-                              <Table>
-                                <thead>
-                                  <tr onClick={() => router.push('/')}>
-                                    <th>Nome do Veículo</th>
-                                    <th>Placa</th>
-                                    <th>Descrição</th>
-                                    <th>Ações</th>
-                                  </tr>
-                                </thead>
-                                <tbody>
-                                  {(!isEmpty(dataVehicles?.items) &&
-                                    dataVehicles.items.map(d => (
-                                      <tr
-                                        key={d?.id.toString()}
-                                        onClick={() =>
-                                          router.push(
-                                            `${routePath}/transportadoras/${id}/veiculos/${d?.id}/detalhes`
-                                          )
-                                        }
-                                      >
-                                        <td>{d?.name}</td>
-                                        <td>{d?.plate}</td>
-                                        <td>{truncate(d.description, 40)}</td>
-                                        <td onClick={e => e.stopPropagation()}>
-                                          <ActionButton
-                                            id={d?.id}
-                                            url={`${routePath}/transportadoras/${id}/veiculos/${d?.id}/detalhes`}
-                                            noDelete
-                                            noEdit
-                                          />
-                                        </td>
-                                      </tr>
-                                    ))) || (
-                                    <tr>
-                                      <td colSpan="4">
-                                        Não há veículos para essa transportadora
+                        </div>
+                      </Step>
+                      <Step
+                        label="Veículos"
+                        onClick={() => handleChangeActiveStep(3)}
+                      >
+                        {errorVehicles && (
+                          <Alert type="error">
+                            Houve um erro ao tentar carregar os veiculos dessa
+                            transportadora.
+                          </Alert>
+                        )}
+                        {(data && dataVehicles && (
+                          <>
+                            <Table>
+                              <thead>
+                                <tr onClick={() => router.push('/')}>
+                                  <th>Nome do Veículo</th>
+                                  <th>Placa</th>
+                                  <th>Descrição</th>
+                                  <th>Ações</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {(!isEmpty(dataVehicles?.items) &&
+                                  dataVehicles.items.map(d => (
+                                    <tr
+                                      key={d?.id.toString()}
+                                      onClick={() =>
+                                        router.push(
+                                          `${routePath}/transportadoras/${id}/veiculos/${d?.id}/detalhes`
+                                        )
+                                      }
+                                    >
+                                      <td>{d?.name}</td>
+                                      <td>{d?.plate}</td>
+                                      <td>{truncate(d.description, 40)}</td>
+                                      <td onClick={e => e.stopPropagation()}>
+                                        <ActionButton
+                                          id={d?.id}
+                                          url={`${routePath}/transportadoras/${id}/veiculos/${d?.id}/detalhes`}
+                                          noDelete
+                                          noEdit
+                                        />
                                       </td>
                                     </tr>
-                                  )}
-                                </tbody>
-                              </Table>
-                              <Pagination
-                                url={`${routePath}/transportadoras/${id}/detalhes`}
-                                currentPage={pageVehicles}
-                                itemsPerPage={perPageVehicles}
-                                totalPages={dataVehicles?.meta?.totalPages}
-                                page="pageVehicles"
-                              />
-                            </>
-                          )) || <Loader />}
-                        </Step>
-                      </MultiStep>
-                    </Form>
+                                  ))) || (
+                                  <tr>
+                                    <td colSpan="4">
+                                      Não há veículos para essa transportadora
+                                    </td>
+                                  </tr>
+                                )}
+                              </tbody>
+                            </Table>
+                            <Pagination
+                              url={`${routePath}/transportadoras/${id}/detalhes`}
+                              currentPage={pageVehicles}
+                              itemsPerPage={perPageVehicles}
+                              totalPages={dataVehicles?.meta?.totalPages}
+                              page="pageVehicles"
+                            />
+                          </>
+                        )) || <Loader />}
+                      </Step>
+                    </MultiStep>
                   </>
                 )}
               </CardContainer>

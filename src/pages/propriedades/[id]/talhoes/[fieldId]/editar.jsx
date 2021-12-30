@@ -220,6 +220,7 @@ function TalhoesEdit() {
                       </div>
 
                       <MapActionPlotArea
+                        autoCenter
                         initialPosition={[
                           data.coordinates.latitude,
                           data.coordinates.longitude

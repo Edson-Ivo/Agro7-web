@@ -26,6 +26,7 @@ import { Alert } from '@/components/Alert/index';
 import isEmpty from '@/helpers/isEmpty';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 import usersTypes from '@/helpers/usersTypes';
+import InputSearch from '@/components/InputSearch/index';
 
 function RequestsTechnichian() {
   const [alertMsg, setAlertMsg] = useState({ type: '', message: '' });
@@ -37,8 +38,10 @@ function RequestsTechnichian() {
   const { page = 1 } = router.query;
   const perPage = 10;
 
+  const [search, setSearch] = useState('');
+
   const { data, error, mutate } = useFetch(
-    `/technicians-requests/find/by/technician/${id}?limit=${perPage}&page=${page}`
+    `/technicians-requests/find/by/technician/${id}?limit=${perPage}&page=${page}&search=${search}`
   );
 
   const { addModal, removeModal } = useModal();
@@ -110,6 +113,10 @@ function RequestsTechnichian() {
                 {alertMsg.message && (
                   <Alert type={alertMsg.type}>{alertMsg.message}</Alert>
                 )}
+                <InputSearch
+                  url="/tecnico/solicitacoes"
+                  onSubmitSearch={q => setSearch(q)}
+                />
                 {((data || loading) && (
                   <>
                     <div className="table-responsive">

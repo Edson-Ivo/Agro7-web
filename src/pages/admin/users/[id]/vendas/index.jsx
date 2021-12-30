@@ -32,6 +32,8 @@ import SalesService from '@/services/SalesService';
 import { dateConversor } from '@/helpers/date';
 import maskString from '@/helpers/maskString';
 import usersTypes from '@/helpers/usersTypes';
+import objectToQuery from '@/helpers/objectToQuery';
+import InputSearch from '@/components/InputSearch/index';
 
 function Vendas() {
   const [alertMsg, setAlertMsg] = useState({ type: '', message: '' });
@@ -44,8 +46,16 @@ function Vendas() {
 
   const { addModal, removeModal } = useModal();
 
+  const [search, setSearch] = useState('');
+  const [filters, setFilters] = useState({
+    date_start: '',
+    date_finish: ''
+  });
+
   const { data, error, mutate } = useFetch(
-    `/sales/find/by/user/${id}?limit=${perPage}&page=${page}`
+    `/sales/find/by/user/${id}?limit=${perPage}&page=${page}&search=${search}&${objectToQuery(
+      filters
+    )}`
   );
 
   const { data: dataUser, error: errorUser } = useFetch(
@@ -128,6 +138,12 @@ function Vendas() {
                 {alertMsg.message && (
                   <Alert type={alertMsg.type}>{alertMsg.message}</Alert>
                 )}
+                <InputSearch
+                  url={`/admin/users/${id}/vendas`}
+                  filters={{ date: true }}
+                  onFilterChange={f => setFilters({ ...f })}
+                  onSubmitSearch={q => setSearch(q)}
+                />
                 {((data || loading) && !isEmpty(dataUser) && (
                   <>
                     <div className="table-responsive">

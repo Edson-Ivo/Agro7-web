@@ -1,14 +1,6 @@
 import { api } from './api';
 
 class ColorsService {
-  static async findAll() {
-    return api.get('/colors/find/all');
-  }
-
-  static async findById(id) {
-    return api.get(`/colors/find/by/id/${id}`);
-  }
-
   static async create(data) {
     try {
       const response = await api.post(`/colors/create`, { ...data });

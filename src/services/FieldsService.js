@@ -1,18 +1,6 @@
 import { api } from './api';
 
 class FieldsService {
-  static async findAll() {
-    return api.get('/fields/find/all');
-  }
-
-  static async findById(id) {
-    return api.get(`/fields/find/by/id/${id}`);
-  }
-
-  static async findByProperty(idProperty) {
-    return api.get(`/fields/find/by/property/${idProperty}`);
-  }
-
   static async create(data) {
     try {
       const response = await api.post(`/fields/create`, { ...data });

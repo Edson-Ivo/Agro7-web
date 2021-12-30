@@ -80,14 +80,14 @@ function Login() {
         const { document, password } = d;
 
         await AuthService.login(document, password, reCaptcha).then(
-          res => {
+          ({ data: res, redirect }) => {
             dispatch(
               UserAuthAction({
                 user: res.user
               })
             );
 
-            router.push('/');
+            router.push(redirect);
           },
           error => {
             setLoading(false);

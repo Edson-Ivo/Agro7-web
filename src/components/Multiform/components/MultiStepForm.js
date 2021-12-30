@@ -28,6 +28,9 @@ export default function MultiStepForm({
                   complete={activeStep > i + 1}
                   accentColor={accentColor}
                   onClick={child.props.onClick}
+                  onKeyPress={child.props.onClick}
+                  role="button"
+                  tabIndex={0}
                 />
               </>
             );
@@ -41,6 +44,9 @@ export default function MultiStepForm({
                 label={child.props.label}
                 accentColor={accentColor}
                 onClick={child.props.onClick}
+                onKeyPress={child.props.onClick}
+                role="button"
+                tabIndex={0}
               />
               <Line
                 complete={activeStep > 1 && i + 1 < activeStep}

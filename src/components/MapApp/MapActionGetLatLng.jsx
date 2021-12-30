@@ -40,7 +40,7 @@ function MapActionGetLatLng({
   }, [latitude, longitude]);
 
   const handleClick = e => {
-    if (onClick !== undefined) {
+    if (typeof onClick !== 'undefined') {
       const pos = [e.latLng.lat(), e.latLng.lng()];
 
       onClick(pos);

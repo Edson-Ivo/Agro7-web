@@ -105,7 +105,12 @@ function AdminUsersEdit() {
       setLoadingAddresses(true);
       AddressesService.getCep(value.replace('-', '')).then(res => {
         if (res.data !== '') {
-          const { state, city, neighborhood, street } = res.data;
+          const {
+            state = '',
+            city = '',
+            neighborhood = '',
+            street = ''
+          } = res.data;
 
           formRef.current.setFieldValue('state', state);
           formRef.current.setFieldValue('city', city);

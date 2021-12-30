@@ -44,7 +44,7 @@ function AcoesCulturaEditar() {
   const [baseUrl, setBaseUrl] = useState('');
 
   const router = useRouter();
-  const { id, fieldId, cultureId, actionId, type: typeAction } = router.query;
+  const { id, fieldId, cultureId, actionId, typeAction } = router.query;
 
   const { data, error } = useFetch(`/fields/find/by/id/${fieldId}`);
 

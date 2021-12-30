@@ -1,14 +1,6 @@
 import { api } from './api';
 
 class DocumentsService {
-  static async findById(id) {
-    return api.get(`/properties-documents/find/by/id/${id}`);
-  }
-
-  static async findByProperty(idProperty) {
-    return api.get(`/properties-documents/find/property/${idProperty}`);
-  }
-
   static async create(idProperty, data) {
     try {
       const response = await api.post(

@@ -25,9 +25,11 @@ function VendasTransportadorasVeiculosDetalhes() {
 
   const [alert] = useState({ type: '', message: '' });
 
-  const { id } = router.query;
+  const { vehicleId } = router.query;
 
-  const { data, error } = useFetch(`/transporters-vehicles/find/by/id/${id}`);
+  const { data, error } = useFetch(
+    `/transporters-vehicles/find/by/id/${vehicleId}`
+  );
 
   if (error) return <Error error={error} />;
 
