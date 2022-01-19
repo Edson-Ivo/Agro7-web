@@ -20,9 +20,9 @@ import Error from '@/components/Error/index';
 import urlRoute from '@/helpers/urlRoute';
 import isEmpty from '@/helpers/isEmpty';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
-import CulturesActionsService, {
+import PropertiesActionsService, {
   actionsList
-} from '@/services/CulturesActionsService';
+} from '@/services/PropertiesActionsService';
 import objectKeyExists from '@/helpers/objectKeyExists';
 import scrollTo from '@/helpers/scrollTo';
 import usersTypes from '@/helpers/usersTypes';
@@ -32,7 +32,7 @@ const schema = yup.object().shape({
   name: yup.string().required('Você precisa dar um nome para o documento')
 });
 
-function AcoesCulturasDocumentosCreate() {
+function AcoesPropriedadeDocumentosCreate() {
   const formRef = useRef(null);
   const alertRef = useRef(null);
   const inputRef = useRef(null);
@@ -41,22 +41,11 @@ function AcoesCulturasDocumentosCreate() {
   const [baseUrl, setBaseUrl] = useState('');
 
   const router = useRouter();
-  const {
-    id,
-    fieldId,
-    cultureId,
-    actionId,
-    typeAction,
-    createAction
-  } = router.query;
+  const { id, actionId, typeAction, createAction } = router.query;
 
-  const requestAction = CulturesActionsService.requestAction(typeAction);
+  const requestAction = PropertiesActionsService.requestAction(typeAction);
 
-  const { data, error } = useFetch(`/fields/find/by/id/${fieldId}`);
-
-  const { data: dataCultures, error: errorCultures } = useFetch(
-    `/cultures/find/by/id/${cultureId}`
-  );
+  const { data, error } = useFetch(`/properties/find/by/id/${id}`);
 
   const { error: errorActions } = useFetch(
     `/${requestAction}/find/by/id/${actionId}`
@@ -70,9 +59,7 @@ function AcoesCulturasDocumentosCreate() {
   }, []);
 
   useEffect(() => {
-    setBaseUrl(
-      `${route.path}/${id}/talhoes/${fieldId}/culturas/${cultureId}/acoes/${typeAction}`
-    );
+    setBaseUrl(`${route.path}/${id}/acoes/${typeAction}`);
   }, [route]);
 
   const handleCancel = () => {
@@ -107,7 +94,7 @@ function AcoesCulturasDocumentosCreate() {
           });
           formData.append('name', d.name);
           formData.append('file', inputDocumentFile[0]);
-          await CulturesActionsService.createDocument(
+          await PropertiesActionsService.createDocument(
             actionId,
             formData,
             typeAction
@@ -140,11 +127,7 @@ function AcoesCulturasDocumentosCreate() {
       });
   };
 
-  if (error || errorCultures || errorActions)
-    return <Error error={error || errorCultures || errorActions} />;
-  if (data && id !== String(data?.properties?.id)) return <Error error={404} />;
-  if (dataCultures && fieldId !== String(dataCultures?.fields?.id))
-    return <Error error={404} />;
+  if (error || errorActions) return <Error error={error || errorActions} />;
   if (!isEmpty(route) && !route.hasPermission) return <Error error={404} />;
   if (
     !objectKeyExists(actionsList, typeAction) ||
@@ -156,8 +139,8 @@ function AcoesCulturasDocumentosCreate() {
     <>
       <Head>
         <title>
-          Cadastrar Documento para Ação de {actionsList[typeAction]?.label} na
-          Cultura {dataCultures?.products?.name} - Agro7
+          Cadastrar Documento para Ação de {actionsList[typeAction]?.label} da
+          Ação da Propriedade {data && data?.name} - Agro7
         </title>
       </Head>
 
@@ -168,20 +151,13 @@ function AcoesCulturasDocumentosCreate() {
           <SectionHeader>
             <SectionHeaderContent
               breadcrumbTitles={{
-                '%propriedade': data?.properties.name,
-                '%talhao': data?.name,
-                '%cultura': dataCultures?.products?.name
+                '%propriedade': data?.name
               }}
-              title={`Cadastrar Documento para Ação de ${actionsList[typeAction]?.label} na
-              Cultura ${dataCultures?.products?.name}`}
+              title={`Cadastrar Documento para Ação de ${actionsList[typeAction]?.label} na Propriedade ${data?.name}`}
               description={`Aqui, você irá cadastrar um documento para a ação ${actionsList[
                 typeAction
-              ]?.label.toLowerCase()} em questão da cultura de ${
-                dataCultures?.products?.name
-              } do talhão ${data?.name} da propriedade ${
-                data?.properties?.name
-              }.`}
-              isLoading={isEmpty(data) || isEmpty(dataCultures)}
+              ]?.label.toLowerCase()} da propriedade ${data?.name}.`}
+              isLoading={isEmpty(data)}
             />
           </SectionHeader>
 
@@ -234,4 +210,4 @@ function AcoesCulturasDocumentosCreate() {
   );
 }
 
-export default privateRoute()(AcoesCulturasDocumentosCreate);
+export default privateRoute()(AcoesPropriedadeDocumentosCreate);

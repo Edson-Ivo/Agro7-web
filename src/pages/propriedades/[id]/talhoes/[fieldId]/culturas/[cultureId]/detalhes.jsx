@@ -8,7 +8,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faFileAlt,
   faSeedling,
-  faHandHoldingWater
+  faHandHolding
 } from '@fortawesome/free-solid-svg-icons';
 
 import Container from '@/components/Container';
@@ -112,7 +112,7 @@ function CulturasInfo() {
                       href={`${route.path}/${id}/talhoes/${fieldId}/culturas/${cultureId}/acoes`}
                     >
                       <Button className="primary">
-                        <FontAwesomeIcon icon={faHandHoldingWater} /> Ações
+                        <FontAwesomeIcon icon={faHandHolding} /> Ações
                       </Button>
                     </Link>
                   </>

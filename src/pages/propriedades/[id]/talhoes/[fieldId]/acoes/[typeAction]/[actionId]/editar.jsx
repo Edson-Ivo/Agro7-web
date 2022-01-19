@@ -1,13 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react';
-import Head from 'next/head';
 import { useRouter } from 'next/router';
+import Head from 'next/head';
 import * as yup from 'yup';
 import { Form } from '@unform/web';
 
 import Container from '@/components/Container';
 import Nav from '@/components/Nav';
 import Navbar from '@/components/Navbar';
-
 import Button from '@/components/Button';
 import { Section, SectionHeader, SectionBody } from '@/components/Section';
 import { CardContainer } from '@/components/CardContainer';
@@ -21,38 +20,43 @@ import Error from '@/components/Error/index';
 import { useSelector } from 'react-redux';
 import urlRoute from '@/helpers/urlRoute';
 import isEmpty from '@/helpers/isEmpty';
-import Select from '@/components/Select/index';
-import CulturesActionsService, {
+import FieldsActionsService, {
   actionsList
-} from '@/services/CulturesActionsService';
+} from '@/services/FieldsActionsService';
 import objectKeyExists from '@/helpers/objectKeyExists';
-import ActionsForm from '@/components/ActionsForm/index';
-import { dateToISOString } from '@/helpers/date';
+import ActionsForm from '@/components/ActionsForm';
+import {
+  dateToInput,
+  dateToISOString,
+  removeTimeSeconds
+} from '@/helpers/date';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 import scrollTo from '@/helpers/scrollTo';
 import usersTypes from '@/helpers/usersTypes';
 
-function AcoesCulturaCadastrar() {
+function AcoesTalhaoEditar() {
   const formRef = useRef(null);
   const alertRef = useRef(null);
 
   const [alert, setAlert] = useState({ type: '', message: '' });
   const [disableButton, setDisableButton] = useState(false);
-  const [typeAction, setTypeAction] = useState('');
   const [route, setRoute] = useState({});
   const [baseUrl, setBaseUrl] = useState('');
-  const [userSuppliesRoute, setUserSuppliesRoute] = useState('');
 
   const router = useRouter();
-  const { id, fieldId, cultureId } = router.query;
+  const { id, fieldId, actionId, typeAction } = router.query;
 
   const { data, error } = useFetch(`/fields/find/by/id/${fieldId}`);
 
-  const { data: dataCultures, error: errorCultures } = useFetch(
-    `/cultures/find/by/id/${cultureId}`
-  );
+  const requestAction = FieldsActionsService.requestAction(typeAction);
 
-  const { type, userId } = useSelector(state => state.user);
+  const {
+    data: dataActions,
+    error: errorActions,
+    mutate: mutateActions
+  } = useFetch(`/${requestAction}/find/by/id/${actionId}`);
+
+  const { type } = useSelector(state => state.user);
 
   useEffect(() => {
     setAlert({ type: '', message: '' });
@@ -61,25 +65,7 @@ function AcoesCulturaCadastrar() {
   }, []);
 
   useEffect(() => {
-    setUserSuppliesRoute('');
-
-    if (!isEmpty(data)) {
-      const userIdProperty = data?.properties?.users?.id;
-      const culturesSuppliesBase = '/supplies/find/by';
-
-      if (
-        type === usersTypes[0] &&
-        router.query?.userId === String(userIdProperty)
-      ) {
-        setUserSuppliesRoute(`${culturesSuppliesBase}/user/${userIdProperty}`);
-      } else {
-        setUserSuppliesRoute(`${culturesSuppliesBase}/user-logged`);
-      }
-    }
-  }, [data]);
-
-  useEffect(() => {
-    setBaseUrl(`${route.path}/${id}/talhoes/${fieldId}/culturas/${cultureId}`);
+    setBaseUrl(`${route.path}/${id}/talhoes/${fieldId}/acoes`);
   }, [route]);
 
   const handleCancel = () => {
@@ -89,7 +75,7 @@ function AcoesCulturaCadastrar() {
   const handleSubmit = async dt => {
     setDisableButton(true);
 
-    const schema = CulturesActionsService.schema(typeAction);
+    const schema = FieldsActionsService.schema(typeAction);
 
     if (schema) {
       schema
@@ -102,23 +88,14 @@ function AcoesCulturaCadastrar() {
 
           scrollTo(alertRef);
 
-          let withAdminUserId = null;
-
-          if (
-            typeAction === 'supplies' &&
-            type === usersTypes[0] &&
-            userId !== data?.properties?.users?.id
-          )
-            withAdminUserId = data?.properties?.users?.id;
-
-          d.cultures = Number(cultureId);
+          d.fields = Number(fieldId);
 
           Object.keys(d).forEach(el => {
             if (
               d[el] === null ||
               d[el] === undefined ||
-              d[el] === '' ||
-              el === 'types'
+              el === 'types' ||
+              el === ''
             )
               delete d[el];
           });
@@ -144,32 +121,32 @@ function AcoesCulturaCadastrar() {
           )
             d.date = dateToISOString(d.date);
 
-          await CulturesActionsService.create(
-            d,
-            typeAction,
-            withAdminUserId
-          ).then(res => {
-            if (res.status !== 201 || res?.statusCode) {
-              setAlert({ type: 'error', message: errorMessage(res) });
-              setTimeout(() => {
-                setDisableButton(false);
-              }, 1000);
-            } else {
-              setAlert({
-                type: 'success',
-                message: `Ação de ${actionsList[
-                  typeAction
-                ].label.toLowerCase()} registrada com sucesso!`
-              });
+          await FieldsActionsService.update(actionId, d, typeAction).then(
+            res => {
+              if (res.status !== 200 || res?.statusCode) {
+                setAlert({ type: 'error', message: errorMessage(res) });
+                setTimeout(() => {
+                  setDisableButton(false);
+                }, 1000);
+              } else {
+                mutateActions();
 
-              setTimeout(() => {
-                router.push(
-                  `${baseUrl}/acoes/${typeAction}/${res.data.id}/detalhes`
-                );
-                setDisableButton(false);
-              }, 1000);
+                setAlert({
+                  type: 'success',
+                  message: `Ação de ${actionsList[
+                    typeAction
+                  ].label.toLowerCase()} editada com sucesso!`
+                });
+
+                setTimeout(() => {
+                  router.replace(
+                    `${baseUrl}/${typeAction}/${actionId}/detalhes`
+                  );
+                  setDisableButton(false);
+                }, 1000);
+              }
             }
-          });
+          );
         })
         .catch(err => {
           setAlert({ type: 'error', message: err.errors[0] });
@@ -184,23 +161,15 @@ function AcoesCulturaCadastrar() {
     }
   };
 
-  const handleChangeTypeAction = e => {
-    const typeAct = e?.value || '';
-
-    setTypeAction(objectKeyExists(actionsList, typeAct) ? typeAct : '');
-    setAlert({ type: '', message: '' });
-  };
-
-  if (error || errorCultures) return <Error error={error || errorCultures} />;
+  if (error || errorActions) return <Error error={error || errorActions} />;
   if (data && id !== String(data?.properties?.id)) return <Error error={404} />;
-  if (dataCultures && fieldId !== String(dataCultures?.fields?.id))
-    return <Error error={404} />;
   if (!isEmpty(route) && !route.hasPermission) return <Error error={404} />;
+  if (!objectKeyExists(actionsList, typeAction)) return <Error error={404} />;
 
   return (
     <>
       <Head>
-        <title>Cadastrar Ação na Cultura - Agro7</title>
+        <title>Editar Ação no Talhão {data && data?.name} - Agro7</title>
       </Head>
 
       <Navbar />
@@ -211,12 +180,15 @@ function AcoesCulturaCadastrar() {
             <SectionHeaderContent
               breadcrumbTitles={{
                 '%propriedade': data?.properties.name,
-                '%talhao': data?.name,
-                '%cultura': dataCultures?.products?.name
+                '%talhao': data?.name
               }}
-              title={`Cadastrar Ação na Cultura de ${dataCultures?.products?.name}`}
-              description={`Aqui, você irá cadastrar uma ação da cultura de ${dataCultures?.products?.name} do talhão ${data?.name} da propriedade ${data?.properties?.name}.`}
-              isLoading={isEmpty(data) || isEmpty(dataCultures)}
+              title={`Editar Ação de ${actionsList[typeAction]?.label}`}
+              description={`Aqui, você irá editar a ação ${actionsList[
+                typeAction
+              ]?.label.toLowerCase()} em questão do talhão ${
+                data?.name
+              } da propriedade ${data?.properties?.name}.`}
+              isLoading={isEmpty(data) || isEmpty(dataActions)}
             />
           </SectionHeader>
           <SectionBody>
@@ -227,35 +199,29 @@ function AcoesCulturaCadastrar() {
                     {alert.message}
                   </Alert>
                 )}
-                {(data && dataCultures && (
+                {(data && dataActions && (
                   <>
                     <Form
                       ref={formRef}
                       method="post"
                       onSubmit={handleSubmit}
-                      initialData={{ types: typeAction }}
+                      initialData={{
+                        ...dataActions,
+                        date: dateToInput(dataActions?.date),
+                        date_start: dateToInput(dataActions?.date_start),
+                        date_finish: dateToInput(dataActions?.date_finish),
+                        time_start: removeTimeSeconds(dataActions?.time_start),
+                        time_finish: removeTimeSeconds(
+                          dataActions?.time_finish
+                        ),
+                        supplies: dataActions?.supplies?.id
+                      }}
                     >
-                      <Select
-                        options={Object.keys(actionsList).map(action => ({
-                          value: actionsList[action].value,
-                          label: actionsList[action].label
-                        }))}
-                        label="Selecione a Ação"
-                        name="types"
-                        onChange={handleChangeTypeAction}
-                      />
-
-                      {typeAction && (
-                        <div style={{ marginBottom: 15, marginLeft: 10 }}>
-                          <h4>
-                            Cadastrar Ação de {actionsList[typeAction]?.label}:
-                          </h4>
-                        </div>
-                      )}
-
                       <ActionsForm
                         typeAction={typeAction}
-                        userSuppliesRoute={userSuppliesRoute}
+                        dataAction={dataActions}
+                        page="fields"
+                        editForm
                       />
 
                       <div className="form-group buttons">
@@ -271,7 +237,7 @@ function AcoesCulturaCadastrar() {
                             className="primary"
                             type="submit"
                           >
-                            Cadastrar Ação
+                            Salvar Edição
                           </Button>
                         </div>
                       </div>
@@ -287,4 +253,4 @@ function AcoesCulturaCadastrar() {
   );
 }
 
-export default privateRoute()(AcoesCulturaCadastrar);
+export default privateRoute()(AcoesTalhaoEditar);

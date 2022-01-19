@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { Form } from '@unform/web';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faLeaf } from '@fortawesome/free-solid-svg-icons';
+import { faLeaf, faHandHolding } from '@fortawesome/free-solid-svg-icons';
 
 import Container from '@/components/Container';
 import Nav from '@/components/Nav';
@@ -57,7 +57,7 @@ function TalhoesInfo() {
   return (
     <>
       <Head>
-        <title>Talhão - Agro7</title>
+        <title>Talhão {dataFields && dataFields?.name} - Agro7</title>
       </Head>
 
       <Navbar />
@@ -74,11 +74,20 @@ function TalhoesInfo() {
               description={`Você está vendo informações detalhadas do talhão ${dataFields?.name} da propriedade ${dataFields?.properties?.name}.`}
               isLoading={isEmpty(data) || isEmpty(dataFields)}
             >
-              <Link href={`${route.path}/${id}/talhoes/${fieldId}/culturas`}>
-                <Button className="primary">
-                  <FontAwesomeIcon icon={faLeaf} /> Culturas
-                </Button>
-              </Link>
+              <div className="buttons__container">
+                <Link href={`${route.path}/${id}/talhoes/${fieldId}/culturas`}>
+                  <Button className="primary">
+                    <FontAwesomeIcon icon={faLeaf} /> Culturas
+                  </Button>
+                </Link>
+                {userAccess && (
+                  <Link href={`${route.path}/${id}/talhoes/${fieldId}/acoes`}>
+                    <Button className="primary">
+                      <FontAwesomeIcon icon={faHandHolding} /> Ações
+                    </Button>
+                  </Link>
+                )}
+              </div>
             </SectionHeaderContent>
           </SectionHeader>
           <SectionBody>

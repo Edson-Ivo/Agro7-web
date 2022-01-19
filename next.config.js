@@ -3,6 +3,8 @@ const withPlugins = require('next-compose-plugins');
 const withOffline = require('next-offline');
 
 const nextConfig = {
+  swcMinify: true,
+
   webpack: config => {
     config.resolve.modules.push(path.resolve('./'));
     config.resolve.alias['@'] = path.resolve(__dirname, 'src');
@@ -11,7 +13,7 @@ const nextConfig = {
   },
 
   images: {
-    domains: ['agrofind.com.br']
+    domains: ['agrofind.com.br', 'agro7dev.herokuapp.com']
   },
 
   rewrites: async () => {

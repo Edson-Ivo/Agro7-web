@@ -19,9 +19,9 @@ import Error from '@/components/Error/index';
 import { useSelector } from 'react-redux';
 import urlRoute from '@/helpers/urlRoute';
 import isEmpty from '@/helpers/isEmpty';
-import CulturesActionsService, {
+import PropertiesActionsService, {
   actionsList
-} from '@/services/CulturesActionsService';
+} from '@/services/PropertiesActionsService';
 import objectKeyExists from '@/helpers/objectKeyExists';
 import ActionsForm from '@/components/ActionsForm';
 import { dateToInput, removeTimeSeconds } from '@/helpers/date';
@@ -36,7 +36,7 @@ import maskString from '@/helpers/maskString';
 import usersTypes from '@/helpers/usersTypes';
 import downloadDocument from '@/helpers/downloadDocument';
 
-function AcoesCulturasDetalhes() {
+function AcoesPropriedadeDetalhes() {
   const formRef = useRef(null);
   const [route, setRoute] = useState({});
   const [baseUrl, setBaseUrl] = useState('');
@@ -46,32 +46,23 @@ function AcoesCulturasDetalhes() {
   const [loading, setLoading] = useState(false);
 
   const router = useRouter();
-  const {
-    id,
-    fieldId,
-    cultureId,
-    actionId,
-    typeAction,
-    pageDocs = 1
-  } = router.query;
+  const { id, actionId, typeAction, pageDocs = 1 } = router.query;
 
   const perPageDocs = 20;
-  const requestAction = CulturesActionsService.requestAction(typeAction);
+  const requestAction = PropertiesActionsService.requestAction(typeAction);
 
-  const { data, error } = useFetch(`/fields/find/by/id/${fieldId}`);
-
-  const { data: dataCultures, error: errorCultures } = useFetch(
-    `/cultures/find/by/id/${cultureId}`
-  );
+  const { data, error } = useFetch(`/properties/find/by/id/${id}`);
 
   const { data: dataActions, error: errorActions } = useFetch(
     `/${requestAction}/find/by/id/${actionId}`
   );
 
   const { data: dataDocs, error: errorDocs, mutate: mutateDocs } = useFetch(
-    `/${requestAction}-documents/find/by/${CulturesActionsService.requestSingleAction(
-      typeAction
-    )}/${actionId}?limit=${perPageDocs}&page=${pageDocs}`
+    actionsList[typeAction]?.documents
+      ? `/${requestAction}-documents/find/by/${PropertiesActionsService.requestSingleAction(
+          typeAction
+        )}/${actionId}?limit=${perPageDocs}&page=${pageDocs}`
+      : null
   );
 
   const { type } = useSelector(state => state.user);
@@ -81,9 +72,7 @@ function AcoesCulturasDetalhes() {
   }, []);
 
   useEffect(() => {
-    setBaseUrl(
-      `${route.path}/${id}/talhoes/${fieldId}/culturas/${cultureId}/acoes`
-    );
+    setBaseUrl(`${route.path}/${id}/acoes`);
   }, [route]);
 
   const handleCancel = () => {
@@ -95,20 +84,21 @@ function AcoesCulturasDetalhes() {
       removeModal();
       setLoading(true);
 
-      await CulturesActionsService.deleteDocument(identifier, typeAction).then(
-        res => {
-          if (res.status >= 400 || res?.statusCode) {
-            setAlertMsg({ type: 'error', message: errorMessage(res) });
-          } else {
-            mutateDocs();
+      await PropertiesActionsService.deleteDocument(
+        identifier,
+        typeAction
+      ).then(res => {
+        if (res.status >= 400 || res?.statusCode) {
+          setAlertMsg({ type: 'error', message: errorMessage(res) });
+        } else {
+          mutateDocs();
 
-            setAlertMsg({
-              type: 'success',
-              message: 'O documento foi deletado com sucesso!'
-            });
-          }
+          setAlertMsg({
+            type: 'success',
+            message: 'O documento foi deletado com sucesso!'
+          });
         }
-      );
+      });
 
       setLoading(false);
     },
@@ -119,7 +109,7 @@ function AcoesCulturasDetalhes() {
     identifier => {
       addModal({
         title: `Deletar esse Documento?`,
-        text: `Deseja realmente deletar esse documento da cultura?`,
+        text: `Deseja realmente deletar esse documento da propriedade?`,
         confirm: true,
         onConfirm: () => handleDelete(identifier),
         onCancel: removeModal
@@ -128,18 +118,16 @@ function AcoesCulturasDetalhes() {
     [addModal, removeModal]
   );
 
-  if (error || errorCultures || errorActions)
-    return <Error error={error || errorCultures || errorActions} />;
-  if (data && id !== String(data?.properties?.id)) return <Error error={404} />;
-  if (dataCultures && fieldId !== String(dataCultures?.fields?.id))
-    return <Error error={404} />;
+  if (error || errorActions) return <Error error={error || errorActions} />;
   if (!isEmpty(route) && !route.hasPermission) return <Error error={404} />;
   if (!objectKeyExists(actionsList, typeAction)) return <Error error={404} />;
 
   return (
     <>
       <Head>
-        <title>Detalhes da Ação na Cultura - Agro7</title>
+        <title>
+          Detalhes da Ação da Propriedade {data && data?.name} - Agro7
+        </title>
       </Head>
 
       <Navbar />
@@ -149,27 +137,19 @@ function AcoesCulturasDetalhes() {
           <SectionHeader>
             <SectionHeaderContent
               breadcrumbTitles={{
-                '%propriedade': data?.properties.name,
-                '%talhao': data?.name,
-                '%cultura': dataCultures?.products?.name
+                '%propriedade': data?.name
               }}
-              title={`Detalhes da Ação de ${actionsList[typeAction]?.label} na Cultura de ${dataCultures?.products?.name}`}
+              title={`Detalhes da Ação de ${actionsList[typeAction]?.label}`}
               description={`Aqui, você irá visualizar a ação ${actionsList[
                 typeAction
-              ]?.label.toLowerCase()} em questão da cultura de ${
-                dataCultures?.products?.name
-              } do talhão ${data?.name} da propriedade ${
-                data?.properties?.name
-              }.`}
-              isLoading={
-                isEmpty(data) || isEmpty(dataCultures) || isEmpty(dataActions)
-              }
+              ]?.label.toLowerCase()} da propriedade ${data?.name}.`}
+              isLoading={isEmpty(data) || isEmpty(dataActions)}
             />
           </SectionHeader>
           <SectionBody>
             <div className="SectionBody__content">
               <CardContainer>
-                {(data && dataCultures && dataActions && (
+                {(data && dataActions && (
                   <>
                     <MultiStep activeStep={activeStep} onlyView>
                       <Step
@@ -189,13 +169,13 @@ function AcoesCulturasDetalhes() {
                             time_finish: removeTimeSeconds(
                               dataActions?.time_finish
                             ),
-                            supplies: dataActions?.supplies?.id,
                             value: maskString(dataActions?.value, 'money')
                           }}
                         >
                           <ActionsForm
                             typeAction={typeAction}
                             dataAction={dataActions}
+                            page="property"
                             details
                           />
 
@@ -229,7 +209,7 @@ function AcoesCulturasDetalhes() {
                               {errorDocs && (
                                 <Alert type="error">
                                   Houve um erro ao tentar carregar os documentos
-                                  dessa ação da cultura.
+                                  dessa ação da propriedade.
                                 </Alert>
                               )}
                               {alertMsg.message && (
@@ -274,7 +254,7 @@ function AcoesCulturasDetalhes() {
                                         <tr>
                                           <td colSpan="2">
                                             Não há documentos para essa ação na
-                                            cultura
+                                            propriedade
                                           </td>
                                         </tr>
                                       )}
@@ -332,4 +312,4 @@ function AcoesCulturasDetalhes() {
   );
 }
 
-export default privateRoute()(AcoesCulturasDetalhes);
+export default privateRoute()(AcoesPropriedadeDetalhes);

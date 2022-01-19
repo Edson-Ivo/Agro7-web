@@ -10,18 +10,21 @@ import Loader from '@/components/Loader';
 import { useFetch } from '@/hooks/useFetch';
 import isEmpty from '@/helpers/isEmpty';
 
-const CulturesActionsForm = ({
+const ActionsForm = ({
   typeAction,
   userSuppliesRoute = '',
   dataAction = null,
   editForm = false,
-  details = false
+  details = false,
+  page = 'cultures'
 }) => {
   const [loading, setLoading] = useState(true);
   const [disabled, setDisabled] = useState(false);
 
   const { data: dataTypes, error: errorTypes } = useFetch(
-    '/cultures-applications-supplies/find/all/types-dose'
+    typeAction === 'applications-supplies'
+      ? `${page}-applications-supplies/find/all/types-dose`
+      : null
   );
 
   useEffect(() => {
@@ -278,4 +281,4 @@ const CulturesActionsForm = ({
   );
 };
 
-export default CulturesActionsForm;
+export default ActionsForm;

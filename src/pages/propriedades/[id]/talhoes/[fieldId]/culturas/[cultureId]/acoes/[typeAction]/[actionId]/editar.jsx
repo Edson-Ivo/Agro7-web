@@ -24,7 +24,7 @@ import CulturesActionsService, {
   actionsList
 } from '@/services/CulturesActionsService';
 import objectKeyExists from '@/helpers/objectKeyExists';
-import CulturesActionsForm from '@/components/CultureActionsForm';
+import ActionsForm from '@/components/ActionsForm';
 import {
   dateToInput,
   dateToISOString,
@@ -52,11 +52,13 @@ function AcoesCulturaEditar() {
     `/cultures/find/by/id/${cultureId}`
   );
 
+  const requestAction = CulturesActionsService.requestAction(typeAction);
+
   const {
     data: dataActions,
     error: errorActions,
     mutate: mutateActions
-  } = useFetch(`/cultures-${typeAction}/find/by/id/${actionId}`);
+  } = useFetch(`/${requestAction}/find/by/id/${actionId}`);
 
   const { type } = useSelector(state => state.user);
 
@@ -229,7 +231,7 @@ function AcoesCulturaEditar() {
                         supplies: dataActions?.supplies?.id
                       }}
                     >
-                      <CulturesActionsForm
+                      <ActionsForm
                         typeAction={typeAction}
                         dataAction={dataActions}
                         editForm
