@@ -4,7 +4,11 @@ import Link from 'next/link';
 import { Form } from '@unform/web';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faThumbtack, faUserFriends } from '@fortawesome/free-solid-svg-icons';
+import {
+  faThumbtack,
+  faUserFriends,
+  faHandHolding
+} from '@fortawesome/free-solid-svg-icons';
 
 import Container from '@/components/Container';
 import { MapActionGetLatLng } from '@/components/MapApp';
@@ -129,11 +133,18 @@ function PropertyInfo() {
                   </Button>
                 </Link>
                 {userAccess && (
-                  <Link href={`${route.path}/${id}/tecnicos/`}>
-                    <Button className="primary">
-                      <FontAwesomeIcon icon={faUserFriends} /> Técnicos
-                    </Button>
-                  </Link>
+                  <>
+                    <Link href={`${route.path}/${id}/tecnicos/`}>
+                      <Button className="primary">
+                        <FontAwesomeIcon icon={faUserFriends} /> Técnicos
+                      </Button>
+                    </Link>
+                    <Link href={`${route.path}/${id}/acoes`}>
+                      <Button className="primary">
+                        <FontAwesomeIcon icon={faHandHolding} /> Ações
+                      </Button>
+                    </Link>
+                  </>
                 )}
               </div>
             </SectionHeaderContent>

@@ -46,6 +46,8 @@ function AcoesCulturasDocumentosCreate() {
   const router = useRouter();
   const { id, fieldId, cultureId, actionId, typeAction, docId } = router.query;
 
+  const requestAction = CulturesActionsService.requestAction(typeAction);
+
   const { data, error } = useFetch(`/fields/find/by/id/${fieldId}`);
 
   const { data: dataCultures, error: errorCultures } = useFetch(
@@ -53,11 +55,11 @@ function AcoesCulturasDocumentosCreate() {
   );
 
   const { error: errorActions } = useFetch(
-    `/cultures-${typeAction}/find/by/id/${actionId}`
+    `/${requestAction}/find/by/id/${actionId}`
   );
 
   const { data: dataDocs, error: errorDocs } = useFetch(
-    `/cultures-${typeAction}-documents/find/by/id/${docId}`
+    `/${requestAction}-documents/find/by/id/${docId}`
   );
 
   const { type } = useSelector(state => state.user);

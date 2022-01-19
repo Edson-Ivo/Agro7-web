@@ -30,18 +30,18 @@ import { dateConversor } from '@/helpers/date';
 import Error from '@/components/Error/index';
 import { useSelector } from 'react-redux';
 import urlRoute from '@/helpers/urlRoute';
-import CulturesActionsService, {
+import FieldsActionsService, {
   actionsList
-} from '@/services/CulturesActionsService';
+} from '@/services/FieldsActionsService';
 import objectKeyExists from '@/helpers/objectKeyExists';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 import usersTypes from '@/helpers/usersTypes';
 
-function AcoesCultura() {
+function AcoesTalhao() {
   const router = useRouter();
   const formRef = useRef(null);
 
-  const { id, fieldId, cultureId, typeAction = 'supplies' } = router.query;
+  const { id, fieldId, typeAction = 'supplies' } = router.query;
 
   const perPage = 10;
 
@@ -49,7 +49,7 @@ function AcoesCultura() {
   const [loading, setLoading] = useState(false);
   const [route, setRoute] = useState({});
   const [baseUrl, setBaseUrl] = useState('');
-  const [cultureSupplyDataRoute, setCultureSupplyDataRoute] = useState('');
+  const [fieldSupplyDataRoute, setFieldSupplyDataRoute] = useState('');
   const [page, setPage] = useState(1);
 
   const { type } = useSelector(state => state.user);
@@ -57,19 +57,15 @@ function AcoesCultura() {
   const { addModal, removeModal } = useModal();
   const { data, error } = useFetch(`/fields/find/by/id/${fieldId}`);
 
-  const { data: dataCultures, error: errorCultures } = useFetch(
-    `/cultures/find/by/id/${cultureId}`
-  );
-
   const {
     data: dataActions,
     error: errorActions,
     mutate: mutateActions
   } = useFetch(
     (typeAction !== 'supplies' &&
-      `/cultures-${typeAction}/find/by/culture/${cultureId}?limit=${perPage}&page=${page}`) ||
-      (!isEmpty(cultureSupplyDataRoute)
-        ? `/supplies/find/by/${cultureSupplyDataRoute}?limit=${perPage}&page=${page}`
+      `/fields-${typeAction}/find/by/field/${fieldId}?limit=${perPage}&page=${page}`) ||
+      (!isEmpty(fieldSupplyDataRoute)
+        ? `/supplies/find/by/${fieldSupplyDataRoute}?limit=${perPage}&page=${page}`
         : null)
   );
 
@@ -78,23 +74,21 @@ function AcoesCultura() {
   }, []);
 
   useEffect(() => {
-    setCultureSupplyDataRoute('');
+    setFieldSupplyDataRoute('');
 
     if (!isEmpty(data)) {
       const userId = data?.properties?.users?.id;
 
       if (type === usersTypes[0] && router.query?.userId === String(userId)) {
-        setCultureSupplyDataRoute(`user/${userId}`);
+        setFieldSupplyDataRoute(`user/${userId}`);
       } else {
-        setCultureSupplyDataRoute(`user-logged`);
+        setFieldSupplyDataRoute(`user-logged`);
       }
     }
   }, [data]);
 
   useEffect(() => {
-    setBaseUrl(
-      `${route.path}/${id}/talhoes/${fieldId}/culturas/${cultureId}/acoes`
-    );
+    setBaseUrl(`${route.path}/${id}/talhoes/${fieldId}/acoes`);
   }, [route]);
 
   const handleDelete = useCallback(
@@ -104,7 +98,7 @@ function AcoesCultura() {
 
       setAlertMsg({ type: 'success', message: 'Deletando documento...' });
 
-      await CulturesActionsService.delete(identifier, typeAct).then(res => {
+      await FieldsActionsService.delete(identifier, typeAct).then(res => {
         if (res.status >= 400 || res?.statusCode) {
           setAlertMsg({ type: 'error', message: errorMessage(res) });
         } else {
@@ -140,21 +134,15 @@ function AcoesCultura() {
     router.replace(`${baseUrl}?typeAction=${e?.value || ''}`);
   };
 
-  if (error || errorCultures || errorActions)
-    return <Error error={error || errorCultures || errorActions} />;
+  if (error || errorActions) return <Error error={error || errorActions} />;
   if (data && id !== String(data?.properties?.id)) return <Error error={404} />;
-  if (dataCultures && fieldId !== String(dataCultures?.fields?.id))
-    return <Error error={404} />;
   if (!isEmpty(route) && !route.hasPermission) return <Error error={404} />;
   if (!objectKeyExists(actionsList, typeAction)) return <Error error={404} />;
 
   return (
     <>
       <Head>
-        <title>
-          Ações na Cultura de {dataCultures?.products.name} do Talhão{' '}
-          {data && data.name} - Agro7
-        </title>
+        <title>Ações do Talhão {data && data?.name} - Agro7</title>
       </Head>
 
       <Navbar />
@@ -165,12 +153,11 @@ function AcoesCultura() {
             <SectionHeaderContent
               breadcrumbTitles={{
                 '%propriedade': data?.properties.name,
-                '%talhao': data?.name,
-                '%cultura': dataCultures?.products?.name
+                '%talhao': data?.name
               }}
-              title={`Ações na Cultura de ${dataCultures?.products?.name} do Talhão ${data?.name}`}
-              description={`Aqui, você irá ver as ações da cultura de ${dataCultures?.products?.name} do talhão ${data?.name} da propriedade ${data?.properties?.name}.`}
-              isLoading={isEmpty(data) || isEmpty(dataCultures)}
+              title={`Ações do Talhão ${data?.name}`}
+              description={`Aqui, você irá ver as ações do talhão ${data?.name} da propriedade ${data?.properties?.name}.`}
+              isLoading={isEmpty(data)}
             >
               <Link href={`${baseUrl}/cadastrar`}>
                 <Button className="primary">
@@ -197,10 +184,7 @@ function AcoesCultura() {
                       onChange={handleChangeTypeAction}
                     />
                   </Form>
-                  {(((!isEmpty(typeAction) &&
-                    data &&
-                    dataCultures &&
-                    dataActions) ||
+                  {(((!isEmpty(typeAction) && data && dataActions) ||
                     loading) && (
                     <>
                       <div className="table-responsive">
@@ -224,7 +208,7 @@ function AcoesCultura() {
                                   }
                                 >
                                   <td>
-                                    {CulturesActionsService.text(typeAction, d)}
+                                    {FieldsActionsService.text(typeAction, d)}
                                   </td>
                                   <td>{dateConversor(d.created_at, false)}</td>
                                   <td onClick={e => e.stopPropagation()}>
@@ -242,7 +226,7 @@ function AcoesCultura() {
                                 <td colSpan="3">
                                   Não há ações de{' '}
                                   {actionsList[typeAction].label.toLowerCase()}{' '}
-                                  registradas nessa cultura
+                                  registradas nesse talhão
                                 </td>
                               </tr>
                             )}
@@ -267,4 +251,4 @@ function AcoesCultura() {
   );
 }
 
-export default privateRoute()(AcoesCultura);
+export default privateRoute()(AcoesTalhao);

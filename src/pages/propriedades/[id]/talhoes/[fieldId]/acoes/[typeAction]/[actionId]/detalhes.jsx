@@ -19,9 +19,9 @@ import Error from '@/components/Error/index';
 import { useSelector } from 'react-redux';
 import urlRoute from '@/helpers/urlRoute';
 import isEmpty from '@/helpers/isEmpty';
-import CulturesActionsService, {
+import FieldsActionsService, {
   actionsList
-} from '@/services/CulturesActionsService';
+} from '@/services/FieldsActionsService';
 import objectKeyExists from '@/helpers/objectKeyExists';
 import ActionsForm from '@/components/ActionsForm';
 import { dateToInput, removeTimeSeconds } from '@/helpers/date';
@@ -36,7 +36,7 @@ import maskString from '@/helpers/maskString';
 import usersTypes from '@/helpers/usersTypes';
 import downloadDocument from '@/helpers/downloadDocument';
 
-function AcoesCulturasDetalhes() {
+function AcoesTalhaoDetalhes() {
   const formRef = useRef(null);
   const [route, setRoute] = useState({});
   const [baseUrl, setBaseUrl] = useState('');
@@ -46,30 +46,19 @@ function AcoesCulturasDetalhes() {
   const [loading, setLoading] = useState(false);
 
   const router = useRouter();
-  const {
-    id,
-    fieldId,
-    cultureId,
-    actionId,
-    typeAction,
-    pageDocs = 1
-  } = router.query;
+  const { id, fieldId, actionId, typeAction, pageDocs = 1 } = router.query;
 
   const perPageDocs = 20;
-  const requestAction = CulturesActionsService.requestAction(typeAction);
+  const requestAction = FieldsActionsService.requestAction(typeAction);
 
   const { data, error } = useFetch(`/fields/find/by/id/${fieldId}`);
-
-  const { data: dataCultures, error: errorCultures } = useFetch(
-    `/cultures/find/by/id/${cultureId}`
-  );
 
   const { data: dataActions, error: errorActions } = useFetch(
     `/${requestAction}/find/by/id/${actionId}`
   );
 
   const { data: dataDocs, error: errorDocs, mutate: mutateDocs } = useFetch(
-    `/${requestAction}-documents/find/by/${CulturesActionsService.requestSingleAction(
+    `/${requestAction}-documents/find/by/${FieldsActionsService.requestSingleAction(
       typeAction
     )}/${actionId}?limit=${perPageDocs}&page=${pageDocs}`
   );
@@ -81,9 +70,7 @@ function AcoesCulturasDetalhes() {
   }, []);
 
   useEffect(() => {
-    setBaseUrl(
-      `${route.path}/${id}/talhoes/${fieldId}/culturas/${cultureId}/acoes`
-    );
+    setBaseUrl(`${route.path}/${id}/talhoes/${fieldId}/acoes`);
   }, [route]);
 
   const handleCancel = () => {
@@ -95,7 +82,7 @@ function AcoesCulturasDetalhes() {
       removeModal();
       setLoading(true);
 
-      await CulturesActionsService.deleteDocument(identifier, typeAction).then(
+      await FieldsActionsService.deleteDocument(identifier, typeAction).then(
         res => {
           if (res.status >= 400 || res?.statusCode) {
             setAlertMsg({ type: 'error', message: errorMessage(res) });
@@ -119,7 +106,7 @@ function AcoesCulturasDetalhes() {
     identifier => {
       addModal({
         title: `Deletar esse Documento?`,
-        text: `Deseja realmente deletar esse documento da cultura?`,
+        text: `Deseja realmente deletar esse documento do talhão?`,
         confirm: true,
         onConfirm: () => handleDelete(identifier),
         onCancel: removeModal
@@ -128,18 +115,15 @@ function AcoesCulturasDetalhes() {
     [addModal, removeModal]
   );
 
-  if (error || errorCultures || errorActions)
-    return <Error error={error || errorCultures || errorActions} />;
+  if (error || errorActions) return <Error error={error || errorActions} />;
   if (data && id !== String(data?.properties?.id)) return <Error error={404} />;
-  if (dataCultures && fieldId !== String(dataCultures?.fields?.id))
-    return <Error error={404} />;
   if (!isEmpty(route) && !route.hasPermission) return <Error error={404} />;
   if (!objectKeyExists(actionsList, typeAction)) return <Error error={404} />;
 
   return (
     <>
       <Head>
-        <title>Detalhes da Ação na Cultura - Agro7</title>
+        <title>Detalhes da Ação no Talhão {data && data?.name} - Agro7</title>
       </Head>
 
       <Navbar />
@@ -150,26 +134,21 @@ function AcoesCulturasDetalhes() {
             <SectionHeaderContent
               breadcrumbTitles={{
                 '%propriedade': data?.properties.name,
-                '%talhao': data?.name,
-                '%cultura': dataCultures?.products?.name
+                '%talhao': data?.name
               }}
-              title={`Detalhes da Ação de ${actionsList[typeAction]?.label} na Cultura de ${dataCultures?.products?.name}`}
+              title={`Detalhes da Ação de ${actionsList[typeAction]?.label}`}
               description={`Aqui, você irá visualizar a ação ${actionsList[
                 typeAction
-              ]?.label.toLowerCase()} em questão da cultura de ${
-                dataCultures?.products?.name
-              } do talhão ${data?.name} da propriedade ${
-                data?.properties?.name
-              }.`}
-              isLoading={
-                isEmpty(data) || isEmpty(dataCultures) || isEmpty(dataActions)
-              }
+              ]?.label.toLowerCase()} em questão do talhão ${
+                data?.name
+              } da propriedade ${data?.properties?.name}.`}
+              isLoading={isEmpty(data) || isEmpty(dataActions)}
             />
           </SectionHeader>
           <SectionBody>
             <div className="SectionBody__content">
               <CardContainer>
-                {(data && dataCultures && dataActions && (
+                {(data && dataActions && (
                   <>
                     <MultiStep activeStep={activeStep} onlyView>
                       <Step
@@ -196,6 +175,7 @@ function AcoesCulturasDetalhes() {
                           <ActionsForm
                             typeAction={typeAction}
                             dataAction={dataActions}
+                            page="fields"
                             details
                           />
 
@@ -229,7 +209,7 @@ function AcoesCulturasDetalhes() {
                               {errorDocs && (
                                 <Alert type="error">
                                   Houve um erro ao tentar carregar os documentos
-                                  dessa ação da cultura.
+                                  dessa ação do talhão.
                                 </Alert>
                               )}
                               {alertMsg.message && (
@@ -273,8 +253,8 @@ function AcoesCulturasDetalhes() {
                                         ))) || (
                                         <tr>
                                           <td colSpan="2">
-                                            Não há documentos para essa ação na
-                                            cultura
+                                            Não há documentos para essa ação no
+                                            talhão
                                           </td>
                                         </tr>
                                       )}
@@ -332,4 +312,4 @@ function AcoesCulturasDetalhes() {
   );
 }
 
-export default privateRoute()(AcoesCulturasDetalhes);
+export default privateRoute()(AcoesTalhaoDetalhes);

@@ -583,6 +583,109 @@ const chartRoutes = {
   }
 };
 
+const actionsRoutes = {
+  '/admin/users/[userId]/propriedades/[id]/talhoes/[fieldId]/acoes': {
+    name: 'Ações'
+  },
+  '/admin/users/[userId]/propriedades/[id]/talhoes/[fieldId]/acoes/[typeAction]/[actionId]': {
+    name: 'Detalhes',
+    path:
+      '/admin/users/[userId]/propriedades/[id]/talhoes/[fieldId]/acoes/[typeAction]/[actionId]/detalhes'
+  },
+  '/admin/users/[userId]/propriedades/[id]/talhoes/[fieldId]/acoes/[typeAction]/[actionId]/editar': {
+    name: 'Editar'
+  },
+  '/admin/users/[userId]/propriedades/[id]/talhoes/[fieldId]/acoes/cadastrar': {
+    name: 'Cadastrar'
+  },
+  '/admin/propriedades/[id]/talhoes/[fieldId]/acoes': {
+    name: 'Ações'
+  },
+  '/admin/propriedades/[id]/talhoes/[fieldId]/acoes/[typeAction]/[actionId]': {
+    name: 'Detalhes',
+    path:
+      '/admin/propriedades/[id]/talhoes/[fieldId]/acoes/[typeAction]/[actionId]/detalhes'
+  },
+  '/admin/propriedades/[id]/talhoes/[fieldId]/acoes/[typeAction]/[actionId]/editar': {
+    name: 'Editar'
+  },
+  '/admin/propriedades/[id]/talhoes/[fieldId]/acoes/cadastrar': {
+    name: 'Cadastrar'
+  },
+  '/propriedades/[id]/talhoes/[fieldId]/acoes': {
+    name: 'Ações'
+  },
+  '/propriedades/[id]/talhoes/[fieldId]/acoes/[typeAction]/[actionId]/detalhes': {
+    name: 'Detalhes'
+  },
+  '/propriedades/[id]/talhoes/[fieldId]/acoes/[typeAction]/[actionId]/editar': {
+    name: 'Editar'
+  },
+  '/propriedades/[id]/talhoes/[fieldId]/acoes/cadastrar': {
+    name: 'Cadastrar'
+  },
+  '/propriedades/[id]/talhoes/[fieldId]/acoes/[typeAction]/[actionId]/documentos': {
+    name: 'Documentos',
+    path:
+      '/propriedades/[id]/talhoes/[fieldId]/acoes/[typeAction]/[actionId]/detalhes'
+  },
+  '/propriedades/[id]/talhoes/[fieldId]/acoes/[typeAction]/[actionId]/documentos/cadastrar': {
+    name: 'Cadastrar Documento'
+  },
+  '/propriedades/[id]/talhoes/[fieldId]/acoes/[typeAction]/[actionId]/documentos/[docId]/editar': {
+    name: 'Editar Documento'
+  },
+  '/admin/users/[userId]/propriedades/[id]/acoes': {
+    name: 'Ações'
+  },
+  '/admin/users/[userId]/propriedades/[id]/acoes/[typeAction]/[actionId]': {
+    name: 'Detalhes',
+    path:
+      '/admin/users/[userId]/propriedades/[id]/acoes/[typeAction]/[actionId]/detalhes'
+  },
+  '/admin/users/[userId]/propriedades/[id]/acoes/[typeAction]/[actionId]/editar': {
+    name: 'Editar'
+  },
+  '/admin/users/[userId]/propriedades/[id]/acoes/cadastrar': {
+    name: 'Cadastrar'
+  },
+  '/admin/propriedades/[id]/acoes': {
+    name: 'Ações'
+  },
+  '/admin/propriedades/[id]/acoes/[typeAction]/[actionId]': {
+    name: 'Detalhes',
+    path: '/admin/propriedades/[id]/acoes/[typeAction]/[actionId]/detalhes'
+  },
+  '/admin/propriedades/[id]/acoes/[typeAction]/[actionId]/editar': {
+    name: 'Editar'
+  },
+  '/admin/propriedades/[id]/acoes/cadastrar': {
+    name: 'Cadastrar'
+  },
+  '/propriedades/[id]/acoes': {
+    name: 'Ações'
+  },
+  '/propriedades/[id]/acoes/[typeAction]/[actionId]/detalhes': {
+    name: 'Detalhes'
+  },
+  '/propriedades/[id]/acoes/[typeAction]/[actionId]/editar': {
+    name: 'Editar'
+  },
+  '/propriedades/[id]/acoes/cadastrar': {
+    name: 'Cadastrar'
+  },
+  '/propriedades/[id]/acoes/[typeAction]/[actionId]/documentos': {
+    name: 'Documentos',
+    path: '/propriedades/[id]/acoes/[typeAction]/[actionId]/detalhes'
+  },
+  '/propriedades/[id]/acoes/[typeAction]/[actionId]/documentos/cadastrar': {
+    name: 'Cadastrar Documento'
+  },
+  '/propriedades/[id]/acoes/[typeAction]/[actionId]/documentos/[docId]/editar': {
+    name: 'Editar Documento'
+  }
+};
+
 const namedRoutes = {
   '/admin': { name: 'Painel Administrativo' },
   '/admin/categorias': { name: 'Categorias' },
@@ -668,11 +771,11 @@ const namedRoutes = {
   },
 
   '/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]/acoes/[typeAction]/[actionId]/documentos/cadastrar': {
-    name: 'Cadastrar'
+    name: 'Cadastrar Documento'
   },
 
   '/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]/acoes/[typeAction]/[actionId]/documentos/[docId]/editar': {
-    name: 'Editar'
+    name: 'Editar Documento'
   },
 
   '/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]/colheitas': {
@@ -735,7 +838,8 @@ const namedRoutes = {
   ...adminUserTechPropertyRoute,
   ...namedSales,
   ...adminUserSalesRoute,
-  ...chartRoutes
+  ...chartRoutes,
+  ...actionsRoutes
 };
 
 export default namedRoutes;

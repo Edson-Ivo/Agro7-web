@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -31,6 +31,12 @@ const Navbar = () => {
     name,
     profile: { image_url: imageUrl }
   } = useSelector(state => state.user);
+
+  const [userImage, setUseImage] = useState(`/assets/user-placeholder.png`);
+
+  useEffect(() => {
+    setUseImage(imageUrl);
+  }, []);
 
   const handleClick = () => {
     setOpen(prevOpen => !prevOpen);
@@ -78,7 +84,7 @@ const Navbar = () => {
             >
               <div className="navbar_button__image">
                 <Image
-                  src={imageUrl || `/assets/user-placeholder.png`}
+                  src={userImage}
                   width={48}
                   height={48}
                   loading="eager"

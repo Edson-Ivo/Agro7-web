@@ -123,11 +123,13 @@ function Talhoes() {
               isLoading={isEmpty(data) || loadingUserAccess}
             >
               {userAccess && (
-                <Link href={`${baseUrl}/cadastrar`}>
-                  <Button className="primary">
-                    <FontAwesomeIcon icon={faPlus} /> Novo Talhão
-                  </Button>
-                </Link>
+                <>
+                  <Link href={`${baseUrl}/cadastrar`}>
+                    <Button className="primary">
+                      <FontAwesomeIcon icon={faPlus} /> Novo Talhão
+                    </Button>
+                  </Link>
+                </>
               )}
             </SectionHeaderContent>
           </SectionHeader>

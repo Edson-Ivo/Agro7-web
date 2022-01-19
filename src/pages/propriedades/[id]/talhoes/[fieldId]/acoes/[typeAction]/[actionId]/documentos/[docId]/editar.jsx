@@ -2,28 +2,31 @@ import React, { useEffect, useRef, useState } from 'react';
 import Head from 'next/head';
 import * as yup from 'yup';
 import { Form } from '@unform/web';
-import { useSelector } from 'react-redux';
 
 import Container from '@/components/Container';
 import Nav from '@/components/Nav';
 import Navbar from '@/components/Navbar';
+
 import Input from '@/components/Input';
 import Button from '@/components/Button';
 import { Section, SectionHeader, SectionBody } from '@/components/Section';
 import { CardContainer } from '@/components/CardContainer';
+
 import { privateRoute } from '@/components/PrivateRoute';
 import { Alert } from '@/components/Alert';
-import errorMessage from '@/helpers/errorMessage';
+
 import { useFetch } from '@/hooks/useFetch';
 import { useRouter } from 'next/router';
 import Error from '@/components/Error/index';
+import { useSelector } from 'react-redux';
 import urlRoute from '@/helpers/urlRoute';
 import isEmpty from '@/helpers/isEmpty';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
-import CulturesActionsService, {
+import FieldsActionsService, {
   actionsList
-} from '@/services/CulturesActionsService';
+} from '@/services/FieldsActionsService';
 import objectKeyExists from '@/helpers/objectKeyExists';
+import downloadDocument from '@/helpers/downloadDocument';
 import scrollTo from '@/helpers/scrollTo';
 import usersTypes from '@/helpers/usersTypes';
 import InputFile from '@/components/InputFile/index';
@@ -32,7 +35,7 @@ const schema = yup.object().shape({
   name: yup.string().required('Você precisa dar um nome para o documento')
 });
 
-function AcoesCulturasDocumentosCreate() {
+function AcoesTalhaoDocumentosCreate() {
   const formRef = useRef(null);
   const alertRef = useRef(null);
   const inputRef = useRef(null);
@@ -41,25 +44,18 @@ function AcoesCulturasDocumentosCreate() {
   const [baseUrl, setBaseUrl] = useState('');
 
   const router = useRouter();
-  const {
-    id,
-    fieldId,
-    cultureId,
-    actionId,
-    typeAction,
-    createAction
-  } = router.query;
+  const { id, fieldId, actionId, typeAction, docId } = router.query;
 
-  const requestAction = CulturesActionsService.requestAction(typeAction);
+  const requestAction = FieldsActionsService.requestAction(typeAction);
 
   const { data, error } = useFetch(`/fields/find/by/id/${fieldId}`);
 
-  const { data: dataCultures, error: errorCultures } = useFetch(
-    `/cultures/find/by/id/${cultureId}`
-  );
-
   const { error: errorActions } = useFetch(
     `/${requestAction}/find/by/id/${actionId}`
+  );
+
+  const { data: dataDocs, error: errorDocs } = useFetch(
+    `/${requestAction}-documents/find/by/id/${docId}`
   );
 
   const { type } = useSelector(state => state.user);
@@ -70,21 +66,12 @@ function AcoesCulturasDocumentosCreate() {
   }, []);
 
   useEffect(() => {
-    setBaseUrl(
-      `${route.path}/${id}/talhoes/${fieldId}/culturas/${cultureId}/acoes/${typeAction}`
-    );
+    setBaseUrl(`${route.path}/${id}/talhoes/${fieldId}/acoes/${typeAction}`);
   }, [route]);
-
-  const handleCancel = () => {
-    if (!createAction) {
-      router.back();
-    } else {
-      router.replace(`${baseUrl}/${actionId}/detalhes`);
-    }
-  };
 
   const handleSubmit = async dt => {
     setDisableButton(true);
+
     schema
       .validate(dt)
       .then(async d => {
@@ -97,54 +84,53 @@ function AcoesCulturasDocumentosCreate() {
 
         const inputDocumentFile = inputRef.current.getFiles();
 
-        if (inputRef.current.error.message) {
+        if (inputDocumentFile.length > 0 && inputRef.current.error.message) {
           setAlert({ type: 'error', message: inputRef.current.error.message });
         } else {
           const formData = new FormData();
+
           setAlert({
             type: 'success',
             message: 'Enviando...'
           });
+
           formData.append('name', d.name);
-          formData.append('file', inputDocumentFile[0]);
-          await CulturesActionsService.createDocument(
-            actionId,
+
+          if (inputDocumentFile.length > 0)
+            formData.append('file', inputDocumentFile[0]);
+
+          await FieldsActionsService.updateDocument(
+            docId,
             formData,
             typeAction
-          ).then(res => {
-            if (res.status !== 201 || res?.statusCode) {
-              setAlert({ type: 'error', message: errorMessage(res) });
-              setTimeout(() => {
-                setDisableButton(false);
-              }, 1000);
-            } else {
-              setAlert({
-                type: 'success',
-                message: 'Documento cadastrado com sucesso!'
-              });
-              setTimeout(() => {
-                router.push(`${baseUrl}/${actionId}/detalhes`);
-                setDisableButton(false);
-              }, 1000);
-            }
+          ).then(() => {
+            setAlert({
+              type: 'success',
+              message: 'Documento editado com sucesso!'
+            });
+
+            setTimeout(() => {
+              router.push(`${baseUrl}/${actionId}/detalhes`);
+              setDisableButton(false);
+            }, 1000);
           });
         }
       })
       .catch(err => {
         setAlert({ type: 'error', message: err.errors[0] });
         setDisableButton(false);
+
         if (err instanceof yup.ValidationError) {
           const { path, message } = err;
+
           formRef.current.setFieldError(path, message);
         }
       });
   };
 
-  if (error || errorCultures || errorActions)
-    return <Error error={error || errorCultures || errorActions} />;
+  if (error || errorActions || errorDocs)
+    return <Error error={error || errorActions || errorDocs} />;
   if (data && id !== String(data?.properties?.id)) return <Error error={404} />;
-  if (dataCultures && fieldId !== String(dataCultures?.fields?.id))
-    return <Error error={404} />;
   if (!isEmpty(route) && !route.hasPermission) return <Error error={404} />;
   if (
     !objectKeyExists(actionsList, typeAction) ||
@@ -156,8 +142,8 @@ function AcoesCulturasDocumentosCreate() {
     <>
       <Head>
         <title>
-          Cadastrar Documento para Ação de {actionsList[typeAction]?.label} na
-          Cultura {dataCultures?.products?.name} - Agro7
+          Editar Documento da Ação de {actionsList[typeAction]?.label} no Talhão{' '}
+          {data && data?.name} - Agro7
         </title>
       </Head>
 
@@ -169,19 +155,17 @@ function AcoesCulturasDocumentosCreate() {
             <SectionHeaderContent
               breadcrumbTitles={{
                 '%propriedade': data?.properties.name,
-                '%talhao': data?.name,
-                '%cultura': dataCultures?.products?.name
+                '%talhao': data?.name
               }}
-              title={`Cadastrar Documento para Ação de ${actionsList[typeAction]?.label} na
-              Cultura ${dataCultures?.products?.name}`}
-              description={`Aqui, você irá cadastrar um documento para a ação ${actionsList[
+              title={`Editar Documento ${dataDocs?.name} na Ação de ${actionsList[typeAction]?.label} no Talhão ${data?.name}`}
+              description={`Aqui, você irá editar o documento ${
+                dataDocs?.name
+              } para a ação ${actionsList[
                 typeAction
-              ]?.label.toLowerCase()} em questão da cultura de ${
-                dataCultures?.products?.name
-              } do talhão ${data?.name} da propriedade ${
-                data?.properties?.name
-              }.`}
-              isLoading={isEmpty(data) || isEmpty(dataCultures)}
+              ]?.label.toLowerCase()} em questão do talhão ${
+                data?.name
+              } da propriedade ${data?.properties?.name}.`}
+              isLoading={isEmpty(data) || isEmpty(dataDocs)}
             />
           </SectionHeader>
 
@@ -193,7 +177,12 @@ function AcoesCulturasDocumentosCreate() {
                     {alert.message}
                   </Alert>
                 )}
-                <Form ref={formRef} method="post" onSubmit={handleSubmit}>
+                <Form
+                  ref={formRef}
+                  method="post"
+                  onSubmit={handleSubmit}
+                  initialData={{ ...dataDocs }}
+                >
                   <Input
                     type="text"
                     name="name"
@@ -201,17 +190,26 @@ function AcoesCulturasDocumentosCreate() {
                     required
                   />
 
+                  <Button
+                    type="button"
+                    onClick={() => downloadDocument(dataDocs?.url)}
+                    style={{ marginBottom: 20 }}
+                  >
+                    Clique aqui para ver o documento atual
+                  </Button>
+
                   <InputFile
                     ref={inputRef}
                     name="file"
-                    label="Selecione um arquivo"
+                    label="Selecione um arquivo para substituir o atual"
                     min={0}
                     max={1}
                   />
+
                   <div className="form-group buttons">
                     <div>
-                      <Button type="button" onClick={handleCancel}>
-                        {(createAction && 'Cadastrar depois') || 'Cancelar'}
+                      <Button type="button" onClick={() => router.back()}>
+                        Cancelar
                       </Button>
                     </div>
                     <div>
@@ -220,7 +218,7 @@ function AcoesCulturasDocumentosCreate() {
                         className="primary"
                         type="submit"
                       >
-                        Cadastrar Documento
+                        Salvar Edição
                       </Button>
                     </div>
                   </div>
@@ -234,4 +232,4 @@ function AcoesCulturasDocumentosCreate() {
   );
 }
 
-export default privateRoute()(AcoesCulturasDocumentosCreate);
+export default privateRoute()(AcoesTalhaoDocumentosCreate);
