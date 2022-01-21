@@ -5,7 +5,11 @@ import Link from 'next/link';
 import { Form } from '@unform/web';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faLeaf, faHandHolding } from '@fortawesome/free-solid-svg-icons';
+import {
+  faLeaf,
+  faHandHolding,
+  faFileAlt
+} from '@fortawesome/free-solid-svg-icons';
 
 import Container from '@/components/Container';
 import Nav from '@/components/Nav';
@@ -81,11 +85,20 @@ function TalhoesInfo() {
                   </Button>
                 </Link>
                 {userAccess && (
-                  <Link href={`${route.path}/${id}/talhoes/${fieldId}/acoes`}>
-                    <Button className="primary">
-                      <FontAwesomeIcon icon={faHandHolding} /> Ações
-                    </Button>
-                  </Link>
+                  <>
+                    <Link
+                      href={`${route.path}/${id}/talhoes/${fieldId}/relatorio`}
+                    >
+                      <Button className="primary">
+                        <FontAwesomeIcon icon={faFileAlt} /> Relatório
+                      </Button>
+                    </Link>
+                    <Link href={`${route.path}/${id}/talhoes/${fieldId}/acoes`}>
+                      <Button className="primary">
+                        <FontAwesomeIcon icon={faHandHolding} /> Ações
+                      </Button>
+                    </Link>
+                  </>
                 )}
               </div>
             </SectionHeaderContent>

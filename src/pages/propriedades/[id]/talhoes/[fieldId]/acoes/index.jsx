@@ -36,12 +36,19 @@ import FieldsActionsService, {
 import objectKeyExists from '@/helpers/objectKeyExists';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 import usersTypes from '@/helpers/usersTypes';
+import objectToQuery from '@/helpers/objectToQuery';
+import mountQuery from '@/helpers/mountQuery';
+import ActionsSearch from '@/components/ActionsSearch/index';
 
 function AcoesTalhao() {
   const router = useRouter();
   const formRef = useRef(null);
 
-  const { id, fieldId, typeAction = 'supplies' } = router.query;
+  const {
+    id,
+    fieldId,
+    typeActionSelected: typeAction = 'services'
+  } = router.query;
 
   const perPage = 10;
 
@@ -51,6 +58,8 @@ function AcoesTalhao() {
   const [baseUrl, setBaseUrl] = useState('');
   const [fieldSupplyDataRoute, setFieldSupplyDataRoute] = useState('');
   const [page, setPage] = useState(1);
+  const [search, setSearch] = useState('');
+  const [filters, setFilters] = useState({});
 
   const { type } = useSelector(state => state.user);
 
@@ -63,9 +72,13 @@ function AcoesTalhao() {
     mutate: mutateActions
   } = useFetch(
     (typeAction !== 'supplies' &&
-      `/fields-${typeAction}/find/by/field/${fieldId}?limit=${perPage}&page=${page}`) ||
+      `/fields-${typeAction}/find/by/field/${fieldId}?limit=${perPage}&page=${page}&search=${search}&${objectToQuery(
+        filters
+      )}`) ||
       (!isEmpty(fieldSupplyDataRoute)
-        ? `/supplies/find/by/${fieldSupplyDataRoute}?limit=${perPage}&page=${page}`
+        ? `/supplies/find/by/${fieldSupplyDataRoute}?limit=${perPage}&page=${page}&search=${search}&${objectToQuery(
+            filters
+          )}`
         : null)
   );
 
@@ -88,7 +101,8 @@ function AcoesTalhao() {
   }, [data]);
 
   useEffect(() => {
-    setBaseUrl(`${route.path}/${id}/talhoes/${fieldId}/acoes`);
+    if (!isEmpty(route?.path))
+      setBaseUrl(`${route.path}/${id}/talhoes/${fieldId}/acoes`);
   }, [route]);
 
   const handleDelete = useCallback(
@@ -130,8 +144,10 @@ function AcoesTalhao() {
   );
 
   const handleChangeTypeAction = e => {
+    const url = mountQuery(router, baseUrl, { typeActionSelected: e?.value });
+
     setPage(1);
-    router.replace(`${baseUrl}?typeAction=${e?.value || ''}`);
+    router.replace(url);
   };
 
   if (error || errorActions) return <Error error={error || errorActions} />;
@@ -184,7 +200,18 @@ function AcoesTalhao() {
                       onChange={handleChangeTypeAction}
                     />
                   </Form>
-                  {(((!isEmpty(typeAction) && data && dataActions) ||
+                  {!isEmpty(typeAction) && !isEmpty(baseUrl) && (
+                    <ActionsSearch
+                      url={baseUrl}
+                      typeAction={typeAction}
+                      onFilterChange={f => setFilters({ ...f })}
+                      onSubmitSearch={q => setSearch(q)}
+                    />
+                  )}
+                  {(((!isEmpty(typeAction) &&
+                    !isEmpty(baseUrl) &&
+                    data &&
+                    dataActions) ||
                     loading) && (
                     <>
                       <div className="table-responsive">

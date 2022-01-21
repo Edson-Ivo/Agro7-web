@@ -70,9 +70,10 @@ function AcoesCulturasDocumentosCreate() {
   }, []);
 
   useEffect(() => {
-    setBaseUrl(
-      `${route.path}/${id}/talhoes/${fieldId}/culturas/${cultureId}/acoes/${typeAction}`
-    );
+    if (!isEmpty(route?.path))
+      setBaseUrl(
+        `${route.path}/${id}/talhoes/${fieldId}/culturas/${cultureId}/acoes/${typeAction}`
+      );
   }, [route]);
 
   const handleCancel = () => {

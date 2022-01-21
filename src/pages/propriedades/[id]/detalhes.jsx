@@ -7,7 +7,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faThumbtack,
   faUserFriends,
-  faHandHolding
+  faHandHolding,
+  faFileAlt
 } from '@fortawesome/free-solid-svg-icons';
 
 import Container from '@/components/Container';
@@ -137,6 +138,11 @@ function PropertyInfo() {
                     <Link href={`${route.path}/${id}/tecnicos/`}>
                       <Button className="primary">
                         <FontAwesomeIcon icon={faUserFriends} /> Técnicos
+                      </Button>
+                    </Link>
+                    <Link href={`${route.path}/${id}/relatorio`}>
+                      <Button className="primary">
+                        <FontAwesomeIcon icon={faFileAlt} /> Relatório
                       </Button>
                     </Link>
                     <Link href={`${route.path}/${id}/acoes`}>

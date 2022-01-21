@@ -1,4 +1,4 @@
-import { TOOGLE_NAV, CHANGE_NAV } from './constants';
+import { TOGGLE_NAV, CHANGE_NAV } from './constants';
 
 const INITIAL_STATE = {
   open: false
@@ -6,7 +6,7 @@ const INITIAL_STATE = {
 
 const NavReducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
-    case TOOGLE_NAV: {
+    case TOGGLE_NAV: {
       return { ...state, open: !state.open };
     }
 

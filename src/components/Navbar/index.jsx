@@ -15,7 +15,7 @@ import {
   faUser
 } from '@fortawesome/free-solid-svg-icons';
 
-import { NavToogleAction } from '@/store/modules/Nav/actions';
+import { NavToggleAction } from '@/store/modules/Nav/actions';
 import AuthService from '@/services/AuthService';
 import { NavbarContainer } from './styles';
 
@@ -55,8 +55,8 @@ const Navbar = () => {
           <div className="navbar__content__logo">
             <FontAwesomeIcon
               icon={!navOpen ? faBars : faTimes}
-              onClick={() => dispatch(NavToogleAction())}
-              onKeyPress={() => dispatch(NavToogleAction())}
+              onClick={() => dispatch(NavToggleAction())}
+              onKeyPress={() => dispatch(NavToggleAction())}
               role="button"
               tabIndex="0"
               className="navbar_toggle__icon"

@@ -118,7 +118,7 @@ function Talhoes() {
               breadcrumbTitles={{
                 '%propriedade': data?.name
               }}
-              title={`Talhões da propriedade ${data?.name}`}
+              title={`Talhões da Propriedade ${data?.name}`}
               description="Aqui, você irá ver os talhões da propriedade em questão"
               isLoading={isEmpty(data) || loadingUserAccess}
             >

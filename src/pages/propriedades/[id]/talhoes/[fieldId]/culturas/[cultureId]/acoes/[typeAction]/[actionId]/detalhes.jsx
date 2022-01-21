@@ -35,6 +35,7 @@ import { Alert } from '@/components/Alert/index';
 import maskString from '@/helpers/maskString';
 import usersTypes from '@/helpers/usersTypes';
 import downloadDocument from '@/helpers/downloadDocument';
+import InputSearch from '@/components/InputSearch/index';
 
 function AcoesCulturasDetalhes() {
   const formRef = useRef(null);
@@ -44,6 +45,8 @@ function AcoesCulturasDetalhes() {
   const [alertMsg, setAlertMsg] = useState({ type: '', message: '' });
   const { addModal, removeModal } = useModal();
   const [loading, setLoading] = useState(false);
+
+  const [search, setSearch] = useState('');
 
   const router = useRouter();
   const {
@@ -71,7 +74,7 @@ function AcoesCulturasDetalhes() {
   const { data: dataDocs, error: errorDocs, mutate: mutateDocs } = useFetch(
     `/${requestAction}-documents/find/by/${CulturesActionsService.requestSingleAction(
       typeAction
-    )}/${actionId}?limit=${perPageDocs}&page=${pageDocs}`
+    )}/${actionId}?limit=${perPageDocs}&page=${pageDocs}&search=${search}`
   );
 
   const { type } = useSelector(state => state.user);
@@ -81,9 +84,10 @@ function AcoesCulturasDetalhes() {
   }, []);
 
   useEffect(() => {
-    setBaseUrl(
-      `${route.path}/${id}/talhoes/${fieldId}/culturas/${cultureId}/acoes`
-    );
+    if (!isEmpty(route?.path))
+      setBaseUrl(
+        `${route.path}/${id}/talhoes/${fieldId}/culturas/${cultureId}/acoes`
+      );
   }, [route]);
 
   const handleCancel = () => {
@@ -237,6 +241,12 @@ function AcoesCulturasDetalhes() {
                                   {alertMsg.message}
                                 </Alert>
                               )}
+                              {baseUrl && (
+                                <InputSearch
+                                  url={`${baseUrl}/${typeAction}/${actionId}/detalhes`}
+                                  onSubmitSearch={q => setSearch(q)}
+                                />
+                              )}
                               {(((data && dataDocs) || loading) && (
                                 <>
                                   <Table>
@@ -281,7 +291,7 @@ function AcoesCulturasDetalhes() {
                                     </tbody>
                                   </Table>
                                   <Pagination
-                                    url={`${route.path}/${actionId}/detalhes`}
+                                    url={`${baseUrl}/${typeAction}/${actionId}/detalhes`}
                                     currentPage={pageDocs}
                                     itemsPerPage={perPageDocs}
                                     totalPages={dataDocs.meta.totalPages}

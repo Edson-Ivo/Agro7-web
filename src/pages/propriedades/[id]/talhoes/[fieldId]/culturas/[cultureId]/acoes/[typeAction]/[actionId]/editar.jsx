@@ -69,9 +69,10 @@ function AcoesCulturaEditar() {
   }, []);
 
   useEffect(() => {
-    setBaseUrl(
-      `${route.path}/${id}/talhoes/${fieldId}/culturas/${cultureId}/acoes`
-    );
+    if (!isEmpty(route?.path))
+      setBaseUrl(
+        `${route.path}/${id}/talhoes/${fieldId}/culturas/${cultureId}/acoes`
+      );
   }, [route]);
 
   const handleCancel = () => {

@@ -26,6 +26,7 @@ import errorMessage from '@/helpers/errorMessage';
 import isEmpty from '@/helpers/isEmpty';
 import Select from '@/components/Select';
 import Pagination from '@/components/Pagination';
+import ActionsSearch from '@/components/ActionsSearch';
 import { dateConversor } from '@/helpers/date';
 import Error from '@/components/Error/index';
 import { useSelector } from 'react-redux';
@@ -36,12 +37,14 @@ import PropertiesActionsService, {
 import objectKeyExists from '@/helpers/objectKeyExists';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 import usersTypes from '@/helpers/usersTypes';
+import mountQuery from '@/helpers/mountQuery';
+import objectToQuery from '@/helpers/objectToQuery';
 
 function AcoesPropriedade() {
   const router = useRouter();
   const formRef = useRef(null);
 
-  const { id, typeAction = 'services' } = router.query;
+  const { id, typeActionSelected: typeAction = 'services' } = router.query;
 
   const perPage = 10;
 
@@ -50,6 +53,8 @@ function AcoesPropriedade() {
   const [route, setRoute] = useState({});
   const [baseUrl, setBaseUrl] = useState('');
   const [page, setPage] = useState(1);
+  const [search, setSearch] = useState('');
+  const [filters, setFilters] = useState({});
 
   const { type } = useSelector(state => state.user);
 
@@ -61,7 +66,9 @@ function AcoesPropriedade() {
     error: errorActions,
     mutate: mutateActions
   } = useFetch(
-    `/properties-${typeAction}/find/by/property/${id}?limit=${perPage}&page=${page}`
+    `/properties-${typeAction}/find/by/property/${id}?limit=${perPage}&page=${page}&search=${search}&${objectToQuery(
+      filters
+    )}`
   );
 
   useEffect(() => {
@@ -69,7 +76,7 @@ function AcoesPropriedade() {
   }, []);
 
   useEffect(() => {
-    setBaseUrl(`${route.path}/${id}/acoes`);
+    if (!isEmpty(route?.path)) setBaseUrl(`${route.path}/${id}/acoes`);
   }, [route]);
 
   const handleDelete = useCallback(
@@ -111,8 +118,10 @@ function AcoesPropriedade() {
   );
 
   const handleChangeTypeAction = e => {
+    const url = mountQuery(router, baseUrl, { typeActionSelected: e?.value });
+
     setPage(1);
-    router.replace(`${baseUrl}?typeAction=${e?.value || ''}`);
+    router.replace(url);
   };
 
   if (error || errorActions) return <Error error={error || errorActions} />;
@@ -163,7 +172,18 @@ function AcoesPropriedade() {
                       onChange={handleChangeTypeAction}
                     />
                   </Form>
-                  {(((!isEmpty(typeAction) && data && dataActions) ||
+                  {!isEmpty(typeAction) && !isEmpty(baseUrl) && (
+                    <ActionsSearch
+                      url={baseUrl}
+                      typeAction={typeAction}
+                      onFilterChange={f => setFilters({ ...f })}
+                      onSubmitSearch={q => setSearch(q)}
+                    />
+                  )}
+                  {(((!isEmpty(typeAction) &&
+                    !isEmpty(baseUrl) &&
+                    data &&
+                    dataActions) ||
                     loading) && (
                     <>
                       <div className="table-responsive">

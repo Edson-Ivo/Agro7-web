@@ -75,7 +75,8 @@ function AcoesTalhaoCadastrar() {
   }, [data]);
 
   useEffect(() => {
-    setBaseUrl(`${route.path}/${id}/talhoes/${fieldId}`);
+    if (!isEmpty(route?.path))
+      setBaseUrl(`${route.path}/${id}/talhoes/${fieldId}`);
   }, [route]);
 
   const handleCancel = () => {

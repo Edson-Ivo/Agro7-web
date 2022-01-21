@@ -36,12 +36,20 @@ import CulturesActionsService, {
 import objectKeyExists from '@/helpers/objectKeyExists';
 import { SectionHeaderContent } from '@/components/SectionHeaderContent/index';
 import usersTypes from '@/helpers/usersTypes';
+import objectToQuery from '@/helpers/objectToQuery';
+import mountQuery from '@/helpers/mountQuery';
+import ActionsSearch from '@/components/ActionsSearch/index';
 
 function AcoesCultura() {
   const router = useRouter();
   const formRef = useRef(null);
 
-  const { id, fieldId, cultureId, typeAction = 'supplies' } = router.query;
+  const {
+    id,
+    fieldId,
+    cultureId,
+    typeActionSelected: typeAction = 'services'
+  } = router.query;
 
   const perPage = 10;
 
@@ -51,6 +59,8 @@ function AcoesCultura() {
   const [baseUrl, setBaseUrl] = useState('');
   const [cultureSupplyDataRoute, setCultureSupplyDataRoute] = useState('');
   const [page, setPage] = useState(1);
+  const [search, setSearch] = useState('');
+  const [filters, setFilters] = useState({});
 
   const { type } = useSelector(state => state.user);
 
@@ -67,9 +77,13 @@ function AcoesCultura() {
     mutate: mutateActions
   } = useFetch(
     (typeAction !== 'supplies' &&
-      `/cultures-${typeAction}/find/by/culture/${cultureId}?limit=${perPage}&page=${page}`) ||
+      `/cultures-${typeAction}/find/by/culture/${cultureId}?limit=${perPage}&page=${page}&search=${search}&${objectToQuery(
+        filters
+      )}`) ||
       (!isEmpty(cultureSupplyDataRoute)
-        ? `/supplies/find/by/${cultureSupplyDataRoute}?limit=${perPage}&page=${page}`
+        ? `/supplies/find/by/${cultureSupplyDataRoute}?limit=${perPage}&page=${page}&search=${search}&${objectToQuery(
+            filters
+          )}`
         : null)
   );
 
@@ -92,9 +106,10 @@ function AcoesCultura() {
   }, [data]);
 
   useEffect(() => {
-    setBaseUrl(
-      `${route.path}/${id}/talhoes/${fieldId}/culturas/${cultureId}/acoes`
-    );
+    if (!isEmpty(route?.path))
+      setBaseUrl(
+        `${route.path}/${id}/talhoes/${fieldId}/culturas/${cultureId}/acoes`
+      );
   }, [route]);
 
   const handleDelete = useCallback(
@@ -136,8 +151,10 @@ function AcoesCultura() {
   );
 
   const handleChangeTypeAction = e => {
+    const url = mountQuery(router, baseUrl, { typeActionSelected: e?.value });
+
     setPage(1);
-    router.replace(`${baseUrl}?typeAction=${e?.value || ''}`);
+    router.replace(url);
   };
 
   if (error || errorCultures || errorActions)
@@ -197,7 +214,16 @@ function AcoesCultura() {
                       onChange={handleChangeTypeAction}
                     />
                   </Form>
+                  {!isEmpty(typeAction) && !isEmpty(baseUrl) && (
+                    <ActionsSearch
+                      url={baseUrl}
+                      typeAction={typeAction}
+                      onFilterChange={f => setFilters({ ...f })}
+                      onSubmitSearch={q => setSearch(q)}
+                    />
+                  )}
                   {(((!isEmpty(typeAction) &&
+                    !isEmpty(baseUrl) &&
                     data &&
                     dataCultures &&
                     dataActions) ||

@@ -56,7 +56,7 @@ function AcoesPropriedadeCadastrar() {
   }, []);
 
   useEffect(() => {
-    setBaseUrl(`${route.path}/${id}`);
+    if (!isEmpty(route?.path)) setBaseUrl(`${route.path}/${id}`);
   }, [route]);
 
   const handleCancel = () => {

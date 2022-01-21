@@ -1,7 +1,7 @@
-import { TOOGLE_NAV, CHANGE_NAV } from './constants';
+import { TOGGLE_NAV, CHANGE_NAV } from './constants';
 
-export const NavToogleAction = () => ({
-  type: TOOGLE_NAV
+export const NavToggleAction = () => ({
+  type: TOGGLE_NAV
 });
 
 export const NavChangeAction = status => ({

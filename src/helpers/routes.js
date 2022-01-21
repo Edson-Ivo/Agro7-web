@@ -30,7 +30,7 @@ const adminUserPropertyRoute = {
   },
 
   '/admin/users/[userId]/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]/relatorio': {
-    name: 'Relatórios'
+    name: 'Relatório'
   },
 
   '/admin/users/[userId]/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]/acoes/[typeAction]/[actionId]': {
@@ -683,6 +683,18 @@ const actionsRoutes = {
   },
   '/propriedades/[id]/acoes/[typeAction]/[actionId]/documentos/[docId]/editar': {
     name: 'Editar Documento'
+  },
+  '/admin/users/[userId]/propriedades/[id]/talhoes/[fieldId]/relatorio': {
+    name: 'Relatório'
+  },
+  '/propriedades/[id]/talhoes/[fieldId]/relatorio': {
+    name: 'Relatório'
+  },
+  '/admin/users/[userId]/propriedades/[id]/relatorio': {
+    name: 'Relatório'
+  },
+  '/propriedades/[id]/relatorio': {
+    name: 'Relatório'
   }
 };
 

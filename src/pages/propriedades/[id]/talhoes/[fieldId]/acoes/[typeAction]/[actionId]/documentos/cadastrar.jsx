@@ -59,7 +59,8 @@ function AcoesTalhaoDocumentosCreate() {
   }, []);
 
   useEffect(() => {
-    setBaseUrl(`${route.path}/${id}/talhoes/${fieldId}/acoes/${typeAction}`);
+    if (!isEmpty(route?.path))
+      setBaseUrl(`${route.path}/${id}/talhoes/${fieldId}/acoes/${typeAction}`);
   }, [route]);
 
   const handleCancel = () => {
