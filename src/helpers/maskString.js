@@ -1,7 +1,7 @@
 import extractNumbers from './extractNumbers';
 
 const maskString = (value, pattern) => {
-  if (value) {
+  if (value || (pattern === 'money' && value === 0)) {
     let i = 0;
     let pat = pattern;
     let v = value.toString();

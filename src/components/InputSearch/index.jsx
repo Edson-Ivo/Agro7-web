@@ -28,6 +28,7 @@ const InputSearch = ({
   label = 'Pesquisar',
   filters = {
     date: false,
+    time: false,
     checkboxes: false,
     selects: false
   },
@@ -92,6 +93,13 @@ const InputSearch = ({
     }));
   };
 
+  const handleChangeTimes = (key, val) => {
+    setFilterValues(prevFilterValues => ({
+      ...prevFilterValues,
+      [key]: val
+    }));
+  };
+
   const handleResetFilter = () => {
     formFilterRef?.current?.setData({ ...initialFilter });
     if (filters?.date) dateFieldRef.current.clearFields();
@@ -100,7 +108,7 @@ const InputSearch = ({
   };
 
   useEffect(() => {
-    const { checkboxes, date, selects } = filters;
+    const { checkboxes, date, time, selects } = filters;
     const { q = '', ...queryFilter } = router.query;
     let filterInitial = {};
 
@@ -111,6 +119,14 @@ const InputSearch = ({
         period: '',
         dateStart: '',
         dateEnd: ''
+      };
+    }
+
+    if (time) {
+      filterInitial = {
+        ...filterInitial,
+        timeStart: '',
+        timeEnd: ''
       };
     }
 
@@ -174,7 +190,12 @@ const InputSearch = ({
 
       onFilterChange(
         renameKeys(
-          { dateEnd: 'date_finish', dateStart: 'date_start' },
+          {
+            dateEnd: 'date_finish',
+            dateStart: 'date_start',
+            timeStart: 'time_start',
+            timeEnd: 'time_finish'
+          },
           filterAdjust
         )
       );
@@ -212,6 +233,30 @@ const InputSearch = ({
 
               <Form ref={formFilterRef} initialData={{ ...filterValues }}>
                 <>
+                  {filters?.time && (
+                    <div className="form-group">
+                      <div>
+                        <Input
+                          type="time"
+                          label="Hora Inicial"
+                          name="timeStart"
+                          handleChange={e =>
+                            handleChangeTimes('timeStart', e?.target?.value)
+                          }
+                        />
+                      </div>
+                      <div>
+                        <Input
+                          type="time"
+                          label="Hora Final"
+                          name="timeEnd"
+                          handleChange={e =>
+                            handleChangeTimes('timeEnd', e?.target?.value)
+                          }
+                        />
+                      </div>
+                    </div>
+                  )}
                   {filters?.checkboxes && (
                     <ul>
                       {Object.entries(filters?.checkboxes).map(

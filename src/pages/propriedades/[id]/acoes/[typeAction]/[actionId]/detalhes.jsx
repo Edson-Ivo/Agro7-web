@@ -35,6 +35,7 @@ import { Alert } from '@/components/Alert/index';
 import maskString from '@/helpers/maskString';
 import usersTypes from '@/helpers/usersTypes';
 import downloadDocument from '@/helpers/downloadDocument';
+import InputSearch from '@/components/InputSearch/index';
 
 function AcoesPropriedadeDetalhes() {
   const formRef = useRef(null);
@@ -44,6 +45,8 @@ function AcoesPropriedadeDetalhes() {
   const [alertMsg, setAlertMsg] = useState({ type: '', message: '' });
   const { addModal, removeModal } = useModal();
   const [loading, setLoading] = useState(false);
+
+  const [search, setSearch] = useState('');
 
   const router = useRouter();
   const { id, actionId, typeAction, pageDocs = 1 } = router.query;
@@ -61,7 +64,7 @@ function AcoesPropriedadeDetalhes() {
     actionsList[typeAction]?.documents
       ? `/${requestAction}-documents/find/by/${PropertiesActionsService.requestSingleAction(
           typeAction
-        )}/${actionId}?limit=${perPageDocs}&page=${pageDocs}`
+        )}/${actionId}?limit=${perPageDocs}&page=${pageDocs}&search=${search}`
       : null
   );
 
@@ -72,7 +75,7 @@ function AcoesPropriedadeDetalhes() {
   }, []);
 
   useEffect(() => {
-    setBaseUrl(`${route.path}/${id}/acoes`);
+    if (!isEmpty(route?.path)) setBaseUrl(`${route.path}/${id}/acoes`);
   }, [route]);
 
   const handleCancel = () => {
@@ -217,6 +220,12 @@ function AcoesPropriedadeDetalhes() {
                                   {alertMsg.message}
                                 </Alert>
                               )}
+                              {baseUrl && (
+                                <InputSearch
+                                  url={`${baseUrl}/${typeAction}/${actionId}/detalhes`}
+                                  onSubmitSearch={q => setSearch(q)}
+                                />
+                              )}
                               {(((data && dataDocs) || loading) && (
                                 <>
                                   <Table>
@@ -261,7 +270,7 @@ function AcoesPropriedadeDetalhes() {
                                     </tbody>
                                   </Table>
                                   <Pagination
-                                    url={`${route.path}/${actionId}/detalhes`}
+                                    url={`${baseUrl}/${typeAction}/${actionId}/detalhes`}
                                     currentPage={pageDocs}
                                     itemsPerPage={perPageDocs}
                                     totalPages={dataDocs.meta.totalPages}

@@ -79,7 +79,10 @@ function AcoesCulturaCadastrar() {
   }, [data]);
 
   useEffect(() => {
-    setBaseUrl(`${route.path}/${id}/talhoes/${fieldId}/culturas/${cultureId}`);
+    if (!isEmpty(route?.path))
+      setBaseUrl(
+        `${route.path}/${id}/talhoes/${fieldId}/culturas/${cultureId}`
+      );
   }, [route]);
 
   const handleCancel = () => {

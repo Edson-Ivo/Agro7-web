@@ -65,7 +65,8 @@ function AcoesTalhaoEditar() {
   }, []);
 
   useEffect(() => {
-    setBaseUrl(`${route.path}/${id}/talhoes/${fieldId}/acoes`);
+    if (!isEmpty(route?.path))
+      setBaseUrl(`${route.path}/${id}/talhoes/${fieldId}/acoes`);
   }, [route]);
 
   const handleCancel = () => {

@@ -65,7 +65,7 @@ function AcoesPropriedadeEditar() {
   }, []);
 
   useEffect(() => {
-    setBaseUrl(`${route.path}/${id}/acoes`);
+    if (!isEmpty(route?.path)) setBaseUrl(`${route.path}/${id}/acoes`);
   }, [route]);
 
   const handleCancel = () => {

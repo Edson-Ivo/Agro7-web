@@ -35,6 +35,7 @@ import { Alert } from '@/components/Alert/index';
 import maskString from '@/helpers/maskString';
 import usersTypes from '@/helpers/usersTypes';
 import downloadDocument from '@/helpers/downloadDocument';
+import InputSearch from '@/components/InputSearch/index';
 
 function AcoesTalhaoDetalhes() {
   const formRef = useRef(null);
@@ -44,6 +45,8 @@ function AcoesTalhaoDetalhes() {
   const [alertMsg, setAlertMsg] = useState({ type: '', message: '' });
   const { addModal, removeModal } = useModal();
   const [loading, setLoading] = useState(false);
+
+  const [search, setSearch] = useState('');
 
   const router = useRouter();
   const { id, fieldId, actionId, typeAction, pageDocs = 1 } = router.query;
@@ -60,7 +63,7 @@ function AcoesTalhaoDetalhes() {
   const { data: dataDocs, error: errorDocs, mutate: mutateDocs } = useFetch(
     `/${requestAction}-documents/find/by/${FieldsActionsService.requestSingleAction(
       typeAction
-    )}/${actionId}?limit=${perPageDocs}&page=${pageDocs}`
+    )}/${actionId}?limit=${perPageDocs}&page=${pageDocs}&search=${search}`
   );
 
   const { type } = useSelector(state => state.user);
@@ -70,7 +73,8 @@ function AcoesTalhaoDetalhes() {
   }, []);
 
   useEffect(() => {
-    setBaseUrl(`${route.path}/${id}/talhoes/${fieldId}/acoes`);
+    if (!isEmpty(route?.path))
+      setBaseUrl(`${route.path}/${id}/talhoes/${fieldId}/acoes`);
   }, [route]);
 
   const handleCancel = () => {
@@ -217,6 +221,12 @@ function AcoesTalhaoDetalhes() {
                                   {alertMsg.message}
                                 </Alert>
                               )}
+                              {baseUrl && (
+                                <InputSearch
+                                  url={`${baseUrl}/${typeAction}/${actionId}/detalhes`}
+                                  onSubmitSearch={q => setSearch(q)}
+                                />
+                              )}
                               {(((data && dataDocs) || loading) && (
                                 <>
                                   <Table>
@@ -261,7 +271,7 @@ function AcoesTalhaoDetalhes() {
                                     </tbody>
                                   </Table>
                                   <Pagination
-                                    url={`${route.path}/${actionId}/detalhes`}
+                                    url={`${baseUrl}/${typeAction}/${actionId}/detalhes`}
                                     currentPage={pageDocs}
                                     itemsPerPage={perPageDocs}
                                     totalPages={dataDocs.meta.totalPages}

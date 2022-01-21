@@ -59,7 +59,8 @@ function AcoesPropriedadeDocumentosCreate() {
   }, []);
 
   useEffect(() => {
-    setBaseUrl(`${route.path}/${id}/acoes/${typeAction}`);
+    if (!isEmpty(route?.path))
+      setBaseUrl(`${route.path}/${id}/acoes/${typeAction}`);
   }, [route]);
 
   const handleCancel = () => {

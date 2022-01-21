@@ -7,6 +7,15 @@ import { api } from './api';
 class CultureqActionsService {
   static text(action, data) {
     let txt = actionsList[action].text;
+    if (action === 'services') {
+      txt = txt
+        .replace('%name', data?.name)
+        .replace('%value', maskString(data?.value, 'money'));
+
+      if (data?.date) txt += ` no dia ${dateConversor(data?.date, false)}`;
+
+      txt += '.';
+    }
 
     if (action === 'supplies') txt = txt.replace('%name', data?.name);
 
@@ -37,6 +46,17 @@ class CultureqActionsService {
 
   static schema(action) {
     let schema = null;
+
+    if (action === 'services')
+      schema = yup.object().shape({
+        name: yup.string().required('O campo nome é obrigatório!'),
+        description: yup.string().required('O campo descrição é obrigatório!'),
+        value: yup
+          .number()
+          .transform(value => (Number.isNaN(value) ? undefined : value))
+          .required('O campo preço é obrigatório!'),
+        date: yup.string().nullable()
+      });
 
     if (action === 'supplies')
       schema = yup.object().shape({
@@ -191,6 +211,13 @@ class CultureqActionsService {
 }
 
 export const actionsList = {
+  services: {
+    value: 'services',
+    singleValue: 'service',
+    label: 'Serviços',
+    text: 'Serviço %name, custando %value, feito',
+    documents: true
+  },
   supplies: {
     value: 'supplies',
     singleValue: 'supply',

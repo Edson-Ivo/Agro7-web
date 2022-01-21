@@ -46,23 +46,43 @@ function AdminReceita() {
     if (!isEmpty(dataChart)) {
       const {
         total: {
-          applications_supplies: applicationsSupplies,
-          others,
-          sales,
-          services,
-          durable_goods: durableGoods,
-          consumable_goods: consumableGoods
+          cultures_applications_supplies,
+          cultures_others,
+          cultures_services,
+          fields_applications_supplies,
+          fields_others,
+          fields_services,
+          properties_consumable_goods,
+          properties_durable_goods,
+          properties_others,
+          properties_services,
+          sales
         }
       } = dataChart;
 
+      const applicationsSupplies =
+        Number(cultures_applications_supplies) +
+        Number(fields_applications_supplies);
+      const services =
+        Number(properties_services) +
+        Number(cultures_services) +
+        Number(fields_services);
+      const durableGoods = Number(properties_consumable_goods);
+      const consumableGoods = Number(properties_durable_goods);
+      const others =
+        Number(cultures_others) +
+        Number(fields_others) +
+        Number(properties_others);
+
+      const costs =
+        applicationsSupplies +
+        services +
+        durableGoods +
+        consumableGoods +
+        others;
+
       setDataProfits(sales);
-      setDataCosts(
-        Number(applicationsSupplies) +
-          Number(others) +
-          Number(services) +
-          Number(durableGoods) +
-          Number(consumableGoods)
-      );
+      setDataCosts(costs);
       setDataCostsList([
         applicationsSupplies,
         services,
@@ -106,104 +126,108 @@ function AdminReceita() {
                   onDateEndSelect={handleChangeDateEnd}
                   style={{ marginBottom: 10 }}
                 />
-                {dateStart &&
-                  dateEnd &&
-                  dataProfits !== null &&
-                  dataCosts !== null &&
-                  !isEmpty(dataCostsList) && (
-                    <>
-                      {(!isEmpty(dataChart) && (
-                        <>
-                          {String(dataProfits) === '0' &&
-                          String(dataCosts) === '0' ? (
-                            <Alert type="error">
-                              Não há dados para o período selecionado.
-                            </Alert>
-                          ) : (
-                            <div style={{ textAlign: 'center' }}>
-                              <Chart
-                                type="pie"
-                                title={`Período: ${dateConversor(
-                                  dateStart,
-                                  false
-                                )} - ${dateConversor(dateEnd, false)}`}
-                                labelPrefix="R$ "
-                                dataLabels={['Receita', 'Despesas']}
-                                dataColors={['#3195BC', '#D5412D']}
-                                dataValues={[dataProfits, dataCosts]}
-                                dataLabelsActive
-                              />
-                              <Chart
-                                type="bar"
-                                title="Despesas detalhadas"
-                                labelPrefix="R$ "
-                                dataLabels={[
-                                  'Aplicação de Insumos',
-                                  'Serviços',
-                                  'Bens Duráveis',
-                                  'Bens Consumíveis',
-                                  'Outros'
-                                ]}
-                                dataColors="#D5412D"
-                                dataValues={[...dataCostsList]}
-                                legendActive={false}
-                              />
-                              <Table noClick>
-                                <thead>
-                                  <tr>
-                                    <th>Ação</th>
-                                    <th>Despesa</th>
-                                  </tr>
-                                </thead>
-                                <tbody>
-                                  <tr>
-                                    <td style={{ textAlign: 'left' }}>
-                                      Aplicação de Insumos
-                                    </td>
-                                    <td>
-                                      {maskString(dataCostsList[0], 'money')}
-                                    </td>
-                                  </tr>
-                                  <tr>
-                                    <td style={{ textAlign: 'left' }}>
-                                      Serviços
-                                    </td>
-                                    <td>
-                                      {maskString(dataCostsList[1], 'money')}
-                                    </td>
-                                  </tr>
-                                  <tr>
-                                    <td style={{ textAlign: 'left' }}>
-                                      Bens Duráveis
-                                    </td>
-                                    <td>
-                                      {maskString(dataCostsList[2], 'money')}
-                                    </td>
-                                  </tr>
-                                  <tr>
-                                    <td style={{ textAlign: 'left' }}>
-                                      Bens Consumíveis
-                                    </td>
-                                    <td>
-                                      {maskString(dataCostsList[3], 'money')}
-                                    </td>
-                                  </tr>
-                                  <tr>
-                                    <td style={{ textAlign: 'left' }}>
-                                      Outros
-                                    </td>
-                                    <td>
-                                      {maskString(dataCostsList[4], 'money')}
-                                    </td>
-                                  </tr>
-                                </tbody>
-                              </Table>
-                            </div>
-                          )}
-                        </>
-                      )) || <Loader />}
-                    </>
-                  )}
+                {dateStart && dateEnd && (
+                  <>
+                    {dataProfits !== null &&
+                    dataCosts !== null &&
+                    !isEmpty(dataCostsList) ? (
+                      <>
+                        {(!isEmpty(dataChart) && (
+                          <>
+                            {String(dataProfits) === '0' &&
+                            String(dataCosts) === '0' ? (
+                              <Alert type="error">
+                                Não há dados para o período selecionado.
+                              </Alert>
+                            ) : (
+                              <div style={{ textAlign: 'center' }}>
+                                <Chart
+                                  type="pie"
+                                  title={`Período: ${dateConversor(
+                                    dateStart,
+                                    false
+                                  )} - ${dateConversor(dateEnd, false)}`}
+                                  labelPrefix="R$ "
+                                  dataLabels={['Receita', 'Despesas']}
+                                  dataColors={['#3195BC', '#D5412D']}
+                                  dataValues={[dataProfits, dataCosts]}
+                                  dataLabelsActive
+                                />
+                                <Chart
+                                  type="bar"
+                                  title="Despesas detalhadas"
+                                  labelPrefix="R$ "
+                                  dataLabels={[
+                                    'Aplicação de Insumos',
+                                    'Serviços',
+                                    'Bens Duráveis',
+                                    'Bens Consumíveis',
+                                    'Outros'
+                                  ]}
+                                  dataColors="#D5412D"
+                                  dataValues={[...dataCostsList]}
+                                  legendActive={false}
+                                />
+                                <Table noClick>
+                                  <thead>
+                                    <tr>
+                                      <th>Ação</th>
+                                      <th>Despesa</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    <tr>
+                                      <td style={{ textAlign: 'left' }}>
+                                        Aplicação de Insumos
+                                      </td>
+                                      <td>
+                                        {maskString(dataCostsList[0], 'money')}
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td style={{ textAlign: 'left' }}>
+                                        Serviços
+                                      </td>
+                                      <td>
+                                        {maskString(dataCostsList[1], 'money')}
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td style={{ textAlign: 'left' }}>
+                                        Bens Duráveis
+                                      </td>
+                                      <td>
+                                        {maskString(dataCostsList[2], 'money')}
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td style={{ textAlign: 'left' }}>
+                                        Bens Consumíveis
+                                      </td>
+                                      <td>
+                                        {maskString(dataCostsList[3], 'money')}
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td style={{ textAlign: 'left' }}>
+                                        Outros
+                                      </td>
+                                      <td>
+                                        {maskString(dataCostsList[4], 'money')}
+                                      </td>
+                                    </tr>
+                                  </tbody>
+                                </Table>
+                              </div>
+                            )}
+                          </>
+                        )) || <Loader />}
+                      </>
+                    ) : (
+                      <Loader />
+                    )}
+                  </>
+                )}
               </CardContainer>
             </div>
           </SectionBody>
