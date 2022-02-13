@@ -195,7 +195,7 @@ function AcoesTalhaoCadastrar() {
   return (
     <>
       <Head>
-        <title>Cadastrar Ação do Talhão {data && data?.name} - Agro7</title>
+        <title>Cadastrar Ação do Talhão {data && data?.name} - Agro9</title>
       </Head>
 
       <Navbar />

@@ -91,7 +91,7 @@ function AdminCategories() {
   return (
     <>
       <Head>
-        <title>Painel Administrativo | Gerenciar Categorias - Agro7</title>
+        <title>Painel Administrativo | Gerenciar Categorias - Agro9</title>
       </Head>
 
       <Navbar />

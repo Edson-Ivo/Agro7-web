@@ -64,7 +64,7 @@ function CulturasInfo() {
   return (
     <>
       <Head>
-        <title>Cultura - Agro7</title>
+        <title>Cultura - Agro9</title>
       </Head>
 
       <Navbar />

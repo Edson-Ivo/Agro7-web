@@ -93,7 +93,7 @@ function RequestsTechnichian() {
   return (
     <>
       <Head>
-        <title>Solicitação Técnica - Agro7</title>
+        <title>Solicitação Técnica - Agro9</title>
       </Head>
 
       <Navbar />

@@ -222,7 +222,7 @@ function RelatoriosCreate() {
   return (
     <>
       <Head>
-        <title>Cadastrar Relatório - Agro7</title>
+        <title>Cadastrar Relatório - Agro9</title>
       </Head>
 
       <Navbar />

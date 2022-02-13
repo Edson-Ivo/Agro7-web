@@ -163,7 +163,7 @@ function ConfiguracoesEdit() {
   return (
     <>
       <Head>
-        <title>Editar meus dados - Agro7</title>
+        <title>Editar meus dados - Agro9</title>
       </Head>
 
       <Navbar />

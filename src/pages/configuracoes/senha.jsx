@@ -82,7 +82,7 @@ function ConfiguracoesSenha() {
   return (
     <>
       <Head>
-        <title>Alterar Senha - Agro7</title>
+        <title>Alterar Senha - Agro9</title>
       </Head>
 
       <Navbar />

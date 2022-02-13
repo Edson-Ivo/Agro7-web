@@ -227,7 +227,7 @@ function RelatoriosEdit() {
   return (
     <>
       <Head>
-        <title>Editar Imagens do Relatório Técnico - Agro7</title>
+        <title>Editar Imagens do Relatório Técnico - Agro9</title>
       </Head>
 
       <Navbar />

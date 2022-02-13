@@ -15,6 +15,10 @@ const adminUserPropertyRoute = {
     name: 'Editar Documento'
   },
 
+  '/admin/users/[userId]/propriedades/[id]/documentos/[docId]/detalhes': {
+    name: 'Detalhes'
+  },
+
   '/admin/users/[userId]/propriedades/[id]/documentos/cadastrar': {
     name: 'Cadastrar Documento'
   },
@@ -141,6 +145,10 @@ const adminUserTechPropertyRoute = {
     name: 'Editar Documento'
   },
 
+  '/admin/users/[userId]/tecnico/propriedades/[id]/documentos/[docId]/detalhes': {
+    name: 'Detalhes'
+  },
+
   '/admin/users/[userId]/tecnico/propriedades/[id]/documentos/cadastrar': {
     name: 'Cadastrar Documento'
   },
@@ -249,6 +257,9 @@ const adminPropertyRoute = {
   '/admin/propriedades/[id]/documentos/[docId]/editar': {
     name: 'Editar Documento'
   },
+  '/admin/propriedades/[id]/documentos/[docId]/detalhes': {
+    name: 'Detalhes'
+  },
   '/admin/propriedades/[id]/documentos/cadastrar': {
     name: 'Cadastrar Documento'
   },
@@ -337,6 +348,9 @@ const technicianPropertyRoute = {
   },
   '/tecnico/propriedades/[id]/documentos/[docId]/editar': {
     name: 'Editar Documento'
+  },
+  '/tecnico/propriedades/[id]/documentos/[docId]/detalhes': {
+    name: 'Detalhes'
   },
   '/tecnico/propriedades/[id]/documentos/cadastrar': {
     name: 'Cadastrar Documento'
@@ -635,6 +649,9 @@ const actionsRoutes = {
   '/propriedades/[id]/talhoes/[fieldId]/acoes/[typeAction]/[actionId]/documentos/[docId]/editar': {
     name: 'Editar Documento'
   },
+  '/propriedades/[id]/talhoes/[fieldId]/acoes/[typeAction]/[actionId]/documentos/[docId]/detalhes': {
+    name: 'Detalhes'
+  },
   '/admin/users/[userId]/propriedades/[id]/acoes': {
     name: 'Ações'
   },
@@ -683,6 +700,9 @@ const actionsRoutes = {
   },
   '/propriedades/[id]/acoes/[typeAction]/[actionId]/documentos/[docId]/editar': {
     name: 'Editar Documento'
+  },
+  '/propriedades/[id]/acoes/[typeAction]/[actionId]/documentos/[docId]/detalhes': {
+    name: 'Detalhes'
   },
   '/admin/users/[userId]/propriedades/[id]/talhoes/[fieldId]/relatorio': {
     name: 'Relatório'
@@ -752,6 +772,7 @@ const namedRoutes = {
     path: '/propriedades/[id]/detalhes'
   },
   '/propriedades/[id]/documentos/[docId]/editar': { name: 'Editar Documento' },
+  '/propriedades/[id]/documentos/[docId]/detalhes': { name: 'Detalhes' },
   '/propriedades/[id]/documentos/cadastrar': { name: 'Cadastrar Documento' },
   '/propriedades/[id]/editar': { name: 'Editar' },
   '/propriedades/[id]/talhoes': { name: 'Talhões' },
@@ -788,6 +809,10 @@ const namedRoutes = {
 
   '/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]/acoes/[typeAction]/[actionId]/documentos/[docId]/editar': {
     name: 'Editar Documento'
+  },
+
+  '/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]/acoes/[typeAction]/[actionId]/documentos/[docId]/detalhes': {
+    name: 'Detalhes'
   },
 
   '/propriedades/[id]/talhoes/[fieldId]/culturas/[cultureId]/colheitas': {

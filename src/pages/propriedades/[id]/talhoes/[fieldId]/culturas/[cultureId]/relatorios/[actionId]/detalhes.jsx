@@ -200,7 +200,7 @@ function RelatoriosDetails() {
   return (
     <>
       <Head>
-        <title>Relatório Técnico - Agro7</title>
+        <title>Relatório Técnico - Agro9</title>
       </Head>
 
       <Navbar />

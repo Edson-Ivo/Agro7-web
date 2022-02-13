@@ -44,7 +44,7 @@ export default function Error({ error }) {
     const catchedError =
       typeof error === 'object' ? error?.response?.data?.statusCode : error;
 
-    if (catchedError === 401) AuthService.logout(true);
+    if (Number(catchedError) === 401) AuthService.logout(true);
 
     setDataError(
       errorExists(catchedError) ? dataErrors[catchedError] : dataErrors.default
@@ -54,7 +54,7 @@ export default function Error({ error }) {
   return (
     <>
       <Head>
-        <title>{dataError?.title} - Agro7</title>
+        <title>{dataError?.title} - Agro9</title>
       </Head>
       <Container>
         <CenterContainer>
@@ -65,7 +65,7 @@ export default function Error({ error }) {
                 width="210"
                 height="90"
                 loading="eager"
-                alt="Logotipo Agro7"
+                alt="Logotipo Agro9"
                 priority
               />
             </div>

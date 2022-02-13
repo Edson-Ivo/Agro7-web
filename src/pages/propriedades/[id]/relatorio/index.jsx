@@ -68,7 +68,7 @@ function PropriedadesRelatorio() {
   return (
     <>
       <Head>
-        <title>Relatório da Propriedade de {data && data.name} - Agro7</title>
+        <title>Relatório da Propriedade de {data && data.name} - Agro9</title>
       </Head>
 
       <Navbar />

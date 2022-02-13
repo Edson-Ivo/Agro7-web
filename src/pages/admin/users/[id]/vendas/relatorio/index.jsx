@@ -69,7 +69,7 @@ function AdminUsersVendasRelatorio() {
       <Head>
         <title>
           Painel Administrativo | Gerenciar Relatório de Vendas de Usuário -
-          Agro7
+          Agro9
         </title>
       </Head>
 

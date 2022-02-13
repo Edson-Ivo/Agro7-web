@@ -62,7 +62,7 @@ function AdminProductsDetails() {
     <>
       <Head>
         <title>
-          Painel Administrativo | Produto {data && data.name} - Agro7
+          Painel Administrativo | Produto {data && data.name} - Agro9
         </title>
       </Head>
 

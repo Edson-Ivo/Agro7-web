@@ -66,7 +66,7 @@ function EstoqueColheitasDetalhes() {
   return (
     <>
       <Head>
-        <title>Estoque da Colheita - Agro7</title>
+        <title>Estoque da Colheita - Agro9</title>
       </Head>
 
       <Navbar />

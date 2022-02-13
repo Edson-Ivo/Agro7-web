@@ -222,7 +222,7 @@ function AdminUsers() {
   return (
     <>
       <Head>
-        <title>Painel Administrativo | Cadastrar Usuário - Agro7</title>
+        <title>Painel Administrativo | Cadastrar Usuário - Agro9</title>
       </Head>
 
       <Navbar />

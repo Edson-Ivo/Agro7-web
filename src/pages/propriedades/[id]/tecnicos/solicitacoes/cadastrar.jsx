@@ -120,7 +120,7 @@ function TecnicosCadastrar() {
   return (
     <>
       <Head>
-        <title>Solicitar Técnico - Agro7</title>
+        <title>Solicitar Técnico - Agro9</title>
       </Head>
 
       <Navbar />

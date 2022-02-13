@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Head from 'next/head';
-import * as yup from 'yup';
 import { Form } from '@unform/web';
 
 import Container from '@/components/Container';
@@ -13,7 +12,6 @@ import { Section, SectionHeader, SectionBody } from '@/components/Section';
 import { CardContainer } from '@/components/CardContainer';
 
 import { privateRoute } from '@/components/PrivateRoute';
-import { Alert } from '@/components/Alert';
 
 import { useFetch } from '@/hooks/useFetch';
 import { useRouter } from 'next/router';
@@ -26,22 +24,12 @@ import CulturesActionsService, {
   actionsList
 } from '@/services/CulturesActionsService';
 import objectKeyExists from '@/helpers/objectKeyExists';
-import downloadDocument from '@/helpers/downloadDocument';
-import scrollTo from '@/helpers/scrollTo';
 import usersTypes from '@/helpers/usersTypes';
-import InputFile from '@/components/InputFile/index';
+import DocumentsViewer from '@/components/DocumentsViewer/index';
 import Loader from '@/components/Loader/index';
-
-const schema = yup.object().shape({
-  name: yup.string().required('Você precisa dar um nome para o documento')
-});
 
 function AcoesCulturasDocumentosCreate() {
   const formRef = useRef(null);
-  const alertRef = useRef(null);
-  const inputRef = useRef(null);
-  const [alert, setAlert] = useState({ type: '', message: '' });
-  const [disableButton, setDisableButton] = useState(false);
   const [baseUrl, setBaseUrl] = useState('');
 
   const router = useRouter();
@@ -76,65 +64,6 @@ function AcoesCulturasDocumentosCreate() {
         `${route.path}/${id}/talhoes/${fieldId}/culturas/${cultureId}/acoes/${typeAction}`
       );
   }, [route]);
-
-  const handleSubmit = async dt => {
-    setDisableButton(true);
-
-    schema
-      .validate(dt)
-      .then(async d => {
-        setAlert({
-          type: 'success',
-          message: 'Enviando...'
-        });
-
-        scrollTo(alertRef);
-
-        const inputDocumentFile = inputRef.current.getFiles();
-
-        if (inputDocumentFile.length > 0 && inputRef.current.error.message) {
-          setAlert({ type: 'error', message: inputRef.current.error.message });
-        } else {
-          const formData = new FormData();
-
-          setAlert({
-            type: 'success',
-            message: 'Enviando...'
-          });
-
-          formData.append('name', d.name);
-
-          if (inputDocumentFile.length > 0)
-            formData.append('file', inputDocumentFile[0]);
-
-          await CulturesActionsService.updateDocument(
-            docId,
-            formData,
-            typeAction
-          ).then(() => {
-            setAlert({
-              type: 'success',
-              message: 'Documento editado com sucesso!'
-            });
-
-            setTimeout(() => {
-              router.push(`${baseUrl}/${actionId}/detalhes`);
-              setDisableButton(false);
-            }, 1000);
-          });
-        }
-      })
-      .catch(err => {
-        setAlert({ type: 'error', message: err.errors[0] });
-        setDisableButton(false);
-
-        if (err instanceof yup.ValidationError) {
-          const { path, message } = err;
-
-          formRef.current.setFieldError(path, message);
-        }
-      });
-  };
 
   if (error || errorCultures || errorActions || errorDocs)
     return (
@@ -191,59 +120,40 @@ function AcoesCulturasDocumentosCreate() {
             <div className="SectionBody__content">
               <CardContainer>
                 {(dataDocs && (
-                  <>
-                    {alert.message !== '' && (
-                      <Alert type={alert.type} ref={alertRef}>
-                        {alert.message}
-                      </Alert>
-                    )}
-                    <Form
-                      ref={formRef}
-                      method="post"
-                      onSubmit={handleSubmit}
-                      initialData={{ ...dataDocs }}
-                    >
-                      <Input
-                        type="text"
-                        name="name"
-                        label="Nome do documento"
-                        required
-                      />
+                  <Form ref={formRef} initialData={{ ...dataDocs }}>
+                    <Input
+                      type="text"
+                      name="name"
+                      label="Nome do documento"
+                      disabled
+                    />
 
-                      <Button
-                        type="button"
-                        onClick={() => downloadDocument(dataDocs?.url)}
-                        style={{ marginBottom: 20 }}
-                      >
-                        Clique aqui para ver o documento atual
-                      </Button>
+                    <DocumentsViewer
+                      src={dataDocs?.url}
+                      name={dataDocs?.name}
+                    />
 
-                      <InputFile
-                        ref={inputRef}
-                        name="file"
-                        label="Selecione um arquivo para substituir o atual"
-                        min={0}
-                        max={1}
-                      />
-
-                      <div className="form-group buttons">
-                        <div>
-                          <Button type="button" onClick={() => router.back()}>
-                            Cancelar
-                          </Button>
-                        </div>
-                        <div>
-                          <Button
-                            disabled={disableButton}
-                            className="primary"
-                            type="submit"
-                          >
-                            Salvar Edição
-                          </Button>
-                        </div>
+                    <div className="form-group buttons">
+                      <div>
+                        <Button type="button" onClick={() => router.back()}>
+                          Voltar
+                        </Button>
                       </div>
-                    </Form>
-                  </>
+                      <div>
+                        <Button
+                          className="primary"
+                          type="button"
+                          onClick={() => {
+                            router.push(
+                              `${baseUrl}/${actionId}/documentos/${docId}/editar`
+                            );
+                          }}
+                        >
+                          Editar
+                        </Button>
+                      </div>
+                    </div>
+                  </Form>
                 )) || <Loader />}
               </CardContainer>
             </div>

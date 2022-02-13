@@ -183,7 +183,7 @@ function Properties() {
   return (
     <>
       <Head>
-        <title>Cadastrar propriedade - Agro7</title>
+        <title>Cadastrar propriedade - Agro9</title>
       </Head>
 
       <Navbar />

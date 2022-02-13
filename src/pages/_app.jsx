@@ -17,7 +17,7 @@ import { ModalProvider } from '../hooks/useModal';
 if (typeof window !== 'undefined') window.ResizeObserver ??= ResizeObserver;
 config.autoAddCss = false;
 
-const Agro7App = ({ Component, pageProps }) => (
+const Agro9App = ({ Component, pageProps }) => (
   <>
     <Head>
       <meta charSet="utf-8" />
@@ -25,7 +25,7 @@ const Agro7App = ({ Component, pageProps }) => (
         name="viewport"
         content="minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no"
       />
-      <title>Agro7</title>
+      <title>Agro9</title>
     </Head>
     <ReduxProvider store={store}>
       <ThemeProvider theme={theme}>
@@ -38,4 +38,4 @@ const Agro7App = ({ Component, pageProps }) => (
   </>
 );
 
-export default Agro7App;
+export default Agro9App;

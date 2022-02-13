@@ -123,7 +123,7 @@ function AdminCategoriesEdit() {
   return (
     <>
       <Head>
-        <title>Painel Administrativo | Editar Categoria - Agro7</title>
+        <title>Painel Administrativo | Editar Categoria - Agro9</title>
       </Head>
 
       <Navbar />

@@ -60,7 +60,7 @@ function VendasEtiquetas() {
   return (
     <>
       <Head>
-        <title>Etiquetas da Venda {dataSale && dataSale?.batch} - Agro7</title>
+        <title>Etiquetas da Venda {dataSale && dataSale?.batch} - Agro9</title>
       </Head>
 
       <Navbar />

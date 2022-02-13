@@ -170,7 +170,7 @@ function AcoesCultura() {
       <Head>
         <title>
           Ações na Cultura de {dataCultures?.products.name} do Talhão{' '}
-          {data && data.name} - Agro7
+          {data && data.name} - Agro9
         </title>
       </Head>
 

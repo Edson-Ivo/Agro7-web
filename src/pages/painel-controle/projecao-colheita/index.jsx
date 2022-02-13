@@ -146,7 +146,7 @@ function ControlProjecaoColheita() {
   return (
     <>
       <Head>
-        <title>Gerenciar Projeção das Colheitas - Agro7</title>
+        <title>Gerenciar Projeção das Colheitas - Agro9</title>
       </Head>
 
       <Navbar />

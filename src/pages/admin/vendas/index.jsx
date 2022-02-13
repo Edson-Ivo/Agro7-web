@@ -94,7 +94,7 @@ function AdminVendas() {
   return (
     <>
       <Head>
-        <title>Painel Administrativo | Gerenciar Vendas - Agro7</title>
+        <title>Painel Administrativo | Gerenciar Vendas - Agro9</title>
       </Head>
 
       <Navbar />

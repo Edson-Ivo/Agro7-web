@@ -92,7 +92,7 @@ function AdminUsersVendasDistribuidoras() {
     <>
       <Head>
         <title>
-          Painel Administrativo | Gerenciar Distribuidoras de Usuário - Agro7
+          Painel Administrativo | Gerenciar Distribuidoras de Usuário - Agro9
         </title>
       </Head>
 

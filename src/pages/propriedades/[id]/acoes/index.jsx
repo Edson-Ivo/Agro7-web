@@ -131,7 +131,7 @@ function AcoesPropriedade() {
   return (
     <>
       <Head>
-        <title>Ações da Propriedade {data && data?.name} - Agro7</title>
+        <title>Ações da Propriedade {data && data?.name} - Agro9</title>
       </Head>
 
       <Navbar />

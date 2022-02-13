@@ -41,7 +41,7 @@ function ControlPanel() {
   return (
     <>
       <Head>
-        <title>Painel de Controle - Agro7</title>
+        <title>Painel de Controle - Agro9</title>
       </Head>
 
       <Navbar />

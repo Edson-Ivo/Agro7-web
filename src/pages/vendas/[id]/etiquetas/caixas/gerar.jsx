@@ -102,7 +102,7 @@ function VendasEtiquetasCaixas() {
       <Head>
         <title>
           Etiqueta para Caixas ou Sacarias da Venda{' '}
-          {dataSale && dataSale?.batch} - Agro7
+          {dataSale && dataSale?.batch} - Agro9
         </title>
       </Head>
 

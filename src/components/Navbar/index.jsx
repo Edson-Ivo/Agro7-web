@@ -66,9 +66,10 @@ const Navbar = () => {
                 <Image
                   src="/logo/logo.png"
                   width="100"
-                  height="40"
+                  height="45"
                   loading="eager"
-                  alt="Logotipo Agro7"
+                  alt="Logotipo Agro9"
+                  unoptimized={false}
                   priority
                 />
               </a>

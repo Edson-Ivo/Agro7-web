@@ -89,7 +89,7 @@ function AdminProducts() {
   return (
     <>
       <Head>
-        <title>Painel Administrativo | Gerenciar Produtos - Agro7</title>
+        <title>Painel Administrativo | Gerenciar Produtos - Agro9</title>
       </Head>
 
       <Navbar />

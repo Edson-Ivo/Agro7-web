@@ -158,7 +158,7 @@ function AcoesTalhao() {
   return (
     <>
       <Head>
-        <title>Ações do Talhão {data && data?.name} - Agro7</title>
+        <title>Ações do Talhão {data && data?.name} - Agro9</title>
       </Head>
 
       <Navbar />

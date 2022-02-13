@@ -114,7 +114,7 @@ function VendasEtiquetasProdutosNutricional() {
       <Head>
         <title>
           Etiqueta com Informações Nutricionais de Produto da Venda{' '}
-          {dataSale && dataSale?.batch} - Agro7
+          {dataSale && dataSale?.batch} - Agro9
         </title>
       </Head>
 

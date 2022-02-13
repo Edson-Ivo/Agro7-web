@@ -353,7 +353,7 @@ function AdminProductsEdit() {
   return (
     <>
       <Head>
-        <title>Painel Administrativo | Editar Produto - Agro7</title>
+        <title>Painel Administrativo | Editar Produto - Agro9</title>
       </Head>
 
       <Navbar />

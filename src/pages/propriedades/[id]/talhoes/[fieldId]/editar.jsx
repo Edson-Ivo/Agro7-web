@@ -161,7 +161,7 @@ function TalhoesEdit() {
   return (
     <>
       <Head>
-        <title>Editar Talhão - Agro7</title>
+        <title>Editar Talhão - Agro9</title>
       </Head>
 
       <Navbar />

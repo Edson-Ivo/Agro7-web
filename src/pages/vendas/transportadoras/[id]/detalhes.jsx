@@ -109,7 +109,7 @@ function VendasTransportadorasDetalhes() {
   return (
     <>
       <Head>
-        <title>Transportadora {data && data?.name} - Agro7</title>
+        <title>Transportadora {data && data?.name} - Agro9</title>
       </Head>
 
       <Navbar />
@@ -204,7 +204,7 @@ function VendasTransportadorasDetalhes() {
                           <>
                             <Table>
                               <thead>
-                                <tr onClick={() => router.push('/')}>
+                                <tr>
                                   <th>Nome do Documento</th>
                                   <th>Ações</th>
                                 </tr>
@@ -277,7 +277,7 @@ function VendasTransportadorasDetalhes() {
                           <>
                             <Table>
                               <thead>
-                                <tr onClick={() => router.push('/')}>
+                                <tr>
                                   <th>Nome do Veículo</th>
                                   <th>Placa</th>
                                   <th>Descrição</th>

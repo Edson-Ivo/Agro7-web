@@ -94,7 +94,7 @@ function ConfiguracoesPerfil() {
   return (
     <>
       <Head>
-        <title>Perfil público - Agro7</title>
+        <title>Perfil público - Agro9</title>
       </Head>
 
       <Navbar />

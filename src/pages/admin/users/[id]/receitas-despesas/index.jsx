@@ -108,7 +108,7 @@ function UserReceita() {
     <>
       <Head>
         <title>
-          Painel Administrativo | Gerenciar Receitas e Despesas - Agro7
+          Painel Administrativo | Gerenciar Receitas e Despesas - Agro9
         </title>
       </Head>
 

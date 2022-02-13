@@ -34,7 +34,6 @@ import Table from '@/components/Table/index';
 import { Alert } from '@/components/Alert/index';
 import maskString from '@/helpers/maskString';
 import usersTypes from '@/helpers/usersTypes';
-import downloadDocument from '@/helpers/downloadDocument';
 import InputSearch from '@/components/InputSearch/index';
 
 function AcoesPropriedadeDetalhes() {
@@ -129,7 +128,7 @@ function AcoesPropriedadeDetalhes() {
     <>
       <Head>
         <title>
-          Detalhes da Ação da Propriedade {data && data?.name} - Agro7
+          Detalhes da Ação da Propriedade {data && data?.name} - Agro9
         </title>
       </Head>
 
@@ -230,7 +229,7 @@ function AcoesPropriedadeDetalhes() {
                                 <>
                                   <Table>
                                     <thead>
-                                      <tr onClick={() => router.push('/')}>
+                                      <tr>
                                         <th>Nome do Documento</th>
                                         <th>Ações</th>
                                       </tr>
@@ -241,7 +240,9 @@ function AcoesPropriedadeDetalhes() {
                                           <tr
                                             key={d.id}
                                             onClick={() =>
-                                              downloadDocument(d.url)
+                                              router.push(
+                                                `${baseUrl}/${typeAction}/${actionId}/documentos/${d.id}/detalhes`
+                                              )
                                             }
                                           >
                                             <td>{d.name}</td>
@@ -250,12 +251,10 @@ function AcoesPropriedadeDetalhes() {
                                             >
                                               <ActionButton
                                                 id={d.id}
-                                                download={d.url}
                                                 path={`${baseUrl}/${typeAction}/${actionId}/documentos`}
                                                 onDelete={() =>
                                                   handleDeleteModal(d.id)
                                                 }
-                                                noInfo
                                               />
                                             </td>
                                           </tr>

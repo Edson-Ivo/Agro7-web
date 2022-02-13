@@ -392,7 +392,7 @@ function VendasCreate() {
   return (
     <>
       <Head>
-        <title>Cadastrar Venda - Agro7</title>
+        <title>Cadastrar Venda - Agro9</title>
       </Head>
 
       <Navbar />

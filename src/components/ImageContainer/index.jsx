@@ -24,7 +24,13 @@ const ImageContainer = ({
             </a>
           </Link>
         ) : (
-          <Image src={image} alt={alt} layout="fill" objectFit="contain" />
+          <Image
+            src={image}
+            alt={alt}
+            layout="fill"
+            objectFit="contain"
+            unoptimized={false}
+          />
         )}
       </ImageContent>
     </>

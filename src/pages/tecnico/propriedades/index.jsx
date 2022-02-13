@@ -89,7 +89,7 @@ function PropertiesTechnichian() {
   return (
     <>
       <Head>
-        <title>Propriedades Relacionadas - Agro7</title>
+        <title>Propriedades Relacionadas - Agro9</title>
       </Head>
 
       <Navbar />

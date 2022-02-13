@@ -3,9 +3,9 @@
   "background_color": "#fcfdfd",
   "display": "standalone",
   "start_url": "/",
-  "name": "Agro7",
-  "short_name": "Agro7",
-  "description": "Aplicação do sistema de gerenciamento da Agro7",
+  "name": "Agro9",
+  "short_name": "Agro9",
+  "description": "Aplicação do sistema de gerenciamento da Agro9",
   "icons": [
     {
       "src": "/assets/icons/icon-192x192.png",

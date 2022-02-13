@@ -191,7 +191,7 @@ function AdminConfiguracoesPerfilEdit() {
   return (
     <>
       <Head>
-        <title>Editar perfil público - Agro7</title>
+        <title>Editar perfil público - Agro9</title>
       </Head>
 
       <Navbar />

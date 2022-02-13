@@ -23,7 +23,7 @@ export const privateRoute = type => WrappedComponent => {
     let hasPermission = false;
 
     if (!token || !userData) {
-      AuthService.logout();
+      AuthService.logout(true, ctx.asPath);
 
       redirect('/login', ctx.res);
 

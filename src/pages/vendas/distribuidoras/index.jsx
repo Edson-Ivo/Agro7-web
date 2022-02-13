@@ -87,7 +87,7 @@ function VendasDistribuidoras() {
   return (
     <>
       <Head>
-        <title>Suas Distribuidoras - Agro7</title>
+        <title>Suas Distribuidoras - Agro9</title>
       </Head>
 
       <Navbar />

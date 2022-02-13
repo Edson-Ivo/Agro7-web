@@ -57,7 +57,7 @@ function VendasDetalhes() {
   return (
     <>
       <Head>
-        <title>Detalhes da Venda {data && data?.batch} - Agro7</title>
+        <title>Detalhes da Venda {data && data?.batch} - Agro9</title>
       </Head>
 
       <Navbar />

@@ -168,7 +168,7 @@ function TalhoesCadastrar() {
   return (
     <>
       <Head>
-        <title>Cadastrar Talhão - Agro7</title>
+        <title>Cadastrar Talhão - Agro9</title>
       </Head>
 
       <Navbar />

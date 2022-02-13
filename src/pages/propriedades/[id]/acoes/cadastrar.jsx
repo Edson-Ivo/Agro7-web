@@ -175,7 +175,7 @@ function AcoesPropriedadeCadastrar() {
     <>
       <Head>
         <title>
-          Cadastrar Ação da Propriedade {data && data?.name} - Agro7
+          Cadastrar Ação da Propriedade {data && data?.name} - Agro9
         </title>
       </Head>
 

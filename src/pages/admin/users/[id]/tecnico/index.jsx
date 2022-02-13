@@ -52,7 +52,7 @@ function TechnichianHome() {
   return (
     <>
       <Head>
-        <title>Painel Administrativo | Painel Técnico - Agro7</title>
+        <title>Painel Administrativo | Painel Técnico - Agro9</title>
       </Head>
 
       <Navbar />
