@@ -2,10 +2,11 @@ import { lookup } from 'mime-types';
 
 import { api } from '../services/api';
 
-const getFileName = filePath => filePath.split('\\').pop().split('/').pop();
+export const getFileName = filePath =>
+  filePath.split('\\').pop().split('/').pop();
 
 const downloadDocument = async url => {
-  api.get(url, { responseType: 'blob' }).then(response => {
+  await api.get(url, { responseType: 'blob' }).then(response => {
     const mimeType = lookup(url);
     const fileName = getFileName(url);
 
@@ -13,6 +14,21 @@ const downloadDocument = async url => {
 
     saveFile(blob, fileName);
   });
+};
+
+export const showDocument = async url => {
+  const urlCreator = window.URL || window.webkitURL;
+
+  const imageUrl = await api
+    .get(url, { responseType: 'blob' })
+    .then(response => {
+      const mimeType = lookup(url);
+      const blob = new Blob([response.data], { type: mimeType });
+
+      return urlCreator.createObjectURL(blob);
+    });
+
+  return imageUrl;
 };
 
 const saveFile = (blob, filename) => {

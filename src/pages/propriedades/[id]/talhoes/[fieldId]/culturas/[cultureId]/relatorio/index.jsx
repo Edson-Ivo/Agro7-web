@@ -78,7 +78,7 @@ function CulturasRelatorio() {
       <Head>
         <title>
           Relatório da Cultura de {dataCultures?.products.name} do Talhão{' '}
-          {data && data.name} - Agro7
+          {data && data.name} - Agro9
         </title>
       </Head>
 

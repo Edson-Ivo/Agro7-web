@@ -117,7 +117,7 @@ function Culturas() {
   return (
     <>
       <Head>
-        <title>Culturas do Talhão {data && data.name} - Agro7</title>
+        <title>Culturas do Talhão {data && data.name} - Agro9</title>
       </Head>
 
       <Navbar />

@@ -61,7 +61,7 @@ function TalhoesInfo() {
   return (
     <>
       <Head>
-        <title>Talhão {dataFields && dataFields?.name} - Agro7</title>
+        <title>Talhão {dataFields && dataFields?.name} - Agro9</title>
       </Head>
 
       <Navbar />

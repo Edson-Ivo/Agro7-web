@@ -137,7 +137,7 @@ function Relatorios() {
       <Head>
         <title>
           Relatório Técnico da Cultura de {dataCultures?.products.name} do
-          Talhão {data && data.name} - Agro7
+          Talhão {data && data.name} - Agro9
         </title>
       </Head>
 

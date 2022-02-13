@@ -114,7 +114,7 @@ function AdminCategoriesCreate() {
   return (
     <>
       <Head>
-        <title>Painel Administrativo | Cadastrar Categoria - Agro7</title>
+        <title>Painel Administrativo | Cadastrar Categoria - Agro9</title>
       </Head>
 
       <Navbar />

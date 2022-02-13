@@ -108,7 +108,7 @@ function EsqueceuSenha() {
   return (
     <>
       <Head>
-        <title>Esqueceu sua senha? - Agro7</title>
+        <title>Esqueceu sua senha? - Agro9</title>
       </Head>
 
       <Container>
@@ -119,7 +119,7 @@ function EsqueceuSenha() {
                 src="/logo/logo.png"
                 width="210"
                 height="90"
-                alt="Logotipo Agro7"
+                alt="Logotipo Agro9"
               />
             </div>
             <Form

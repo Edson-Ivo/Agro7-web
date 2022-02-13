@@ -16,7 +16,7 @@ export default function LogoLoader() {
                 width="210"
                 height="90"
                 loading="eager"
-                alt="Logotipo Agro7"
+                alt="Logotipo Agro9"
                 priority
               />
             </div>

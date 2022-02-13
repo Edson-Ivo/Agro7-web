@@ -112,7 +112,7 @@ function Login() {
   return (
     <>
       <Head>
-        <title>Acessar o sistema - Agro7</title>
+        <title>Acessar o sistema - Agro9</title>
       </Head>
 
       <Container>
@@ -123,7 +123,7 @@ function Login() {
                 src="/logo/logo.png"
                 width="210"
                 height="90"
-                alt="Logotipo Agro7"
+                alt="Logotipo Agro9"
               />
             </div>
             {alertMsg && <Alert type={alertType}>{alertMsg}</Alert>}

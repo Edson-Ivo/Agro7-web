@@ -71,7 +71,7 @@ function TalhoesRelatorio() {
       <Head>
         <title>
           Relatório do Talhão {data && data.name} da Propriedade $
-          {data && data?.properties?.name} - Agro7
+          {data && data?.properties?.name} - Agro9
         </title>
       </Head>
 

@@ -58,7 +58,7 @@ function VendasRelatorio() {
   return (
     <>
       <Head>
-        <title>Relatório de Vendas - Agro7</title>
+        <title>Relatório de Vendas - Agro9</title>
       </Head>
 
       <Navbar />

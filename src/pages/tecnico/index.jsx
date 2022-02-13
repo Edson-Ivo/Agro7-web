@@ -41,7 +41,7 @@ function TechnichianHome() {
   return (
     <>
       <Head>
-        <title>Painel Técnico - Agro7</title>
+        <title>Painel Técnico - Agro9</title>
       </Head>
 
       <Navbar />

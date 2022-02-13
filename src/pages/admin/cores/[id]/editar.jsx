@@ -94,7 +94,7 @@ function AdminCoresEdit() {
   return (
     <>
       <Head>
-        <title>Painel Administrativo | Editar Cor - Agro7</title>
+        <title>Painel Administrativo | Editar Cor - Agro9</title>
       </Head>
 
       <Navbar />

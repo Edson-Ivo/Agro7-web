@@ -30,6 +30,7 @@ import downloadDocument from '@/helpers/downloadDocument';
 import scrollTo from '@/helpers/scrollTo';
 import usersTypes from '@/helpers/usersTypes';
 import InputFile from '@/components/InputFile/index';
+import Loader from '@/components/Loader/index';
 
 const schema = yup.object().shape({
   name: yup.string().required('Você precisa dar um nome para o documento')
@@ -144,7 +145,7 @@ function AcoesTalhaoDocumentosCreate() {
       <Head>
         <title>
           Editar Documento da Ação de {actionsList[typeAction]?.label} no Talhão{' '}
-          {data && data?.name} - Agro7
+          {data && data?.name} - Agro9
         </title>
       </Head>
 
@@ -173,57 +174,61 @@ function AcoesTalhaoDocumentosCreate() {
           <SectionBody>
             <div className="SectionBody__content">
               <CardContainer>
-                {alert.message !== '' && (
-                  <Alert type={alert.type} ref={alertRef}>
-                    {alert.message}
-                  </Alert>
-                )}
-                <Form
-                  ref={formRef}
-                  method="post"
-                  onSubmit={handleSubmit}
-                  initialData={{ ...dataDocs }}
-                >
-                  <Input
-                    type="text"
-                    name="name"
-                    label="Nome do documento"
-                    required
-                  />
+                {(dataDocs && (
+                  <>
+                    {alert.message !== '' && (
+                      <Alert type={alert.type} ref={alertRef}>
+                        {alert.message}
+                      </Alert>
+                    )}
+                    <Form
+                      ref={formRef}
+                      method="post"
+                      onSubmit={handleSubmit}
+                      initialData={{ ...dataDocs }}
+                    >
+                      <Input
+                        type="text"
+                        name="name"
+                        label="Nome do documento"
+                        required
+                      />
 
-                  <Button
-                    type="button"
-                    onClick={() => downloadDocument(dataDocs?.url)}
-                    style={{ marginBottom: 20 }}
-                  >
-                    Clique aqui para ver o documento atual
-                  </Button>
-
-                  <InputFile
-                    ref={inputRef}
-                    name="file"
-                    label="Selecione um arquivo para substituir o atual"
-                    min={0}
-                    max={1}
-                  />
-
-                  <div className="form-group buttons">
-                    <div>
-                      <Button type="button" onClick={() => router.back()}>
-                        Cancelar
-                      </Button>
-                    </div>
-                    <div>
                       <Button
-                        disabled={disableButton}
-                        className="primary"
-                        type="submit"
+                        type="button"
+                        onClick={() => downloadDocument(dataDocs?.url)}
+                        style={{ marginBottom: 20 }}
                       >
-                        Salvar Edição
+                        Clique aqui para ver o documento atual
                       </Button>
-                    </div>
-                  </div>
-                </Form>
+
+                      <InputFile
+                        ref={inputRef}
+                        name="file"
+                        label="Selecione um arquivo para substituir o atual"
+                        min={0}
+                        max={1}
+                      />
+
+                      <div className="form-group buttons">
+                        <div>
+                          <Button type="button" onClick={() => router.back()}>
+                            Cancelar
+                          </Button>
+                        </div>
+                        <div>
+                          <Button
+                            disabled={disableButton}
+                            className="primary"
+                            type="submit"
+                          >
+                            Salvar Edição
+                          </Button>
+                        </div>
+                      </div>
+                    </Form>
+                  </>
+                )) || <Loader />}
               </CardContainer>
             </div>
           </SectionBody>

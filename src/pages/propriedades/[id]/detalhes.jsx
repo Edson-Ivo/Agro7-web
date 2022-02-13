@@ -110,7 +110,7 @@ function PropertyInfo() {
   return (
     <>
       <Head>
-        <title>Propriedade - Agro7</title>
+        <title>Propriedade - Agro9</title>
       </Head>
 
       <Navbar />
@@ -339,7 +339,7 @@ function PropertyInfo() {
                           <>
                             <Table>
                               <thead>
-                                <tr onClick={() => router.push('/')}>
+                                <tr>
                                   <th>Nome do Documento</th>
                                   <th>Ações</th>
                                 </tr>

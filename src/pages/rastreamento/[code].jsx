@@ -49,7 +49,7 @@ export default function Rastreamento({ sale }) {
     return (
       <>
         <Head>
-          <title>Rastreamento - Agro7</title>
+          <title>Rastreamento - Agro9</title>
         </Head>
 
         <div
@@ -79,7 +79,7 @@ export default function Rastreamento({ sale }) {
   return (
     <>
       <Head>
-        <title>Rastreamento - Agro7</title>
+        <title>Rastreamento - Agro9</title>
         <meta name="robots" content="noindex" />
       </Head>
 
@@ -91,9 +91,9 @@ export default function Rastreamento({ sale }) {
                 <a>
                   <Image
                     src="/assets/images/logo-rastreio.png"
-                    alt="Agro7 Tecnologia, Gestão e Rastreabilidade, clique aqui e conheça nosso Projeto."
+                    alt="Agro9 Tecnologia, Gestão e Rastreabilidade, clique aqui e conheça nosso Projeto."
                     width={336}
-                    height={71}
+                    height={68}
                   />
                 </a>
               </Link>

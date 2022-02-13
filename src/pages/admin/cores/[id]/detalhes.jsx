@@ -34,7 +34,7 @@ function AdminCoresDetails() {
     <>
       <Head>
         <title>
-          Painel Administrativo | Cor {dataColor && dataColor.name} - Agro7
+          Painel Administrativo | Cor {dataColor && dataColor.name} - Agro9
         </title>
       </Head>
 

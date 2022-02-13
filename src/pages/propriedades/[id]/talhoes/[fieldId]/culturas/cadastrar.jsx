@@ -180,7 +180,7 @@ function CulturasCreate() {
   return (
     <>
       <Head>
-        <title>Cadastrar Cultura - Agro7</title>
+        <title>Cadastrar Cultura - Agro9</title>
       </Head>
 
       <Navbar />

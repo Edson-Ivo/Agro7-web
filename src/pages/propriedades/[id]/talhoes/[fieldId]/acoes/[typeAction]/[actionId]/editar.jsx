@@ -170,7 +170,7 @@ function AcoesTalhaoEditar() {
   return (
     <>
       <Head>
-        <title>Editar Ação no Talhão {data && data?.name} - Agro7</title>
+        <title>Editar Ação no Talhão {data && data?.name} - Agro9</title>
       </Head>
 
       <Navbar />

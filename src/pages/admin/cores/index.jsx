@@ -91,7 +91,7 @@ function AdminColors() {
     <>
       <Head>
         <title>
-          Painel Administrativo | Gerenciar Cores de Categoria - Agro7
+          Painel Administrativo | Gerenciar Cores de Categoria - Agro9
         </title>
       </Head>
 

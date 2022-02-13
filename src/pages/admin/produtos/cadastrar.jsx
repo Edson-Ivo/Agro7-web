@@ -194,7 +194,7 @@ function AdminProductsCreate() {
   return (
     <>
       <Head>
-        <title>Painel Administrativo | Cadastrar Produto - Agro7</title>
+        <title>Painel Administrativo | Cadastrar Produto - Agro9</title>
       </Head>
 
       <Navbar />

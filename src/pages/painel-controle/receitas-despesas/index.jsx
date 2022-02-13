@@ -98,7 +98,7 @@ function ControlReceita() {
   return (
     <>
       <Head>
-        <title>Gerenciar Receitas e Despesas - Agro7</title>
+        <title>Gerenciar Receitas e Despesas - Agro9</title>
       </Head>
 
       <Navbar />

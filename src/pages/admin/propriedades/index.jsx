@@ -85,7 +85,7 @@ function Properties() {
   return (
     <>
       <Head>
-        <title>Painel Administrativo | Gerenciar Propriedades - Agro7</title>
+        <title>Painel Administrativo | Gerenciar Propriedades - Agro9</title>
       </Head>
 
       <Navbar />

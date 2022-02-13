@@ -99,8 +99,8 @@ const NavList = styled.div`
       color: ${props => props.theme.colors.green};
     }
 
-    @media screen and (max-width: ${props =>
-        props.theme.breakpoints.mobile}px) {
+    @media screen and (max-width: ${({ theme }) =>
+        theme.breakpoints.mobile}px) {
       font-size: 1.1em;
       height: 60px;
 

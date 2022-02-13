@@ -28,6 +28,13 @@ class CultureqActionsService {
       txt += '.';
     }
 
+    if (action === 'irrigations')
+      txt = txt
+        .replace('%date_start', dateConversor(data?.date_start, false))
+        .replace('%time_start', data?.time_start)
+        .replace('%date_finish', dateConversor(data?.date_finish, false))
+        .replace('%time_finish', data?.time_finish);
+
     if (action === 'applications-supplies') {
       txt = txt
         .replace('%name', data?.supplies?.name)
@@ -94,6 +101,18 @@ class CultureqActionsService {
           .required('O campo controle de fitossanidade é obrigatório!')
       });
 
+    if (action === 'irrigations')
+      schema = yup.object().shape({
+        date_start: yup
+          .string()
+          .required('O campo data inicial é obrigatório!'),
+        date_finish: yup.string().required('O campo data final é obrigatório!'),
+        time_start: yup
+          .string()
+          .required('O campo hora inicial é obrigatório!'),
+        time_finish: yup.string().required('O campo hora final é obrigatório!')
+      });
+
     if (action === 'others')
       schema = yup.object().shape({
         name: yup.string().required('O campo nome é obrigatório!'),
@@ -114,7 +133,7 @@ class CultureqActionsService {
   static requestSingleAction(action) {
     return action === 'supplies'
       ? actionsList?.supplies?.singleValue
-      : `culture-${actionsList?.action?.singleValue}`;
+      : `culture-${actionsList?.[action]?.singleValue}`;
   }
 
   static async create(data, action, userId = null) {
@@ -231,6 +250,14 @@ export const actionsList = {
     label: 'Aplicação de Insumos',
     text:
       'Insumo %name aplicado (%dose%type_dose) em %date_start até %date_finish',
+    documents: true
+  },
+  irrigations: {
+    value: 'irrigations',
+    singleValue: 'irrigation',
+    label: 'Irrigações',
+    text:
+      'Irrigação feita em %date_start às %time_start até %date_finish às %time_finish.',
     documents: true
   },
   others: {

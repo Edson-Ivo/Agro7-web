@@ -30,7 +30,7 @@ function Configuracoes() {
   return (
     <>
       <Head>
-        <title>Meus Dados - Agro7</title>
+        <title>Meus Dados - Agro9</title>
       </Head>
 
       <Navbar />

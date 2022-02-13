@@ -118,7 +118,7 @@ function AlterarSenha() {
   return (
     <>
       <Head>
-        <title>Alterar senha - Agro7</title>
+        <title>Alterar senha - Agro9</title>
       </Head>
 
       <Container>
@@ -129,7 +129,7 @@ function AlterarSenha() {
                 src="/logo/logo.png"
                 width="210"
                 height="90"
-                alt="Logotipo Agro7"
+                alt="Logotipo Agro9"
               />
             </div>
             <Form method="post" ref={formRef} onSubmit={handleSubmit}>

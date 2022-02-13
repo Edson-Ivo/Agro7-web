@@ -97,7 +97,7 @@ function RequestsTechnichian() {
   return (
     <>
       <Head>
-        <title>Painel Administrativo | Solicitação Técnica - Agro7</title>
+        <title>Painel Administrativo | Solicitação Técnica - Agro9</title>
       </Head>
 
       <Navbar />

@@ -42,7 +42,7 @@ function AdminUsers() {
   return (
     <>
       <Head>
-        <title>Painel Administrativo | Gerenciar Usuários - Agro7</title>
+        <title>Painel Administrativo | Gerenciar Usuários - Agro9</title>
       </Head>
 
       <Navbar />

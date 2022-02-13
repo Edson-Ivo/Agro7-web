@@ -107,7 +107,7 @@ function Vendas() {
   return (
     <>
       <Head>
-        <title>Suas Vendas - Agro7</title>
+        <title>Suas Vendas - Agro9</title>
       </Head>
 
       <Navbar />

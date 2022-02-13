@@ -365,7 +365,7 @@ function VendasCreate() {
   return (
     <>
       <Head>
-        <title>Painel Administrativo | Cadastrar Venda - Agro7</title>
+        <title>Painel Administrativo | Cadastrar Venda - Agro9</title>
       </Head>
 
       <Navbar />

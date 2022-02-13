@@ -36,7 +36,7 @@ function VendasTransportadorasVeiculosDetalhes() {
   return (
     <>
       <Head>
-        <title>Detalhes do Veículo {data && data?.name} - Agro7</title>
+        <title>Detalhes do Veículo {data && data?.name} - Agro9</title>
       </Head>
 
       <Navbar />

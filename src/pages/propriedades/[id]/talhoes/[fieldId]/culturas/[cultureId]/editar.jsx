@@ -151,7 +151,7 @@ function CulturasEdit() {
   return (
     <>
       <Head>
-        <title>Editar Cultura - Agro7</title>
+        <title>Editar Cultura - Agro9</title>
       </Head>
 
       <Navbar />

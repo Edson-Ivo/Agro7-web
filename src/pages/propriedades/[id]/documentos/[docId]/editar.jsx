@@ -126,7 +126,7 @@ function DocumentosEdit() {
   return (
     <>
       <Head>
-        <title>Editar Documento - Agro7</title>
+        <title>Editar Documento - Agro9</title>
       </Head>
 
       <Navbar />

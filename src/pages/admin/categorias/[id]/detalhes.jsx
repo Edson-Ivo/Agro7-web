@@ -38,7 +38,7 @@ function AdminCategoriesDetails() {
       <Head>
         <title>
           Painel Administrativo | Categoria {dataCategory && dataCategory.name}{' '}
-          - Agro7
+          - Agro9
         </title>
       </Head>
 

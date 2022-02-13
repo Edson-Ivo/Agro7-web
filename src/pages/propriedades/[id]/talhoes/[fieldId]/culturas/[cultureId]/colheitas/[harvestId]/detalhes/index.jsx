@@ -65,7 +65,7 @@ function ColheitasDetalhes() {
   return (
     <>
       <Head>
-        <title>Detalhes da Colheita - Agro7</title>
+        <title>Detalhes da Colheita - Agro9</title>
       </Head>
 
       <Navbar />

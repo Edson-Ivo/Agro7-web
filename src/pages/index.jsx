@@ -93,7 +93,7 @@ function Home() {
   return (
     <>
       <Head>
-        <title>Página Inicial - Agro7</title>
+        <title>Página Inicial - Agro9</title>
       </Head>
 
       <Navbar />

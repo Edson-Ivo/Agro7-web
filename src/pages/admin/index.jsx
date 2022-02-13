@@ -114,7 +114,7 @@ function AdminHome() {
   return (
     <>
       <Head>
-        <title>Painel Administrativo - Agro7</title>
+        <title>Painel Administrativo - Agro9</title>
       </Head>
 
       <Navbar />

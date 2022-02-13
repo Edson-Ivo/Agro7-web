@@ -3,7 +3,10 @@ import { getCookieFromBrowser } from '../helpers/cookies';
 import { AUTH_COOKIE_TOKEN } from './constants';
 
 export const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_PROD_ENDPOINT
+  baseURL:
+    process.env.NODE_ENV === 'development'
+      ? process.env.NEXT_PUBLIC_DEV_ENDPOINT
+      : process.env.NEXT_PUBLIC_PROD_ENDPOINT
 });
 
 api.interceptors.request.use(config => {

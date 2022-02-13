@@ -106,7 +106,7 @@ function Talhoes() {
   return (
     <>
       <Head>
-        <title>Talhões da Propriedade {data && data.name} - Agro7</title>
+        <title>Talhões da Propriedade {data && data.name} - Agro9</title>
       </Head>
 
       <Navbar />

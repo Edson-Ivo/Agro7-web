@@ -82,7 +82,7 @@ function AdminCoresCreate() {
   return (
     <>
       <Head>
-        <title>Painel Administrativo | Cadastrar Cor - Agro7</title>
+        <title>Painel Administrativo | Cadastrar Cor - Agro9</title>
       </Head>
 
       <Navbar />

@@ -92,7 +92,7 @@ function ConfirmarEmail() {
   return (
     <>
       <Head>
-        <title>Confirmar E-mail - Agro7</title>
+        <title>Confirmar E-mail - Agro9</title>
       </Head>
 
       <Container>
@@ -103,7 +103,7 @@ function ConfirmarEmail() {
                 src="/logo/logo.png"
                 width="210"
                 height="90"
-                alt="Logotipo Agro7"
+                alt="Logotipo Agro9"
               />
             </div>
             <Form method="post" ref={formRef} onSubmit={handleSubmit}>

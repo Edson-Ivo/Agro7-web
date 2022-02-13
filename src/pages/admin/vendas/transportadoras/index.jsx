@@ -87,7 +87,7 @@ function AdminVendasTransportadoras() {
   return (
     <>
       <Head>
-        <title>Painel Administrativo | Gerenciar Transportadoras - Agro7</title>
+        <title>Painel Administrativo | Gerenciar Transportadoras - Agro9</title>
       </Head>
 
       <Navbar />

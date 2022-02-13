@@ -168,7 +168,7 @@ function AcoesPropriedadeEditar() {
   return (
     <>
       <Head>
-        <title>Editar Ação da Propriedade {data && data?.name} - Agro7</title>
+        <title>Editar Ação da Propriedade {data && data?.name} - Agro9</title>
       </Head>
 
       <Navbar />

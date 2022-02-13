@@ -87,7 +87,7 @@ function AdminVendasDistribuidoras() {
   return (
     <>
       <Head>
-        <title>Painel Administrativo | Gerenciar Distribuidoras - Agro7</title>
+        <title>Painel Administrativo | Gerenciar Distribuidoras - Agro9</title>
       </Head>
 
       <Navbar />

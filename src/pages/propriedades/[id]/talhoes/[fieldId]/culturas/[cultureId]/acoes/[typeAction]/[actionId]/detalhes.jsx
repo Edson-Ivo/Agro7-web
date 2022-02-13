@@ -34,7 +34,6 @@ import Table from '@/components/Table/index';
 import { Alert } from '@/components/Alert/index';
 import maskString from '@/helpers/maskString';
 import usersTypes from '@/helpers/usersTypes';
-import downloadDocument from '@/helpers/downloadDocument';
 import InputSearch from '@/components/InputSearch/index';
 
 function AcoesCulturasDetalhes() {
@@ -143,7 +142,7 @@ function AcoesCulturasDetalhes() {
   return (
     <>
       <Head>
-        <title>Detalhes da Ação na Cultura - Agro7</title>
+        <title>Detalhes da Ação na Cultura - Agro9</title>
       </Head>
 
       <Navbar />
@@ -251,7 +250,7 @@ function AcoesCulturasDetalhes() {
                                 <>
                                   <Table>
                                     <thead>
-                                      <tr onClick={() => router.push('/')}>
+                                      <tr>
                                         <th>Nome do Documento</th>
                                         <th>Ações</th>
                                       </tr>
@@ -262,7 +261,9 @@ function AcoesCulturasDetalhes() {
                                           <tr
                                             key={d.id}
                                             onClick={() =>
-                                              downloadDocument(d.url)
+                                              router.push(
+                                                `${baseUrl}/${typeAction}/${actionId}/documentos/${d.id}/detalhes`
+                                              )
                                             }
                                           >
                                             <td>{d.name}</td>
@@ -271,12 +272,10 @@ function AcoesCulturasDetalhes() {
                                             >
                                               <ActionButton
                                                 id={d.id}
-                                                download={d.url}
                                                 path={`${baseUrl}/${typeAction}/${actionId}/documentos`}
                                                 onDelete={() =>
                                                   handleDeleteModal(d.id)
                                                 }
-                                                noInfo
                                               />
                                             </td>
                                           </tr>

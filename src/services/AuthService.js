@@ -39,8 +39,8 @@ class AuthService {
       });
   }
 
-  static logout(savePage = false) {
-    if (savePage) this.savePage();
+  static logout(savePage = false, page = '') {
+    if (savePage) this.savePage(page);
 
     removeCookie(AUTH_COOKIE_TOKEN);
     removeCookie(AUTH_COOKIE_NAME);
@@ -74,8 +74,11 @@ class AuthService {
     };
   }
 
-  static savePage() {
-    setCookie(REDIRECT_COOKIE_NAME, Base64.encode(Router.router.asPath));
+  static savePage(page = '') {
+    setCookie(
+      REDIRECT_COOKIE_NAME,
+      Base64.encode(page || Router.router.asPath)
+    );
   }
 
   static getSavePage() {

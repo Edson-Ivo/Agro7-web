@@ -212,7 +212,7 @@ function PropertiesEdit() {
   return (
     <>
       <Head>
-        <title>Editando propriedade - Agro7</title>
+        <title>Editando propriedade - Agro9</title>
       </Head>
 
       <Navbar />

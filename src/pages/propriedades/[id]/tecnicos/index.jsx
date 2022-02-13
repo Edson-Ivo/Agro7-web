@@ -117,7 +117,7 @@ function Tecnicos() {
     <>
       <Head>
         <title>
-          Técnicos Relacionados a Propriedade {data && data.name} - Agro7
+          Técnicos Relacionados a Propriedade {data && data.name} - Agro9
         </title>
       </Head>
 

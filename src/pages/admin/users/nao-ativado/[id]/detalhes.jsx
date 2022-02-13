@@ -41,7 +41,7 @@ function AdminUsersNotActiveDetails() {
     <>
       <Head>
         <title>
-          Painel Administrativo | Gerenciar Usuário não Ativado - Agro7
+          Painel Administrativo | Gerenciar Usuário não Ativado - Agro9
         </title>
       </Head>
 

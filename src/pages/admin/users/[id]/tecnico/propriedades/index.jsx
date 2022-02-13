@@ -92,7 +92,7 @@ function PropertiesTechnichian() {
   return (
     <>
       <Head>
-        <title>Painel Administrativo | Propriedades Relacionadas - Agro7</title>
+        <title>Painel Administrativo | Propriedades Relacionadas - Agro9</title>
       </Head>
 
       <Navbar />

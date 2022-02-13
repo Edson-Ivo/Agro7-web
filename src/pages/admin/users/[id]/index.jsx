@@ -121,7 +121,7 @@ function AdminUsersOptions() {
       <Head>
         <title>
           Painel Administrativo | Opções do Usuário $
-          {dataUser && dataUser?.name} - Agro7
+          {dataUser && dataUser?.name} - Agro9
         </title>
       </Head>
 

@@ -148,7 +148,7 @@ function VendasTransportadorasRelatorio() {
   return (
     <>
       <Head>
-        <title>Relatório da Transportadora {data && data?.name} - Agro7</title>
+        <title>Relatório da Transportadora {data && data?.name} - Agro9</title>
       </Head>
 
       <Navbar />

@@ -89,7 +89,7 @@ function Properties() {
   return (
     <>
       <Head>
-        <title>Suas Propriedades - Agro7</title>
+        <title>Suas Propriedades - Agro9</title>
       </Head>
 
       <Navbar />
