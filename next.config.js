@@ -1,6 +1,6 @@
 const path = require('path');
 const withPlugins = require('next-compose-plugins');
-const withOffline = require('next-offline');
+const withOffline = require('next-pwa');
 
 const nextConfig = {
   swcMinify: true,
@@ -69,8 +69,10 @@ module.exports = withPlugins(
     [
       withOffline,
       {
-        workboxOpts: {
-          swDest: '../public/service-worker.js'
+        pwa: {
+          dest: 'public',
+          disable: process.env.NODE_ENV === 'development',
+          cacheOnFrontEndNav: true
         }
       }
     ]
