@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "app.agro9",
+      "sha256_cert_fingerprints": [
+        "48:07:CE:61:77:60:B7:75:2A:35:AB:79:8C:B1:70:1E:AE:B1:88:FD:B1:61:C5:E4:A6:06:03:FA:78:94:F5:B3"
+      ]
+    }
+  }
+]
