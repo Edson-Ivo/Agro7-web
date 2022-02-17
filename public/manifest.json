@@ -5,7 +5,8 @@
   "start_url": "/",
   "name": "Agro9",
   "short_name": "Agro9",
-  "description": "Aplicação do sistema de gerenciamento da Agro9",
+  "description": "O aplicativo da Agro9 Tecnologia fornece um sistema de rastreabilidade, gestão e acompanhamento técnico desenvolvido especialmente para facilitar a vida do homem do campo, pequenos e grandes produtores de alimentos, cooperativas, chegando até a agroindústria.",
+  "lang": "pt-BR",
   "icons": [
     {
       "src": "/assets/icons/icon-192x192.png",
