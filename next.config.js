@@ -59,6 +59,10 @@ const nextConfig = {
       {
         source: '/admin/users/:userId(\\d{1,})/vendas/:id(\\d{1,})/:path*',
         destination: '/vendas/:id(\\d{1,})/:path*?userId=:userId'
+      },
+      {
+        source: '/admin/users/:userId(\\d{1,})/insumos/:id(\\d{1,})/:path*',
+        destination: '/insumos/:id(\\d{1,})/:path*?userId=:userId'
       }
     ];
   }

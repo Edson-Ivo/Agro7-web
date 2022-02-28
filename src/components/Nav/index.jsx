@@ -9,6 +9,7 @@ import {
   faHome,
   faBook,
   faMapMarkerAlt,
+  faDolly,
   faUserSecret,
   faDollarSign,
   faChartPie
@@ -162,6 +163,7 @@ const Nav = () => {
                 icon={faMapMarkerAlt}
                 text="Suas Propriedades"
               />
+              <NavButton link="/insumos" icon={faDolly} text="Seus Insumos" />
               <NavButton
                 link="/vendas"
                 icon={faDollarSign}

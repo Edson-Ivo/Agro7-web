@@ -29,6 +29,10 @@ const urlRoute = (router, types, blockTypes = []) => {
     routesList = {
       administrador: ['/admin/vendas', '/admin/users/[userId]/vendas']
     };
+  } else if (path === 'insumos') {
+    routesList = {
+      administrador: ['/admin/users/[userId]/insumos']
+    };
   }
 
   Object.keys(routesList).forEach(type => {

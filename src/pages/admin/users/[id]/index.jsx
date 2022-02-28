@@ -14,7 +14,8 @@ import {
   faTruck,
   faUserEdit,
   faWallet,
-  faSeedling
+  faSeedling,
+  faDolly
 } from '@fortawesome/free-solid-svg-icons';
 
 import { Card } from '@/components/Card/index';
@@ -53,6 +54,12 @@ const data = [
     description:
       'Aqui, você terá acesso às Propriedades e relacionados desse Usuário.',
     icon: faMapMarkedAlt
+  },
+  {
+    href: 'insumos',
+    title: 'Insumos',
+    description: 'Aqui, você terá acesso aos Insumos desse Usuário.',
+    icon: faDolly
   },
   {
     href: 'caderno-produtor',

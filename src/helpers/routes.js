@@ -718,6 +718,63 @@ const actionsRoutes = {
   }
 };
 
+const suppliesRoutes = {
+  '/insumos': {
+    name: 'Insumos'
+  },
+  '/insumos/cadastrar': {
+    name: 'Cadastrar'
+  },
+  '/insumos/[id]': {
+    name: '%insumo',
+    path: '/insumos/[id]/detalhes'
+  },
+  '/insumos/[id]/detalhes': {
+    name: 'Detalhes'
+  },
+  '/insumos/[id]/editar': {
+    name: 'Editar'
+  },
+  '/insumos/[id]/documentos/cadastrar': {
+    name: 'Cadastrar Documento'
+  },
+  '/insumos/[id]/documentos/[docId]/detalhes': {
+    name: 'Detalhes Documento'
+  },
+  '/insumos/[id]/documentos/[docId]/editar': {
+    name: 'Editar Documento'
+  },
+  '/admin/users/[userId]': {
+    name: '%usuario',
+    path: '/admin/users/[id]'
+  },
+  '/admin/users/[userId]/insumos': {
+    name: 'Insumos'
+  },
+  '/admin/users/[userId]/insumos/cadastrar': {
+    name: 'Cadastrar'
+  },
+  '/admin/users/[userId]/insumos/[id]': {
+    name: '%insumo',
+    path: '/admin/users/[userId]/insumos/[id]/detalhes'
+  },
+  '/admin/users/[userId]/insumos/[id]/detalhes': {
+    name: 'Detalhes'
+  },
+  '/admin/users/[userId]/insumos/[id]/editar': {
+    name: 'Editar'
+  },
+  '/admin/users/[userId]/insumos/[id]/documentos/cadastrar': {
+    name: 'Cadastrar Documento'
+  },
+  '/admin/users/[userId]/insumos/[id]/documentos/[docId]/detalhes': {
+    name: 'Detalhes Documento'
+  },
+  '/admin/users/[userId]/insumos/[id]/documentos/[docId]/editar': {
+    name: 'Editar Documento'
+  }
+};
+
 const namedRoutes = {
   '/admin': { name: 'Painel Administrativo' },
   '/admin/categorias': { name: 'Categorias' },
@@ -876,7 +933,8 @@ const namedRoutes = {
   ...namedSales,
   ...adminUserSalesRoute,
   ...chartRoutes,
-  ...actionsRoutes
+  ...actionsRoutes,
+  ...suppliesRoutes
 };
 
 export default namedRoutes;
