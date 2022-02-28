@@ -198,7 +198,7 @@ class SalesService {
         latitude: yup
           .number()
           .transform(value => (Number.isNaN(value) ? undefined : value))
-          .required('A latitute da distribuidora é obrigatória'),
+          .required('A latitude da distribuidora é obrigatória'),
         longitude: yup
           .number()
           .transform(value => (Number.isNaN(value) ? undefined : value))

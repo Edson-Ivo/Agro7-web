@@ -88,7 +88,7 @@ function AcoesPropriedadeDocumentosDetalhes() {
               breadcrumbTitles={{
                 '%propriedade': data?.name
               }}
-              title={`Documento ${dataDocs?.name} na Ação de ${actionsList[typeAction]?.label} da Propriedade  ${data?.name}`}
+              title={`Documento ${dataDocs?.name} na Ação de ${actionsList[typeAction]?.label} da Propriedade ${data?.name}`}
               description={`Aqui, você irá visualizar o documento ${
                 dataDocs?.name
               } para a ação ${actionsList[

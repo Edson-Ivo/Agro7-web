@@ -53,7 +53,7 @@ const schema = yup.object().shape({
     latitude: yup
       .number()
       .transform(value => (Number.isNaN(value) ? undefined : value))
-      .required('A latitute é obrigatória'),
+      .required('A latitude é obrigatória'),
     longitude: yup
       .number()
       .transform(value => (Number.isNaN(value) ? undefined : value))
