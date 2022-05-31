@@ -55,7 +55,8 @@ function SolicitacoesTecnicos() {
   );
 
   useEffect(() => {
-    if (!isEmpty(route?.path)) setBaseUrl(`${route.path}/${id}/tecnicos`);
+    if (!isEmpty(route?.path))
+      setBaseUrl(`${route.path}/${id}/tecnicos/solicitacoes`);
   }, [route]);
 
   useEffect(() => {

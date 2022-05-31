@@ -72,7 +72,7 @@ export default function Error({ error }) {
             {dataError && (
               <>
                 <h3 style={{ marginBottom: '20px' }}>{dataError.title}</h3>
-                <p className="text">{dataError.description}</p>
+                <p className="text_paragraph">{dataError.description}</p>
                 <div style={{ marginTop: '20px' }}>
                   <Link href={dataError?.link ? dataError.link : '/'}>
                     <a>

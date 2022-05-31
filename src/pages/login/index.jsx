@@ -158,7 +158,7 @@ function Login() {
                 </Button>
               )) || <Loader />}
             </Form>
-            <p className="text">
+            <p className="text_paragraph">
               <Link href="/esqueceu-senha">Esqueceu sua senha?</Link>
             </p>
           </div>
