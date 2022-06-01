@@ -111,7 +111,7 @@ export default createGlobalStyle`
     -webkit-tap-highlight-color: transparent;
   }
 
-  p.text {
+  p.text_paragraph {
     font-size: calc(1.15em - 0.1px);
     line-height: 1.6em;
   }

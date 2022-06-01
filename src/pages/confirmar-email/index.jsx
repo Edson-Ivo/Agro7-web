@@ -129,7 +129,7 @@ function ConfirmarEmail() {
                 </>
               )) || <Loader />}
             </Form>
-            <p className="text">
+            <p className="text_paragraph">
               <Link href="/login">Voltar ao login</Link>
             </p>
           </div>
